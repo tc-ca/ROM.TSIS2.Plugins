@@ -26,16 +26,16 @@ namespace TSIS2.Plugins
 {
 
     [CrmPluginRegistration(
-    MessageNameEnum.Update,
-    "msdyn_workorderservicetask",
-    StageEnum.PreOperation,
-    ExecutionModeEnum.Synchronous,
-    "",
-    "PostOperationmsdyn_workorderservicetaskUpdate Plugin",
-    1,
-    IsolationModeEnum.Sandbox)]
+        MessageNameEnum.Update,
+        "msdyn_workorderservicetask",
+        StageEnum.PreOperation,
+        ExecutionModeEnum.Synchronous,
+        "",
+        "PreOperationmsdyn_workorderservicetaskUpdate Plugin",
+        1,
+        IsolationModeEnum.Sandbox)]
     /// <summary>
-    /// PostOperationmsdyn_workorderservicetaskUpdate Plugin.
+    /// PreOperationmsdyn_workorderservicetaskUpdate Plugin.
     /// </summary>    
     public class PreOperationmsdyn_workorderservicetaskUpdate : PluginBase
     {
