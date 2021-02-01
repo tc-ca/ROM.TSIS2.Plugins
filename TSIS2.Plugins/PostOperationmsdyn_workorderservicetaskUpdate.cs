@@ -56,7 +56,7 @@ namespace TSIS2.Plugins
                     /*
                      * Check if questionnaire json is there
                      *  - if yes, parse saved questionnaire json response
-                     *      - if "finding" found
+                     *      - if "finding" found and it doesn't already exist
                      *          - create ovs_finding
                      *          - reference case
                      *          - reference work order service task
@@ -69,33 +69,40 @@ namespace TSIS2.Plugins
                         var jsonResponse = workOrderServiceTask.ovs_QuestionnaireReponse;
                         JObject o = JObject.Parse(jsonResponse);
 
-                        // loop through each root property in the json object
-                        foreach (var rootProperty in o)
+                        using (var serviceContext = new CrmServiceContext(service))
                         {
-                            // Check if the root property starts with finding
-                            if (rootProperty.Key.StartsWith("finding"))
+                            // loop through each root property in the json object
+                            foreach (var rootProperty in o)
                             {
-                                var finding = rootProperty.Value;
-                                var provisionText = finding["provisionText"].ToString();
+                                // Check if the root property starts with finding
+                                if (rootProperty.Key.StartsWith("finding"))
+                                {
+                                    var finding = rootProperty.Value;
 
-                                // if finding, initialize new ovs_finding
-                                ovs_Finding newFinding = new ovs_Finding();
-                                newFinding.ovs_FindingProvisionReference = finding["provisionReference"].ToString();
-                                newFinding.ovs_FindingProvisionText = finding["provisionText"].ToString();
-                                newFinding.ovs_FindingComments = finding["comments"].ToString();
-                                newFinding.ovs_FindingFile = finding["documentaryEvidence"].ToString();
+                                    // if finding, does it already exist?
+                                    var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ovs_FindingProvisionReference == finding["provisionReference"].ToString());
+                                    if (existingFinding == null)
+                                    {
+                                        // if no, initialize new ovs_finding
+                                        ovs_Finding newFinding = new ovs_Finding();
+                                        newFinding.ovs_FindingProvisionReference = finding["provisionReference"].ToString();
+                                        newFinding.ovs_FindingProvisionText = finding["provisionText"].ToString();
+                                        newFinding.ovs_FindingComments = finding["comments"].ToString();
+                                        newFinding.ovs_FindingFile = finding["documentaryEvidence"].ToString();
 
-                                // reference work order service task
-                                newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
+                                        // reference work order service task
+                                        newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
 
-                                // reference case (should already be saved in the work order service task
-                                newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
+                                        // reference case (should already be saved in the work order service task)
+                                        newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
 
-                                // Create new ovs_finding
-                                Guid newFindingId = service.Create(newFinding);
+                                        // Create new ovs_finding
+                                        Guid newFindingId = service.Create(newFinding);
+                                    }
+                                }
                             }
-                        }
 
+                        }
                     }
 
                 }
