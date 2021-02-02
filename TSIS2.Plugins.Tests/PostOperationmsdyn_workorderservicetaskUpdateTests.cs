@@ -11,11 +11,11 @@ using TSIS2.Common;
 namespace TSIS2.Plugins.Tests
 {
  
-    public class WorkOrderServiceTaskTests
+    public class PostOperationmsdyn_workorderservicetaskUpdateTests
     {
 
         [Fact]
-        public void When_PostOperationmsdyn_workorderservicetaskUpdate_ovs_questionnaireresponse_contains_finding_expect_msdyn_inspectiontaskresult_fail()
+        public void When_ovs_questionnaireresponse_contains_finding_expect_msdyn_inspectiontaskresult_fail()
         {
             /**********
              * ARRANGE
@@ -88,7 +88,7 @@ namespace TSIS2.Plugins.Tests
         }
 
         [Fact]
-        public void When_PostOperationmsdyn_workorderservicetaskUpdate_ovs_questionnaireresponse_contains_finding_expect_create_incident_and_ovs_finding_if_they_do_not_exist()
+        public void When_ovs_questionnaireresponse_contains_finding_expect_create_incident_and_ovs_finding_if_they_do_not_exist()
         {
             /**********
              * ARRANGE
@@ -178,7 +178,7 @@ namespace TSIS2.Plugins.Tests
         }
  
         [Fact]
-        public void When_PostOperationmsdyn_workorderservicetaskUpdate_ovs_questionnaireresponse_contains_finding_expect_do_not_recreate_existing_findings()
+        public void When_ovs_questionnaireresponse_contains_finding_expect_do_not_recreate_existing_findings()
         {
 
             /**********
@@ -264,7 +264,7 @@ namespace TSIS2.Plugins.Tests
         }
 
         [Fact]
-        public void When_PostOperationmsdyn_workorderservicetaskUpdate_ovs_questionnaireresponse_does_not_contain_finding_expect_no_ovs_finding_record_created()
+        public void When_ovs_questionnaireresponse_does_not_contain_finding_expect_no_ovs_finding_record_created()
         {
             /**********
              * ARRANGE
