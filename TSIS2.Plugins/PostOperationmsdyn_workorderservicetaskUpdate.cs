@@ -24,7 +24,8 @@ namespace TSIS2.Plugins
         "",
         "PostOperationmsdyn_workorderservicetaskUpdate Plugin",
         1,
-        IsolationModeEnum.Sandbox)]
+        IsolationModeEnum.Sandbox,
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage)]
     public class PostOperationmsdyn_workorderservicetaskUpdate : IPlugin
     {
         public void Execute(IServiceProvider serviceProvider)
@@ -42,7 +43,10 @@ namespace TSIS2.Plugins
                 context.InputParameters["Target"] is Entity)
             {
                 // Obtain the target entity from the input parameters.  
-                Entity entity = (Entity)context.InputParameters["Target"];
+                Entity target = (Entity)context.InputParameters["Target"];
+
+                // Obtain the preimage entity
+                Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
 
                 // Obtain the organization service reference which you will need for  
                 // web service calls.  
@@ -52,25 +56,44 @@ namespace TSIS2.Plugins
 
                 try
                 {
-                    // Plug-in business logic goes here.  
-                    /*
-                     * Check if questionnaire json is there
-                     *  - if yes, parse saved questionnaire json response
-                     *      - if "finding" found and it doesn't already exist
-                     *          - create ovs_finding
-                     *          - reference case
-                     *          - reference work order service task
-                    */
+                    // Cast the target to the expected entity
+                    msdyn_workorderservicetask workOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
 
-                    msdyn_workorderservicetask workOrderServiceTask = entity.ToEntity<msdyn_workorderservicetask>();
-                    if (workOrderServiceTask.ovs_QuestionnaireReponse != null)
+                    // Get the referenced work order from the preImage
+                    EntityReference workOrderReference = (EntityReference)preImageEntity.Attributes["msdyn_workorder"];
+
+                    // Check if there is a questionnaire response in this update
+                    if (!String.IsNullOrWhiteSpace(workOrderServiceTask.ovs_QuestionnaireReponse))
                     {
-                        // parse json response
-                        var jsonResponse = workOrderServiceTask.ovs_QuestionnaireReponse;
-                        JObject o = JObject.Parse(jsonResponse);
-
                         using (var serviceContext = new CrmServiceContext(service))
                         {
+
+                            // Lookup the referenced work order
+                            msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrderReference.Id).FirstOrDefault();
+
+                            // If the work order is not null and is not already part of a case
+                            if (workOrder != null && workOrder.msdyn_ServiceRequest == null)
+                            {
+                                Incident newIncident = new Incident();
+                                newIncident.CustomerId = workOrder.msdyn_BillingAccount;
+                                newIncident.Title = workOrder.msdyn_BillingAccount.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
+                                Guid newIncidentId = service.Create(newIncident);
+                                msdyn_workorder uWorkOrder = new msdyn_workorder();
+                                uWorkOrder.Id = workOrderReference.Id;
+                                uWorkOrder.msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, newIncidentId);
+                                service.Update(uWorkOrder);
+                                workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, newIncidentId);
+                            } 
+                            // Already part of a case, just assign the work order case to the work order service task case
+                            else
+                            {
+                                workOrderServiceTask.ovs_CaseId = workOrder.msdyn_ServiceRequest;
+                            }
+
+                            // parse json response
+                            string jsonResponse = workOrderServiceTask.ovs_QuestionnaireReponse;
+                            JObject o = JObject.Parse(jsonResponse);
+
                             // loop through each root property in the json object
                             foreach (var rootProperty in o)
                             {

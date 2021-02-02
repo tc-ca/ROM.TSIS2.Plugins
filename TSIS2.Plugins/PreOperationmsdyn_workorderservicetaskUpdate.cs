@@ -33,7 +33,8 @@ namespace TSIS2.Plugins
         "",
         "PreOperationmsdyn_workorderservicetaskUpdate Plugin",
         1,
-        IsolationModeEnum.Sandbox)]
+        IsolationModeEnum.Sandbox, 
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage)]
     /// <summary>
     /// PreOperationmsdyn_workorderservicetaskUpdate Plugin.
     /// </summary>    
