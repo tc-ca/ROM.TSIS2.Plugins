@@ -73,12 +73,12 @@ namespace TSIS2.Plugins
 
                             // parse json response
                             string jsonResponse = workOrderServiceTask.ovs_QuestionnaireReponse;
-                            JObject o = JObject.Parse(jsonResponse);
+                            JObject jsonResponseObj = JObject.Parse(jsonResponse);
 
                             // If there was at least one finding found
                             // - Create a case (if work order service task doesn't already belong to a case)
                             // - Mark the inspection result to fail
-                            if (o.Children().Where(f => ((JProperty)f).Name.StartsWith("finding")).ToList().Count() > 0)
+                            if (jsonResponseObj.Children().Where(f => ((JProperty)f).Name.StartsWith("finding")).ToList().Count() > 0)
                             {
                                 // If the work order is not null and is not already part of a case
                                 if (workOrder != null && workOrder.msdyn_ServiceRequest == null)
@@ -104,7 +104,7 @@ namespace TSIS2.Plugins
 
 
                                 // loop through each root property in the json object
-                                foreach (var rootProperty in o)
+                                foreach (var rootProperty in jsonResponseObj)
                                 {
                                     // Check if the root property starts with finding
                                     if (rootProperty.Key.StartsWith("finding"))
@@ -142,12 +142,12 @@ namespace TSIS2.Plugins
 
                 catch (FaultException<OrganizationServiceFault> ex)
                 {
-                    throw new InvalidPluginExecutionException("An error occurred in FollowUpPlugin.", ex);
+                    throw new InvalidPluginExecutionException("An error occurred in PostOperationmsdyn_workorderservicetaskUpdate Plugin.", ex);
                 }
 
                 catch (Exception ex)
                 {
-                    tracingService.Trace("FollowUpPlugin: {0}", ex.ToString());
+                    tracingService.Trace("PostOperationmsdyn_workorderservicetaskUpdate Plugin: {0}", ex.ToString());
                     throw;
                 }
             }
