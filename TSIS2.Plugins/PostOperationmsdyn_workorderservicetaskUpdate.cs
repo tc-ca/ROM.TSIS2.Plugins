@@ -22,10 +22,11 @@ namespace TSIS2.Plugins
         StageEnum.PostOperation,
         ExecutionModeEnum.Asynchronous,
         "",
-        "PostOperationmsdyn_workorderservicetaskUpdate Plugin",
+        "TSIS2.Plugins.PostOperationmsdyn_workorderservicetaskUpdate Plugin",
         1,
         IsolationModeEnum.Sandbox,
-        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder")]
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder",
+        Description = "On Work Order Service Task Update, create findings in order to display them in a case.")]
     public class PostOperationmsdyn_workorderservicetaskUpdate : IPlugin
     {
         public void Execute(IServiceProvider serviceProvider)

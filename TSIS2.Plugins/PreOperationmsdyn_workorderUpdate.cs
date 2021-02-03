@@ -31,9 +31,10 @@ namespace TSIS2.Plugins
     StageEnum.PreOperation,
     ExecutionModeEnum.Synchronous,
     "",
-    "PreOperationmsdyn_workorderUpdate Plugin",
+    "TSIS2.Plugins.PreOperationmsdyn_workorderUpdate Plugin",
     1,
-    IsolationModeEnum.Sandbox)]
+    IsolationModeEnum.Sandbox,
+    Description = "On Work Order Update, populate the Regulated Entity into the Billing Account using the selected Operation")]
     /// <summary>
     /// PreOperationmsdyn_workorderUpdate Plugin.
     /// </summary>    

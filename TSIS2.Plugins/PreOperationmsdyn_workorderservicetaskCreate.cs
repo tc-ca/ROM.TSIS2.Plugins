@@ -31,9 +31,10 @@ namespace TSIS2.Plugins
     StageEnum.PreOperation,
     ExecutionModeEnum.Synchronous,
     "",
-    "PostOperationmsdyn_workorderservicetaskCreate Plugin",
+    "TSIS2.Plugins.PreOperationmsdyn_workorderservicetaskCreate Plugin",
     1,
-    IsolationModeEnum.Sandbox)]
+    IsolationModeEnum.Sandbox, 
+    Description = "Copies the JSON Questionnaire Definition from a Service Task to a Work Order Service Task.")]
     /// <summary>
     /// PostOperationmsdyn_workorderservicetaskCreate Plugin.
     /// </summary>    
