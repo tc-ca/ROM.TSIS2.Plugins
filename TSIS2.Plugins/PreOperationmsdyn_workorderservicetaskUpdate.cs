@@ -120,8 +120,9 @@ namespace TSIS2.Plugins
                                             ovs_Finding newFinding = new ovs_Finding();
                                             newFinding.ovs_FindingProvisionReference = (string)finding["provisionReference"];
                                             newFinding.ovs_FindingProvisionText = (string)finding["provisionText"];
-                                            newFinding.ovs_FindingComments = (string)finding["comments"];
-                                            newFinding.ovs_FindingFile = (string)finding["documentaryEvidence"];
+                                            newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
+                                            newFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
+                                            newFinding.ovs_Finding1 = "Finding " + newFinding.ovs_FindingProvisionReference + " on Work Order " + workOrder.msdyn_name;
 
                                             // reference work order service task
                                             newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
