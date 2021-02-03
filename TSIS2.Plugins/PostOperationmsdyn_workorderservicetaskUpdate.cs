@@ -22,9 +22,11 @@ namespace TSIS2.Plugins
         StageEnum.PostOperation,
         ExecutionModeEnum.Asynchronous,
         "",
-        "PostOperationmsdyn_workorderservicetaskUpdate Plugin",
+        "TSIS2.Plugins.PostOperationmsdyn_workorderservicetaskUpdate Plugin",
         1,
-        IsolationModeEnum.Sandbox)]
+        IsolationModeEnum.Sandbox,
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder",
+        Description = "On Work Order Service Task Update, create findings in order to display them in a case.")]
     public class PostOperationmsdyn_workorderservicetaskUpdate : IPlugin
     {
         public void Execute(IServiceProvider serviceProvider)
@@ -42,7 +44,10 @@ namespace TSIS2.Plugins
                 context.InputParameters["Target"] is Entity)
             {
                 // Obtain the target entity from the input parameters.  
-                Entity entity = (Entity)context.InputParameters["Target"];
+                Entity target = (Entity)context.InputParameters["Target"];
+
+                // Obtain the preimage entity
+                Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
 
                 // Obtain the organization service reference which you will need for  
                 // web service calls.  
@@ -52,62 +57,98 @@ namespace TSIS2.Plugins
 
                 try
                 {
-                    // Plug-in business logic goes here.  
-                    /*
-                     * Check if questionnaire json is there
-                     *  - if yes, parse saved questionnaire json response
-                     *      - if "finding" found
-                     *          - create ovs_finding
-                     *          - reference case
-                     *          - reference work order service task
-                    */
+                    // Cast the target to the expected entity
+                    msdyn_workorderservicetask workOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
 
-                    msdyn_workorderservicetask workOrderServiceTask = entity.ToEntity<msdyn_workorderservicetask>();
-                    if (workOrderServiceTask.ovs_QuestionnaireReponse != null)
+                    // Get the referenced work order from the preImage
+                    EntityReference workOrderReference = (EntityReference)preImageEntity.Attributes["msdyn_workorder"];
+
+                    // Check if there is a questionnaire response in this update
+                    if (!String.IsNullOrWhiteSpace(workOrderServiceTask.ovs_QuestionnaireReponse))
                     {
-                        // parse json response
-                        var jsonResponse = workOrderServiceTask.ovs_QuestionnaireReponse;
-                        JObject o = JObject.Parse(jsonResponse);
-
-                        // loop through each root property in the json object
-                        foreach (var rootProperty in o)
+                        using (var serviceContext = new CrmServiceContext(service))
                         {
-                            // Check if the root property starts with finding
-                            if (rootProperty.Key.StartsWith("finding"))
+
+                            // Lookup the referenced work order
+                            msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrderReference.Id).FirstOrDefault();
+
+                            // parse json response
+                            string jsonResponse = workOrderServiceTask.ovs_QuestionnaireReponse;
+                            JObject jsonResponseObj = JObject.Parse(jsonResponse);
+
+                            // If there was at least one finding found
+                            // - Create a case (if work order service task doesn't already belong to a case)
+                            // - Mark the inspection result to fail
+                            if (jsonResponseObj.Children().Where(f => ((JProperty)f).Name.StartsWith("finding")).ToList().Count() > 0)
                             {
-                                var finding = rootProperty.Value;
-                                var provisionText = finding["provisionText"].ToString();
+                                // If the work order is not null and is not already part of a case
+                                if (workOrder != null && workOrder.msdyn_ServiceRequest == null)
+                                {
+                                    Incident newIncident = new Incident();
+                                    newIncident.CustomerId = workOrder.msdyn_BillingAccount;
+                                    newIncident.Title = workOrder.msdyn_BillingAccount.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
+                                    Guid newIncidentId = service.Create(newIncident);
+                                    msdyn_workorder uWorkOrder = new msdyn_workorder();
+                                    uWorkOrder.Id = workOrderReference.Id;
+                                    uWorkOrder.msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, newIncidentId);
+                                    service.Update(uWorkOrder);
+                                    workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, newIncidentId);
+                                }
+                                // Already part of a case, just assign the work order case to the work order service task case
+                                else
+                                {
+                                    workOrderServiceTask.ovs_CaseId = workOrder.msdyn_ServiceRequest;
+                                }
 
-                                // if finding, initialize new ovs_finding
-                                ovs_Finding newFinding = new ovs_Finding();
-                                newFinding.ovs_FindingProvisionReference = finding["provisionReference"].ToString();
-                                newFinding.ovs_FindingProvisionText = finding["provisionText"].ToString();
-                                newFinding.ovs_FindingComments = finding["comments"].ToString();
-                                newFinding.ovs_FindingFile = finding["documentaryEvidence"].ToString();
+                                // Mark the inspection result to fail
+                                workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_InspectionResult.Fail;
 
-                                // reference work order service task
-                                newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
 
-                                // reference case (should already be saved in the work order service task
-                                newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
+                                // loop through each root property in the json object
+                                foreach (var rootProperty in jsonResponseObj)
+                                {
+                                    // Check if the root property starts with finding
+                                    if (rootProperty.Key.StartsWith("finding"))
+                                    {
+                                        var finding = rootProperty.Value;
 
-                                // Create new ovs_finding
-                                Guid newFindingId = service.Create(newFinding);
+                                        // if finding, does it already exist?
+                                        var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ovs_FindingProvisionReference == finding["provisionReference"].ToString());
+                                        if (existingFinding == null)
+                                        {
+                                            // if no, initialize new ovs_finding
+                                            ovs_Finding newFinding = new ovs_Finding();
+                                            newFinding.ovs_FindingProvisionReference = finding["provisionReference"].ToString();
+                                            newFinding.ovs_FindingProvisionText = finding["provisionText"].ToString();
+                                            newFinding.ovs_FindingComments = finding["comments"].ToString();
+                                            newFinding.ovs_FindingFile = finding["documentaryEvidence"].ToString();
+
+                                            // reference work order service task
+                                            newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
+
+                                            // reference case (should already be saved in the work order service task)
+                                            newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
+
+                                            // Create new ovs_finding
+                                            Guid newFindingId = service.Create(newFinding);
+                                        }
+                                    }
+                                }
                             }
-                        }
 
+                        }
                     }
 
                 }
 
                 catch (FaultException<OrganizationServiceFault> ex)
                 {
-                    throw new InvalidPluginExecutionException("An error occurred in FollowUpPlugin.", ex);
+                    throw new InvalidPluginExecutionException("An error occurred in PostOperationmsdyn_workorderservicetaskUpdate Plugin.", ex);
                 }
 
                 catch (Exception ex)
                 {
-                    tracingService.Trace("FollowUpPlugin: {0}", ex.ToString());
+                    tracingService.Trace("PostOperationmsdyn_workorderservicetaskUpdate Plugin: {0}", ex.ToString());
                     throw;
                 }
             }

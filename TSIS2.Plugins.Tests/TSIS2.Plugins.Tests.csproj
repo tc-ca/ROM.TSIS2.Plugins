@@ -103,7 +103,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WorkOrderServiceTaskTests.cs" />
+    <Compile Include="PostOperationmsdyn_workorderservicetaskUpdateTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
