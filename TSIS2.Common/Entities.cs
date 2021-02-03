@@ -2385,6 +2385,26 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
+		/// legal name of a Regulated Entity or Site
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_legalname")]
+		public string ovs_legalname
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_legalname");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_legalname");
+				this.SetAttributeValue("ovs_legalname", value);
+				this.OnPropertyChanged("ovs_legalname");
+			}
+		}
+		
+		/// <summary>
 		/// The North American Industry Classification System (NAICS) has been developed by the statistical agencies of Canada, Mexico and the United States.
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_naicscode")]
@@ -12108,7 +12128,7 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
-		/// Description of the referenced Provision
+		/// 
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_findingprovisiontext")]
 		public string ovs_FindingProvisionText
