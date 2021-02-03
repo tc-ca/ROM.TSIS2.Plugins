@@ -10,8 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xrm.Sdk;
 using TSIS2.Common;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Json;
 
 namespace TSIS2.Plugins
 {
@@ -19,15 +18,15 @@ namespace TSIS2.Plugins
     [CrmPluginRegistration(
         MessageNameEnum.Update,
         "msdyn_workorderservicetask",
-        StageEnum.PostOperation,
-        ExecutionModeEnum.Asynchronous,
+        StageEnum.PreOperation,
+        ExecutionModeEnum.Synchronous,
         "",
-        "TSIS2.Plugins.PostOperationmsdyn_workorderservicetaskUpdate Plugin",
+        "TSIS2.Plugins.PreOperationmsdyn_workorderservicetaskUpdate Plugin",
         1,
         IsolationModeEnum.Sandbox,
         Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder",
         Description = "On Work Order Service Task Update, create findings in order to display them in a case.")]
-    public class PostOperationmsdyn_workorderservicetaskUpdate : IPlugin
+    public class PreOperationmsdyn_workorderservicetaskUpdate : IPlugin
     {
         public void Execute(IServiceProvider serviceProvider)
         {
@@ -74,12 +73,13 @@ namespace TSIS2.Plugins
 
                             // parse json response
                             string jsonResponse = workOrderServiceTask.ovs_QuestionnaireReponse;
-                            JObject jsonResponseObj = JObject.Parse(jsonResponse);
+                            JsonValue jsonValue = JsonValue.Parse(jsonResponse);
+                            JsonObject jsonObject = jsonValue as JsonObject;
 
                             // If there was at least one finding found
                             // - Create a case (if work order service task doesn't already belong to a case)
                             // - Mark the inspection result to fail
-                            if (jsonResponseObj.Children().Where(f => ((JProperty)f).Name.StartsWith("finding")).ToList().Count() > 0)
+                            if (jsonObject.Keys.Any(k => k.StartsWith("finding")))
                             {
                                 // If the work order is not null and is not already part of a case
                                 if (workOrder != null && workOrder.msdyn_ServiceRequest == null)
@@ -105,7 +105,7 @@ namespace TSIS2.Plugins
 
 
                                 // loop through each root property in the json object
-                                foreach (var rootProperty in jsonResponseObj)
+                                foreach (var rootProperty in jsonObject)
                                 {
                                     // Check if the root property starts with finding
                                     if (rootProperty.Key.StartsWith("finding"))
@@ -118,10 +118,10 @@ namespace TSIS2.Plugins
                                         {
                                             // if no, initialize new ovs_finding
                                             ovs_Finding newFinding = new ovs_Finding();
-                                            newFinding.ovs_FindingProvisionReference = finding["provisionReference"].ToString();
-                                            newFinding.ovs_FindingProvisionText = finding["provisionText"].ToString();
-                                            newFinding.ovs_FindingComments = finding["comments"].ToString();
-                                            newFinding.ovs_FindingFile = finding["documentaryEvidence"].ToString();
+                                            newFinding.ovs_FindingProvisionReference = (string)finding["provisionReference"];
+                                            newFinding.ovs_FindingProvisionText = (string)finding["provisionText"];
+                                            newFinding.ovs_FindingComments = (string)finding["comments"];
+                                            newFinding.ovs_FindingFile = (string)finding["documentaryEvidence"];
 
                                             // reference work order service task
                                             newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);

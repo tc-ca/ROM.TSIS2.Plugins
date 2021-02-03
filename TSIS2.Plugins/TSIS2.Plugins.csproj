@@ -45,14 +45,14 @@
       <HintPath>..\packages\Microsoft.CrmSdk.CoreAssemblies.9.0.2.29\lib\net462\Microsoft.Xrm.Sdk.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Json, Version=2.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Json.4.7.1\lib\net461\System.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
@@ -67,7 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PluginBase.cs" />
-    <Compile Include="PostOperationmsdyn_workorderservicetaskUpdate.cs" />
+    <Compile Include="PreOperationmsdyn_workorderservicetaskUpdate.cs" />
     <Compile Include="PreOperationmsdyn_workorderCreate.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskCreate.cs" />
     <Compile Include="PreOperationmsdyn_workorderUpdate.cs" />

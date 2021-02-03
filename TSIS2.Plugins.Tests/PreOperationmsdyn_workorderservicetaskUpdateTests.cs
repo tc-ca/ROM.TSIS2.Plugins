@@ -11,7 +11,7 @@ using TSIS2.Common;
 namespace TSIS2.Plugins.Tests
 {
  
-    public class PostOperationmsdyn_workorderservicetaskUpdateTests
+    public class PreOperationmsdyn_workorderservicetaskUpdateTests
     {
 
         [Fact]
@@ -79,7 +79,7 @@ namespace TSIS2.Plugins.Tests
             * ACT
             **********/
             // Execute the PostOperationmsdyn_workorderservicetaskUpdate plugin with the defined workOrderServiceTask as a target
-            context.ExecutePluginWith<PostOperationmsdyn_workorderservicetaskUpdate>(inputParams, outputParams, preEntityImages, null);
+            context.ExecutePluginWith<PreOperationmsdyn_workorderservicetaskUpdate>(inputParams, outputParams, preEntityImages, null);
 
             /**********
              * ASSERT
@@ -150,7 +150,7 @@ namespace TSIS2.Plugins.Tests
             * ACT
             **********/
             // Execute the PostOperationmsdyn_workorderservicetaskUpdate plugin with the defined workOrderServiceTask as a target
-            context.ExecutePluginWith<PostOperationmsdyn_workorderservicetaskUpdate>(inputParams, outputParams, preEntityImages, null);
+            context.ExecutePluginWith<PreOperationmsdyn_workorderservicetaskUpdate>(inputParams, outputParams, preEntityImages, null);
 
             /**********
              * ASSERT
@@ -248,7 +248,7 @@ namespace TSIS2.Plugins.Tests
             * ACT
             **********/
             // Execute the PostOperationmsdyn_workorderservicetaskUpdate plugin with the defined workOrderServiceTask as a target
-            context.ExecutePluginWith<PostOperationmsdyn_workorderservicetaskUpdate>(inputParams, outputParams, preEntityImages, null);
+            context.ExecutePluginWith<PreOperationmsdyn_workorderservicetaskUpdate>(inputParams, outputParams, preEntityImages, null);
 
             /**********
              * ASSERT
@@ -324,7 +324,7 @@ namespace TSIS2.Plugins.Tests
             * ACT
             **********/
             // Execute the PostOperationmsdyn_workorderservicetaskUpdate plugin with the defined workOrderServiceTask as a target
-            context.ExecutePluginWith<PostOperationmsdyn_workorderservicetaskUpdate>(inputParams, outputParams, preEntityImages, null);
+            context.ExecutePluginWith<PreOperationmsdyn_workorderservicetaskUpdate>(inputParams, outputParams, preEntityImages, null);
 
             /**********
              * ASSERT
