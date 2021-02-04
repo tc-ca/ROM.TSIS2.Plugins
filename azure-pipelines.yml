@@ -29,7 +29,18 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '**\*.sln'
-    
+
+- task: VSTest@2
+  inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\*test*.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+      !**\xunit.runner.visualstudio.testadapter.dll
+      !**\xunit.runner.visualstudio.dotnetcore.testadapter.dll
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(build.sourcesDirectory)\TSIS2.Plugins'
