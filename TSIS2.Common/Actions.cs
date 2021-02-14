@@ -6689,6 +6689,138 @@ namespace TSIS2.Common
 		}
 	}
 	
+	[System.Runtime.Serialization.DataContractAttribute(Namespace="http://schemas.microsoft.com/xrm/2011/ovs/")]
+	[Microsoft.Xrm.Sdk.Client.RequestProxyAttribute("ovs_BlobResultsGet")]
+	public partial class ovs_BlobResultsGetRequest : Microsoft.Xrm.Sdk.OrganizationRequest
+	{
+		
+		public string name_guid
+		{
+			get
+			{
+				if (this.Parameters.Contains("name_guid"))
+				{
+					return ((string)(this.Parameters["name_guid"]));
+				}
+				else
+				{
+					return default(string);
+				}
+			}
+			set
+			{
+				this.Parameters["name_guid"] = value;
+			}
+		}
+		
+		public ovs_BlobResultsGetRequest()
+		{
+			this.RequestName = "ovs_BlobResultsGet";
+			this.name_guid = default(string);
+		}
+	}
+	
+	[System.Runtime.Serialization.DataContractAttribute(Namespace="http://schemas.microsoft.com/xrm/2011/ovs/")]
+	[Microsoft.Xrm.Sdk.Client.ResponseProxyAttribute("ovs_BlobResultsGet")]
+	public partial class ovs_BlobResultsGetResponse : Microsoft.Xrm.Sdk.OrganizationResponse
+	{
+		
+		public ovs_BlobResultsGetResponse()
+		{
+		}
+		
+		public string json
+		{
+			get
+			{
+				if (this.Results.Contains("json"))
+				{
+					return ((string)(this.Results["json"]));
+				}
+				else
+				{
+					return default(string);
+				}
+			}
+		}
+	}
+	
+	[System.Runtime.Serialization.DataContractAttribute(Namespace="http://schemas.microsoft.com/xrm/2011/ovs/")]
+	[Microsoft.Xrm.Sdk.Client.RequestProxyAttribute("ovs_BlobResultsPost")]
+	public partial class ovs_BlobResultsPostRequest : Microsoft.Xrm.Sdk.OrganizationRequest
+	{
+		
+		public string json
+		{
+			get
+			{
+				if (this.Parameters.Contains("json"))
+				{
+					return ((string)(this.Parameters["json"]));
+				}
+				else
+				{
+					return default(string);
+				}
+			}
+			set
+			{
+				this.Parameters["json"] = value;
+			}
+		}
+		
+		public string name_guid
+		{
+			get
+			{
+				if (this.Parameters.Contains("name_guid"))
+				{
+					return ((string)(this.Parameters["name_guid"]));
+				}
+				else
+				{
+					return default(string);
+				}
+			}
+			set
+			{
+				this.Parameters["name_guid"] = value;
+			}
+		}
+		
+		public ovs_BlobResultsPostRequest()
+		{
+			this.RequestName = "ovs_BlobResultsPost";
+			this.json = default(string);
+			this.name_guid = default(string);
+		}
+	}
+	
+	[System.Runtime.Serialization.DataContractAttribute(Namespace="http://schemas.microsoft.com/xrm/2011/ovs/")]
+	[Microsoft.Xrm.Sdk.Client.ResponseProxyAttribute("ovs_BlobResultsPost")]
+	public partial class ovs_BlobResultsPostResponse : Microsoft.Xrm.Sdk.OrganizationResponse
+	{
+		
+		public ovs_BlobResultsPostResponse()
+		{
+		}
+		
+		public bool isSaved
+		{
+			get
+			{
+				if (this.Results.Contains("isSaved"))
+				{
+					return ((bool)(this.Results["isSaved"]));
+				}
+				else
+				{
+					return default(bool);
+				}
+			}
+		}
+	}
+	
 	[System.Runtime.Serialization.DataContractAttribute(Namespace="http://schemas.microsoft.com/xrm/2011/msdyn/")]
 	[Microsoft.Xrm.Sdk.Client.RequestProxyAttribute("msdyn_GetSIFeatureConfiguration")]
 	public partial class msdyn_GetSIFeatureConfigurationRequest : Microsoft.Xrm.Sdk.OrganizationRequest

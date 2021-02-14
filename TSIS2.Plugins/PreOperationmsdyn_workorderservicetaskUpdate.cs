@@ -113,7 +113,8 @@ namespace TSIS2.Plugins
                                         var finding = rootProperty.Value;
 
                                         // if finding, does it already exist?
-                                        var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ovs_FindingProvisionReference == finding["provisionReference"].ToString());
+                                        var uniqueFindingName = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString();
+                                        var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ovs_Finding1 == uniqueFindingName);
                                         if (existingFinding == null)
                                         {
                                             // if no, initialize new ovs_finding
@@ -122,7 +123,7 @@ namespace TSIS2.Plugins
                                             newFinding.ovs_FindingProvisionText = (string)finding["provisionText"];
                                             newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
                                             newFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
-                                            newFinding.ovs_Finding1 = "Finding " + newFinding.ovs_FindingProvisionReference + " on Work Order " + workOrder.msdyn_name;
+                                            newFinding.ovs_Finding1 = uniqueFindingName;
 
                                             // reference work order service task
                                             newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
