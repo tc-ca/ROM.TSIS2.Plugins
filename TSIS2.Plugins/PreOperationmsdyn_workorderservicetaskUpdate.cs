@@ -133,11 +133,36 @@ namespace TSIS2.Plugins
 
                                             // Create new ovs_finding
                                             Guid newFindingId = service.Create(newFinding);
+                                        } 
+                                        else
+                                        {
+                                            // Update existing finding
+                                            existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
+                                            existingFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
+                                            service.Update(existingFinding);
                                         }
                                     }
                                 }
+
                             }
 
+                            // Need to deactivate any old referenced findings in the work order service task and case
+                            // that no longer exist in the questionnaire response.
+                            // Retrieve all the findings belonging to this work order service task
+                            var findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
+                            // Get a list of unique finding names from the JSON response
+                            var uniqueFindingNames = jsonObject.Keys.Select(k => workOrderServiceTask.Id.ToString() + "-" + k);
+
+                            foreach(var finding in findings)
+                            {
+                                // If the existing finding is not in the JSON response, we need to disable it
+                                if (!uniqueFindingNames.Contains(finding.ovs_Finding1))
+                                {
+                                    finding.StatusCode = ovs_Finding_StatusCode.Inactive;
+                                    finding.StateCode = ovs_FindingState.Inactive;
+                                    service.Update(finding);
+                                }
+                            }
                         }
                     }
 
