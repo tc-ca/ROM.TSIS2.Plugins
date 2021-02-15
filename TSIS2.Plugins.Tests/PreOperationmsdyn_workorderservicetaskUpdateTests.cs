@@ -189,6 +189,10 @@ namespace TSIS2.Plugins.Tests
             // Expect finding to still be in an active state
             Assert.Equal(ovs_FindingState.Active, first.StateCode);
             Assert.Equal(ovs_Finding_StatusCode.Active, first.StatusCode);
+
+            // Expect work order service task result to be Fail
+            Assert.Equal(msdyn_InspectionResult.Fail, workOrderServiceTask.msdyn_inspectiontaskresult);
+
         }
 
         [Fact]
@@ -287,6 +291,118 @@ namespace TSIS2.Plugins.Tests
             var first = findings.First();
             Assert.Equal("new comments", first.ovs_FindingComments);
             Assert.Equal("C:\\fakepath\\newfile.png", first.ovs_FindingFile);
+
+            // Expect work order service task result to be Fail
+            Assert.Equal(msdyn_InspectionResult.Fail, workOrderServiceTask.msdyn_inspectiontaskresult);
+
+        }
+
+        [Fact]
+        public void When_ovs_questionnaireresponse_contains_finding_that_already_exists_but_is_deactivated_expect_existing_ovs_finding_record_to_be_activated_in_case()
+        {
+            /**********
+            * ARRANGE
+            **********/
+            var context = new XrmFakedContext();
+
+            // Given a work order service task that
+            // - belongs to a work order
+            // - belongs to a case (Incident)
+            // - has a SurveyJS questionnaire response saved in the ovs_QuestionnaireResponse field
+            var billingAccountId = Guid.NewGuid();
+            var billingAccount = new Account()
+            {
+                Id = billingAccountId,
+                Name = "Test Regulated Entity"
+            };
+
+            var incidentId = Guid.NewGuid();
+            var incident = new Incident()
+            {
+                Id = incidentId
+            };
+
+            var workOrderId = Guid.NewGuid();
+            var workOrder = new msdyn_workorder()
+            {
+                Id = workOrderId,
+                msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
+                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId),
+            };
+
+            var workOrderServiceTaskId = Guid.NewGuid();
+            var workOrderServiceTask = new msdyn_workorderservicetask()
+            {
+                Id = workOrderServiceTaskId,
+                msdyn_PercentComplete = 100.00,
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                ovs_QuestionnaireReponse = @"
+                {
+                    ""finding-sq_162"": {
+                        ""provisionReference"": ""Section 2"",
+                        ""provisionText"": ""<strong>Application</strong></br><strong><mark>Section 2</mark></strong>: Sections 3 to 15 apply in respect of the following passenger-carrying flights — or in respect of air carriers conducting such flights — if the passengers, the property in the possession or control of the passengers and the belongings or baggage that the passengers give to the air carrier for transport are subject to screening that is carried out — in Canada under the Aeronautics Act or in another country by the person or entity responsible for the screening of such persons, property and belongings or baggage — before boarding:</br><ul style='list-style-type:none;'><li><strong>(a)</strong> domestic flights that depart from Canadian aerodromes and that are conducted by air carriers under Subpart 5 of Part VII of the Canadian Aviation Regulations ; and</li><li><strong>(b)</strong> international flights that depart from or will arrive at Canadian aerodromes and that are conducted by air carriers</li><ul style='list-style-type:none;'><li><strong>(i)</strong> under Subpart 1 of Part VII of the Canadian Aviation Regulations using aircraft that have a maximum certificated take-off weight of more than 8 618 kg (19,000 pounds) or have a seating configuration, excluding crew seats, of 20 or more, or</li><li><strong>(ii)</strong> under Subpart 5 of Part VII of the Canadian Aviation Regulations.</li></ul></ul>"",
+                        ""comments"": ""new comments"",
+                        ""documentaryEvidence"": ""C:\\fakepath\\newfile.png""
+                    }
+                }
+                "
+            };
+
+            var findingId = Guid.NewGuid();
+            var finding = new ovs_Finding()
+            {
+                Id = findingId,
+                ovs_Finding1 = workOrderServiceTaskId + "-finding-sq_162", // unique finding names are created using the work order service task ID and the reference ID in the questionnaire
+                ovs_FindingProvisionReference = "Section 2",
+                ovs_FindingComments = "original comments",
+                ovs_FindingFile = "C:\\fakepath\\originalfile.png",
+                ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
+                ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId), // this finding already belongs to a work order service task
+                StatusCode = ovs_Finding_StatusCode.Inactive, // finding is also already deactivated
+                StateCode = ovs_FindingState.Inactive, // finding is also already deactivated
+            };
+
+
+
+            context.Initialize(
+                new List<Entity>() {
+                    billingAccount,
+                    incident,
+                    workOrder,
+                    workOrderServiceTask,
+                    finding
+                }
+            );
+
+            ParameterCollection inputParams = new ParameterCollection();
+            inputParams.Add("Target", workOrderServiceTask);
+            ParameterCollection outputParams = new ParameterCollection();
+            outputParams.Add("id", workOrderServiceTaskId);
+            EntityImageCollection preEntityImages = new EntityImageCollection();
+            preEntityImages.Add("PreImage", workOrderServiceTask);
+
+            /**********
+            * ACT
+            **********/
+            // Execute the PreOperationmsdyn_workorderservicetaskUpdate plugin with the defined workOrderServiceTask as a target
+            context.ExecutePluginWith<PreOperationmsdyn_workorderservicetaskUpdate>(inputParams, outputParams, preEntityImages, null);
+
+            /**********
+             * ASSERT
+             **********/
+            var findings = context.CreateQuery<ovs_Finding>().ToList();
+
+            // Expect target to still only contain 1 ovs_finding reference
+            Assert.True(findings.Count == 1, "Expecting 1 finding");
+
+            // However, expect ovs_finding already in the context to now be activated
+            var first = findings.First();
+            Assert.Equal(ovs_Finding_StatusCode.Active, first.StatusCode);
+            Assert.Equal(ovs_FindingState.Active, first.StateCode);
+
+            // Expect work order service task result to be Fail
+            Assert.Equal(msdyn_InspectionResult.Fail, workOrderServiceTask.msdyn_inspectiontaskresult);
+
         }
 
         [Fact]
@@ -385,6 +501,10 @@ namespace TSIS2.Plugins.Tests
             var first = findings.First();
             Assert.Equal(ovs_Finding_StatusCode.Inactive, first.StatusCode);
             Assert.Equal(ovs_FindingState.Inactive, first.StateCode);
+
+            // Expect work order service task result to be Pass
+            Assert.Equal(msdyn_InspectionResult.Pass, workOrderServiceTask.msdyn_inspectiontaskresult);
+
         }
 
         [Fact] 
@@ -469,6 +589,10 @@ namespace TSIS2.Plugins.Tests
             // Expect ovs_finding already in the context to still have the same provision reference
             var first = findings.First();
             Assert.Equal("Section 2", first.ovs_FindingProvisionReference);
+
+            // Expect work order service task result to be Fail
+            Assert.Equal(msdyn_InspectionResult.Fail, workOrderServiceTask.msdyn_inspectiontaskresult);
+
         }
 
         [Fact]
@@ -637,6 +761,9 @@ namespace TSIS2.Plugins.Tests
             // Expect ovs_finding to reference the proper entities
             Assert.Equal(workOrderServiceTaskId, oneFinding.ovs_WorkOrderServiceTaskId.Id);
             Assert.Equal(oneIncident.Id, oneFinding.ovs_CaseId.Id);
+
+            // Expect work order service task result to be Fail
+            Assert.Equal(msdyn_InspectionResult.Fail, workOrderServiceTask.msdyn_inspectiontaskresult);
         }
 
         [Fact]
