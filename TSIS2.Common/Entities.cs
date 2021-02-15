@@ -2425,6 +2425,46 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
+		/// Read-only field on account to show on quick view form.
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_primarycontactemail")]
+		public string ovs_primarycontactemail
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_primarycontactemail");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_primarycontactemail");
+				this.SetAttributeValue("ovs_primarycontactemail", value);
+				this.OnPropertyChanged("ovs_primarycontactemail");
+			}
+		}
+		
+		/// <summary>
+		/// Read-only field on account to show on quick view form.
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_primarycontactphone")]
+		public string ovs_primarycontactphone
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_primarycontactphone");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_primarycontactphone");
+				this.SetAttributeValue("ovs_primarycontactphone", value);
+				this.OnPropertyChanged("ovs_primarycontactphone");
+			}
+		}
+		
+		/// <summary>
 		/// 
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_sitetype")]
@@ -10078,6 +10118,26 @@ namespace TSIS2.Common
 				this.OnPropertyChanging("ovs_CaseId");
 				this.SetAttributeValue("ovs_caseid", value);
 				this.OnPropertyChanged("ovs_CaseId");
+			}
+		}
+		
+		/// <summary>
+		/// Field For Internal Logic Required for Service Task form and the Questionnaire Web Resource Component
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_isquestionnairecomplete")]
+		public System.Nullable<bool> ovs_IsQuestionnaireComplete
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<System.Nullable<bool>>("ovs_isquestionnairecomplete");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_IsQuestionnaireComplete");
+				this.SetAttributeValue("ovs_isquestionnairecomplete", value);
+				this.OnPropertyChanged("ovs_IsQuestionnaireComplete");
 			}
 		}
 		
