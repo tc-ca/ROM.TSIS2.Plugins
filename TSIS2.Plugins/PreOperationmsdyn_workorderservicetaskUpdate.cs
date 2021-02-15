@@ -9,6 +9,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using TSIS2.Common;
 using System.Json;
 
@@ -24,7 +25,7 @@ namespace TSIS2.Plugins
         "TSIS2.Plugins.PreOperationmsdyn_workorderservicetaskUpdate Plugin",
         1,
         IsolationModeEnum.Sandbox,
-        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder",
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder,msdyn_percentcomplete,ovs_questionnairereponse",
         Description = "On Work Order Service Task Update, create findings in order to display them in a case.")]
     public class PreOperationmsdyn_workorderservicetaskUpdate : IPlugin
     {
@@ -56,18 +57,21 @@ namespace TSIS2.Plugins
 
                 try
                 {
-                    // Cast the target to the expected entity
+                    // Cast the target and preimage to the expected entity
                     msdyn_workorderservicetask workOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
+                    msdyn_workorderservicetask workOrderServiceTaskPreImage = preImageEntity.ToEntity<msdyn_workorderservicetask>();
 
-                    // Only perform the updates if the work order service task is 100% complete
-                    if (workOrderServiceTask.msdyn_PercentComplete == 100.00)
+                    // Only perform the updates if the work order service task is 100% complete on update
+                    // or work order service task was already 100% complete (from pre-image)
+                    if (workOrderServiceTask.msdyn_PercentComplete == 100.00 || (workOrderServiceTask.msdyn_PercentComplete == null && workOrderServiceTaskPreImage.msdyn_PercentComplete == 100.00))
                     {
 
                         // Get the referenced work order from the preImage
                         EntityReference workOrderReference = (EntityReference)preImageEntity.Attributes["msdyn_workorder"];
 
-                        // Check if there is a questionnaire response in this update
-                        if (!String.IsNullOrWhiteSpace(workOrderServiceTask.ovs_QuestionnaireReponse))
+                        // Determine if we use the questionnaire response from this update or from the pre-image since it is not always passed in the update
+                        var questionnaireResponse = !String.IsNullOrEmpty(workOrderServiceTask.ovs_QuestionnaireReponse) ? workOrderServiceTask.ovs_QuestionnaireReponse : workOrderServiceTaskPreImage.ovs_QuestionnaireReponse;
+                        if (!String.IsNullOrWhiteSpace(questionnaireResponse))
                         {
                             using (var serviceContext = new CrmServiceContext(service))
                             {
@@ -76,8 +80,7 @@ namespace TSIS2.Plugins
                                 msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrderReference.Id).FirstOrDefault();
 
                                 // parse json response
-                                string jsonResponse = workOrderServiceTask.ovs_QuestionnaireReponse;
-                                JsonValue jsonValue = JsonValue.Parse(jsonResponse);
+                                JsonValue jsonValue = JsonValue.Parse(questionnaireResponse);
                                 JsonObject jsonObject = jsonValue as JsonObject;
 
                                 // If there was at least one finding found
@@ -140,10 +143,13 @@ namespace TSIS2.Plugins
                                             }
                                             else
                                             {
+                                                // Retrieve the account containing several of its attributes.
+                                                //ColumnSet cols = new ColumnSet(new String[] { });
+
                                                 // Update existing finding
                                                 existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
                                                 existingFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
-                                                service.Update(existingFinding);
+                                                serviceContext.UpdateObject(existingFinding);
                                             }
                                         }
                                     }
@@ -164,9 +170,12 @@ namespace TSIS2.Plugins
                                     {
                                         finding.StatusCode = ovs_Finding_StatusCode.Inactive;
                                         finding.StateCode = ovs_FindingState.Inactive;
-                                        service.Update(finding);
+                                        serviceContext.UpdateObject(finding);
                                     }
                                 }
+
+                                // Save all the changes made in the service context
+                                serviceContext.SaveChanges();
                             }
                         }
 
