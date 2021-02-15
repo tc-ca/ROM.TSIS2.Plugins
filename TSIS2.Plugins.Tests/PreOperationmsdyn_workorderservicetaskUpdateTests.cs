@@ -14,6 +14,78 @@ namespace TSIS2.Plugins.Tests
     public class PreOperationmsdyn_workorderservicetaskUpdateTests
     {
         [Fact]
+        public void When_ovs_questionnaireresponse_contains_finding_but_work_order_service_task_is_not_100_percent_complete_expect_ovs_finding_not_created()
+        {
+            /**********
+            * ARRANGE
+            **********/
+            var context = new XrmFakedContext();
+
+            // Given a work order service task that
+            var billingAccountId = Guid.NewGuid();
+            var billingAccount = new Account()
+            {
+                Id = billingAccountId,
+                Name = "Test Regulated Entity"
+            };
+
+            var workOrderId = Guid.NewGuid();
+            var workOrder = new msdyn_workorder()
+            {
+                Id = workOrderId,
+                msdyn_ServiceRequest = null, // does not already belong to a case (Incident)
+                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId)
+            };
+
+            var workOrderServiceTaskId = Guid.NewGuid();
+            var workOrderServiceTask = new msdyn_workorderservicetask()
+            {
+                Id = workOrderServiceTaskId,
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 0.00,
+                ovs_QuestionnaireReponse = @"
+                {
+                    ""finding-sq_162"": {
+                        ""provisionReference"": ""Section 2"",
+                        ""provisionText"": ""<strong>Application</strong></br><strong><mark>Section 2</mark></strong>: Sections 3 to 15 apply in respect of the following passenger-carrying flights — or in respect of air carriers conducting such flights — if the passengers, the property in the possession or control of the passengers and the belongings or baggage that the passengers give to the air carrier for transport are subject to screening that is carried out — in Canada under the Aeronautics Act or in another country by the person or entity responsible for the screening of such persons, property and belongings or baggage — before boarding:</br><ul style='list-style-type:none;'><li><strong>(a)</strong> domestic flights that depart from Canadian aerodromes and that are conducted by air carriers under Subpart 5 of Part VII of the Canadian Aviation Regulations ; and</li><li><strong>(b)</strong> international flights that depart from or will arrive at Canadian aerodromes and that are conducted by air carriers</li><ul style='list-style-type:none;'><li><strong>(i)</strong> under Subpart 1 of Part VII of the Canadian Aviation Regulations using aircraft that have a maximum certificated take-off weight of more than 8 618 kg (19,000 pounds) or have a seating configuration, excluding crew seats, of 20 or more, or</li><li><strong>(ii)</strong> under Subpart 5 of Part VII of the Canadian Aviation Regulations.</li></ul></ul>"",
+                        ""comments"": ""new comments"",
+                        ""documentaryEvidence"": ""C:\\fakepath\\newfile.png""
+                    }
+                }
+                "
+            };
+
+            context.Initialize(
+                new List<Entity>() {
+                    billingAccount,
+                    workOrder,
+                    workOrderServiceTask
+                }
+            );
+
+            ParameterCollection inputParams = new ParameterCollection();
+            inputParams.Add("Target", workOrderServiceTask);
+            ParameterCollection outputParams = new ParameterCollection();
+            outputParams.Add("id", workOrderServiceTaskId);
+            EntityImageCollection preEntityImages = new EntityImageCollection();
+            preEntityImages.Add("PreImage", workOrderServiceTask);
+
+            /**********
+            * ACT
+            **********/
+            // Execute the PreOperationmsdyn_workorderservicetaskUpdate plugin with the defined workOrderServiceTask as a target
+            context.ExecutePluginWith<PreOperationmsdyn_workorderservicetaskUpdate>(inputParams, outputParams, preEntityImages, null);
+
+            /**********
+             * ASSERT
+             **********/
+            var findings = context.CreateQuery<ovs_Finding>().ToList();
+
+            // Expect no findings created because questionnaire is not completed 
+            Assert.True(findings.Count == 0, "Expected no findings");
+        }
+
+        [Fact]
         public void When_ovs_questionnaireresponse_contains_finding_expect_do_not_recreate_existing_ovs_finding()
         {
 
@@ -52,6 +124,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderServiceTaskId,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 100.00,
                 ovs_QuestionnaireReponse = @"
                 {
                     ""finding-sq_162"": {
@@ -155,6 +228,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_PercentComplete = 100.00,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 ovs_QuestionnaireReponse = @"
                 {
@@ -252,6 +326,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_PercentComplete = 100.00,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 ovs_QuestionnaireReponse = @"
                 {
@@ -350,6 +425,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderServiceTaskId,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 100.00,
                 ovs_QuestionnaireReponse = @"
                 {
                     ""finding-sq_162"": {
@@ -429,6 +505,7 @@ namespace TSIS2.Plugins.Tests
                 Id = workOrderServiceTaskId,
                 msdyn_inspectiontaskresult = msdyn_InspectionResult.NA, 
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 100.00,
                 ovs_QuestionnaireReponse = @"
                 {
                     ""finding-sq_162"": {
@@ -500,6 +577,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderServiceTaskId,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 100.00,
                 ovs_QuestionnaireReponse = @"
                 {
                     ""finding-sq_162"": {
@@ -599,6 +677,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderServiceTaskId,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 100.00,
                 ovs_QuestionnaireReponse = ""
             };
 

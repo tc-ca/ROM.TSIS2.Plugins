@@ -59,113 +59,118 @@ namespace TSIS2.Plugins
                     // Cast the target to the expected entity
                     msdyn_workorderservicetask workOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
 
-                    // Get the referenced work order from the preImage
-                    EntityReference workOrderReference = (EntityReference)preImageEntity.Attributes["msdyn_workorder"];
-
-                    // Check if there is a questionnaire response in this update
-                    if (!String.IsNullOrWhiteSpace(workOrderServiceTask.ovs_QuestionnaireReponse))
+                    // Only perform the updates if the work order service task is 100% complete
+                    if (workOrderServiceTask.msdyn_PercentComplete == 100.00)
                     {
-                        using (var serviceContext = new CrmServiceContext(service))
+
+                        // Get the referenced work order from the preImage
+                        EntityReference workOrderReference = (EntityReference)preImageEntity.Attributes["msdyn_workorder"];
+
+                        // Check if there is a questionnaire response in this update
+                        if (!String.IsNullOrWhiteSpace(workOrderServiceTask.ovs_QuestionnaireReponse))
                         {
-
-                            // Lookup the referenced work order
-                            msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrderReference.Id).FirstOrDefault();
-
-                            // parse json response
-                            string jsonResponse = workOrderServiceTask.ovs_QuestionnaireReponse;
-                            JsonValue jsonValue = JsonValue.Parse(jsonResponse);
-                            JsonObject jsonObject = jsonValue as JsonObject;
-
-                            // If there was at least one finding found
-                            // - Create a case (if work order service task doesn't already belong to a case)
-                            // - Mark the inspection result to fail
-                            if (jsonObject.Keys.Any(k => k.StartsWith("finding")))
+                            using (var serviceContext = new CrmServiceContext(service))
                             {
-                                // If the work order is not null and is not already part of a case
-                                if (workOrder != null && workOrder.msdyn_ServiceRequest == null)
-                                {
-                                    Incident newIncident = new Incident();
-                                    newIncident.CustomerId = workOrder.msdyn_BillingAccount;
-                                    newIncident.Title = workOrder.msdyn_BillingAccount.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
-                                    Guid newIncidentId = service.Create(newIncident);
-                                    msdyn_workorder uWorkOrder = new msdyn_workorder();
-                                    uWorkOrder.Id = workOrderReference.Id;
-                                    uWorkOrder.msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, newIncidentId);
-                                    service.Update(uWorkOrder);
-                                    workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, newIncidentId);
-                                }
-                                // Already part of a case, just assign the work order case to the work order service task case
-                                else
-                                {
-                                    workOrderServiceTask.ovs_CaseId = workOrder.msdyn_ServiceRequest;
-                                }
 
-                                // Mark the inspection result to fail
-                                workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_InspectionResult.Fail;
+                                // Lookup the referenced work order
+                                msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrderReference.Id).FirstOrDefault();
 
+                                // parse json response
+                                string jsonResponse = workOrderServiceTask.ovs_QuestionnaireReponse;
+                                JsonValue jsonValue = JsonValue.Parse(jsonResponse);
+                                JsonObject jsonObject = jsonValue as JsonObject;
 
-                                // loop through each root property in the json object
-                                foreach (var rootProperty in jsonObject)
+                                // If there was at least one finding found
+                                // - Create a case (if work order service task doesn't already belong to a case)
+                                // - Mark the inspection result to fail
+                                if (jsonObject.Keys.Any(k => k.StartsWith("finding")))
                                 {
-                                    // Check if the root property starts with finding
-                                    if (rootProperty.Key.StartsWith("finding"))
+                                    // If the work order is not null and is not already part of a case
+                                    if (workOrder != null && workOrder.msdyn_ServiceRequest == null)
                                     {
-                                        var finding = rootProperty.Value;
+                                        Incident newIncident = new Incident();
+                                        newIncident.CustomerId = workOrder.msdyn_BillingAccount;
+                                        newIncident.Title = workOrder.msdyn_BillingAccount.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
+                                        Guid newIncidentId = service.Create(newIncident);
+                                        msdyn_workorder uWorkOrder = new msdyn_workorder();
+                                        uWorkOrder.Id = workOrderReference.Id;
+                                        uWorkOrder.msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, newIncidentId);
+                                        service.Update(uWorkOrder);
+                                        workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, newIncidentId);
+                                    }
+                                    // Already part of a case, just assign the work order case to the work order service task case
+                                    else
+                                    {
+                                        workOrderServiceTask.ovs_CaseId = workOrder.msdyn_ServiceRequest;
+                                    }
 
-                                        // if finding, does it already exist?
-                                        var uniqueFindingName = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString();
-                                        var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ovs_Finding1 == uniqueFindingName);
-                                        if (existingFinding == null)
+                                    // Mark the inspection result to fail
+                                    workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_InspectionResult.Fail;
+
+
+                                    // loop through each root property in the json object
+                                    foreach (var rootProperty in jsonObject)
+                                    {
+                                        // Check if the root property starts with finding
+                                        if (rootProperty.Key.StartsWith("finding"))
                                         {
-                                            // if no, initialize new ovs_finding
-                                            ovs_Finding newFinding = new ovs_Finding();
-                                            newFinding.ovs_FindingProvisionReference = (string)finding["provisionReference"];
-                                            newFinding.ovs_FindingProvisionText = (string)finding["provisionText"];
-                                            newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
-                                            newFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
-                                            newFinding.ovs_Finding1 = uniqueFindingName;
+                                            var finding = rootProperty.Value;
 
-                                            // reference work order service task
-                                            newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
+                                            // if finding, does it already exist?
+                                            var uniqueFindingName = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString();
+                                            var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ovs_Finding1 == uniqueFindingName);
+                                            if (existingFinding == null)
+                                            {
+                                                // if no, initialize new ovs_finding
+                                                ovs_Finding newFinding = new ovs_Finding();
+                                                newFinding.ovs_FindingProvisionReference = (string)finding["provisionReference"];
+                                                newFinding.ovs_FindingProvisionText = (string)finding["provisionText"];
+                                                newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
+                                                newFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
+                                                newFinding.ovs_Finding1 = uniqueFindingName;
 
-                                            // reference case (should already be saved in the work order service task)
-                                            newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
+                                                // reference work order service task
+                                                newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
 
-                                            // Create new ovs_finding
-                                            Guid newFindingId = service.Create(newFinding);
-                                        } 
-                                        else
-                                        {
-                                            // Update existing finding
-                                            existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
-                                            existingFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
-                                            service.Update(existingFinding);
+                                                // reference case (should already be saved in the work order service task)
+                                                newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
+
+                                                // Create new ovs_finding
+                                                Guid newFindingId = service.Create(newFinding);
+                                            }
+                                            else
+                                            {
+                                                // Update existing finding
+                                                existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
+                                                existingFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
+                                                service.Update(existingFinding);
+                                            }
                                         }
                                     }
+
                                 }
 
-                            }
+                                // Need to deactivate any old referenced findings in the work order service task and case
+                                // that no longer exist in the questionnaire response.
+                                // Retrieve all the findings belonging to this work order service task
+                                var findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
+                                // Get a list of unique finding names from the JSON response
+                                var uniqueFindingNames = jsonObject.Keys.Select(k => workOrderServiceTask.Id.ToString() + "-" + k);
 
-                            // Need to deactivate any old referenced findings in the work order service task and case
-                            // that no longer exist in the questionnaire response.
-                            // Retrieve all the findings belonging to this work order service task
-                            var findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
-                            // Get a list of unique finding names from the JSON response
-                            var uniqueFindingNames = jsonObject.Keys.Select(k => workOrderServiceTask.Id.ToString() + "-" + k);
-
-                            foreach(var finding in findings)
-                            {
-                                // If the existing finding is not in the JSON response, we need to disable it
-                                if (!uniqueFindingNames.Contains(finding.ovs_Finding1))
+                                foreach (var finding in findings)
                                 {
-                                    finding.StatusCode = ovs_Finding_StatusCode.Inactive;
-                                    finding.StateCode = ovs_FindingState.Inactive;
-                                    service.Update(finding);
+                                    // If the existing finding is not in the JSON response, we need to disable it
+                                    if (!uniqueFindingNames.Contains(finding.ovs_Finding1))
+                                    {
+                                        finding.StatusCode = ovs_Finding_StatusCode.Inactive;
+                                        finding.StateCode = ovs_FindingState.Inactive;
+                                        service.Update(finding);
+                                    }
                                 }
                             }
                         }
-                    }
 
+                    }
                 }
 
                 catch (FaultException<OrganizationServiceFault> ex)
