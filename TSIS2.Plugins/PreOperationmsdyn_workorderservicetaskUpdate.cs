@@ -155,6 +155,11 @@ namespace TSIS2.Plugins
                                     }
 
                                 }
+                                else
+                                {
+                                    // Mark the inspection result to Pass if there are no findings found
+                                    workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_InspectionResult.Pass;
+                                }
 
                                 // Need to deactivate any old referenced findings in the work order service task and case
                                 // that no longer exist in the questionnaire response.
@@ -170,8 +175,14 @@ namespace TSIS2.Plugins
                                     {
                                         finding.StatusCode = ovs_Finding_StatusCode.Inactive;
                                         finding.StateCode = ovs_FindingState.Inactive;
-                                        serviceContext.UpdateObject(finding);
+                                    } 
+                                    // Otherwise, re-enable it
+                                    else
+                                    {
+                                        finding.StatusCode = ovs_Finding_StatusCode.Active;
+                                        finding.StateCode = ovs_FindingState.Active;
                                     }
+                                    serviceContext.UpdateObject(finding);
                                 }
 
                                 // Save all the changes made in the service context
