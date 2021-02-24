@@ -129,7 +129,10 @@ namespace TSIS2.Plugins
                                                 newFinding.ovs_FindingProvisionReference = (string)finding["provisionReference"];
                                                 newFinding.ovs_FindingProvisionText = (string)finding["provisionText"];
                                                 newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
-                                                newFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
+
+                                                // Don't do anything with the files yet until we have the proper infrastructure decision
+                                                //newFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
+
                                                 newFinding.ovs_Finding1 = uniqueFindingName;
 
                                                 // reference work order service task
@@ -148,7 +151,10 @@ namespace TSIS2.Plugins
 
                                                 // Update existing finding
                                                 existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
-                                                existingFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
+
+                                                // Don't do anything with the files yet until we have the proper infrastructure decision
+                                                //existingFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
+
                                                 serviceContext.UpdateObject(existingFinding);
                                             }
                                         }
