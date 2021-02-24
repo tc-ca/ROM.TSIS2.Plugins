@@ -290,7 +290,6 @@ namespace TSIS2.Plugins.Tests
             // Expect ovs_finding already in the context to now have new updated values
             var first = findings.First();
             Assert.Equal("new comments", first.ovs_FindingComments);
-            Assert.Equal("C:\\fakepath\\newfile.png", first.ovs_FindingFile);
 
             // Expect work order service task result to be Fail
             Assert.Equal(msdyn_InspectionResult.Fail, workOrderServiceTask.msdyn_inspectiontaskresult);
@@ -756,7 +755,6 @@ namespace TSIS2.Plugins.Tests
             Assert.Equal("Section 2", oneFinding.ovs_FindingProvisionReference);
             Assert.Equal("<strong>Application</strong></br><strong><mark>Section 2</mark></strong>: Sections 3 to 15 apply in respect of the following passenger-carrying flights — or in respect of air carriers conducting such flights — if the passengers, the property in the possession or control of the passengers and the belongings or baggage that the passengers give to the air carrier for transport are subject to screening that is carried out — in Canada under the Aeronautics Act or in another country by the person or entity responsible for the screening of such persons, property and belongings or baggage — before boarding:</br><ul style='list-style-type:none;'><li><strong>(a)</strong> domestic flights that depart from Canadian aerodromes and that are conducted by air carriers under Subpart 5 of Part VII of the Canadian Aviation Regulations ; and</li><li><strong>(b)</strong> international flights that depart from or will arrive at Canadian aerodromes and that are conducted by air carriers</li><ul style='list-style-type:none;'><li><strong>(i)</strong> under Subpart 1 of Part VII of the Canadian Aviation Regulations using aircraft that have a maximum certificated take-off weight of more than 8 618 kg (19,000 pounds) or have a seating configuration, excluding crew seats, of 20 or more, or</li><li><strong>(ii)</strong> under Subpart 5 of Part VII of the Canadian Aviation Regulations.</li></ul></ul>", oneFinding.ovs_FindingProvisionText);
             Assert.Equal("new comments", oneFinding.ovs_FindingComments);
-            Assert.Equal("C:\\fakepath\\newfile.png", oneFinding.ovs_FindingFile);
 
             // Expect ovs_finding to reference the proper entities
             Assert.Equal(workOrderServiceTaskId, oneFinding.ovs_WorkOrderServiceTaskId.Id);
