@@ -92,8 +92,8 @@ namespace TSIS2.Plugins
                                     if (workOrder != null && workOrder.msdyn_ServiceRequest == null)
                                     {
                                         Incident newIncident = new Incident();
-                                        newIncident.CustomerId = workOrder.msdyn_BillingAccount;
-                                        newIncident.Title = workOrder.msdyn_BillingAccount.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
+                                        newIncident.CustomerId = workOrder.ovs_regulatedentity;
+                                        newIncident.Title = workOrder.ovs_regulatedentity.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
                                         Guid newIncidentId = service.Create(newIncident);
                                         msdyn_workorder uWorkOrder = new msdyn_workorder();
                                         uWorkOrder.Id = workOrderReference.Id;
