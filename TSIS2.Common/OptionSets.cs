@@ -746,11 +746,15 @@ namespace TSIS2.Common
 	{
 		
 		[System.Runtime.Serialization.EnumMemberAttribute()]
-		[OptionSetMetadataAttribute("Active", 0)]
+		[OptionSetMetadataAttribute("Active", 0, "#0000ff")]
 		Active = 1,
 		
 		[System.Runtime.Serialization.EnumMemberAttribute()]
-		[OptionSetMetadataAttribute("Inactive", 1)]
+		[OptionSetMetadataAttribute("Closed", 2, "#0000ff")]
+		Closed = 918640000,
+		
+		[System.Runtime.Serialization.EnumMemberAttribute()]
+		[OptionSetMetadataAttribute("Inactive", 1, "#0000ff")]
 		Inactive = 2,
 	}
 	

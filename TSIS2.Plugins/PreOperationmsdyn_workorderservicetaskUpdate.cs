@@ -25,7 +25,7 @@ namespace TSIS2.Plugins
         "TSIS2.Plugins.PreOperationmsdyn_workorderservicetaskUpdate Plugin",
         1,
         IsolationModeEnum.Sandbox,
-        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder,msdyn_percentcomplete,ovs_questionnairereponse",
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder,msdyn_percentcomplete,ovs_questionnaireresponse",
         Description = "On Work Order Service Task Update, create findings in order to display them in a case.")]
     public class PreOperationmsdyn_workorderservicetaskUpdate : IPlugin
     {
@@ -70,7 +70,7 @@ namespace TSIS2.Plugins
                         EntityReference workOrderReference = (EntityReference)preImageEntity.Attributes["msdyn_workorder"];
 
                         // Determine if we use the questionnaire response from this update or from the pre-image since it is not always passed in the update
-                        var questionnaireResponse = !String.IsNullOrEmpty(workOrderServiceTask.ovs_QuestionnaireReponse) ? workOrderServiceTask.ovs_QuestionnaireReponse : workOrderServiceTaskPreImage.ovs_QuestionnaireReponse;
+                        var questionnaireResponse = !String.IsNullOrEmpty(workOrderServiceTask.ovs_QuestionnaireResponse) ? workOrderServiceTask.ovs_QuestionnaireResponse : workOrderServiceTaskPreImage.ovs_QuestionnaireResponse;
                         if (!String.IsNullOrWhiteSpace(questionnaireResponse))
                         {
                             using (var serviceContext = new CrmServiceContext(service))

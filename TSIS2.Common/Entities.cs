@@ -2385,6 +2385,46 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_accountnameenglish")]
+		public string ovs_AccountNameEnglish
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_accountnameenglish");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_AccountNameEnglish");
+				this.SetAttributeValue("ovs_accountnameenglish", value);
+				this.OnPropertyChanged("ovs_AccountNameEnglish");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_accountnamefrench")]
+		public string ovs_AccountNameFrench
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_accountnamefrench");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_AccountNameFrench");
+				this.SetAttributeValue("ovs_accountnamefrench", value);
+				this.OnPropertyChanged("ovs_AccountNameFrench");
+			}
+		}
+		
+		/// <summary>
 		/// legal name of a Regulated Entity or Site
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_legalname")]
@@ -3467,6 +3507,26 @@ namespace TSIS2.Common
 				this.OnPropertyChanging("ovs_AirCarrier_Organization_Account");
 				this.SetRelatedEntities<TSIS2.Common.ovs_AirCarrier>("ovs_AirCarrier_Organization_Account", null, value);
 				this.OnPropertyChanged("ovs_AirCarrier_Organization_Account");
+			}
+		}
+		
+		/// <summary>
+		/// 1:N ovs_msdyn_workorder_regulatedentity_account
+		/// </summary>
+		[Microsoft.Xrm.Sdk.RelationshipSchemaNameAttribute("ovs_msdyn_workorder_regulatedentity_account")]
+		public System.Collections.Generic.IEnumerable<TSIS2.Common.msdyn_workorder> ovs_msdyn_workorder_regulatedentity_account
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetRelatedEntities<TSIS2.Common.msdyn_workorder>("ovs_msdyn_workorder_regulatedentity_account", null);
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_msdyn_workorder_regulatedentity_account");
+				this.SetRelatedEntities<TSIS2.Common.msdyn_workorder>("ovs_msdyn_workorder_regulatedentity_account", null, value);
+				this.OnPropertyChanged("ovs_msdyn_workorder_regulatedentity_account");
 			}
 		}
 		
@@ -6741,6 +6801,46 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_servicetasktypenameenglish")]
+		public string ovs_servicetasktypenameenglish
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_servicetasktypenameenglish");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_servicetasktypenameenglish");
+				this.SetAttributeValue("ovs_servicetasktypenameenglish", value);
+				this.OnPropertyChanged("ovs_servicetasktypenameenglish");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_servicetasktypenamefrench")]
+		public string ovs_servicetasktypenamefrench
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_servicetasktypenamefrench");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_servicetasktypenamefrench");
+				this.SetAttributeValue("ovs_servicetasktypenamefrench", value);
+				this.OnPropertyChanged("ovs_servicetasktypenamefrench");
+			}
+		}
+		
+		/// <summary>
 		/// Owner Id
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ownerid")]
@@ -7612,7 +7712,7 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
-		/// Workorder's functional location
+		/// Work order's functional location
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("msdyn_functionallocation")]
 		public Microsoft.Xrm.Sdk.EntityReference msdyn_FunctionalLocation
@@ -8085,7 +8185,7 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
-		/// Work Order subsstatus
+		/// Work Order substatus
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("msdyn_substatus")]
 		public Microsoft.Xrm.Sdk.EntityReference msdyn_SubStatus
@@ -8158,7 +8258,7 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
-		/// Tracks the current system status.
+		/// Tracks the current record status.
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("msdyn_systemstatus")]
 		public virtual msdyn_WOSystemStatus? msdyn_SystemStatus
@@ -8749,6 +8849,26 @@ namespace TSIS2.Common
 		/// <summary>
 		/// 
 		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_operationtypeid")]
+		public Microsoft.Xrm.Sdk.EntityReference ovs_operationtypeid
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<Microsoft.Xrm.Sdk.EntityReference>("ovs_operationtypeid");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_operationtypeid");
+				this.SetAttributeValue("ovs_operationtypeid", value);
+				this.OnPropertyChanged("ovs_operationtypeid");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_oversighttype")]
 		public Microsoft.Xrm.Sdk.EntityReference ovs_OversightType
 		{
@@ -8763,6 +8883,26 @@ namespace TSIS2.Common
 				this.OnPropertyChanging("ovs_OversightType");
 				this.SetAttributeValue("ovs_oversighttype", value);
 				this.OnPropertyChanged("ovs_OversightType");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_ovscountry")]
+		public Microsoft.Xrm.Sdk.EntityReference ovs_ovsCountry
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<Microsoft.Xrm.Sdk.EntityReference>("ovs_ovscountry");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_ovsCountry");
+				this.SetAttributeValue("ovs_ovscountry", value);
+				this.OnPropertyChanged("ovs_ovsCountry");
 			}
 		}
 		
@@ -8803,6 +8943,26 @@ namespace TSIS2.Common
 				this.OnPropertyChanging("ovs_Rational");
 				this.SetAttributeValue("ovs_rational", value);
 				this.OnPropertyChanged("ovs_Rational");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_regulatedentity")]
+		public Microsoft.Xrm.Sdk.EntityReference ovs_regulatedentity
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<Microsoft.Xrm.Sdk.EntityReference>("ovs_regulatedentity");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_regulatedentity");
+				this.SetAttributeValue("ovs_regulatedentity", value);
+				this.OnPropertyChanged("ovs_regulatedentity");
 			}
 		}
 		
@@ -9007,6 +9167,26 @@ namespace TSIS2.Common
 		/// <summary>
 		/// 
 		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("qm_blobpath")]
+		public string qm_BlobPath
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("qm_blobpath");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("qm_BlobPath");
+				this.SetAttributeValue("qm_blobpath", value);
+				this.OnPropertyChanged("qm_BlobPath");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("qm_remote")]
 		public System.Nullable<bool> qm_Remote
 		{
@@ -9021,6 +9201,26 @@ namespace TSIS2.Common
 				this.OnPropertyChanging("qm_Remote");
 				this.SetAttributeValue("qm_remote", value);
 				this.OnPropertyChanged("qm_Remote");
+			}
+		}
+		
+		/// <summary>
+		/// Unique identifier for Contact associated with Work Order.
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("qm_reportcontactid")]
+		public Microsoft.Xrm.Sdk.EntityReference qm_ReportContactId
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<Microsoft.Xrm.Sdk.EntityReference>("qm_reportcontactid");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("qm_ReportContactId");
+				this.SetAttributeValue("qm_reportcontactid", value);
+				this.OnPropertyChanged("qm_ReportContactId");
 			}
 		}
 		
@@ -9359,6 +9559,27 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
+		/// N:1 ovs_msdyn_workorder_operationtype
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_operationtypeid")]
+		[Microsoft.Xrm.Sdk.RelationshipSchemaNameAttribute("ovs_msdyn_workorder_operationtype")]
+		public TSIS2.Common.ovs_operationtype ovs_msdyn_workorder_operationtype
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetRelatedEntity<TSIS2.Common.ovs_operationtype>("ovs_msdyn_workorder_operationtype", null);
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_msdyn_workorder_operationtype");
+				this.SetRelatedEntity<TSIS2.Common.ovs_operationtype>("ovs_msdyn_workorder_operationtype", null, value);
+				this.OnPropertyChanged("ovs_msdyn_workorder_operationtype");
+			}
+		}
+		
+		/// <summary>
 		/// N:1 ovs_msdyn_workorder_Rational_ovs_TYRational
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_rational")]
@@ -9376,6 +9597,27 @@ namespace TSIS2.Common
 				this.OnPropertyChanging("ovs_msdyn_workorder_Rational_ovs_TYRational");
 				this.SetRelatedEntity<TSIS2.Common.ovs_TYRational>("ovs_msdyn_workorder_Rational_ovs_TYRational", null, value);
 				this.OnPropertyChanged("ovs_msdyn_workorder_Rational_ovs_TYRational");
+			}
+		}
+		
+		/// <summary>
+		/// N:1 ovs_msdyn_workorder_regulatedentity_account
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_regulatedentity")]
+		[Microsoft.Xrm.Sdk.RelationshipSchemaNameAttribute("ovs_msdyn_workorder_regulatedentity_account")]
+		public TSIS2.Common.Account ovs_msdyn_workorder_regulatedentity_account
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetRelatedEntity<TSIS2.Common.Account>("ovs_msdyn_workorder_regulatedentity_account", null);
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_msdyn_workorder_regulatedentity_account");
+				this.SetRelatedEntity<TSIS2.Common.Account>("ovs_msdyn_workorder_regulatedentity_account", null, value);
+				this.OnPropertyChanged("ovs_msdyn_workorder_regulatedentity_account");
 			}
 		}
 		
@@ -10122,6 +10364,26 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_inspectionstatus")]
+		public System.Nullable<bool> ovs_InspectionStatus
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<System.Nullable<bool>>("ovs_inspectionstatus");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_InspectionStatus");
+				this.SetAttributeValue("ovs_inspectionstatus", value);
+				this.OnPropertyChanged("ovs_InspectionStatus");
+			}
+		}
+		
+		/// <summary>
 		/// Field For Internal Logic Required for Service Task form and the Questionnaire Web Resource Component
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_isquestionnairecomplete")]
@@ -10204,6 +10466,26 @@ namespace TSIS2.Common
 		/// <summary>
 		/// 
 		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_questionnaireresponse")]
+		public string ovs_QuestionnaireResponse
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_questionnaireresponse");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_QuestionnaireResponse");
+				this.SetAttributeValue("ovs_questionnaireresponse", value);
+				this.OnPropertyChanged("ovs_QuestionnaireResponse");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_questionnaireresultjson")]
 		public string ovs_questionnaireresultjson
 		{
@@ -10277,6 +10559,26 @@ namespace TSIS2.Common
 			get
 			{
 				return this.GetAttributeValue<Microsoft.Xrm.Sdk.EntityReference>("owninguser");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("qm_blobpath")]
+		public string qm_BlobPath
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("qm_blobpath");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("qm_BlobPath");
+				this.SetAttributeValue("qm_blobpath", value);
+				this.OnPropertyChanged("qm_BlobPath");
 			}
 		}
 		
@@ -13241,6 +13543,46 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_lineofbusinessnameenglish")]
+		public string ovs_lineofbusinessnameenglish
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_lineofbusinessnameenglish");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_lineofbusinessnameenglish");
+				this.SetAttributeValue("ovs_lineofbusinessnameenglish", value);
+				this.OnPropertyChanged("ovs_lineofbusinessnameenglish");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_lineofbusinessnamefrench")]
+		public string ovs_lineofbusinessnamefrench
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_lineofbusinessnamefrench");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_lineofbusinessnamefrench");
+				this.SetAttributeValue("ovs_lineofbusinessnamefrench", value);
+				this.OnPropertyChanged("ovs_lineofbusinessnamefrench");
+			}
+		}
+		
+		/// <summary>
 		/// Unique identifier for entity instances
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_lobid")]
@@ -14442,6 +14784,46 @@ namespace TSIS2.Common
 		}
 		
 		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_operationtypenameenglish")]
+		public string ovs_OperationTypeNameEnglish
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_operationtypenameenglish");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_OperationTypeNameEnglish");
+				this.SetAttributeValue("ovs_operationtypenameenglish", value);
+				this.OnPropertyChanged("ovs_OperationTypeNameEnglish");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_operationtypenamefrench")]
+		public string ovs_OperationTypeNameFrench
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_operationtypenamefrench");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_OperationTypeNameFrench");
+				this.SetAttributeValue("ovs_operationtypenamefrench", value);
+				this.OnPropertyChanged("ovs_OperationTypeNameFrench");
+			}
+		}
+		
+		/// <summary>
 		/// Owner Id
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ownerid")]
@@ -14605,6 +14987,26 @@ namespace TSIS2.Common
 			get
 			{
 				return this.GetAttributeValue<System.Nullable<long>>("versionnumber");
+			}
+		}
+		
+		/// <summary>
+		/// 1:N ovs_msdyn_workorder_operationtype
+		/// </summary>
+		[Microsoft.Xrm.Sdk.RelationshipSchemaNameAttribute("ovs_msdyn_workorder_operationtype")]
+		public System.Collections.Generic.IEnumerable<TSIS2.Common.msdyn_workorder> ovs_msdyn_workorder_operationtype
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetRelatedEntities<TSIS2.Common.msdyn_workorder>("ovs_msdyn_workorder_operationtype", null);
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_msdyn_workorder_operationtype");
+				this.SetRelatedEntities<TSIS2.Common.msdyn_workorder>("ovs_msdyn_workorder_operationtype", null, value);
+				this.OnPropertyChanged("ovs_msdyn_workorder_operationtype");
 			}
 		}
 		
@@ -14925,6 +15327,46 @@ namespace TSIS2.Common
 			set
 			{
 				this.ovs_OversightTypeId = value;
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_oversighttypenameenglish")]
+		public string ovs_oversighttypenameenglish
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_oversighttypenameenglish");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_oversighttypenameenglish");
+				this.SetAttributeValue("ovs_oversighttypenameenglish", value);
+				this.OnPropertyChanged("ovs_oversighttypenameenglish");
+			}
+		}
+		
+		/// <summary>
+		/// 
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("ovs_oversighttypenamefrench")]
+		public string ovs_oversighttypenamefrench
+		{
+			[System.Diagnostics.DebuggerNonUserCode()]
+			get
+			{
+				return this.GetAttributeValue<string>("ovs_oversighttypenamefrench");
+			}
+			[System.Diagnostics.DebuggerNonUserCode()]
+			set
+			{
+				this.OnPropertyChanging("ovs_oversighttypenamefrench");
+				this.SetAttributeValue("ovs_oversighttypenamefrench", value);
+				this.OnPropertyChanged("ovs_oversighttypenamefrench");
 			}
 		}
 		
@@ -17359,7 +17801,7 @@ namespace TSIS2.Common
 	}
 	
 	/// <summary>
-	/// lookup to represent the list of valid reasons for conducting an oversight activity
+	/// Lookup to represent the list of valid reasons for conducting an oversight activity
 	/// </summary>
 	[System.Runtime.Serialization.DataContractAttribute()]
 	[Microsoft.Xrm.Sdk.Client.EntityLogicalNameAttribute("ovs_tyrational")]
