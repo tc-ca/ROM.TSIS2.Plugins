@@ -22,10 +22,10 @@ namespace TSIS2.Plugins.Tests
             var context = new XrmFakedContext();
 
             // Given a work order service task that
-            var billingAccountId = Guid.NewGuid();
-            var billingAccount = new Account()
+            var regulatedEntityId = Guid.NewGuid();
+            var regulatedEntity = new Account()
             {
-                Id = billingAccountId,
+                Id = regulatedEntityId,
                 Name = "Test Regulated Entity"
             };
 
@@ -34,7 +34,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderId,
                 msdyn_ServiceRequest = null, // does not already belong to a case (Incident)
-                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId)
+                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
             };
 
             var workOrderServiceTaskId = Guid.NewGuid();
@@ -57,7 +57,7 @@ namespace TSIS2.Plugins.Tests
 
             context.Initialize(
                 new List<Entity>() {
-                    billingAccount,
+                    regulatedEntity,
                     workOrder,
                     workOrderServiceTask
                 }
@@ -98,10 +98,10 @@ namespace TSIS2.Plugins.Tests
             // - belongs to a work order
             // - belongs to a case (Incident)
             // - has a SurveyJS questionnaire response saved in the ovs_QuestionnaireResponse field
-            var billingAccountId = Guid.NewGuid();
-            var billingAccount = new Account()
+            var regulatedEntityId = Guid.NewGuid();
+            var regulatedEntity = new Account()
             {
-                Id = billingAccountId,
+                Id = regulatedEntityId,
                 Name = "Test Regulated Entity"
             };
 
@@ -116,7 +116,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderId,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId)
+                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
             };
 
             var workOrderServiceTaskId = Guid.NewGuid();
@@ -153,7 +153,7 @@ namespace TSIS2.Plugins.Tests
 
             context.Initialize(
                 new List<Entity>() {
-                    billingAccount,
+                    regulatedEntity,
                     incident,
                     workOrder,
                     workOrderServiceTask,
@@ -207,10 +207,10 @@ namespace TSIS2.Plugins.Tests
             // - belongs to a work order
             // - belongs to a case (Incident)
             // - has a SurveyJS questionnaire response saved in the ovs_QuestionnaireResponse field
-            var billingAccountId = Guid.NewGuid();
-            var billingAccount = new Account()
+            var regulatedEntityId = Guid.NewGuid();
+            var regulatedEntity = new Account()
             {
-                Id = billingAccountId,
+                Id = regulatedEntityId,
                 Name = "Test Regulated Entity"
             };
 
@@ -225,7 +225,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderId,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId)
+                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
             };
 
             var workOrderServiceTaskId = Guid.NewGuid();
@@ -258,7 +258,7 @@ namespace TSIS2.Plugins.Tests
 
             context.Initialize(
                 new List<Entity>() {
-                    billingAccount,
+                    regulatedEntity,
                     incident,
                     workOrder,
                     workOrderServiceTask,
@@ -308,10 +308,10 @@ namespace TSIS2.Plugins.Tests
             // - belongs to a work order
             // - belongs to a case (Incident)
             // - has a SurveyJS questionnaire response saved in the ovs_QuestionnaireResponse field
-            var billingAccountId = Guid.NewGuid();
-            var billingAccount = new Account()
+            var regulatedEntityId = Guid.NewGuid();
+            var regulatedEntity = new Account()
             {
-                Id = billingAccountId,
+                Id = regulatedEntityId,
                 Name = "Test Regulated Entity"
             };
 
@@ -326,7 +326,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderId,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId),
+                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId),
             };
 
             var workOrderServiceTaskId = Guid.NewGuid();
@@ -365,7 +365,7 @@ namespace TSIS2.Plugins.Tests
 
             context.Initialize(
                 new List<Entity>() {
-                    billingAccount,
+                    regulatedEntity,
                     incident,
                     workOrder,
                     workOrderServiceTask,
@@ -416,10 +416,10 @@ namespace TSIS2.Plugins.Tests
             // - belongs to a work order
             // - belongs to a case (Incident)
             // - has a SurveyJS questionnaire response saved in the ovs_QuestionnaireResponse field
-            var billingAccountId = Guid.NewGuid();
-            var billingAccount = new Account()
+            var regulatedEntityId = Guid.NewGuid();
+            var regulatedEntity = new Account()
             {
-                Id = billingAccountId,
+                Id = regulatedEntityId,
                 Name = "Test Regulated Entity"
             };
 
@@ -434,7 +434,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderId,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId),
+                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId),
             };
 
             var workOrderServiceTaskId = Guid.NewGuid();
@@ -467,7 +467,7 @@ namespace TSIS2.Plugins.Tests
 
             context.Initialize(
                 new List<Entity>() {
-                    billingAccount,
+                    regulatedEntity,
                     incident,
                     workOrder,
                     workOrderServiceTask,
@@ -518,10 +518,10 @@ namespace TSIS2.Plugins.Tests
             // - belongs to a work order
             // - belongs to a case (Incident)
             // - has a SurveyJS questionnaire response saved in the ovs_QuestionnaireResponse field that does not have the comments or file provided
-            var billingAccountId = Guid.NewGuid();
-            var billingAccount = new Account()
+            var regulatedEntityId = Guid.NewGuid();
+            var regulatedEntity = new Account()
             {
-                Id = billingAccountId,
+                Id = regulatedEntityId,
                 Name = "Test Regulated Entity"
             };
 
@@ -536,7 +536,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderId,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId)
+                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
             };
 
             var workOrderServiceTaskId = Guid.NewGuid();
@@ -557,7 +557,7 @@ namespace TSIS2.Plugins.Tests
 
             context.Initialize(
                 new List<Entity>() {
-                    billingAccount,
+                    regulatedEntity,
                     incident,
                     workOrder,
                     workOrderServiceTask
@@ -607,10 +607,10 @@ namespace TSIS2.Plugins.Tests
             // - belongs to a work order
             // - does not already belongs to a case (Incident)
             // - has a SurveyJS questionnaire response saved in the ovs_QuestionnaireResponse field
-            var billingAccountId = Guid.NewGuid();
-            var billingAccount = new Account()
+            var regulatedEntityId = Guid.NewGuid();
+            var regulatedEntity = new Account()
             {
-                Id = billingAccountId,
+                Id = regulatedEntityId,
                 Name = "Test Regulated Entity"
             };
 
@@ -619,7 +619,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderId,
                 msdyn_ServiceRequest = null, // does not already belong to a case (Incident)
-                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId)
+                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
             };
 
             var workOrderServiceTaskId = Guid.NewGuid();
@@ -643,7 +643,7 @@ namespace TSIS2.Plugins.Tests
 
             context.Initialize(
                 new List<Entity>() {
-                    billingAccount,
+                    regulatedEntity,
                     workOrder,
                     workOrderServiceTask
                 }
@@ -680,10 +680,10 @@ namespace TSIS2.Plugins.Tests
             // - belongs to a work order
             // - does not already belongs to a case (Incident)
             // - has a SurveyJS questionnaire response saved in the ovs_QuestionnaireResponse field
-            var billingAccountId = Guid.NewGuid();
-            var billingAccount = new Account()
+            var regulatedEntityId = Guid.NewGuid();
+            var regulatedEntity = new Account()
             {
-                Id = billingAccountId,
+                Id = regulatedEntityId,
                 Name = "Test Regulated Entity"
             };
 
@@ -692,7 +692,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderId,
                 msdyn_ServiceRequest = null, // does not already belong to a case (Incident)
-                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId)
+                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
             };
 
             var workOrderServiceTaskId = Guid.NewGuid();
@@ -715,7 +715,7 @@ namespace TSIS2.Plugins.Tests
 
             context.Initialize(
                 new List<Entity>() {
-                    billingAccount,
+                    regulatedEntity,
                     workOrder,
                     workOrderServiceTask
                 }
@@ -776,10 +776,10 @@ namespace TSIS2.Plugins.Tests
             // - belongs to a work order
             // - belongs to a case (Incident)
             // - ovs_questionnaireresponse is empty
-            var billingAccountId = Guid.NewGuid();
-            var billingAccount = new Account()
+            var regulatedEntityId = Guid.NewGuid();
+            var regulatedEntity = new Account()
             {
-                Id = billingAccountId,
+                Id = regulatedEntityId,
                 Name = "Test Regulated Entity"
             };
 
@@ -794,7 +794,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderId,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_BillingAccount = new EntityReference(Account.EntityLogicalName, billingAccountId)
+                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
             };
 
             var workOrderServiceTaskId = Guid.NewGuid();
@@ -808,7 +808,7 @@ namespace TSIS2.Plugins.Tests
 
             context.Initialize(
                 new List<Entity>() {
-                    billingAccount,
+                    regulatedEntity,
                     incident,
                     workOrder,
                     workOrderServiceTask
