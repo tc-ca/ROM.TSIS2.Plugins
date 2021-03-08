@@ -25,7 +25,7 @@ namespace TSIS2.Plugins
         "TSIS2.Plugins.PreOperationmsdyn_workorderservicetaskUpdate Plugin",
         1,
         IsolationModeEnum.Sandbox,
-        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder,msdyn_percentcomplete,ovs_questionnaireresponse",
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder,ovs_inspectionstatus,ovs_questionnaireresponse",
         Description = "On Work Order Service Task Update, create findings in order to display them in a case.")]
     public class PreOperationmsdyn_workorderservicetaskUpdate : IPlugin
     {
@@ -63,7 +63,7 @@ namespace TSIS2.Plugins
 
                     // Only perform the updates if the work order service task is 100% complete on update
                     // or work order service task was already 100% complete (from pre-image)
-                    if (workOrderServiceTask.msdyn_PercentComplete == 100.00 || (workOrderServiceTask.msdyn_PercentComplete == null && workOrderServiceTaskPreImage.msdyn_PercentComplete == 100.00))
+                    if (workOrderServiceTask.ovs_InspectionStatus == true || (workOrderServiceTask.ovs_InspectionStatus == null && workOrderServiceTaskPreImage.ovs_InspectionStatus == true))
                     {
 
                         // Get the referenced work order from the preImage

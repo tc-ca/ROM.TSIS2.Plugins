@@ -42,7 +42,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderServiceTaskId,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
-                msdyn_PercentComplete = 0.00,
+                ovs_InspectionStatus = false,
                 ovs_QuestionnaireResponse = @"
                 {
                     ""finding-sq_162"": {
@@ -124,7 +124,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderServiceTaskId,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
-                msdyn_PercentComplete = 100.00,
+                ovs_InspectionStatus = true,
                 ovs_QuestionnaireResponse = @"
                 {
                     ""finding-sq_162"": {
@@ -232,7 +232,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
-                msdyn_PercentComplete = 100.00,
+                ovs_InspectionStatus = true,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 ovs_QuestionnaireResponse = @"
                 {
@@ -333,7 +333,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
-                msdyn_PercentComplete = 100.00,
+                ovs_InspectionStatus = true,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 ovs_QuestionnaireResponse = @"
                 {
@@ -441,7 +441,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
-                msdyn_PercentComplete = 100.00,
+                ovs_InspectionStatus = true,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 ovs_QuestionnaireResponse = @"
                 {
@@ -544,7 +544,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderServiceTaskId,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
-                msdyn_PercentComplete = 100.00,
+                ovs_InspectionStatus = true,
                 ovs_QuestionnaireResponse = @"
                 {
                     ""finding-sq_162"": {
@@ -628,7 +628,7 @@ namespace TSIS2.Plugins.Tests
                 Id = workOrderServiceTaskId,
                 msdyn_inspectiontaskresult = msdyn_InspectionResult.NA, 
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
-                msdyn_PercentComplete = 100.00,
+                ovs_InspectionStatus = true,
                 ovs_QuestionnaireResponse = @"
                 {
                     ""finding-sq_162"": {
@@ -700,7 +700,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderServiceTaskId,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
-                msdyn_PercentComplete = 100.00,
+                ovs_InspectionStatus = true,
                 ovs_QuestionnaireResponse = @"
                 {
                     ""finding-sq_162"": {
@@ -802,7 +802,7 @@ namespace TSIS2.Plugins.Tests
             {
                 Id = workOrderServiceTaskId,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
-                msdyn_PercentComplete = 100.00,
+                ovs_InspectionStatus = true,
                 ovs_QuestionnaireResponse = ""
             };
 
