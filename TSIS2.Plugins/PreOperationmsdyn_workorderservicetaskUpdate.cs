@@ -93,6 +93,10 @@ namespace TSIS2.Plugins
                                     {
                                         Incident newIncident = new Incident();
                                         newIncident.CustomerId = workOrder.ovs_regulatedentity;
+
+                                        // Regulated Entity is a mandatory field on work order but, just in case, throw an error
+                                        if (workOrder.ovs_regulatedentity == null) throw new ArgumentNullException("msdyn_workorder.ovs_regulatedentity");
+
                                         newIncident.Title = workOrder.ovs_regulatedentity.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
                                         Guid newIncidentId = service.Create(newIncident);
                                         msdyn_workorder uWorkOrder = new msdyn_workorder();
@@ -199,14 +203,16 @@ namespace TSIS2.Plugins
                     }
                 }
 
-                catch (FaultException<OrganizationServiceFault> ex)
+                // Seems to be a bug if exception variables have the same name. 
+                // Make sure the name of each exception variable is different.
+                catch (FaultException<OrganizationServiceFault> orgServiceEx)
                 {
-                    throw new InvalidPluginExecutionException("An error occurred in PostOperationmsdyn_workorderservicetaskUpdate Plugin.", ex);
+                    throw new InvalidPluginExecutionException("An error occurred in PreOperationmsdyn_workorderservicetaskUpdate Plugin.", orgServiceEx);
                 }
 
                 catch (Exception ex)
                 {
-                    tracingService.Trace("PostOperationmsdyn_workorderservicetaskUpdate Plugin: {0}", ex.ToString());
+                    tracingService.Trace("PreOperationmsdyn_workorderservicetaskUpdate Plugin: {0}", ex.ToString());
                     throw;
                 }
             }
