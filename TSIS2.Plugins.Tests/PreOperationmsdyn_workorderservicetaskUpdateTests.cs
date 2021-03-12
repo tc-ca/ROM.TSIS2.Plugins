@@ -838,7 +838,7 @@ namespace TSIS2.Plugins.Tests
         }
 
         [Fact]
-        public void When_parent_work_order_does_not_have_regulated_entity_throw_invalid_argument_error()
+        public void When_parent_work_order_does_not_have_regulated_entity_throw_argument_null_exception()
         {
             /**********
             * ARRANGE
