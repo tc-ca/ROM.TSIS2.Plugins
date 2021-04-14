@@ -13,4 +13,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Entities.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)OptionSets.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)ROM.DefaultSettings.xml" />
+  </ItemGroup>
 </Project>
