@@ -28,7 +28,7 @@ namespace TSIS2.Plugins
     [CrmPluginRegistration(
     MessageNameEnum.Create,
     "msdyn_workorderservicetask",
-    StageEnum.PreOperation,
+    StageEnum.PostOperation,
     ExecutionModeEnum.Synchronous,
     "",
     "TSIS2.Plugins.PostOperationmsdyn_workorderservicetaskCreate Plugin",
