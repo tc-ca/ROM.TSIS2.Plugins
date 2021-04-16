@@ -93,7 +93,9 @@ namespace TSIS2.Plugins
                                     {
                                         Incident newIncident = new Incident();
                                         newIncident.CustomerId = workOrder.ovs_regulatedentity;
-
+                                        if (workOrder.msdyn_ServiceAccount != null) newIncident.ovs_Site = workOrder.msdyn_ServiceAccount;
+                                        if (workOrder.msdyn_ServiceTerritory != null) newIncident.ovs_Region = workOrder.msdyn_ServiceTerritory;
+                                        if (workOrder.ovs_regulatedentity != null) newIncident.ovs_RegulatedEntity = workOrder.ovs_regulatedentity;
                                         // Regulated Entity is a mandatory field on work order but, just in case, throw an error
                                         if (workOrder.ovs_regulatedentity == null) throw new ArgumentNullException("msdyn_workorder.ovs_regulatedentity");
 
