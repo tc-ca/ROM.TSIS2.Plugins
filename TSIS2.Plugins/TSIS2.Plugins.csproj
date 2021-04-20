@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="PluginBase.cs" />
     <Compile Include="PostOperationmsdyn_workorderservicetaskCreate.cs" />
+    <Compile Include="PreOperationincidentCreate.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskUpdate.cs" />
     <Compile Include="PreOperationmsdyn_workorderCreate.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskCreate.cs" />
