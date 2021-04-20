@@ -88,7 +88,7 @@ namespace TSIS2.Plugins
             {
                 if (target.LogicalName.Equals(Incident.EntityLogicalName))
                 {
-                    if (target.Attributes.Contains("ticketnumber") && target.Attributes["ticketnumber"] != null)
+                    if (target.Attributes.Contains("ticketnumber") && target.Attributes["ticketnumber"] != null && (!target.Attributes.Contains("title") || target.Attributes["title"] == null || target.Attributes["title"].ToString().Length <=0))
                     {
                         target.Attributes["title"] = target.Attributes["ticketnumber"];
                     }
