@@ -100,7 +100,7 @@ namespace TSIS2.Plugins
                                         // Regulated Entity is a mandatory field on work order but, just in case, throw an error
                                         if (workOrder.ovs_regulatedentity == null) throw new ArgumentNullException("msdyn_workorder.ovs_regulatedentity");
 
-                                        newIncident.Title = workOrder.ovs_regulatedentity.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
+                                        //newIncident.Title = workOrder.ovs_regulatedentity.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
                                         Guid newIncidentId = service.Create(newIncident);
                                         msdyn_workorder uWorkOrder = new msdyn_workorder();
                                         uWorkOrder.Id = workOrderReference.Id;
