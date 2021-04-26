@@ -146,7 +146,8 @@ namespace TSIS2.Plugins
 
                                                 // Setup the finding name
                                                 // Findings are at the 100 level
-                                                var prefix = workOrderServiceTask.msdyn_name.Replace("200-", "100-");
+                                                var wostName = preImageEntity.Attributes["msdyn_name"].ToString();
+                                                var prefix = wostName.Replace("200-", "100-");
                                                 var suffix = (findings.Count() > 0) ? findings.Count() + 1 : 1;
                                                 newFinding.ovs_Finding1 = string.Format("{0}-{1}", prefix, suffix);
 
