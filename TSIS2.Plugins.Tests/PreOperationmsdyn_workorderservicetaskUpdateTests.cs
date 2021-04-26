@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Linq;
 using Xunit;
-using FakeItEasy;
 using FakeXrmEasy;
 using Microsoft.Xrm.Sdk;
 using TSIS2.Common;
@@ -41,6 +39,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_name = "200-34567-1",
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 msdyn_PercentComplete = 0.00,
                 ovs_QuestionnaireResponse = @"
@@ -124,6 +123,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_name = "200-34567-1",
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 msdyn_PercentComplete = 100.00,
                 ovs_QuestionnaireResponse = @"
@@ -143,7 +143,7 @@ namespace TSIS2.Plugins.Tests
             var finding = new ovs_Finding()
             {
                 Id = findingId,
-                ovs_Finding1 = workOrderServiceTaskId + "-finding-sq_142",
+                ts_findingmappingkey = workOrderServiceTaskId + "-finding-sq_142",
                 ovs_FindingProvisionReference = "SATR 4",
                 ovs_FindingComments = "original comments",
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
@@ -234,6 +234,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_name = "200-34567-1",
                 msdyn_PercentComplete = 100.00,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 ovs_QuestionnaireResponse = @"
@@ -253,7 +254,7 @@ namespace TSIS2.Plugins.Tests
             var finding = new ovs_Finding()
             {
                 Id = findingId,
-                ovs_Finding1 = workOrderServiceTaskId + "-finding-sq_142", // unique finding names are created using the work order service task ID and the reference ID in the questionnaire
+                ts_findingmappingkey = workOrderServiceTaskId + "-finding-sq_142", // unique finding names are created using the work order service task ID and the reference ID in the questionnaire
                 ovs_FindingProvisionReference = "SATR 4",
                 ovs_FindingComments = "original comments",
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png"
@@ -336,6 +337,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_name = "200-34567-1",
                 msdyn_PercentComplete = 100.00,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 ovs_QuestionnaireResponse = @"
@@ -355,7 +357,7 @@ namespace TSIS2.Plugins.Tests
             var finding = new ovs_Finding()
             {
                 Id = findingId,
-                ovs_Finding1 = workOrderServiceTaskId + "-finding-sq_142", // unique finding names are created using the work order service task ID and the reference ID in the questionnaire
+                ts_findingmappingkey = workOrderServiceTaskId + "-finding-sq_142", // unique finding names are created using the work order service task ID and the reference ID in the questionnaire
                 ovs_FindingProvisionReference = "SATR 4",
                 ovs_FindingComments = "original comments",
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
@@ -445,6 +447,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_name = "200-34567-1",
                 msdyn_PercentComplete = 100.00,
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 ovs_QuestionnaireResponse = @"
@@ -457,7 +460,7 @@ namespace TSIS2.Plugins.Tests
             var finding = new ovs_Finding()
             {
                 Id = findingId,
-                ovs_Finding1 = workOrderServiceTaskId + "-finding-sq_142",
+                ts_findingmappingkey = workOrderServiceTaskId + "-finding-sq_142",
                 ovs_FindingProvisionReference = "SATR 4",
                 ovs_FindingComments = "original comments",
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
@@ -466,8 +469,6 @@ namespace TSIS2.Plugins.Tests
                 StatusCode = ovs_Finding_StatusCode.Active, // finding is also already active
                 StateCode = ovs_FindingState.Active, // finding is also already active
             };
-
-
 
             context.Initialize(
                 new List<Entity>() {
@@ -547,6 +548,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_name = "200-34567-1",
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 msdyn_PercentComplete = 100.00,
                 ovs_QuestionnaireResponse = @"
@@ -631,6 +633,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_name = "200-34567-1",
                 msdyn_inspectiontaskresult = msdyn_InspectionResult.NA, 
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 msdyn_PercentComplete = 100.00,
@@ -705,6 +708,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_name = "200-34567-1",
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 msdyn_PercentComplete = 100.00,
                 ovs_QuestionnaireResponse = @"
@@ -755,8 +759,11 @@ namespace TSIS2.Plugins.Tests
             var oneFinding = findings.First();
             Assert.True(findings.Count == 1, "Expected 1 finding");
 
+            // Expect ovs_finding name to be combination of Work Order Service Task name as suffix and prefix of 1
+            Assert.Equal("100-34567-1-1", oneFinding.ovs_Finding1);
+
             // Expect ovs_finding name to be combination of Work Order Number and Finding Name
-            Assert.True(oneFinding.ovs_Finding1 == workOrderServiceTask.Id.ToString() + "-finding-sq_142");
+            Assert.Equal(workOrderServiceTask.Id.ToString() + "-finding-sq_142", oneFinding.ts_findingmappingkey);
 
             // Expect ovs_finding to contain same content as what is in JSON response
             Assert.Equal("SATR 4", oneFinding.ovs_FindingProvisionReference);
@@ -809,6 +816,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_name = "200-34567-1",
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 msdyn_PercentComplete = 100.00,
                 ovs_QuestionnaireResponse = ""
@@ -865,6 +873,7 @@ namespace TSIS2.Plugins.Tests
             var workOrderServiceTask = new msdyn_workorderservicetask()
             {
                 Id = workOrderServiceTaskId,
+                msdyn_name = "200-34567-1",
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 msdyn_PercentComplete = 100.00,
                 ovs_QuestionnaireResponse = @"

@@ -72,9 +72,12 @@ namespace TSIS2.Plugins
                                 // Suffix based off previous number of work order service tasks.
                                 var workOrderServiceTasks = workOrder.msdyn_msdyn_workorder_msdyn_workorderservicetask_WorkOrder;
 
+                                // Set the prefix to be at the 200 level for work order service tasks
+                                var prefix = workOrder.msdyn_name.Replace("300-", "200-");
+
                                 // If there are previous work order service tasks, suffix = count + 1 else 1
                                 var suffix = (workOrderServiceTasks != null) ? workOrderServiceTasks.Count() + 1 : 1;
-                                workOrderServiceTask.msdyn_name = string.Format("{0}-{1}", workOrder.msdyn_name, suffix);
+                                workOrderServiceTask.msdyn_name = string.Format("{0}-{1}", prefix, suffix);
                             }
                         }
 

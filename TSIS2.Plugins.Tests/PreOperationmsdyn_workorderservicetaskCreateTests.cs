@@ -14,12 +14,17 @@ namespace TSIS2.Plugins.Tests
     public class PreOperationmsdyn_workorderservicetaskCreateTests
     {
         [Fact]
-        public void When_parent_workorder_has_name_expect_child_service_task_with_prefix_equal_to_parent_name()
+        public void When_parent_workorder_has_name_expect_child_service_task_with_prefix_equal_to_200_parent_name()
         {
-           /**********
-           * ARRANGE
-           **********/
+            /**********
+            * ARRANGE
+            **********/
             var context = new XrmFakedContext();
+
+            // Setup prefixes and IDs
+            var workOrderPrefix = "300";
+            var workOrderServiceTaskPrefix = "200";
+            var uniqueId = "34567";
 
             // Given a work order service task that
             var regulatedEntityId = Guid.NewGuid();
@@ -30,7 +35,7 @@ namespace TSIS2.Plugins.Tests
             };
 
             var workOrderId = Guid.NewGuid();
-            var workOrderName = "300-34567";
+            var workOrderName = string.Format("{0}-{1}", workOrderPrefix, uniqueId);
             var workOrder = new msdyn_workorder()
             {
                 Id = workOrderId,
@@ -82,8 +87,8 @@ namespace TSIS2.Plugins.Tests
             /**********
              * ASSERT
              **********/
-            // Expect work order service task name to start with parent work order's name
-            Assert.True(workOrderServiceTask.msdyn_name.StartsWith(workOrderName));
+            // Expect work order service task name to start with parent work order's name but prefixed with 200-
+            Assert.True(workOrderServiceTask.msdyn_name.StartsWith(string.Format("{0}-{1}-", workOrderServiceTaskPrefix, uniqueId)));
         }
 
         [Fact]
@@ -93,6 +98,11 @@ namespace TSIS2.Plugins.Tests
             * ARRANGE
             **********/
             var context = new XrmFakedContext();
+
+            // Setup prefixes and IDs
+            var workOrderPrefix = "300";
+            var workOrderServiceTaskPrefix = "200";
+            var uniqueId = "34567";
 
             // Given a work order service task that
             var regulatedEntityId = Guid.NewGuid();
@@ -165,7 +175,7 @@ namespace TSIS2.Plugins.Tests
              * ASSERT
              **********/
             // Expect work order service task name to start with parent work order's name and suffixed with -2
-            Assert.True(targetWorkOrderServiceTask.msdyn_name == workOrderName + "-2");
+            Assert.Equal(string.Format("{0}-{1}-2", workOrderServiceTaskPrefix, uniqueId), targetWorkOrderServiceTask.msdyn_name);
         }
 
     }

@@ -83,6 +83,9 @@ namespace TSIS2.Plugins
                                 JsonValue jsonValue = JsonValue.Parse(questionnaireResponse);
                                 JsonObject jsonObject = jsonValue as JsonObject;
 
+                                // Retrieve all the findings belonging to this work order service task
+                                var findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
+
                                 // If there was at least one finding found
                                 // - Create a case (if work order service task doesn't already belong to a case)
                                 // - Mark the inspection result to fail
@@ -117,7 +120,6 @@ namespace TSIS2.Plugins
                                     // Mark the inspection result to fail
                                     workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_InspectionResult.Fail;
 
-
                                     // loop through each root property in the json object
                                     foreach (var rootProperty in jsonObject)
                                     {
@@ -127,8 +129,9 @@ namespace TSIS2.Plugins
                                             var finding = rootProperty.Value;
 
                                             // if finding, does it already exist?
-                                            var uniqueFindingName = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString();
-                                            var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ovs_Finding1 == uniqueFindingName);
+                                            var findingMappingKey = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString();
+                                            var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ts_findingmappingkey == findingMappingKey);
+
                                             if (existingFinding == null)
                                             {
                                                 // if no, initialize new ovs_finding
@@ -141,7 +144,14 @@ namespace TSIS2.Plugins
                                                 // Don't do anything with the files yet until we have the proper infrastructure decision
                                                 //newFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
 
-                                                newFinding.ovs_Finding1 = uniqueFindingName;
+                                                // Setup the finding name
+                                                // Findings are at the 100 level
+                                                var prefix = workOrderServiceTask.msdyn_name.Replace("200-", "100-");
+                                                var suffix = (findings.Count() > 0) ? findings.Count() + 1 : 1;
+                                                newFinding.ovs_Finding1 = string.Format("{0}-{1}", prefix, suffix);
+
+                                                // Store the mapping key to keep track of mapping between finding and surveyjs questionnaire.
+                                                newFinding.ts_findingmappingkey = findingMappingKey;
 
                                                 // reference work order service task
                                                 newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
@@ -177,15 +187,14 @@ namespace TSIS2.Plugins
 
                                 // Need to deactivate any old referenced findings in the work order service task and case
                                 // that no longer exist in the questionnaire response.
-                                // Retrieve all the findings belonging to this work order service task
-                                var findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
+
                                 // Get a list of unique finding names from the JSON response
-                                var uniqueFindingNames = jsonObject.Keys.Select(k => workOrderServiceTask.Id.ToString() + "-" + k);
+                                var findingMappingKeys = jsonObject.Keys.Select(k => workOrderServiceTask.Id.ToString() + "-" + k);
 
                                 foreach (var finding in findings)
                                 {
                                     // If the existing finding is not in the JSON response, we need to disable it
-                                    if (!uniqueFindingNames.Contains(finding.ovs_Finding1))
+                                    if (!findingMappingKeys.Contains(finding.ts_findingmappingkey))
                                     {
                                         finding.StatusCode = ovs_Finding_StatusCode.Inactive;
                                         finding.StateCode = ovs_FindingState.Inactive;
