@@ -25,7 +25,7 @@ namespace TSIS2.Plugins
         "TSIS2.Plugins.PreOperationmsdyn_workorderservicetaskUpdate Plugin",
         1,
         IsolationModeEnum.Sandbox,
-        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_workorder,msdyn_percentcomplete,ovs_questionnaireresponse",
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "msdyn_name,msdyn_workorder,msdyn_percentcomplete,ovs_questionnaireresponse",
         Description = "On Work Order Service Task Update, create findings in order to display them in a case.")]
     public class PreOperationmsdyn_workorderservicetaskUpdate : IPlugin
     {
