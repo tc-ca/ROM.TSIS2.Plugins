@@ -4,8 +4,8 @@
   <CrmSvcUtilRelativePath>DLaB.EarlyBoundGenerator\crmsvcutil.exe</CrmSvcUtilRelativePath>
   <IncludeCommandLine>true</IncludeCommandLine>
   <MaskPassword>true</MaskPassword>
-  <SettingsVersion>1.2021.1.23</SettingsVersion>
-  <Version>1.2021.1.23</Version>
+  <SettingsVersion>1.2021.4.19</SettingsVersion>
+  <Version>1.2021.4.19</Version>
   <ExtensionConfig>
     <ActionPrefixesWhitelist />
     <ActionsWhitelist />
@@ -34,9 +34,13 @@ ovs_lob|
 ovs_msdyn_servicetasktype_qm_rclegislation|
 ovs_operation|
 ovs_operationtype|
+ovs_oversighttype|
 ovs_questionnaire|
 ovs_sitetype|
+ovs_testchild|
+ovs_testparent|
 ovs_tyrational|
+ovs_unplannedforecast|
 ovs_workorderservicetaskprovision|
 qm_rclegislation</EntitiesWhitelist>
     <EntityAttributeSpecifiedNames />
@@ -51,6 +55,7 @@ qm_rclegislation</EntitiesWhitelist>
     <GenerateEnumProperties>true</GenerateEnumProperties>
     <GenerateOnlyReferencedOptionSets>true</GenerateOnlyReferencedOptionSets>
     <GenerateOptionSetMetadataAttribute>true</GenerateOptionSetMetadataAttribute>
+    <GroupLocalOptionSetsByEntity>false</GroupLocalOptionSetsByEntity>
     <InvalidCSharpNamePrefix>_</InvalidCSharpNamePrefix>
     <MakeAllFieldsEditable>false</MakeAllFieldsEditable>
     <MakeReadonlyFieldsEditable>false</MakeReadonlyFieldsEditable>
@@ -231,5 +236,8 @@ salesorderdetail:SalesOrderStateCode</UnmappedProperties>
       <Valueless>true</Valueless>
     </Argument>
   </UserArguments>
-  <WorkflowlessActions />
+  <WorkflowlessActions>msdyn_GetSIFeatureConfiguration|
+RetrieveAppSetting|
+RetrieveAppSettingList|
+SaveAppSetting</WorkflowlessActions>
 </Config>
