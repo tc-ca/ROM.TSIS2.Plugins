@@ -2,6 +2,7 @@
 using Microsoft.Xrm.Sdk;
 using DG.Tools.XrmMockup;
 using Xunit;
+using TSIS2.Plugins;
 using System.Collections.Generic;
 using Microsoft.Crm.Sdk.Messages;
 using System.Linq;
@@ -9,16 +10,17 @@ using System.Linq;
 namespace ROMTS_GSRST.Plugins.Tests
 {
     [Collection("Xrm Collection")]
-    public class UnitTestBase
+    public class UnitTestBase : IClassFixture<XrmMockupFixture>
     {
         private static DateTime _startTime { get; set; }
 
         protected IOrganizationService orgAdminUIService;
         protected IOrganizationService orgAdminService;
-        static protected XrmMockup365 crm;
+        protected static XrmMockup365 crm;
 
-        public UnitTestBase()
+        public UnitTestBase(XrmMockupFixture fixture)
         {
+            crm = fixture.crm;
             crm.ResetEnvironment();
             orgAdminUIService = crm.GetAdminService(new MockupServiceSettings(true, false, MockupServiceSettings.Role.UI));
             orgAdminService = crm.GetAdminService();

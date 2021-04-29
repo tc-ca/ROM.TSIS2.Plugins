@@ -106,10 +106,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SampleTestClass.cs" />
+    <Compile Include="PreOperationmsdyn_workorderservicetaskCreateTests.cs" />
     <Compile Include="Metadata\TypeDeclarations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTestBase.cs" />
+    <Compile Include="XrmMockupFixture.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Metadata\MetadataGenerator365.exe.config" />
