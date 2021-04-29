@@ -20,7 +20,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xrm.Sdk;
-using TSIS2.Common;
+using DG.XrmContext;
 
 namespace TSIS2.Plugins
 {
@@ -91,7 +91,7 @@ namespace TSIS2.Plugins
                     if (target.Attributes.Contains("msdyn_tasktype") && target.Attributes["msdyn_tasktype"] != null)
                     {
                         EntityReference tasktype = (EntityReference)target.Attributes["msdyn_tasktype"];
-                        using (var servicecontext = new CrmServiceContext(localContext.OrganizationService))
+                        using (var servicecontext = new Xrm(localContext.OrganizationService))
                         {
                             var rclegislations = (from tt in servicecontext.ovs_msdyn_servicetasktype_qm_rclegislationSet
                                                   join le in servicecontext.qm_rclegislationSet

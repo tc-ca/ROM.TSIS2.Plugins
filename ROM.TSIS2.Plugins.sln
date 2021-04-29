@@ -5,15 +5,11 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSIS2.Plugins", "TSIS2.Plugins\TSIS2.Plugins.csproj", "{0373C222-426A-4518-940C-B886B1AE7111}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "TSIS2.Common", "TSIS2.Common\TSIS2.Common.shproj", "{D49CC084-BEAE-4941-B32E-4C686C26F48B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSIS2.Plugins.Tests", "TSIS2.Plugins.Tests\TSIS2.Plugins.Tests.csproj", "{74A7BBD1-6D88-40F9-BAD9-F8A18A7D82B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ROMTS-GSRST.Plugins.Tests", "ROMTS-GSRST.Plugins.Tests\ROMTS-GSRST.Plugins.Tests.csproj", "{5FE13477-66E2-449C-9903-454D741780F8}"
+EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		TSIS2.Common\TSIS2.Common.projitems*{0373c222-426a-4518-940c-b886b1ae7111}*SharedItemsImports = 4
-		TSIS2.Common\TSIS2.Common.projitems*{d49cc084-beae-4941-b32e-4c686c26f48b}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -27,6 +23,10 @@ Global
 		{74A7BBD1-6D88-40F9-BAD9-F8A18A7D82B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74A7BBD1-6D88-40F9-BAD9-F8A18A7D82B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74A7BBD1-6D88-40F9-BAD9-F8A18A7D82B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FE13477-66E2-449C-9903-454D741780F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FE13477-66E2-449C-9903-454D741780F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FE13477-66E2-449C-9903-454D741780F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FE13477-66E2-449C-9903-454D741780F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

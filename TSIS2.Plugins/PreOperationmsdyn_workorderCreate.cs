@@ -20,7 +20,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xrm.Sdk;
-using TSIS2.Common;
+using DG.XrmContext;
 
 namespace TSIS2.Plugins
 {
@@ -90,7 +90,7 @@ namespace TSIS2.Plugins
                     if (target.Attributes.Contains("ovs_operationid") && target.Attributes["ovs_operationid"] != null)
                     {
                         EntityReference operation = (EntityReference)target.Attributes["ovs_operationid"];
-                        using (var servicecontext = new CrmServiceContext(localContext.OrganizationService))
+                        using (var servicecontext = new Xrm(localContext.OrganizationService))
                         {
                             var regulatedentity = (from tt in servicecontext.ovs_operationSet
                                                    where tt.Id == operation.Id

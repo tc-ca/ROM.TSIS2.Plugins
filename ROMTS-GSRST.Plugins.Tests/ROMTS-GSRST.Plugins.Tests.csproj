@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\xunit.core.2.4.1\build\xunit.core.props" Condition="Exists('..\packages\xunit.core.2.4.1\build\xunit.core.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5FE13477-66E2-449C-9903-454D741780F8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ROMTS_GSRST.Plugins.Tests</RootNamespace>
+    <AssemblyName>ROMTS-GSRST.Plugins.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Crm.Sdk.Proxy, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CrmSdk.CoreAssemblies.9.0.2.28\lib\net462\Microsoft.Crm.Sdk.Proxy.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.19.8.16603, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.19.8\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory.Platform, Version=3.19.8.16603, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.19.8\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.Platform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CrmSdk.XrmTooling.CoreAssembly.9.1.0.51\lib\net462\Microsoft.Rest.ClientRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CrmSdk.CoreAssemblies.9.0.2.28\lib\net462\Microsoft.Xrm.Sdk.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrm.Sdk.Deployment, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CrmSdk.Deployment.9.0.2.23\lib\net462\Microsoft.Xrm.Sdk.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrm.Sdk.Workflow, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CrmSdk.Workflow.9.0.2.28\lib\net462\Microsoft.Xrm.Sdk.Workflow.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrm.Tooling.Connector, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CrmSdk.XrmTooling.CoreAssembly.9.1.0.51\lib\net462\Microsoft.Xrm.Tooling.Connector.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Activities.Presentation" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Runtime" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Workflow.Activities" />
+    <Reference Include="System.Workflow.ComponentModel" />
+    <Reference Include="System.Workflow.Runtime" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="XrmMockup365, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\XrmMockup365.1.8.0\lib\net462\XrmMockup365.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.abstractions.2.0.3\lib\net35\xunit.abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.assert, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.assert.2.4.1\lib\netstandard1.1\xunit.assert.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.extensibility.core.2.4.1\lib\net452\xunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.execution.desktop, Version=2.4.1.0, Culture=neutral, PublicKeyToken=8d05b1bb7a6fdb6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\xunit.extensibility.execution.2.4.1\lib\net452\xunit.execution.desktop.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SampleTestClass.cs" />
+    <Compile Include="Metadata\TypeDeclarations.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnitTestBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Metadata\MetadataGenerator365.exe.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Metadata\Metadata.xml" />
+    <Content Include="Metadata\MetadataGenerator365.exe" />
+    <Content Include="Metadata\SecurityRoles\ActivityFeeds.xml" />
+    <Content Include="Metadata\SecurityRoles\AIBRoles.xml" />
+    <Content Include="Metadata\SecurityRoles\AppProfileManagerAdministrator.xml" />
+    <Content Include="Metadata\SecurityRoles\AppProfileUser.xml" />
+    <Content Include="Metadata\SecurityRoles\Attach2DynamicsAdministrator.xml" />
+    <Content Include="Metadata\SecurityRoles\Attach2DynamicsUser.xml" />
+    <Content Include="Metadata\SecurityRoles\AvSecInspector.xml" />
+    <Content Include="Metadata\SecurityRoles\BasicUser.xml" />
+    <Content Include="Metadata\SecurityRoles\BizQAApp.xml" />
+    <Content Include="Metadata\SecurityRoles\BotAuthor.xml" />
+    <Content Include="Metadata\SecurityRoles\BotContributor.xml" />
+    <Content Include="Metadata\SecurityRoles\BotTranscriptViewer.xml" />
+    <Content Include="Metadata\SecurityRoles\BusinessApplicationPlatformRole.xml" />
+    <Content Include="Metadata\SecurityRoles\CCIadmin.xml" />
+    <Content Include="Metadata\SecurityRoles\CEOBusinessManager.xml" />
+    <Content Include="Metadata\SecurityRoles\CSRManager.xml" />
+    <Content Include="Metadata\SecurityRoles\Customerserviceappaccess.xml" />
+    <Content Include="Metadata\SecurityRoles\CustomerServiceRepresentative.xml" />
+    <Content Include="Metadata\SecurityRoles\CustomerServiceScheduleAdministrator.xml" />
+    <Content Include="Metadata\SecurityRoles\CustomerServiceScheduler.xml" />
+    <Content Include="Metadata\SecurityRoles\CustomerVoiceAddon.xml" />
+    <Content Include="Metadata\SecurityRoles\DataLakeWorkspaceAppAccess.xml" />
+    <Content Include="Metadata\SecurityRoles\Delegate.xml" />
+    <Content Include="Metadata\SecurityRoles\DesktopFlowsMachineApplicationUser.xml" />
+    <Content Include="Metadata\SecurityRoles\DesktopFlowsMachineOwner.xml" />
+    <Content Include="Metadata\SecurityRoles\DesktopFlowsMachineUser.xml" />
+    <Content Include="Metadata\SecurityRoles\DesktopFlowsMachineUserCanShare.xml" />
+    <Content Include="Metadata\SecurityRoles\Dynamics365AppforOutlookUser.xml" />
+    <Content Include="Metadata\SecurityRoles\EACAppAccess.xml" />
+    <Content Include="Metadata\SecurityRoles\EACReaderAppAccess.xml" />
+    <Content Include="Metadata\SecurityRoles\EnvironmentMaker.xml" />
+    <Content Include="Metadata\SecurityRoles\ExportCustomizationsSolutionChecker.xml" />
+    <Content Include="Metadata\SecurityRoles\FieldServiceAdministrator.xml" />
+    <Content Include="Metadata\SecurityRoles\FieldServiceDispatcher.xml" />
+    <Content Include="Metadata\SecurityRoles\FieldServiceInventoryPurchase.xml" />
+    <Content Include="Metadata\SecurityRoles\FieldServiceResource.xml" />
+    <Content Include="Metadata\SecurityRoles\FieldServiceSalesperson.xml" />
+    <Content Include="Metadata\SecurityRoles\FileStoreServiceAppAccess.xml" />
+    <Content Include="Metadata\SecurityRoles\FlowRPRole.xml" />
+    <Content Include="Metadata\SecurityRoles\ForecastAppUser.xml" />
+    <Content Include="Metadata\SecurityRoles\Forecastmanager.xml" />
+    <Content Include="Metadata\SecurityRoles\Forecastuser.xml" />
+    <Content Include="Metadata\SecurityRoles\GlobalDiscoveryServiceRole.xml" />
+    <Content Include="Metadata\SecurityRoles\HelpPageAuthor.xml" />
+    <Content Include="Metadata\SecurityRoles\HelpPageConsumer.xml" />
+    <Content Include="Metadata\SecurityRoles\IoTAdministrator.xml" />
+    <Content Include="Metadata\SecurityRoles\IoTEndpointUser.xml" />
+    <Content Include="Metadata\SecurityRoles\KnowledgeManager.xml" />
+    <Content Include="Metadata\SecurityRoles\MarketingManager.xml" />
+    <Content Include="Metadata\SecurityRoles\MarketingProfessional.xml" />
+    <Content Include="Metadata\SecurityRoles\PlaybookManager.xml" />
+    <Content Include="Metadata\SecurityRoles\PlaybookUser.xml" />
+    <Content Include="Metadata\SecurityRoles\PPPAnalyst.xml" />
+    <Content Include="Metadata\SecurityRoles\PPPBasicRole.xml" />
+    <Content Include="Metadata\SecurityRoles\PPPManager.xml" />
+    <Content Include="Metadata\SecurityRoles\ProcessMiningApplicationUser.xml" />
+    <Content Include="Metadata\SecurityRoles\Productivitytoolsadministrator.xml" />
+    <Content Include="Metadata\SecurityRoles\Productivitytoolsuser.xml" />
+    <Content Include="Metadata\SecurityRoles\ProjectOwner.xml" />
+    <Content Include="Metadata\SecurityRoles\RelationshipInsightsAdmin.xml" />
+    <Content Include="Metadata\SecurityRoles\ROMAnalyst.xml" />
+    <Content Include="Metadata\SecurityRoles\ROMBase.xml" />
+    <Content Include="Metadata\SecurityRoles\ROMBusinessAdmin.xml" />
+    <Content Include="Metadata\SecurityRoles\ROMInspector.xml" />
+    <Content Include="Metadata\SecurityRoles\ROMPlanner.xml" />
+    <Content Include="Metadata\SecurityRoles\SalesEnterpriseappaccess.xml" />
+    <Content Include="Metadata\SecurityRoles\SalesInsightsAutoCaptureAdmin.xml" />
+    <Content Include="Metadata\SecurityRoles\SalesManager.xml" />
+    <Content Include="Metadata\SecurityRoles\Salesperson.xml" />
+    <Content Include="Metadata\SecurityRoles\Salessystemaccess.xml" />
+    <Content Include="Metadata\SecurityRoles\Salessystemaccessextension.xml" />
+    <Content Include="Metadata\SecurityRoles\SalesTeamMember.xml" />
+    <Content Include="Metadata\SecurityRoles\ScheduleManager.xml" />
+    <Content Include="Metadata\SecurityRoles\Scheduler.xml" />
+    <Content Include="Metadata\SecurityRoles\ServiceReader.xml" />
+    <Content Include="Metadata\SecurityRoles\ServiceWriter.xml" />
+    <Content Include="Metadata\SecurityRoles\SolutionChecker.xml" />
+    <Content Include="Metadata\SecurityRoles\SupportUser.xml" />
+    <Content Include="Metadata\SecurityRoles\SurveyServicesAdministratorDeprecated.xml" />
+    <Content Include="Metadata\SecurityRoles\SystemAdministrator.xml" />
+    <Content Include="Metadata\SecurityRoles\SystemCustomizer.xml" />
+    <Content Include="Metadata\SecurityRoles\TeamsMember.xml" />
+    <Content Include="Metadata\SecurityRoles\TimeEntryUser.xml" />
+    <Content Include="Metadata\SecurityRoles\VicePresidentofMarketing.xml" />
+    <Content Include="Metadata\SecurityRoles\VicePresidentofSales.xml" />
+    <Content Include="Metadata\Workflows\SetAirCarrierNamefromOrganization.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TSIS2.Plugins\TSIS2.Plugins.csproj">
+      <Project>{0373c222-426a-4518-940c-b886b1ae7111}</Project>
+      <Name>TSIS2.Plugins</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\xunit.core.2.4.1\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.4.1\build\xunit.core.props'))" />
+    <Error Condition="!Exists('..\packages\xunit.core.2.4.1\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.4.1\build\xunit.core.targets'))" />
+  </Target>
+  <Import Project="..\packages\xunit.core.2.4.1\build\xunit.core.targets" Condition="Exists('..\packages\xunit.core.2.4.1\build\xunit.core.targets')" />
+</Project>
