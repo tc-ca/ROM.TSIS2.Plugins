@@ -2561,22 +2561,6 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
     }
     
     /// <summary>
-    /// <para>Legacy ID from Inspection Information System (IIS) for converted sites</para>
-    /// <para>Display Name: IIS ID</para>
-    /// </summary>
-    [AttributeLogicalName("ovs_iisid")]
-    [DisplayName("IIS ID")]
-    [MaxLength(25)]
-    public string ovs_iisid {
-        get {
-            return GetAttributeValue<string>("ovs_iisid");
-        }
-        set {
-            SetAttributeValue("ovs_iisid", value);
-        }
-    }
-    
-    /// <summary>
     /// <para>legal name of a Regulated Entity or Site</para>
     /// <para>Display Name: Legal Name</para>
     /// </summary>
@@ -2698,6 +2682,16 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
     }
     
+    [RelationshipSchemaName("Account_ProcessSessions")]
+    public IEnumerable<ProcessSession> Account_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Account_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Account_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("Account_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> Account_RecurringAppointmentMasters {
         get {
@@ -2715,6 +2709,16 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
         set {
             SetRelatedEntities("Account_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Account_SyncErrors")]
+    public IEnumerable<SyncError> Account_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Account_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Account_SyncErrors", null, value);
         }
     }
     
@@ -3230,6 +3234,16 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
     }
     
+    [RelationshipSchemaName("ovs_Finding_regulatedentity_Account")]
+    public IEnumerable<ovs_Finding> ovs_Finding_regulatedentity_Account {
+        get {
+            return GetRelatedEntities<ovs_Finding>("ovs_Finding_regulatedentity_Account", null);
+        }
+        set {
+            SetRelatedEntities("ovs_Finding_regulatedentity_Account", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("ovs_Incident_Site_Account")]
     public IEnumerable<Incident> ovs_Incident_Site_Account {
         get {
@@ -3330,6 +3344,16 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
         set {
             SetRelatedEntity("ts_Account_Country_tc_Country", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_Finding_Site_Account")]
+    public IEnumerable<ovs_Finding> ts_ovs_Finding_Site_Account {
+        get {
+            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_Site_Account", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_Finding_Site_Account", null, value);
         }
     }
     
@@ -3793,6 +3817,16 @@ public partial class ActivityParty : ExtendedEntity<EmptyEnum, EmptyEnum> {
     public long? VersionNumber {
         get {
             return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [RelationshipSchemaName("ActivityParty_SyncErrors")]
+    public IEnumerable<SyncError> ActivityParty_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ActivityParty_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ActivityParty_SyncErrors", null, value);
         }
     }
     
@@ -5363,6 +5397,17 @@ public partial class ActivityPointer : ExtendedEntity<ActivityPointerState, Acti
         }
     }
     
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_ActivityPointers")]
+    public ppp_Traveller ppp_traveller_ActivityPointers {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_ActivityPointers", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_ActivityPointers", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_activity")]
     public SystemUser user_activity {
@@ -6324,6 +6369,26 @@ public partial class Appointment : ExtendedEntity<AppointmentState, Appointment_
         }
     }
     
+    [RelationshipSchemaName("Appointment_ProcessSessions")]
+    public IEnumerable<ProcessSession> Appointment_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Appointment_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Appointment_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Appointment_SyncErrors")]
+    public IEnumerable<SyncError> Appointment_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Appointment_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Appointment_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("CampaignActivity_Appointments")]
     public CampaignActivity CampaignActivity_Appointments {
@@ -6725,6 +6790,17 @@ public partial class Appointment : ExtendedEntity<AppointmentState, Appointment_
         }
         set {
             SetRelatedEntity("msdyn_workorderservicetask_Appointments", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_Appointments")]
+    public ppp_Traveller ppp_traveller_Appointments {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_Appointments", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_Appointments", null, value);
         }
     }
     
@@ -7599,6 +7675,16 @@ public partial class BookableResource : ExtendedEntity<BookableResourceState, Bo
         }
     }
     
+    [RelationshipSchemaName("BookableResource_SyncErrors")]
+    public IEnumerable<SyncError> BookableResource_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("BookableResource_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("BookableResource_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("accountid")]
     [RelationshipSchemaName("account_bookableresource_AccountId")]
     public Account account_bookableresource_AccountId {
@@ -7607,6 +7693,16 @@ public partial class BookableResource : ExtendedEntity<BookableResourceState, Bo
         }
         set {
             SetRelatedEntity("account_bookableresource_AccountId", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("bookableresource_ProcessSession")]
+    public IEnumerable<ProcessSession> bookableresource_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("bookableresource_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("bookableresource_ProcessSession", null, value);
         }
     }
     
@@ -8893,6 +8989,16 @@ public partial class BookableResourceBooking : ExtendedEntity<BookableResourceBo
         }
     }
     
+    [RelationshipSchemaName("BookableResourceBooking_SyncErrors")]
+    public IEnumerable<SyncError> BookableResourceBooking_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("BookableResourceBooking_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("BookableResourceBooking_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("resource")]
     [RelationshipSchemaName("bookableresource_bookableresourcebooking_Resource")]
     public BookableResource bookableresource_bookableresourcebooking_Resource {
@@ -8961,6 +9067,16 @@ public partial class BookableResourceBooking : ExtendedEntity<BookableResourceBo
         }
         set {
             SetRelatedEntities("bookableresourcebooking_PhoneCalls", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("bookableresourcebooking_ProcessSession")]
+    public IEnumerable<ProcessSession> bookableresourcebooking_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("bookableresourcebooking_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("bookableresourcebooking_ProcessSession", null, value);
         }
     }
     
@@ -9618,6 +9734,16 @@ public partial class BulkOperationLog : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntity("activity_pointer_BulkOperation_logs", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("bulkoperationlog_SyncErrors")]
+    public IEnumerable<SyncError> bulkoperationlog_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("bulkoperationlog_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("bulkoperationlog_SyncErrors", null, value);
         }
     }
     
@@ -10432,6 +10558,16 @@ public partial class Campaign : ExtendedEntity<CampaignState, Campaign_StatusCod
         }
     }
     
+    [RelationshipSchemaName("Campaign_ProcessSessions")]
+    public IEnumerable<ProcessSession> Campaign_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Campaign_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Campaign_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("Campaign_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> Campaign_RecurringAppointmentMasters {
         get {
@@ -10449,6 +10585,16 @@ public partial class Campaign : ExtendedEntity<CampaignState, Campaign_StatusCod
         }
         set {
             SetRelatedEntities("Campaign_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Campaign_SyncErrors")]
+    public IEnumerable<SyncError> Campaign_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Campaign_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Campaign_SyncErrors", null, value);
         }
     }
     
@@ -11802,6 +11948,16 @@ public partial class CampaignActivity : ExtendedEntity<CampaignActivityState, Ca
         }
     }
     
+    [RelationshipSchemaName("CampaignActivity_ProcessSessions")]
+    public IEnumerable<ProcessSession> CampaignActivity_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("CampaignActivity_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("CampaignActivity_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("CampaignActivity_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> CampaignActivity_RecurringAppointmentMasters {
         get {
@@ -11809,6 +11965,16 @@ public partial class CampaignActivity : ExtendedEntity<CampaignActivityState, Ca
         }
         set {
             SetRelatedEntities("CampaignActivity_RecurringAppointmentMasters", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("CampaignActivity_SyncErrors")]
+    public IEnumerable<SyncError> CampaignActivity_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("CampaignActivity_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("CampaignActivity_SyncErrors", null, value);
         }
     }
     
@@ -13683,6 +13849,16 @@ public partial class CampaignResponse : ExtendedEntity<CampaignResponseState, Ca
         }
     }
     
+    [RelationshipSchemaName("CampaignResponse_ProcessSessions")]
+    public IEnumerable<ProcessSession> CampaignResponse_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("CampaignResponse_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("CampaignResponse_ProcessSessions", null, value);
+        }
+    }
+    
     [AttributeLogicalName("originatingactivityid")]
     [RelationshipSchemaName("CampaignResponse_ServiceAppointments")]
     public ServiceAppointment CampaignResponse_ServiceAppointments {
@@ -13691,6 +13867,16 @@ public partial class CampaignResponse : ExtendedEntity<CampaignResponseState, Ca
         }
         set {
             SetRelatedEntity("CampaignResponse_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("CampaignResponse_SyncErrors")]
+    public IEnumerable<SyncError> CampaignResponse_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("CampaignResponse_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("CampaignResponse_SyncErrors", null, value);
         }
     }
     
@@ -16943,6 +17129,16 @@ public partial class Contact : ExtendedEntity<ContactState, Contact_StatusCode> 
         }
     }
     
+    [RelationshipSchemaName("Contact_ProcessSessions")]
+    public IEnumerable<ProcessSession> Contact_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Contact_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Contact_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("Contact_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> Contact_RecurringAppointmentMasters {
         get {
@@ -16960,6 +17156,16 @@ public partial class Contact : ExtendedEntity<ContactState, Contact_StatusCode> 
         }
         set {
             SetRelatedEntities("Contact_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Contact_SyncErrors")]
+    public IEnumerable<SyncError> Contact_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Contact_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Contact_SyncErrors", null, value);
         }
     }
     
@@ -18845,6 +19051,16 @@ public partial class Contract : ExtendedEntity<ContractState, Contract_StatusCod
         }
     }
     
+    [RelationshipSchemaName("Contract_ProcessSessions")]
+    public IEnumerable<ProcessSession> Contract_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Contract_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Contract_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("Contract_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> Contract_RecurringAppointmentMasters {
         get {
@@ -18862,6 +19078,16 @@ public partial class Contract : ExtendedEntity<ContractState, Contract_StatusCod
         }
         set {
             SetRelatedEntities("Contract_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Contract_SyncErrors")]
+    public IEnumerable<SyncError> Contract_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Contract_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Contract_SyncErrors", null, value);
         }
     }
     
@@ -19761,6 +19987,26 @@ public partial class ContractDetail : ExtendedEntity<ContractDetailState, Contra
     public long? VersionNumber {
         get {
             return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [RelationshipSchemaName("ContractDetail_ProcessSessions")]
+    public IEnumerable<ProcessSession> ContractDetail_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("ContractDetail_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("ContractDetail_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ContractDetail_SyncErrors")]
+    public IEnumerable<SyncError> ContractDetail_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ContractDetail_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ContractDetail_SyncErrors", null, value);
         }
     }
     
@@ -21392,6 +21638,26 @@ public partial class Email : ExtendedEntity<EmailState, Email_StatusCode> {
         }
     }
     
+    [RelationshipSchemaName("Email_ProcessSessions")]
+    public IEnumerable<ProcessSession> Email_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Email_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Email_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Email_SyncErrors")]
+    public IEnumerable<SyncError> Email_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Email_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Email_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("Incident_Emails")]
     public Incident Incident_Emails {
@@ -21836,6 +22102,17 @@ public partial class Email : ExtendedEntity<EmailState, Email_StatusCode> {
         }
         set {
             SetRelatedEntity("msdyn_workorderservicetask_Emails", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_Emails")]
+    public ppp_Traveller ppp_traveller_Emails {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_Emails", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_Emails", null, value);
         }
     }
     
@@ -22535,6 +22812,16 @@ public partial class Entitlement : ExtendedEntity<EntitlementState, Entitlement_
         }
     }
     
+    [RelationshipSchemaName("Entitlement_SyncErrors")]
+    public IEnumerable<SyncError> Entitlement_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Entitlement_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Entitlement_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("accountid")]
     [RelationshipSchemaName("account_entitlement_Account")]
     public Account account_entitlement_Account {
@@ -22626,6 +22913,16 @@ public partial class Entitlement : ExtendedEntity<EntitlementState, Entitlement_
         }
         set {
             SetRelatedEntities("entitlement_PhoneCalls", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("entitlement_ProcessSession")]
+    public IEnumerable<ProcessSession> entitlement_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("entitlement_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("entitlement_ProcessSession", null, value);
         }
     }
     
@@ -23502,6 +23799,16 @@ public partial class EntitlementTemplate : ExtendedEntity<EmptyEnum, EmptyEnum> 
         }
     }
     
+    [RelationshipSchemaName("EntitlementTemplate_SyncErrors")]
+    public IEnumerable<SyncError> EntitlementTemplate_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("EntitlementTemplate_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("EntitlementTemplate_SyncErrors", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("entitlementtemplate_ActivityPointers")]
     public IEnumerable<ActivityPointer> entitlementtemplate_ActivityPointers {
         get {
@@ -23539,6 +23846,16 @@ public partial class EntitlementTemplate : ExtendedEntity<EmptyEnum, EmptyEnum> 
         }
         set {
             SetRelatedEntities("entitlementtemplate_PhoneCalls", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("entitlementtemplate_ProcessSession")]
+    public IEnumerable<ProcessSession> entitlementtemplate_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("entitlementtemplate_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("entitlementtemplate_ProcessSession", null, value);
         }
     }
     
@@ -25167,6 +25484,16 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
     }
     
+    [RelationshipSchemaName("Incident_ProcessSessions")]
+    public IEnumerable<ProcessSession> Incident_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Incident_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Incident_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("Incident_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> Incident_RecurringAppointmentMasters {
         get {
@@ -25195,6 +25522,16 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
         set {
             SetRelatedEntities("Incident_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Incident_SyncErrors")]
+    public IEnumerable<SyncError> Incident_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Incident_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Incident_SyncErrors", null, value);
         }
     }
     
@@ -26944,6 +27281,16 @@ public partial class Invoice : ExtendedEntity<InvoiceState, Invoice_StatusCode> 
         }
     }
     
+    [RelationshipSchemaName("Invoice_ProcessSessions")]
+    public IEnumerable<ProcessSession> Invoice_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Invoice_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Invoice_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("Invoice_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> Invoice_RecurringAppointmentMasters {
         get {
@@ -26961,6 +27308,16 @@ public partial class Invoice : ExtendedEntity<InvoiceState, Invoice_StatusCode> 
         }
         set {
             SetRelatedEntities("Invoice_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Invoice_SyncErrors")]
+    public IEnumerable<SyncError> Invoice_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Invoice_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Invoice_SyncErrors", null, value);
         }
     }
     
@@ -27490,6 +27847,26 @@ public partial class KbArticle : ExtendedEntity<KbArticleState, KbArticle_Status
     public long? VersionNumber {
         get {
             return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [RelationshipSchemaName("KbArticle_ProcessSessions")]
+    public IEnumerable<ProcessSession> KbArticle_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("KbArticle_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("KbArticle_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("KbArticle_SyncErrors")]
+    public IEnumerable<SyncError> KbArticle_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("KbArticle_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("KbArticle_SyncErrors", null, value);
         }
     }
     
@@ -29902,6 +30279,16 @@ public partial class Lead : ExtendedEntity<LeadState, Lead_StatusCode> {
         }
     }
     
+    [RelationshipSchemaName("Lead_ProcessSessions")]
+    public IEnumerable<ProcessSession> Lead_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Lead_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Lead_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("Lead_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> Lead_RecurringAppointmentMasters {
         get {
@@ -29919,6 +30306,16 @@ public partial class Lead : ExtendedEntity<LeadState, Lead_StatusCode> {
         }
         set {
             SetRelatedEntities("Lead_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Lead_SyncErrors")]
+    public IEnumerable<SyncError> Lead_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Lead_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Lead_SyncErrors", null, value);
         }
     }
     
@@ -32021,6 +32418,16 @@ public partial class Opportunity : ExtendedEntity<OpportunityState, Opportunity_
         }
     }
     
+    [RelationshipSchemaName("Opportunity_ProcessSessions")]
+    public IEnumerable<ProcessSession> Opportunity_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Opportunity_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Opportunity_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("Opportunity_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> Opportunity_RecurringAppointmentMasters {
         get {
@@ -32038,6 +32445,16 @@ public partial class Opportunity : ExtendedEntity<OpportunityState, Opportunity_
         }
         set {
             SetRelatedEntities("Opportunity_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Opportunity_SyncErrors")]
+    public IEnumerable<SyncError> Opportunity_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Opportunity_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Opportunity_SyncErrors", null, value);
         }
     }
     
@@ -33127,6 +33544,26 @@ public partial class PhoneCall : ExtendedEntity<PhoneCallState, PhoneCall_Status
         }
     }
     
+    [RelationshipSchemaName("PhoneCall_ProcessSessions")]
+    public IEnumerable<ProcessSession> PhoneCall_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("PhoneCall_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("PhoneCall_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("PhoneCall_SyncErrors")]
+    public IEnumerable<SyncError> PhoneCall_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("PhoneCall_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("PhoneCall_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("Quote_Phonecalls")]
     public Quote Quote_Phonecalls {
@@ -33433,6 +33870,17 @@ public partial class PhoneCall : ExtendedEntity<PhoneCallState, PhoneCall_Status
         }
     }
     
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_PhoneCalls")]
+    public ppp_Traveller ppp_traveller_PhoneCalls {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_PhoneCalls", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_PhoneCalls", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_phonecall")]
     public SystemUser user_phonecall {
@@ -33445,6 +33893,1522 @@ public partial class PhoneCall : ExtendedEntity<PhoneCallState, PhoneCall_Status
     }
     
     public static PhoneCall Retrieve(IOrganizationService service, Guid id, params Expression<Func<PhoneCall,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
+/// <para>Information that is generated when a dialog is run. Every time that you run a dialog, a dialog session is created.</para>
+/// <para>Display Name: Process Session</para>
+/// </summary>
+[EntityLogicalName("processsession")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ProcessSession : ExtendedEntity<ProcessSessionState, ProcessSession_StatusCode> {
+    
+    public const string EntityLogicalName = "processsession";
+    
+    public const int EntityTypeCode = 4710;
+    
+    public ProcessSession() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ProcessSession(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("name");
+        }
+    }
+    
+    [AttributeLogicalName("processsessionid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("processsessionid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the dialog session.</para>
+    /// <para>Display Name: Dialog Session</para>
+    /// </summary>
+    [AttributeLogicalName("processsessionid")]
+    [DisplayName("Dialog Session")]
+    public Guid? ProcessSessionId {
+        get {
+            return GetAttributeValue<Guid?>("processsessionid");
+        }
+        set {
+            SetId("processsessionid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Name of the activity that is being executed.</para>
+    /// <para>Display Name: Activity Name</para>
+    /// </summary>
+    [AttributeLogicalName("activityname")]
+    [DisplayName("Activity Name")]
+    [MaxLength(256)]
+    public string ActivityName {
+        get {
+            return GetAttributeValue<string>("activityname");
+        }
+        set {
+            SetAttributeValue("activityname", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who canceled the dialog session.</para>
+    /// <para>Display Name: Canceled By</para>
+    /// </summary>
+    [AttributeLogicalName("canceledby")]
+    [DisplayName("Canceled By")]
+    public EntityReference CanceledBy {
+        get {
+            return GetAttributeValue<EntityReference>("canceledby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the dialog session was canceled.</para>
+    /// <para>Display Name: Canceled On</para>
+    /// </summary>
+    [AttributeLogicalName("canceledon")]
+    [DisplayName("Canceled On")]
+    public DateTime? CanceledOn {
+        get {
+            return GetAttributeValue<DateTime?>("canceledon");
+        }
+        set {
+            SetAttributeValue("canceledon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>User comments.</para>
+    /// <para>Display Name: Comments</para>
+    /// </summary>
+    [AttributeLogicalName("comments")]
+    [DisplayName("Comments")]
+    public string Comments {
+        get {
+            return GetAttributeValue<string>("comments");
+        }
+        set {
+            SetAttributeValue("comments", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who completed the dialog session.</para>
+    /// <para>Display Name: Completed By</para>
+    /// </summary>
+    [AttributeLogicalName("completedby")]
+    [DisplayName("Completed By")]
+    public EntityReference CompletedBy {
+        get {
+            return GetAttributeValue<EntityReference>("completedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the dialog session was completed.</para>
+    /// <para>Display Name: Completed On</para>
+    /// </summary>
+    [AttributeLogicalName("completedon")]
+    [DisplayName("Completed On")]
+    public DateTime? CompletedOn {
+        get {
+            return GetAttributeValue<DateTime?>("completedon");
+        }
+        set {
+            SetAttributeValue("completedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who started the dialog session.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the dialog session was created.</para>
+    /// <para>Display Name: Created On</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Created On")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who created the dialog session.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Error code related to the dialog session.</para>
+    /// <para>Display Name: Error Code</para>
+    /// </summary>
+    [AttributeLogicalName("errorcode")]
+    [DisplayName("Error Code")]
+    [Range(-2147483648, 2147483647)]
+    public int? ErrorCode {
+        get {
+            return GetAttributeValue<int?>("errorcode");
+        }
+        set {
+            SetAttributeValue("errorcode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who ran the dialog process.</para>
+    /// <para>Display Name: Executed By</para>
+    /// </summary>
+    [AttributeLogicalName("executedby")]
+    [DisplayName("Executed By")]
+    public EntityReference ExecutedBy {
+        get {
+            return GetAttributeValue<EntityReference>("executedby");
+        }
+        set {
+            SetAttributeValue("executedby", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the dialog process was run.</para>
+    /// <para>Display Name: Executed On</para>
+    /// </summary>
+    [AttributeLogicalName("executedon")]
+    [DisplayName("Executed On")]
+    public DateTime? ExecutedOn {
+        get {
+            return GetAttributeValue<DateTime?>("executedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Input arguments for the child dialog process.</para>
+    /// <para>Display Name: Input Arguments</para>
+    /// </summary>
+    [AttributeLogicalName("inputarguments")]
+    [DisplayName("Input Arguments")]
+    public string InputArguments {
+        get {
+            return GetAttributeValue<string>("inputarguments");
+        }
+        set {
+            SetAttributeValue("inputarguments", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who last modified the dialog session.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the dialog session was last modified.</para>
+    /// <para>Display Name: Modified On</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Modified On")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who modified the dialog session.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Name of the dialog session.</para>
+    /// <para>Display Name: Name</para>
+    /// </summary>
+    [AttributeLogicalName("name")]
+    [DisplayName("Name")]
+    [MaxLength(256)]
+    public string Name {
+        get {
+            return GetAttributeValue<string>("name");
+        }
+        set {
+            SetAttributeValue("name", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the succeeding linked dialog session.</para>
+    /// <para>Display Name: Next Linked Session</para>
+    /// </summary>
+    [AttributeLogicalName("nextlinkedsessionid")]
+    [DisplayName("Next Linked Session")]
+    public EntityReference NextLinkedSessionId {
+        get {
+            return GetAttributeValue<EntityReference>("nextlinkedsessionid");
+        }
+        set {
+            SetAttributeValue("nextlinkedsessionid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the originating dialog session.</para>
+    /// <para>Display Name: Originating Session</para>
+    /// </summary>
+    [AttributeLogicalName("originatingsessionid")]
+    [DisplayName("Originating Session")]
+    public EntityReference OriginatingSessionId {
+        get {
+            return GetAttributeValue<EntityReference>("originatingsessionid");
+        }
+        set {
+            SetAttributeValue("originatingsessionid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user or team who owns the dialog session.</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the business unit that owns the dialog session.</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the team who owns the dialog session.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who owns the dialog session.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the preceding linked dialog session.</para>
+    /// <para>Display Name: Previous Linked Session</para>
+    /// </summary>
+    [AttributeLogicalName("previouslinkedsessionid")]
+    [DisplayName("Previous Linked Session")]
+    public EntityReference PreviousLinkedSessionId {
+        get {
+            return GetAttributeValue<EntityReference>("previouslinkedsessionid");
+        }
+        set {
+            SetAttributeValue("previouslinkedsessionid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Select the process activation record that is related to the dialog session.</para>
+    /// <para>Display Name: Process</para>
+    /// </summary>
+    [AttributeLogicalName("processid")]
+    [DisplayName("Process")]
+    public EntityReference ProcessId {
+        get {
+            return GetAttributeValue<EntityReference>("processid");
+        }
+        set {
+            SetAttributeValue("processid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Name of the dialog stage.</para>
+    /// <para>Display Name: Dialog Stage</para>
+    /// </summary>
+    [AttributeLogicalName("processstagename")]
+    [DisplayName("Dialog Stage")]
+    [MaxLength(256)]
+    public string ProcessStageName {
+        get {
+            return GetAttributeValue<string>("processstagename");
+        }
+        set {
+            SetAttributeValue("processstagename", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>State of the dialog process.</para>
+    /// <para>Display Name: Process State</para>
+    /// </summary>
+    [AttributeLogicalName("processstate")]
+    [DisplayName("Process State")]
+    [MaxLength(1073741823)]
+    public string ProcessState {
+        get {
+            return GetAttributeValue<string>("processstate");
+        }
+        set {
+            SetAttributeValue("processstate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the object with which the dialog session is associated.</para>
+    /// <para>Display Name: Regarding</para>
+    /// </summary>
+    [AttributeLogicalName("regardingobjectid")]
+    [DisplayName("Regarding")]
+    public EntityReference RegardingObjectId {
+        get {
+            return GetAttributeValue<EntityReference>("regardingobjectid");
+        }
+        set {
+            SetAttributeValue("regardingobjectid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who started the dialog session.</para>
+    /// <para>Display Name: Started By</para>
+    /// </summary>
+    [AttributeLogicalName("startedby")]
+    [DisplayName("Started By")]
+    public EntityReference StartedBy {
+        get {
+            return GetAttributeValue<EntityReference>("startedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the dialog session was started.</para>
+    /// <para>Display Name: Started On</para>
+    /// </summary>
+    [AttributeLogicalName("startedon")]
+    [DisplayName("Started On")]
+    public DateTime? StartedOn {
+        get {
+            return GetAttributeValue<DateTime?>("startedon");
+        }
+        set {
+            SetAttributeValue("startedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Status of the dialog session.</para>
+    /// <para>Display Name: Status</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("Status")]
+    public ProcessSessionState? StateCode {
+        get {
+            return GetOptionSetValue<ProcessSessionState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for the status of the dialog session.</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public ProcessSession_StatusCode? StatusCode {
+        get {
+            return GetOptionSetValue<ProcessSession_StatusCode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Name of the dialog step.</para>
+    /// <para>Display Name: Step Name</para>
+    /// </summary>
+    [AttributeLogicalName("stepname")]
+    [DisplayName("Step Name")]
+    [MaxLength(256)]
+    public string StepName {
+        get {
+            return GetAttributeValue<string>("stepname");
+        }
+        set {
+            SetAttributeValue("stepname", value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Account_ProcessSessions")]
+    public Account Account_ProcessSessions {
+        get {
+            return GetRelatedEntity<Account>("Account_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Account_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Appointment_ProcessSessions")]
+    public Appointment Appointment_ProcessSessions {
+        get {
+            return GetRelatedEntity<Appointment>("Appointment_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Appointment_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("CampaignActivity_ProcessSessions")]
+    public CampaignActivity CampaignActivity_ProcessSessions {
+        get {
+            return GetRelatedEntity<CampaignActivity>("CampaignActivity_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("CampaignActivity_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("CampaignResponse_ProcessSessions")]
+    public CampaignResponse CampaignResponse_ProcessSessions {
+        get {
+            return GetRelatedEntity<CampaignResponse>("CampaignResponse_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("CampaignResponse_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Campaign_ProcessSessions")]
+    public Campaign Campaign_ProcessSessions {
+        get {
+            return GetRelatedEntity<Campaign>("Campaign_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Campaign_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Contact_ProcessSessions")]
+    public Contact Contact_ProcessSessions {
+        get {
+            return GetRelatedEntity<Contact>("Contact_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Contact_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ContractDetail_ProcessSessions")]
+    public ContractDetail ContractDetail_ProcessSessions {
+        get {
+            return GetRelatedEntity<ContractDetail>("ContractDetail_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("ContractDetail_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Contract_ProcessSessions")]
+    public Contract Contract_ProcessSessions {
+        get {
+            return GetRelatedEntity<Contract>("Contract_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Contract_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Email_ProcessSessions")]
+    public Email Email_ProcessSessions {
+        get {
+            return GetRelatedEntity<Email>("Email_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Email_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Incident_ProcessSessions")]
+    public Incident Incident_ProcessSessions {
+        get {
+            return GetRelatedEntity<Incident>("Incident_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Incident_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Invoice_ProcessSessions")]
+    public Invoice Invoice_ProcessSessions {
+        get {
+            return GetRelatedEntity<Invoice>("Invoice_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Invoice_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("KbArticle_ProcessSessions")]
+    public KbArticle KbArticle_ProcessSessions {
+        get {
+            return GetRelatedEntity<KbArticle>("KbArticle_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("KbArticle_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Lead_ProcessSessions")]
+    public Lead Lead_ProcessSessions {
+        get {
+            return GetRelatedEntity<Lead>("Lead_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Lead_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Opportunity_ProcessSessions")]
+    public Opportunity Opportunity_ProcessSessions {
+        get {
+            return GetRelatedEntity<Opportunity>("Opportunity_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Opportunity_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("PhoneCall_ProcessSessions")]
+    public PhoneCall PhoneCall_ProcessSessions {
+        get {
+            return GetRelatedEntity<PhoneCall>("PhoneCall_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("PhoneCall_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ProcessSession_SyncErrors")]
+    public IEnumerable<SyncError> ProcessSession_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ProcessSession_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ProcessSession_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Product_ProcessSessions")]
+    public Product Product_ProcessSessions {
+        get {
+            return GetRelatedEntity<Product>("Product_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Product_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Queue_ProcessSessions")]
+    public Queue Queue_ProcessSessions {
+        get {
+            return GetRelatedEntity<Queue>("Queue_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Queue_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Quote_ProcessSessions")]
+    public Quote Quote_ProcessSessions {
+        get {
+            return GetRelatedEntity<Quote>("Quote_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Quote_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("RecurringAppointmentMaster_ProcessSessions")]
+    public RecurringAppointmentMaster RecurringAppointmentMaster_ProcessSessions {
+        get {
+            return GetRelatedEntity<RecurringAppointmentMaster>("RecurringAppointmentMaster_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("RecurringAppointmentMaster_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsession_nextlinkedsessionid", EntityRole.Referenced)]
+    public IEnumerable<ProcessSession> Referencedlk_processsession_nextlinkedsessionid {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsession_nextlinkedsessionid", EntityRole.Referenced);
+        }
+        set {
+            SetRelatedEntities("lk_processsession_nextlinkedsessionid", EntityRole.Referenced, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsession_originatingsessionid", EntityRole.Referenced)]
+    public IEnumerable<ProcessSession> Referencedlk_processsession_originatingsessionid {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsession_originatingsessionid", EntityRole.Referenced);
+        }
+        set {
+            SetRelatedEntities("lk_processsession_originatingsessionid", EntityRole.Referenced, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsession_previouslinkedsessionid", EntityRole.Referenced)]
+    public IEnumerable<ProcessSession> Referencedlk_processsession_previouslinkedsessionid {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsession_previouslinkedsessionid", EntityRole.Referenced);
+        }
+        set {
+            SetRelatedEntities("lk_processsession_previouslinkedsessionid", EntityRole.Referenced, value);
+        }
+    }
+    
+    [AttributeLogicalName("nextlinkedsessionid")]
+    [RelationshipSchemaName("lk_processsession_nextlinkedsessionid", EntityRole.Referencing)]
+    public ProcessSession Referencinglk_processsession_nextlinkedsessionid {
+        get {
+            return GetRelatedEntity<ProcessSession>("lk_processsession_nextlinkedsessionid", EntityRole.Referencing);
+        }
+        set {
+            SetRelatedEntity("lk_processsession_nextlinkedsessionid", EntityRole.Referencing, value);
+        }
+    }
+    
+    [AttributeLogicalName("originatingsessionid")]
+    [RelationshipSchemaName("lk_processsession_originatingsessionid", EntityRole.Referencing)]
+    public ProcessSession Referencinglk_processsession_originatingsessionid {
+        get {
+            return GetRelatedEntity<ProcessSession>("lk_processsession_originatingsessionid", EntityRole.Referencing);
+        }
+        set {
+            SetRelatedEntity("lk_processsession_originatingsessionid", EntityRole.Referencing, value);
+        }
+    }
+    
+    [AttributeLogicalName("previouslinkedsessionid")]
+    [RelationshipSchemaName("lk_processsession_previouslinkedsessionid", EntityRole.Referencing)]
+    public ProcessSession Referencinglk_processsession_previouslinkedsessionid {
+        get {
+            return GetRelatedEntity<ProcessSession>("lk_processsession_previouslinkedsessionid", EntityRole.Referencing);
+        }
+        set {
+            SetRelatedEntity("lk_processsession_previouslinkedsessionid", EntityRole.Referencing, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("SalesLiterature_ProcessSessions")]
+    public SalesLiterature SalesLiterature_ProcessSessions {
+        get {
+            return GetRelatedEntity<SalesLiterature>("SalesLiterature_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("SalesLiterature_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("SalesOrder_ProcessSessions")]
+    public SalesOrder SalesOrder_ProcessSessions {
+        get {
+            return GetRelatedEntity<SalesOrder>("SalesOrder_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("SalesOrder_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ServiceAppointment_ProcessSessions")]
+    public ServiceAppointment ServiceAppointment_ProcessSessions {
+        get {
+            return GetRelatedEntity<ServiceAppointment>("ServiceAppointment_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("ServiceAppointment_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("SystemUser_ProcessSessions")]
+    public SystemUser SystemUser_ProcessSessions {
+        get {
+            return GetRelatedEntity<SystemUser>("SystemUser_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("SystemUser_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Task_ProcessSessions")]
+    public Task Task_ProcessSessions {
+        get {
+            return GetRelatedEntity<Task>("Task_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Task_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Territory_ProcessSessions")]
+    public Territory Territory_ProcessSessions {
+        get {
+            return GetRelatedEntity<Territory>("Territory_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Territory_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("bookableresource_ProcessSession")]
+    public BookableResource bookableresource_ProcessSession {
+        get {
+            return GetRelatedEntity<BookableResource>("bookableresource_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("bookableresource_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("bookableresourcebooking_ProcessSession")]
+    public BookableResourceBooking bookableresourcebooking_ProcessSession {
+        get {
+            return GetRelatedEntity<BookableResourceBooking>("bookableresourcebooking_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("bookableresourcebooking_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("entitlement_ProcessSession")]
+    public Entitlement entitlement_ProcessSession {
+        get {
+            return GetRelatedEntity<Entitlement>("entitlement_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("entitlement_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("entitlementtemplate_ProcessSession")]
+    public EntitlementTemplate entitlementtemplate_ProcessSession {
+        get {
+            return GetRelatedEntity<EntitlementTemplate>("entitlementtemplate_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("entitlementtemplate_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("canceledby")]
+    [RelationshipSchemaName("lk_processsession_canceledby")]
+    public SystemUser lk_processsession_canceledby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_processsession_canceledby", null);
+        }
+        set {
+            SetRelatedEntity("lk_processsession_canceledby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("completedby")]
+    [RelationshipSchemaName("lk_processsession_completedby")]
+    public SystemUser lk_processsession_completedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_processsession_completedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_processsession_completedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("lk_processsession_createdby")]
+    public SystemUser lk_processsession_createdby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_processsession_createdby", null);
+        }
+        set {
+            SetRelatedEntity("lk_processsession_createdby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("executedby")]
+    [RelationshipSchemaName("lk_processsession_executedby")]
+    public SystemUser lk_processsession_executedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_processsession_executedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_processsession_executedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("lk_processsession_modifiedby")]
+    public SystemUser lk_processsession_modifiedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_processsession_modifiedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_processsession_modifiedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("startedby")]
+    [RelationshipSchemaName("lk_processsession_startedby")]
+    public SystemUser lk_processsession_startedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_processsession_startedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_processsession_startedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("lk_processsessionbase_createdonbehalfby")]
+    public SystemUser lk_processsessionbase_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_processsessionbase_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_processsessionbase_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("lk_processsessionbase_modifiedonbehalfby")]
+    public SystemUser lk_processsessionbase_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_processsessionbase_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_processsessionbase_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreement_ProcessSession")]
+    public msdyn_agreement msdyn_agreement_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_agreement>("msdyn_agreement_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreement_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_ProcessSession")]
+    public msdyn_agreementbookingproduct msdyn_agreementbookingproduct_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingproduct>("msdyn_agreementbookingproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingproduct_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementbookingservice_ProcessSession")]
+    public msdyn_agreementbookingservice msdyn_agreementbookingservice_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingservice>("msdyn_agreementbookingservice_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingservice_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_ProcessSession")]
+    public msdyn_agreementinvoiceproduct msdyn_agreementinvoiceproduct_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_agreementinvoiceproduct>("msdyn_agreementinvoiceproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementinvoiceproduct_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_bookingjournal_ProcessSession")]
+    public msdyn_bookingjournal msdyn_bookingjournal_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_bookingjournal>("msdyn_bookingjournal_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingjournal_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_customerasset_ProcessSession")]
+    public msdyn_customerasset msdyn_customerasset_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_customerasset>("msdyn_customerasset_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_customerasset_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_customerassetcategory_ProcessSession")]
+    public msdyn_customerassetcategory msdyn_customerassetcategory_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_customerassetcategory>("msdyn_customerassetcategory_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_customerassetcategory_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_functionallocation_ProcessSession")]
+    public msdyn_FunctionalLocation msdyn_functionallocation_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_FunctionalLocation>("msdyn_functionallocation_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_functionallocation_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttype_ProcessSession")]
+    public msdyn_incidenttype msdyn_incidenttype_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_incidenttype>("msdyn_incidenttype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttype_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_ProcessSession")]
+    public msdyn_incidenttypeproduct msdyn_incidenttypeproduct_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeproduct>("msdyn_incidenttypeproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeproduct_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttypeservice_ProcessSession")]
+    public msdyn_incidenttypeservice msdyn_incidenttypeservice_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeservice>("msdyn_incidenttypeservice_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeservice_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttypeservicetask_ProcessSession")]
+    public msdyn_incidenttypeservicetask msdyn_incidenttypeservicetask_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeservicetask>("msdyn_incidenttypeservicetask_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeservicetask_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_orderinvoicingproduct_ProcessSession")]
+    public msdyn_orderinvoicingproduct msdyn_orderinvoicingproduct_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_orderinvoicingproduct>("msdyn_orderinvoicingproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_orderinvoicingproduct_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_purchaseorder_ProcessSession")]
+    public msdyn_purchaseorder msdyn_purchaseorder_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorder>("msdyn_purchaseorder_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorder_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_ProcessSession")]
+    public msdyn_purchaseorderproduct msdyn_purchaseorderproduct_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorderproduct>("msdyn_purchaseorderproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorderproduct_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_quoteinvoicingproduct_ProcessSession")]
+    public msdyn_quoteinvoicingproduct msdyn_quoteinvoicingproduct_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_quoteinvoicingproduct>("msdyn_quoteinvoicingproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_quoteinvoicingproduct_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_rma_ProcessSession")]
+    public msdyn_rma msdyn_rma_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_rma>("msdyn_rma_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_rma_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_servicetasktype_ProcessSession")]
+    public msdyn_servicetasktype msdyn_servicetasktype_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_servicetasktype>("msdyn_servicetasktype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_servicetasktype_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_timeoffrequest_ProcessSession")]
+    public msdyn_timeoffrequest msdyn_timeoffrequest_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_timeoffrequest>("msdyn_timeoffrequest_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_timeoffrequest_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorder_ProcessSession")]
+    public msdyn_workorder msdyn_workorder_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_workorder>("msdyn_workorder_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorder_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderincident_ProcessSession")]
+    public msdyn_workorderincident msdyn_workorderincident_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_workorderincident>("msdyn_workorderincident_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderincident_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderproduct_ProcessSession")]
+    public msdyn_workorderproduct msdyn_workorderproduct_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_workorderproduct>("msdyn_workorderproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderproduct_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderservice_ProcessSession")]
+    public msdyn_workorderservice msdyn_workorderservice_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_workorderservice>("msdyn_workorderservice_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservice_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderservicetask_ProcessSession")]
+    public msdyn_workorderservicetask msdyn_workorderservicetask_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_workorderservicetask>("msdyn_workorderservicetask_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservicetask_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workordersubstatus_ProcessSession")]
+    public msdyn_workordersubstatus msdyn_workordersubstatus_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_workordersubstatus>("msdyn_workordersubstatus_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workordersubstatus_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workordertype_ProcessSession")]
+    public msdyn_workordertype msdyn_workordertype_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_workordertype>("msdyn_workordertype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workordertype_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_aircarrier_ProcessSession")]
+    public ovs_AirCarrier ovs_aircarrier_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_AirCarrier>("ovs_aircarrier_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_aircarrier_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_facility_ProcessSession")]
+    public ovs_Facility ovs_facility_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ovs_facility_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_facility_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_finding_ProcessSession")]
+    public ovs_Finding ovs_finding_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_Finding>("ovs_finding_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_finding_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_lob_ProcessSession")]
+    public ovs_lob ovs_lob_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_lob>("ovs_lob_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_lob_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_operation_ProcessSession")]
+    public ovs_operation ovs_operation_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_operation>("ovs_operation_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_operation_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_operationtype_ProcessSession")]
+    public ovs_operationtype ovs_operationtype_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_operationtype>("ovs_operationtype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_operationtype_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_questionnaire_ProcessSession")]
+    public ovs_Questionnaire ovs_questionnaire_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_Questionnaire>("ovs_questionnaire_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_questionnaire_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_sitetype_ProcessSession")]
+    public ovs_SiteType ovs_sitetype_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_SiteType>("ovs_sitetype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_sitetype_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_tyrational_ProcessSession")]
+    public ovs_TYRational ovs_tyrational_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_TYRational>("ovs_tyrational_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_tyrational_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_workorderservicetaskprovision_ProcessSession")]
+    public ovs_workorderservicetaskprovision ovs_workorderservicetaskprovision_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_workorderservicetaskprovision>("ovs_workorderservicetaskprovision_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_workorderservicetaskprovision_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_ProcessSession")]
+    public ppp_Traveller ppp_traveller_ProcessSession {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("qm_rclegislation_ProcessSession")]
+    public qm_rclegislation qm_rclegislation_ProcessSession {
+        get {
+            return GetRelatedEntity<qm_rclegislation>("qm_rclegislation_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("qm_rclegislation_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("qm_tylegislationcharacteristic_ProcessSession")]
+    public qm_tylegislationcharacteristic qm_tylegislationcharacteristic_ProcessSession {
+        get {
+            return GetRelatedEntity<qm_tylegislationcharacteristic>("qm_tylegislationcharacteristic_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("qm_tylegislationcharacteristic_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("qm_tylegislationsource_ProcessSession")]
+    public qm_tylegislationsource qm_tylegislationsource_ProcessSession {
+        get {
+            return GetRelatedEntity<qm_tylegislationsource>("qm_tylegislationsource_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("qm_tylegislationsource_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("qm_tylegislationtype_ProcessSession")]
+    public qm_tylegislationtype qm_tylegislationtype_ProcessSession {
+        get {
+            return GetRelatedEntity<qm_tylegislationtype>("qm_tylegislationtype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("qm_tylegislationtype_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_country_ProcessSession")]
+    public tc_Country tc_country_ProcessSession {
+        get {
+            return GetRelatedEntity<tc_Country>("tc_country_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("tc_country_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_province_ProcessSession")]
+    public tc_Province tc_province_ProcessSession {
+        get {
+            return GetRelatedEntity<tc_Province>("tc_province_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("tc_province_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_tcfiscalperiod_ProcessSession")]
+    public tc_TCFiscalPeriod tc_tcfiscalperiod_ProcessSession {
+        get {
+            return GetRelatedEntity<tc_TCFiscalPeriod>("tc_tcfiscalperiod_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("tc_tcfiscalperiod_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_tcfiscalquarter_ProcessSession")]
+    public tc_TCFiscalQuarter tc_tcfiscalquarter_ProcessSession {
+        get {
+            return GetRelatedEntity<tc_TCFiscalQuarter>("tc_tcfiscalquarter_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("tc_tcfiscalquarter_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_tcfiscalyear_ProcessSession")]
+    public tc_TCFiscalYear tc_tcfiscalyear_ProcessSession {
+        get {
+            return GetRelatedEntity<tc_TCFiscalYear>("tc_tcfiscalyear_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("tc_tcfiscalyear_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_tcmonth_ProcessSession")]
+    public tc_TCMonth tc_tcmonth_ProcessSession {
+        get {
+            return GetRelatedEntity<tc_TCMonth>("tc_tcmonth_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("tc_tcmonth_ProcessSession", null, value);
+        }
+    }
+    
+    public static ProcessSession Retrieve(IOrganizationService service, Guid id, params Expression<Func<ProcessSession,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
 }
@@ -34375,6 +36339,26 @@ public partial class Product : ExtendedEntity<ProductState, Product_StatusCode> 
         }
         set {
             SetAttributeValue("msdyn_upccode", value);
+        }
+    }
+    
+    [RelationshipSchemaName("Product_ProcessSessions")]
+    public IEnumerable<ProcessSession> Product_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Product_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Product_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Product_SyncErrors")]
+    public IEnumerable<SyncError> Product_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Product_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Product_SyncErrors", null, value);
         }
     }
     
@@ -35383,6 +37367,26 @@ public partial class Queue : ExtendedEntity<QueueState, Queue_StatusCode> {
         }
         set {
             SetRelatedEntities("Queue_Email_EmailSender", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Queue_ProcessSessions")]
+    public IEnumerable<ProcessSession> Queue_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Queue_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Queue_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Queue_SyncErrors")]
+    public IEnumerable<SyncError> Queue_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Queue_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Queue_SyncErrors", null, value);
         }
     }
     
@@ -37132,6 +39136,16 @@ public partial class Quote : ExtendedEntity<QuoteState, Quote_StatusCode> {
         }
     }
     
+    [RelationshipSchemaName("Quote_ProcessSessions")]
+    public IEnumerable<ProcessSession> Quote_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Quote_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Quote_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("Quote_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> Quote_RecurringAppointmentMasters {
         get {
@@ -37149,6 +39163,16 @@ public partial class Quote : ExtendedEntity<QuoteState, Quote_StatusCode> {
         }
         set {
             SetRelatedEntities("Quote_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Quote_SyncErrors")]
+    public IEnumerable<SyncError> Quote_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Quote_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Quote_SyncErrors", null, value);
         }
     }
     
@@ -38518,6 +40542,26 @@ public partial class RecurringAppointmentMaster : ExtendedEntity<RecurringAppoin
         }
     }
     
+    [RelationshipSchemaName("RecurringAppointmentMaster_ProcessSessions")]
+    public IEnumerable<ProcessSession> RecurringAppointmentMaster_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("RecurringAppointmentMaster_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("RecurringAppointmentMaster_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("RecurringAppointmentMaster_SyncErrors")]
+    public IEnumerable<SyncError> RecurringAppointmentMaster_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("RecurringAppointmentMaster_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("RecurringAppointmentMaster_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("SalesOrder_RecurringAppointmentMasters")]
     public SalesOrder SalesOrder_RecurringAppointmentMasters {
@@ -38790,6 +40834,17 @@ public partial class RecurringAppointmentMaster : ExtendedEntity<RecurringAppoin
         }
         set {
             SetRelatedEntity("msdyn_workorderservicetask_RecurringAppointmentMasters", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_RecurringAppointmentMasters")]
+    public ppp_Traveller ppp_traveller_RecurringAppointmentMasters {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_RecurringAppointmentMasters", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_RecurringAppointmentMasters", null, value);
         }
     }
     
@@ -39278,6 +41333,26 @@ public partial class SalesLiterature : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetAttributeValue("ikl_cloudstoragelink", value);
+        }
+    }
+    
+    [RelationshipSchemaName("SalesLiterature_ProcessSessions")]
+    public IEnumerable<ProcessSession> SalesLiterature_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("SalesLiterature_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("SalesLiterature_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("SalesLiterature_SyncErrors")]
+    public IEnumerable<SyncError> SalesLiterature_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("SalesLiterature_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("SalesLiterature_SyncErrors", null, value);
         }
     }
     
@@ -40896,6 +42971,16 @@ public partial class SalesOrder : ExtendedEntity<SalesOrderState, SalesOrder_Sta
         }
     }
     
+    [RelationshipSchemaName("SalesOrder_ProcessSessions")]
+    public IEnumerable<ProcessSession> SalesOrder_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("SalesOrder_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("SalesOrder_ProcessSessions", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("SalesOrder_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> SalesOrder_RecurringAppointmentMasters {
         get {
@@ -40913,6 +42998,16 @@ public partial class SalesOrder : ExtendedEntity<SalesOrderState, SalesOrder_Sta
         }
         set {
             SetRelatedEntities("SalesOrder_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("SalesOrder_SyncErrors")]
+    public IEnumerable<SyncError> SalesOrder_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("SalesOrder_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("SalesOrder_SyncErrors", null, value);
         }
     }
     
@@ -42284,6 +44379,26 @@ public partial class ServiceAppointment : ExtendedEntity<ServiceAppointmentState
         }
     }
     
+    [RelationshipSchemaName("ServiceAppointment_ProcessSessions")]
+    public IEnumerable<ProcessSession> ServiceAppointment_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("ServiceAppointment_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("ServiceAppointment_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ServiceAppointment_SyncErrors")]
+    public IEnumerable<SyncError> ServiceAppointment_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ServiceAppointment_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ServiceAppointment_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("activityid")]
     [RelationshipSchemaName("activity_pointer_service_appointment")]
     public ActivityPointer activity_pointer_service_appointment {
@@ -42569,6 +44684,17 @@ public partial class ServiceAppointment : ExtendedEntity<ServiceAppointmentState
         }
     }
     
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_ServiceAppointments")]
+    public ppp_Traveller ppp_traveller_ServiceAppointments {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_ServiceAppointments", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_ServiceAppointments", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("serviceappointment_activity_parties")]
     public IEnumerable<ActivityParty> serviceappointment_activity_parties {
         get {
@@ -42762,6 +44888,1342 @@ public partial class ServiceContractContacts : ExtendedEntity<EmptyEnum, EmptyEn
     }
     
     public static ServiceContractContacts Retrieve(IOrganizationService service, Guid id, params Expression<Func<ServiceContractContacts,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
+/// <para>Failure reason and other detailed information for a record that failed to sync.</para>
+/// <para>Display Name: Sync Error</para>
+/// </summary>
+[EntityLogicalName("syncerror")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class SyncError : ExtendedEntity<SyncErrorState, SyncError_StatusCode> {
+    
+    public const string EntityLogicalName = "syncerror";
+    
+    public const int EntityTypeCode = 9869;
+    
+    public SyncError() : 
+            base(EntityLogicalName) {
+    }
+    
+    public SyncError(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("name");
+        }
+    }
+    
+    [AttributeLogicalName("syncerrorid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("syncerrorid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the sync error.</para>
+    /// <para>Display Name: Sync Error Id</para>
+    /// </summary>
+    [AttributeLogicalName("syncerrorid")]
+    [DisplayName("Sync Error Id")]
+    public Guid? SyncErrorId {
+        get {
+            return GetAttributeValue<Guid?>("syncerrorid");
+        }
+        set {
+            SetId("syncerrorid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Action Name for which sync error has occurred</para>
+    /// <para>Display Name: Action</para>
+    /// </summary>
+    [AttributeLogicalName("action")]
+    [DisplayName("Action")]
+    [MaxLength(100)]
+    public string Action {
+        get {
+            return GetAttributeValue<string>("action");
+        }
+        set {
+            SetAttributeValue("action", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Show the action data</para>
+    /// <para>Display Name: Action Data</para>
+    /// </summary>
+    [AttributeLogicalName("actiondata")]
+    [DisplayName("Action Data")]
+    [MaxLength(10000)]
+    public string ActionData {
+        get {
+            return GetAttributeValue<string>("actiondata");
+        }
+        set {
+            SetAttributeValue("actiondata", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who created the sync error.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the sync Error was created.</para>
+    /// <para>Display Name: Created On</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Created On")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who created the sync error.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter a short description of the sync error.</para>
+    /// <para>Display Name: Description</para>
+    /// </summary>
+    [AttributeLogicalName("description")]
+    [DisplayName("Description")]
+    public string Description {
+        get {
+            return GetAttributeValue<string>("description");
+        }
+        set {
+            SetAttributeValue("description", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Displays the error code.</para>
+    /// <para>Display Name: Error Code</para>
+    /// </summary>
+    [AttributeLogicalName("errorcode")]
+    [DisplayName("Error Code")]
+    public string ErrorCode {
+        get {
+            return GetAttributeValue<string>("errorcode");
+        }
+        set {
+            SetAttributeValue("errorcode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Error description from the exception</para>
+    /// <para>Display Name: Error Detail</para>
+    /// </summary>
+    [AttributeLogicalName("errordetail")]
+    [DisplayName("Error Detail")]
+    public string ErrorDetail {
+        get {
+            return GetAttributeValue<string>("errordetail");
+        }
+        set {
+            SetAttributeValue("errordetail", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Error Message of the exception</para>
+    /// <para>Display Name: Error Message</para>
+    /// </summary>
+    [AttributeLogicalName("errormessage")]
+    [DisplayName("Error Message")]
+    [MaxLength(1000)]
+    public string ErrorMessage {
+        get {
+            return GetAttributeValue<string>("errormessage");
+        }
+        set {
+            SetAttributeValue("errormessage", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the upsync request was executed on CRM server</para>
+    /// <para>Display Name: Error Time</para>
+    /// </summary>
+    [AttributeLogicalName("errortime")]
+    [DisplayName("Error Time")]
+    public DateTime? ErrorTime {
+        get {
+            return GetAttributeValue<DateTime?>("errortime");
+        }
+        set {
+            SetAttributeValue("errortime", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Select the preferred error type.</para>
+    /// <para>Display Name: Error Type</para>
+    /// </summary>
+    [AttributeLogicalName("errortype")]
+    [DisplayName("Error Type")]
+    public SyncError_ErrorType? ErrorType {
+        get {
+            return GetOptionSetValue<SyncError_ErrorType>("errortype");
+        }
+        set {
+            SetOptionSetValue("errortype", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who last modified the sync error.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the sync error was last modified.</para>
+    /// <para>Display Name: Modified On</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Modified On")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who last modified the sync error.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Entity name of the record for which sync error has occurred</para>
+    /// <para>Display Name: Entity</para>
+    /// </summary>
+    [AttributeLogicalName("name")]
+    [DisplayName("Entity")]
+    [MaxLength(100)]
+    public string Name {
+        get {
+            return GetAttributeValue<string>("name");
+        }
+        set {
+            SetAttributeValue("name", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user or team who owns the sync error.</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Business unit that owns the sync error.</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the team who owns the sync error.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who owns the sync error.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Choose the record that the sync error relates to.</para>
+    /// <para>Display Name: Record</para>
+    /// </summary>
+    [AttributeLogicalName("regardingobjectid")]
+    [DisplayName("Record")]
+    public EntityReference RegardingObjectId {
+        get {
+            return GetAttributeValue<EntityReference>("regardingobjectid");
+        }
+        set {
+            SetAttributeValue("regardingobjectid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Request data for the entity that had the sync error.</para>
+    /// <para>Display Name: Request Data</para>
+    /// </summary>
+    [AttributeLogicalName("requestdata")]
+    [DisplayName("Request Data")]
+    public string RequestData {
+        get {
+            return GetAttributeValue<string>("requestdata");
+        }
+        set {
+            SetAttributeValue("requestdata", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows whether the sync error is active or resolved.</para>
+    /// <para>Display Name: State</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("State")]
+    public SyncErrorState? StateCode {
+        get {
+            return GetOptionSetValue<SyncErrorState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Select the sync error status.</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public SyncError_StatusCode? StatusCode {
+        get {
+            return GetOptionSetValue<SyncError_StatusCode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the version number of the sync error.</para>
+    /// <para>Display Name: Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("versionnumber")]
+    [DisplayName("Version Number")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Account_SyncErrors")]
+    public Account Account_SyncErrors {
+        get {
+            return GetRelatedEntity<Account>("Account_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Account_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ActivityParty_SyncErrors")]
+    public ActivityParty ActivityParty_SyncErrors {
+        get {
+            return GetRelatedEntity<ActivityParty>("ActivityParty_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ActivityParty_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Appointment_SyncErrors")]
+    public Appointment Appointment_SyncErrors {
+        get {
+            return GetRelatedEntity<Appointment>("Appointment_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Appointment_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("BookableResourceBooking_SyncErrors")]
+    public BookableResourceBooking BookableResourceBooking_SyncErrors {
+        get {
+            return GetRelatedEntity<BookableResourceBooking>("BookableResourceBooking_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("BookableResourceBooking_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("BookableResource_SyncErrors")]
+    public BookableResource BookableResource_SyncErrors {
+        get {
+            return GetRelatedEntity<BookableResource>("BookableResource_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("BookableResource_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("CampaignActivity_SyncErrors")]
+    public CampaignActivity CampaignActivity_SyncErrors {
+        get {
+            return GetRelatedEntity<CampaignActivity>("CampaignActivity_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("CampaignActivity_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("CampaignResponse_SyncErrors")]
+    public CampaignResponse CampaignResponse_SyncErrors {
+        get {
+            return GetRelatedEntity<CampaignResponse>("CampaignResponse_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("CampaignResponse_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Campaign_SyncErrors")]
+    public Campaign Campaign_SyncErrors {
+        get {
+            return GetRelatedEntity<Campaign>("Campaign_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Campaign_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Contact_SyncErrors")]
+    public Contact Contact_SyncErrors {
+        get {
+            return GetRelatedEntity<Contact>("Contact_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Contact_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ContractDetail_SyncErrors")]
+    public ContractDetail ContractDetail_SyncErrors {
+        get {
+            return GetRelatedEntity<ContractDetail>("ContractDetail_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ContractDetail_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Contract_SyncErrors")]
+    public Contract Contract_SyncErrors {
+        get {
+            return GetRelatedEntity<Contract>("Contract_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Contract_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Email_SyncErrors")]
+    public Email Email_SyncErrors {
+        get {
+            return GetRelatedEntity<Email>("Email_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Email_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("EntitlementTemplate_SyncErrors")]
+    public EntitlementTemplate EntitlementTemplate_SyncErrors {
+        get {
+            return GetRelatedEntity<EntitlementTemplate>("EntitlementTemplate_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("EntitlementTemplate_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Entitlement_SyncErrors")]
+    public Entitlement Entitlement_SyncErrors {
+        get {
+            return GetRelatedEntity<Entitlement>("Entitlement_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Entitlement_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Incident_SyncErrors")]
+    public Incident Incident_SyncErrors {
+        get {
+            return GetRelatedEntity<Incident>("Incident_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Incident_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Invoice_SyncErrors")]
+    public Invoice Invoice_SyncErrors {
+        get {
+            return GetRelatedEntity<Invoice>("Invoice_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Invoice_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("KbArticle_SyncErrors")]
+    public KbArticle KbArticle_SyncErrors {
+        get {
+            return GetRelatedEntity<KbArticle>("KbArticle_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("KbArticle_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Lead_SyncErrors")]
+    public Lead Lead_SyncErrors {
+        get {
+            return GetRelatedEntity<Lead>("Lead_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Lead_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Opportunity_SyncErrors")]
+    public Opportunity Opportunity_SyncErrors {
+        get {
+            return GetRelatedEntity<Opportunity>("Opportunity_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Opportunity_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("PhoneCall_SyncErrors")]
+    public PhoneCall PhoneCall_SyncErrors {
+        get {
+            return GetRelatedEntity<PhoneCall>("PhoneCall_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("PhoneCall_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ProcessSession_SyncErrors")]
+    public ProcessSession ProcessSession_SyncErrors {
+        get {
+            return GetRelatedEntity<ProcessSession>("ProcessSession_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ProcessSession_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Product_SyncErrors")]
+    public Product Product_SyncErrors {
+        get {
+            return GetRelatedEntity<Product>("Product_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Product_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Queue_SyncErrors")]
+    public Queue Queue_SyncErrors {
+        get {
+            return GetRelatedEntity<Queue>("Queue_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Queue_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Quote_SyncErrors")]
+    public Quote Quote_SyncErrors {
+        get {
+            return GetRelatedEntity<Quote>("Quote_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Quote_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("RecurringAppointmentMaster_SyncErrors")]
+    public RecurringAppointmentMaster RecurringAppointmentMaster_SyncErrors {
+        get {
+            return GetRelatedEntity<RecurringAppointmentMaster>("RecurringAppointmentMaster_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("RecurringAppointmentMaster_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("SyncError_SyncErrors", EntityRole.Referenced)]
+    public IEnumerable<SyncError> ReferencedSyncError_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("SyncError_SyncErrors", EntityRole.Referenced);
+        }
+        set {
+            SetRelatedEntities("SyncError_SyncErrors", EntityRole.Referenced, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("SyncError_SyncErrors", EntityRole.Referencing)]
+    public SyncError ReferencingSyncError_SyncErrors {
+        get {
+            return GetRelatedEntity<SyncError>("SyncError_SyncErrors", EntityRole.Referencing);
+        }
+        set {
+            SetRelatedEntity("SyncError_SyncErrors", EntityRole.Referencing, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("SalesLiterature_SyncErrors")]
+    public SalesLiterature SalesLiterature_SyncErrors {
+        get {
+            return GetRelatedEntity<SalesLiterature>("SalesLiterature_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("SalesLiterature_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("SalesOrder_SyncErrors")]
+    public SalesOrder SalesOrder_SyncErrors {
+        get {
+            return GetRelatedEntity<SalesOrder>("SalesOrder_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("SalesOrder_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ServiceAppointment_SyncErrors")]
+    public ServiceAppointment ServiceAppointment_SyncErrors {
+        get {
+            return GetRelatedEntity<ServiceAppointment>("ServiceAppointment_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ServiceAppointment_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("owninguser")]
+    [RelationshipSchemaName("SystemUser_SyncError")]
+    public SystemUser SystemUser_SyncError {
+        get {
+            return GetRelatedEntity<SystemUser>("SystemUser_SyncError", null);
+        }
+        set {
+            SetRelatedEntity("SystemUser_SyncError", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("SystemUser_SyncErrors")]
+    public SystemUser SystemUser_SyncErrors {
+        get {
+            return GetRelatedEntity<SystemUser>("SystemUser_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("SystemUser_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Task_SyncErrors")]
+    public Task Task_SyncErrors {
+        get {
+            return GetRelatedEntity<Task>("Task_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Task_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Territory_SyncErrors")]
+    public Territory Territory_SyncErrors {
+        get {
+            return GetRelatedEntity<Territory>("Territory_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Territory_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("bulkoperationlog_SyncErrors")]
+    public BulkOperationLog bulkoperationlog_SyncErrors {
+        get {
+            return GetRelatedEntity<BulkOperationLog>("bulkoperationlog_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("bulkoperationlog_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("lk_syncerrorbase_createdby")]
+    public SystemUser lk_syncerrorbase_createdby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_syncerrorbase_createdby", null);
+        }
+        set {
+            SetRelatedEntity("lk_syncerrorbase_createdby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("lk_syncerrorbase_createdonbehalfby")]
+    public SystemUser lk_syncerrorbase_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_syncerrorbase_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_syncerrorbase_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("lk_syncerrorbase_modifiedby")]
+    public SystemUser lk_syncerrorbase_modifiedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_syncerrorbase_modifiedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_syncerrorbase_modifiedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("lk_syncerrorbase_modifiedonbehalfby")]
+    public SystemUser lk_syncerrorbase_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_syncerrorbase_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_syncerrorbase_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreement_SyncErrors")]
+    public msdyn_agreement msdyn_agreement_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_agreement>("msdyn_agreement_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreement_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_SyncErrors")]
+    public msdyn_agreementbookingproduct msdyn_agreementbookingproduct_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingproduct>("msdyn_agreementbookingproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingproduct_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementbookingservice_SyncErrors")]
+    public msdyn_agreementbookingservice msdyn_agreementbookingservice_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingservice>("msdyn_agreementbookingservice_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingservice_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_SyncErrors")]
+    public msdyn_agreementinvoiceproduct msdyn_agreementinvoiceproduct_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_agreementinvoiceproduct>("msdyn_agreementinvoiceproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementinvoiceproduct_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_bookingjournal_SyncErrors")]
+    public msdyn_bookingjournal msdyn_bookingjournal_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_bookingjournal>("msdyn_bookingjournal_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingjournal_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_customerasset_SyncErrors")]
+    public msdyn_customerasset msdyn_customerasset_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_customerasset>("msdyn_customerasset_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_customerasset_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_customerassetcategory_SyncErrors")]
+    public msdyn_customerassetcategory msdyn_customerassetcategory_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_customerassetcategory>("msdyn_customerassetcategory_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_customerassetcategory_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_functionallocation_SyncErrors")]
+    public msdyn_FunctionalLocation msdyn_functionallocation_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_FunctionalLocation>("msdyn_functionallocation_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_functionallocation_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttype_SyncErrors")]
+    public msdyn_incidenttype msdyn_incidenttype_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_incidenttype>("msdyn_incidenttype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttype_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_SyncErrors")]
+    public msdyn_incidenttypeproduct msdyn_incidenttypeproduct_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeproduct>("msdyn_incidenttypeproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeproduct_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttypeservice_SyncErrors")]
+    public msdyn_incidenttypeservice msdyn_incidenttypeservice_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeservice>("msdyn_incidenttypeservice_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeservice_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttypeservicetask_SyncErrors")]
+    public msdyn_incidenttypeservicetask msdyn_incidenttypeservicetask_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeservicetask>("msdyn_incidenttypeservicetask_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeservicetask_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_orderinvoicingproduct_SyncErrors")]
+    public msdyn_orderinvoicingproduct msdyn_orderinvoicingproduct_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_orderinvoicingproduct>("msdyn_orderinvoicingproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_orderinvoicingproduct_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_purchaseorder_SyncErrors")]
+    public msdyn_purchaseorder msdyn_purchaseorder_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorder>("msdyn_purchaseorder_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorder_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_SyncErrors")]
+    public msdyn_purchaseorderproduct msdyn_purchaseorderproduct_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorderproduct>("msdyn_purchaseorderproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorderproduct_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_quoteinvoicingproduct_SyncErrors")]
+    public msdyn_quoteinvoicingproduct msdyn_quoteinvoicingproduct_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_quoteinvoicingproduct>("msdyn_quoteinvoicingproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_quoteinvoicingproduct_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_rma_SyncErrors")]
+    public msdyn_rma msdyn_rma_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_rma>("msdyn_rma_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_rma_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_servicetasktype_SyncErrors")]
+    public msdyn_servicetasktype msdyn_servicetasktype_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_servicetasktype>("msdyn_servicetasktype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_servicetasktype_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_timeoffrequest_SyncErrors")]
+    public msdyn_timeoffrequest msdyn_timeoffrequest_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_timeoffrequest>("msdyn_timeoffrequest_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_timeoffrequest_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorder_SyncErrors")]
+    public msdyn_workorder msdyn_workorder_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_workorder>("msdyn_workorder_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorder_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderincident_SyncErrors")]
+    public msdyn_workorderincident msdyn_workorderincident_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_workorderincident>("msdyn_workorderincident_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderincident_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderproduct_SyncErrors")]
+    public msdyn_workorderproduct msdyn_workorderproduct_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_workorderproduct>("msdyn_workorderproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderproduct_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderservice_SyncErrors")]
+    public msdyn_workorderservice msdyn_workorderservice_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_workorderservice>("msdyn_workorderservice_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservice_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderservicetask_SyncErrors")]
+    public msdyn_workorderservicetask msdyn_workorderservicetask_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_workorderservicetask>("msdyn_workorderservicetask_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservicetask_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workordersubstatus_SyncErrors")]
+    public msdyn_workordersubstatus msdyn_workordersubstatus_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_workordersubstatus>("msdyn_workordersubstatus_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workordersubstatus_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workordertype_SyncErrors")]
+    public msdyn_workordertype msdyn_workordertype_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_workordertype>("msdyn_workordertype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workordertype_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_aircarrier_SyncErrors")]
+    public ovs_AirCarrier ovs_aircarrier_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_AirCarrier>("ovs_aircarrier_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_aircarrier_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_facility_SyncErrors")]
+    public ovs_Facility ovs_facility_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ovs_facility_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_facility_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_finding_SyncErrors")]
+    public ovs_Finding ovs_finding_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_Finding>("ovs_finding_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_finding_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_lob_SyncErrors")]
+    public ovs_lob ovs_lob_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_lob>("ovs_lob_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_lob_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_operation_SyncErrors")]
+    public ovs_operation ovs_operation_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_operation>("ovs_operation_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_operation_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_operationtype_SyncErrors")]
+    public ovs_operationtype ovs_operationtype_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_operationtype>("ovs_operationtype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_operationtype_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_questionnaire_SyncErrors")]
+    public ovs_Questionnaire ovs_questionnaire_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_Questionnaire>("ovs_questionnaire_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_questionnaire_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_sitetype_SyncErrors")]
+    public ovs_SiteType ovs_sitetype_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_SiteType>("ovs_sitetype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_sitetype_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_tyrational_SyncErrors")]
+    public ovs_TYRational ovs_tyrational_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_TYRational>("ovs_tyrational_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_tyrational_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_workorderservicetaskprovision_SyncErrors")]
+    public ovs_workorderservicetaskprovision ovs_workorderservicetaskprovision_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_workorderservicetaskprovision>("ovs_workorderservicetaskprovision_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_workorderservicetaskprovision_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_SyncErrors")]
+    public ppp_Traveller ppp_traveller_SyncErrors {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("qm_rclegislation_SyncErrors")]
+    public qm_rclegislation qm_rclegislation_SyncErrors {
+        get {
+            return GetRelatedEntity<qm_rclegislation>("qm_rclegislation_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("qm_rclegislation_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("qm_tylegislationcharacteristic_SyncErrors")]
+    public qm_tylegislationcharacteristic qm_tylegislationcharacteristic_SyncErrors {
+        get {
+            return GetRelatedEntity<qm_tylegislationcharacteristic>("qm_tylegislationcharacteristic_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("qm_tylegislationcharacteristic_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("qm_tylegislationsource_SyncErrors")]
+    public qm_tylegislationsource qm_tylegislationsource_SyncErrors {
+        get {
+            return GetRelatedEntity<qm_tylegislationsource>("qm_tylegislationsource_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("qm_tylegislationsource_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("qm_tylegislationtype_SyncErrors")]
+    public qm_tylegislationtype qm_tylegislationtype_SyncErrors {
+        get {
+            return GetRelatedEntity<qm_tylegislationtype>("qm_tylegislationtype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("qm_tylegislationtype_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_country_SyncErrors")]
+    public tc_Country tc_country_SyncErrors {
+        get {
+            return GetRelatedEntity<tc_Country>("tc_country_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("tc_country_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_province_SyncErrors")]
+    public tc_Province tc_province_SyncErrors {
+        get {
+            return GetRelatedEntity<tc_Province>("tc_province_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("tc_province_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_tcfiscalperiod_SyncErrors")]
+    public tc_TCFiscalPeriod tc_tcfiscalperiod_SyncErrors {
+        get {
+            return GetRelatedEntity<tc_TCFiscalPeriod>("tc_tcfiscalperiod_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("tc_tcfiscalperiod_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_tcfiscalquarter_SyncErrors")]
+    public tc_TCFiscalQuarter tc_tcfiscalquarter_SyncErrors {
+        get {
+            return GetRelatedEntity<tc_TCFiscalQuarter>("tc_tcfiscalquarter_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("tc_tcfiscalquarter_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_tcfiscalyear_SyncErrors")]
+    public tc_TCFiscalYear tc_tcfiscalyear_SyncErrors {
+        get {
+            return GetRelatedEntity<tc_TCFiscalYear>("tc_tcfiscalyear_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("tc_tcfiscalyear_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("tc_tcmonth_SyncErrors")]
+    public tc_TCMonth tc_tcmonth_SyncErrors {
+        get {
+            return GetRelatedEntity<tc_TCMonth>("tc_tcmonth_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("tc_tcmonth_SyncErrors", null, value);
+        }
+    }
+    
+    public static SyncError Retrieve(IOrganizationService service, Guid id, params Expression<Func<SyncError,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
 }
@@ -44819,6 +48281,36 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("SystemUser_ProcessSessions")]
+    public IEnumerable<ProcessSession> SystemUser_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("SystemUser_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("SystemUser_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("SystemUser_SyncError")]
+    public IEnumerable<SyncError> SystemUser_SyncError {
+        get {
+            return GetRelatedEntities<SyncError>("SystemUser_SyncError", null);
+        }
+        set {
+            SetRelatedEntities("SystemUser_SyncError", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("SystemUser_SyncErrors")]
+    public IEnumerable<SyncError> SystemUser_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("SystemUser_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("SystemUser_SyncErrors", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("contact_owning_user")]
     public IEnumerable<Contact> contact_owning_user {
         get {
@@ -46689,6 +50181,46 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("lk_ovs_facility_createdby")]
+    public IEnumerable<ovs_Facility> lk_ovs_facility_createdby {
+        get {
+            return GetRelatedEntities<ovs_Facility>("lk_ovs_facility_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ovs_facility_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ovs_facility_createdonbehalfby")]
+    public IEnumerable<ovs_Facility> lk_ovs_facility_createdonbehalfby {
+        get {
+            return GetRelatedEntities<ovs_Facility>("lk_ovs_facility_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ovs_facility_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ovs_facility_modifiedby")]
+    public IEnumerable<ovs_Facility> lk_ovs_facility_modifiedby {
+        get {
+            return GetRelatedEntities<ovs_Facility>("lk_ovs_facility_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ovs_facility_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ovs_facility_modifiedonbehalfby")]
+    public IEnumerable<ovs_Facility> lk_ovs_facility_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<ovs_Facility>("lk_ovs_facility_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ovs_facility_modifiedonbehalfby", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("lk_ovs_finding_createdby")]
     public IEnumerable<ovs_Finding> lk_ovs_finding_createdby {
         get {
@@ -47046,6 +50578,126 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("lk_phonecall_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ppp_traveller_createdby")]
+    public IEnumerable<ppp_Traveller> lk_ppp_traveller_createdby {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("lk_ppp_traveller_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ppp_traveller_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ppp_traveller_createdonbehalfby")]
+    public IEnumerable<ppp_Traveller> lk_ppp_traveller_createdonbehalfby {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("lk_ppp_traveller_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ppp_traveller_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ppp_traveller_modifiedby")]
+    public IEnumerable<ppp_Traveller> lk_ppp_traveller_modifiedby {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("lk_ppp_traveller_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ppp_traveller_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ppp_traveller_modifiedonbehalfby")]
+    public IEnumerable<ppp_Traveller> lk_ppp_traveller_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("lk_ppp_traveller_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ppp_traveller_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsession_canceledby")]
+    public IEnumerable<ProcessSession> lk_processsession_canceledby {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsession_canceledby", null);
+        }
+        set {
+            SetRelatedEntities("lk_processsession_canceledby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsession_completedby")]
+    public IEnumerable<ProcessSession> lk_processsession_completedby {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsession_completedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_processsession_completedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsession_createdby")]
+    public IEnumerable<ProcessSession> lk_processsession_createdby {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsession_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_processsession_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsession_executedby")]
+    public IEnumerable<ProcessSession> lk_processsession_executedby {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsession_executedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_processsession_executedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsession_modifiedby")]
+    public IEnumerable<ProcessSession> lk_processsession_modifiedby {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsession_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_processsession_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsession_startedby")]
+    public IEnumerable<ProcessSession> lk_processsession_startedby {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsession_startedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_processsession_startedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsessionbase_createdonbehalfby")]
+    public IEnumerable<ProcessSession> lk_processsessionbase_createdonbehalfby {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsessionbase_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_processsessionbase_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_processsessionbase_modifiedonbehalfby")]
+    public IEnumerable<ProcessSession> lk_processsessionbase_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<ProcessSession>("lk_processsessionbase_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_processsessionbase_modifiedonbehalfby", null, value);
         }
     }
     
@@ -47489,6 +51141,46 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("lk_syncerrorbase_createdby")]
+    public IEnumerable<SyncError> lk_syncerrorbase_createdby {
+        get {
+            return GetRelatedEntities<SyncError>("lk_syncerrorbase_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_syncerrorbase_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_syncerrorbase_createdonbehalfby")]
+    public IEnumerable<SyncError> lk_syncerrorbase_createdonbehalfby {
+        get {
+            return GetRelatedEntities<SyncError>("lk_syncerrorbase_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_syncerrorbase_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_syncerrorbase_modifiedby")]
+    public IEnumerable<SyncError> lk_syncerrorbase_modifiedby {
+        get {
+            return GetRelatedEntities<SyncError>("lk_syncerrorbase_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_syncerrorbase_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_syncerrorbase_modifiedonbehalfby")]
+    public IEnumerable<SyncError> lk_syncerrorbase_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<SyncError>("lk_syncerrorbase_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_syncerrorbase_modifiedonbehalfby", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("lk_task_createdby")]
     public IEnumerable<Task> lk_task_createdby {
         get {
@@ -47566,6 +51258,46 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("lk_tc_country_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_tc_province_createdby")]
+    public IEnumerable<tc_Province> lk_tc_province_createdby {
+        get {
+            return GetRelatedEntities<tc_Province>("lk_tc_province_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_tc_province_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_tc_province_createdonbehalfby")]
+    public IEnumerable<tc_Province> lk_tc_province_createdonbehalfby {
+        get {
+            return GetRelatedEntities<tc_Province>("lk_tc_province_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_tc_province_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_tc_province_modifiedby")]
+    public IEnumerable<tc_Province> lk_tc_province_modifiedby {
+        get {
+            return GetRelatedEntities<tc_Province>("lk_tc_province_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_tc_province_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_tc_province_modifiedonbehalfby")]
+    public IEnumerable<tc_Province> lk_tc_province_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<tc_Province>("lk_tc_province_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_tc_province_modifiedonbehalfby", null, value);
         }
     }
     
@@ -48371,6 +52103,16 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("user_ovs_facility")]
+    public IEnumerable<ovs_Facility> user_ovs_facility {
+        get {
+            return GetRelatedEntities<ovs_Facility>("user_ovs_facility", null);
+        }
+        set {
+            SetRelatedEntities("user_ovs_facility", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("user_ovs_finding")]
     public IEnumerable<ovs_Finding> user_ovs_finding {
         get {
@@ -48461,6 +52203,16 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("user_ppp_traveller")]
+    public IEnumerable<ppp_Traveller> user_ppp_traveller {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("user_ppp_traveller", null);
+        }
+        set {
+            SetRelatedEntities("user_ppp_traveller", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("user_recurringappointmentmaster")]
     public IEnumerable<RecurringAppointmentMaster> user_recurringappointmentmaster {
         get {
@@ -48488,6 +52240,16 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("user_tc_country", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("user_tc_province")]
+    public IEnumerable<tc_Province> user_tc_province {
+        get {
+            return GetRelatedEntities<tc_Province>("user_tc_province", null);
+        }
+        set {
+            SetRelatedEntities("user_tc_province", null, value);
         }
     }
     
@@ -49409,6 +53171,26 @@ public partial class Task : ExtendedEntity<TaskState, Task_StatusCode> {
         }
     }
     
+    [RelationshipSchemaName("Task_ProcessSessions")]
+    public IEnumerable<ProcessSession> Task_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Task_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Task_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Task_SyncErrors")]
+    public IEnumerable<SyncError> Task_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Task_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Task_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("activityid")]
     [RelationshipSchemaName("activity_pointer_task")]
     public ActivityPointer activity_pointer_task {
@@ -49670,6 +53452,17 @@ public partial class Task : ExtendedEntity<TaskState, Task_StatusCode> {
         }
         set {
             SetRelatedEntity("msdyn_workorderservicetask_Tasks", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_Tasks")]
+    public ppp_Traveller ppp_traveller_Tasks {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_Tasks", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_Tasks", null, value);
         }
     }
     
@@ -50056,6 +53849,26 @@ public partial class Territory : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("Territory_ProcessSessions")]
+    public IEnumerable<ProcessSession> Territory_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Territory_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Territory_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Territory_SyncErrors")]
+    public IEnumerable<SyncError> Territory_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Territory_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Territory_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("createdonbehalfby")]
     [RelationshipSchemaName("lk_territory_createdonbehalfby")]
     public SystemUser lk_territory_createdonbehalfby {
@@ -50188,6 +54001,16 @@ public partial class Territory : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("ts_msdyn_FunctionalLocation_Region_Territory", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_Finding_Region_Territory")]
+    public IEnumerable<ovs_Finding> ts_ovs_Finding_Region_Territory {
+        get {
+            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_Region_Territory", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_Finding_Region_Territory", null, value);
         }
     }
     
@@ -50781,6 +54604,26 @@ public partial class msdyn_FunctionalLocation : ExtendedEntity<msdyn_FunctionalL
         }
     }
     
+    [RelationshipSchemaName("msdyn_functionallocation_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_functionallocation_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_functionallocation_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_functionallocation_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_functionallocation_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_functionallocation_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_functionallocation_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_functionallocation_SyncErrors", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_msdyn_functionallocation_account")]
     public IEnumerable<Account> msdyn_msdyn_functionallocation_account {
         get {
@@ -50840,6 +54683,16 @@ public partial class msdyn_FunctionalLocation : ExtendedEntity<msdyn_FunctionalL
         }
         set {
             SetRelatedEntity("ts_msdyn_FunctionalLocation_Region_Territory", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_msdyn_workorder_Site_msdyn_FunctionalLoca")]
+    public IEnumerable<msdyn_workorder> ts_msdyn_workorder_Site_msdyn_FunctionalLoca {
+        get {
+            return GetRelatedEntities<msdyn_workorder>("ts_msdyn_workorder_Site_msdyn_FunctionalLoca", null);
+        }
+        set {
+            SetRelatedEntities("ts_msdyn_workorder_Site_msdyn_FunctionalLoca", null, value);
         }
     }
     
@@ -51615,6 +55468,16 @@ public partial class msdyn_agreement : ExtendedEntity<msdyn_agreementState, msdy
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreement_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_agreement_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_agreement_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreement_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_agreement_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_agreement_RecurringAppointmentMasters {
         get {
@@ -51632,6 +55495,16 @@ public partial class msdyn_agreement : ExtendedEntity<msdyn_agreementState, msdy
         }
         set {
             SetRelatedEntities("msdyn_agreement_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreement_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_agreement_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_agreement_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreement_SyncErrors", null, value);
         }
     }
     
@@ -52337,6 +56210,16 @@ public partial class msdyn_agreementbookingproduct : ExtendedEntity<msdyn_agreem
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_agreementbookingproduct_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_agreementbookingproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingproduct_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_agreementbookingproduct_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_agreementbookingproduct_RecurringAppointmentMasters {
         get {
@@ -52354,6 +56237,16 @@ public partial class msdyn_agreementbookingproduct : ExtendedEntity<msdyn_agreem
         }
         set {
             SetRelatedEntities("msdyn_agreementbookingproduct_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_agreementbookingproduct_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_agreementbookingproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingproduct_SyncErrors", null, value);
         }
     }
     
@@ -53056,6 +56949,16 @@ public partial class msdyn_agreementbookingservice : ExtendedEntity<msdyn_agreem
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreementbookingservice_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_agreementbookingservice_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_agreementbookingservice_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingservice_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_agreementbookingservice_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_agreementbookingservice_RecurringAppointmentMasters {
         get {
@@ -53073,6 +56976,16 @@ public partial class msdyn_agreementbookingservice : ExtendedEntity<msdyn_agreem
         }
         set {
             SetRelatedEntities("msdyn_agreementbookingservice_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreementbookingservice_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_agreementbookingservice_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_agreementbookingservice_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingservice_SyncErrors", null, value);
         }
     }
     
@@ -53688,6 +57601,16 @@ public partial class msdyn_agreementinvoiceproduct : ExtendedEntity<msdyn_agreem
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_agreementinvoiceproduct_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_agreementinvoiceproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementinvoiceproduct_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_agreementinvoiceproduct_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_agreementinvoiceproduct_RecurringAppointmentMasters {
         get {
@@ -53705,6 +57628,16 @@ public partial class msdyn_agreementinvoiceproduct : ExtendedEntity<msdyn_agreem
         }
         set {
             SetRelatedEntities("msdyn_agreementinvoiceproduct_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_agreementinvoiceproduct_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_agreementinvoiceproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementinvoiceproduct_SyncErrors", null, value);
         }
     }
     
@@ -54318,6 +58251,26 @@ public partial class msdyn_bookingjournal : ExtendedEntity<msdyn_bookingjournalS
         }
         set {
             SetRelatedEntity("msdyn_bookableresourcebooking_msdyn_bookingjournal_Booking", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingjournal_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_bookingjournal_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_bookingjournal_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingjournal_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingjournal_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_bookingjournal_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_bookingjournal_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingjournal_SyncErrors", null, value);
         }
     }
     
@@ -55074,6 +59027,16 @@ public partial class msdyn_customerasset : ExtendedEntity<msdyn_customerassetSta
         }
     }
     
+    [RelationshipSchemaName("msdyn_customerasset_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_customerasset_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_customerasset_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_customerasset_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_customerasset_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_customerasset_RecurringAppointmentMasters {
         get {
@@ -55091,6 +59054,16 @@ public partial class msdyn_customerasset : ExtendedEntity<msdyn_customerassetSta
         }
         set {
             SetRelatedEntities("msdyn_customerasset_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_customerasset_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_customerasset_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_customerasset_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_customerasset_SyncErrors", null, value);
         }
     }
     
@@ -55622,6 +59595,36 @@ public partial class msdyn_customerassetcategory : ExtendedEntity<msdyn_customer
         }
         set {
             SetRelatedEntity("lk_msdyn_customerassetcategory_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_customerassetcategory_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_customerassetcategory_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_customerassetcategory_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_customerassetcategory_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_customerassetcategory_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_customerassetcategory_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_customerassetcategory_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_customerassetcategory_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttype_OperationType_msdyn_cu")]
+    public IEnumerable<msdyn_incidenttype> msdyn_incidenttype_OperationType_msdyn_cu {
+        get {
+            return GetRelatedEntities<msdyn_incidenttype>("msdyn_incidenttype_OperationType_msdyn_cu", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttype_OperationType_msdyn_cu", null, value);
         }
     }
     
@@ -56160,6 +60163,20 @@ public partial class msdyn_incidenttype : ExtendedEntity<msdyn_incidenttypeState
         }
     }
     
+    /// <summary>
+    /// <para>Display Name: Operation Type</para>
+    /// </summary>
+    [AttributeLogicalName("ts_operationtype")]
+    [DisplayName("Operation Type")]
+    public EntityReference ts_OperationType {
+        get {
+            return GetAttributeValue<EntityReference>("ts_operationtype");
+        }
+        set {
+            SetAttributeValue("ts_operationtype", value);
+        }
+    }
+    
     [AttributeLogicalName("createdby")]
     [RelationshipSchemaName("lk_msdyn_incidenttype_createdby")]
     public SystemUser lk_msdyn_incidenttype_createdby {
@@ -56201,6 +60218,37 @@ public partial class msdyn_incidenttype : ExtendedEntity<msdyn_incidenttypeState
         }
         set {
             SetRelatedEntity("lk_msdyn_incidenttype_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_operationtype")]
+    [RelationshipSchemaName("msdyn_incidenttype_OperationType_msdyn_cu")]
+    public msdyn_customerassetcategory msdyn_incidenttype_OperationType_msdyn_cu {
+        get {
+            return GetRelatedEntity<msdyn_customerassetcategory>("msdyn_incidenttype_OperationType_msdyn_cu", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttype_OperationType_msdyn_cu", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttype_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_incidenttype_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_incidenttype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttype_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttype_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_incidenttype_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_incidenttype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttype_SyncErrors", null, value);
         }
     }
     
@@ -56791,6 +60839,16 @@ public partial class msdyn_incidenttypeproduct : ExtendedEntity<msdyn_incidentty
         }
     }
     
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_incidenttypeproduct_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_incidenttypeproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeproduct_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_incidenttypeproduct_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_incidenttypeproduct_RecurringAppointmentMasters {
         get {
@@ -56808,6 +60866,16 @@ public partial class msdyn_incidenttypeproduct : ExtendedEntity<msdyn_incidentty
         }
         set {
             SetRelatedEntities("msdyn_incidenttypeproduct_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_incidenttypeproduct_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_incidenttypeproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeproduct_SyncErrors", null, value);
         }
     }
     
@@ -57360,6 +61428,16 @@ public partial class msdyn_incidenttypeservice : ExtendedEntity<msdyn_incidentty
         }
     }
     
+    [RelationshipSchemaName("msdyn_incidenttypeservice_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_incidenttypeservice_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_incidenttypeservice_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeservice_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_incidenttypeservice_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_incidenttypeservice_RecurringAppointmentMasters {
         get {
@@ -57377,6 +61455,16 @@ public partial class msdyn_incidenttypeservice : ExtendedEntity<msdyn_incidentty
         }
         set {
             SetRelatedEntities("msdyn_incidenttypeservice_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttypeservice_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_incidenttypeservice_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_incidenttypeservice_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeservice_SyncErrors", null, value);
         }
     }
     
@@ -57898,6 +61986,26 @@ public partial class msdyn_incidenttypeservicetask : ExtendedEntity<msdyn_incide
         }
         set {
             SetRelatedEntity("lk_msdyn_incidenttypeservicetask_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttypeservicetask_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_incidenttypeservicetask_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_incidenttypeservicetask_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeservicetask_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttypeservicetask_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_incidenttypeservicetask_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_incidenttypeservicetask_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeservicetask_SyncErrors", null, value);
         }
     }
     
@@ -58524,6 +62632,26 @@ public partial class msdyn_orderinvoicingproduct : ExtendedEntity<msdyn_orderinv
         }
         set {
             SetRelatedEntity("lk_msdyn_orderinvoicingproduct_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_orderinvoicingproduct_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_orderinvoicingproduct_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_orderinvoicingproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_orderinvoicingproduct_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_orderinvoicingproduct_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_orderinvoicingproduct_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_orderinvoicingproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_orderinvoicingproduct_SyncErrors", null, value);
         }
     }
     
@@ -59534,6 +63662,16 @@ public partial class msdyn_purchaseorder : ExtendedEntity<msdyn_purchaseorderSta
         }
     }
     
+    [RelationshipSchemaName("msdyn_purchaseorder_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_purchaseorder_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_purchaseorder_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorder_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_purchaseorder_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_purchaseorder_RecurringAppointmentMasters {
         get {
@@ -59551,6 +63689,16 @@ public partial class msdyn_purchaseorder : ExtendedEntity<msdyn_purchaseorderSta
         }
         set {
             SetRelatedEntities("msdyn_purchaseorder_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_purchaseorder_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_purchaseorder_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_purchaseorder_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorder_SyncErrors", null, value);
         }
     }
     
@@ -60331,6 +64479,16 @@ public partial class msdyn_purchaseorderproduct : ExtendedEntity<msdyn_purchaseo
         }
     }
     
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_purchaseorderproduct_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_purchaseorderproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorderproduct_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_purchaseorderproduct_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_purchaseorderproduct_RecurringAppointmentMasters {
         get {
@@ -60348,6 +64506,16 @@ public partial class msdyn_purchaseorderproduct : ExtendedEntity<msdyn_purchaseo
         }
         set {
             SetRelatedEntities("msdyn_purchaseorderproduct_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_purchaseorderproduct_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_purchaseorderproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorderproduct_SyncErrors", null, value);
         }
     }
     
@@ -60893,6 +65061,26 @@ public partial class msdyn_quoteinvoicingproduct : ExtendedEntity<msdyn_quoteinv
         }
         set {
             SetRelatedEntity("msdyn_product_msdyn_quoteinvoicingproduct_Product", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_quoteinvoicingproduct_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_quoteinvoicingproduct_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_quoteinvoicingproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_quoteinvoicingproduct_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_quoteinvoicingproduct_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_quoteinvoicingproduct_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_quoteinvoicingproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_quoteinvoicingproduct_SyncErrors", null, value);
         }
     }
     
@@ -61679,6 +65867,16 @@ public partial class msdyn_rma : ExtendedEntity<msdyn_rmaState, msdyn_rma_status
         }
     }
     
+    [RelationshipSchemaName("msdyn_rma_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_rma_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_rma_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_rma_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_rma_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_rma_RecurringAppointmentMasters {
         get {
@@ -61696,6 +65894,16 @@ public partial class msdyn_rma : ExtendedEntity<msdyn_rmaState, msdyn_rma_status
         }
         set {
             SetRelatedEntities("msdyn_rma_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_rma_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_rma_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_rma_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_rma_SyncErrors", null, value);
         }
     }
     
@@ -62224,6 +66432,26 @@ public partial class msdyn_servicetasktype : ExtendedEntity<msdyn_servicetasktyp
         }
         set {
             SetRelatedEntities("msdyn_msdyn_servicetasktype_msdyn_workorderservicetask_TaskType", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_servicetasktype_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_servicetasktype_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_servicetasktype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_servicetasktype_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_servicetasktype_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_servicetasktype_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_servicetasktype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_servicetasktype_SyncErrors", null, value);
         }
     }
     
@@ -62756,6 +66984,16 @@ public partial class msdyn_timeoffrequest : ExtendedEntity<msdyn_timeoffrequestS
         }
     }
     
+    [RelationshipSchemaName("msdyn_timeoffrequest_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_timeoffrequest_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_timeoffrequest_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_timeoffrequest_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_timeoffrequest_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_timeoffrequest_RecurringAppointmentMasters {
         get {
@@ -62773,6 +67011,16 @@ public partial class msdyn_timeoffrequest : ExtendedEntity<msdyn_timeoffrequestS
         }
         set {
             SetRelatedEntities("msdyn_timeoffrequest_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_timeoffrequest_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_timeoffrequest_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_timeoffrequest_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_timeoffrequest_SyncErrors", null, value);
         }
     }
     
@@ -63572,10 +67820,10 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     
     /// <summary>
     /// <para>Primary incident type reported</para>
-    /// <para>Display Name: Primary Incident Type</para>
+    /// <para>Display Name: Activity Type</para>
     /// </summary>
     [AttributeLogicalName("msdyn_primaryincidenttype")]
-    [DisplayName("Primary Incident Type")]
+    [DisplayName("Activity Type")]
     public EntityReference msdyn_PrimaryIncidentType {
         get {
             return GetAttributeValue<EntityReference>("msdyn_primaryincidenttype");
@@ -63630,11 +67878,10 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     }
     
     /// <summary>
-    /// <para>Site of Oversight Activity</para>
-    /// <para>Display Name: Site</para>
+    /// <para>Display Name: Stakeholder</para>
     /// </summary>
     [AttributeLogicalName("msdyn_serviceaccount")]
-    [DisplayName("Site")]
+    [DisplayName("Stakeholder")]
     public EntityReference msdyn_ServiceAccount {
         get {
             return GetAttributeValue<EntityReference>("msdyn_serviceaccount");
@@ -64498,6 +68745,20 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
     }
     
+    /// <summary>
+    /// <para>Display Name: Site</para>
+    /// </summary>
+    [AttributeLogicalName("ts_site")]
+    [DisplayName("Site")]
+    public EntityReference ts_Site {
+        get {
+            return GetAttributeValue<EntityReference>("ts_site");
+        }
+        set {
+            SetAttributeValue("ts_site", value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_msdyn_workorder_msdyn_workorder_ParentWorkOrder", EntityRole.Referenced)]
     public IEnumerable<msdyn_workorder> Referencedmsdyn_msdyn_workorder_msdyn_workorder_ParentWorkOrder {
         get {
@@ -64848,6 +69109,16 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
     }
     
+    [RelationshipSchemaName("msdyn_workorder_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_workorder_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_workorder_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorder_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_workorder_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_workorder_RecurringAppointmentMasters {
         get {
@@ -64876,6 +69147,16 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
         set {
             SetRelatedEntities("msdyn_workorder_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorder_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_workorder_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_workorder_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorder_SyncErrors", null, value);
         }
     }
     
@@ -65062,6 +69343,17 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
         set {
             SetRelatedEntity("ts_msdyn_workorder_Country_tc_Country", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_site")]
+    [RelationshipSchemaName("ts_msdyn_workorder_Site_msdyn_FunctionalLoca")]
+    public msdyn_FunctionalLocation ts_msdyn_workorder_Site_msdyn_FunctionalLoca {
+        get {
+            return GetRelatedEntity<msdyn_FunctionalLocation>("ts_msdyn_workorder_Site_msdyn_FunctionalLoca", null);
+        }
+        set {
+            SetRelatedEntity("ts_msdyn_workorder_Site_msdyn_FunctionalLoca", null, value);
         }
     }
     
@@ -65767,6 +70059,16 @@ public partial class msdyn_workorderincident : ExtendedEntity<msdyn_workorderinc
         }
     }
     
+    [RelationshipSchemaName("msdyn_workorderincident_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_workorderincident_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_workorderincident_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderincident_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_workorderincident_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_workorderincident_RecurringAppointmentMasters {
         get {
@@ -65784,6 +70086,16 @@ public partial class msdyn_workorderincident : ExtendedEntity<msdyn_workorderinc
         }
         set {
             SetRelatedEntities("msdyn_workorderincident_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderincident_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_workorderincident_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_workorderincident_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderincident_SyncErrors", null, value);
         }
     }
     
@@ -67047,6 +71359,16 @@ public partial class msdyn_workorderproduct : ExtendedEntity<msdyn_workorderprod
         }
     }
     
+    [RelationshipSchemaName("msdyn_workorderproduct_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_workorderproduct_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_workorderproduct_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderproduct_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_workorderproduct_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_workorderproduct_RecurringAppointmentMasters {
         get {
@@ -67064,6 +71386,16 @@ public partial class msdyn_workorderproduct : ExtendedEntity<msdyn_workorderprod
         }
         set {
             SetRelatedEntities("msdyn_workorderproduct_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderproduct_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_workorderproduct_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_workorderproduct_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderproduct_SyncErrors", null, value);
         }
     }
     
@@ -68371,6 +72703,16 @@ public partial class msdyn_workorderservice : ExtendedEntity<msdyn_workorderserv
         }
     }
     
+    [RelationshipSchemaName("msdyn_workorderservice_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_workorderservice_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_workorderservice_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservice_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_workorderservice_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_workorderservice_RecurringAppointmentMasters {
         get {
@@ -68388,6 +72730,16 @@ public partial class msdyn_workorderservice : ExtendedEntity<msdyn_workorderserv
         }
         set {
             SetRelatedEntities("msdyn_workorderservice_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderservice_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_workorderservice_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_workorderservice_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservice_SyncErrors", null, value);
         }
     }
     
@@ -69251,6 +73603,16 @@ public partial class msdyn_workorderservicetask : ExtendedEntity<msdyn_workorder
         }
     }
     
+    [RelationshipSchemaName("msdyn_workorderservicetask_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_workorderservicetask_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_workorderservicetask_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservicetask_ProcessSession", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_workorderservicetask_RecurringAppointmentMasters")]
     public IEnumerable<RecurringAppointmentMaster> msdyn_workorderservicetask_RecurringAppointmentMasters {
         get {
@@ -69268,6 +73630,16 @@ public partial class msdyn_workorderservicetask : ExtendedEntity<msdyn_workorder
         }
         set {
             SetRelatedEntities("msdyn_workorderservicetask_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderservicetask_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_workorderservicetask_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_workorderservicetask_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservicetask_SyncErrors", null, value);
         }
     }
     
@@ -69716,6 +74088,26 @@ public partial class msdyn_workordersubstatus : ExtendedEntity<msdyn_workordersu
         }
         set {
             SetRelatedEntities("msdyn_msdyn_workordersubstatus_msdyn_workorder_Status", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workordersubstatus_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_workordersubstatus_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_workordersubstatus_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workordersubstatus_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workordersubstatus_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_workordersubstatus_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_workordersubstatus_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workordersubstatus_SyncErrors", null, value);
         }
     }
     
@@ -70180,6 +74572,26 @@ public partial class msdyn_workordertype : ExtendedEntity<msdyn_workordertypeSta
         }
     }
     
+    [RelationshipSchemaName("msdyn_workordertype_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_workordertype_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_workordertype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workordertype_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workordertype_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_workordertype_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_workordertype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workordertype_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_msdyn_workordertype")]
     public SystemUser user_msdyn_workordertype {
@@ -70608,6 +75020,36 @@ public partial class ovs_AirCarrier : ExtendedEntity<ovs_AirCarrierState, ovs_Ai
         }
     }
     
+    [RelationshipSchemaName("ovs_aircarrier_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_aircarrier_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_aircarrier_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_aircarrier_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_aircarrier_SyncErrors")]
+    public IEnumerable<SyncError> ovs_aircarrier_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_aircarrier_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_aircarrier_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_AirCarrier_ovs_AirCarrier")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_AirCarrier_ovs_AirCarrier {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_AirCarrier_ovs_AirCarrier", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_AirCarrier_ovs_AirCarrier", null, value);
+        }
+    }
+    
     [AttributeLogicalName("ts_country")]
     [RelationshipSchemaName("ts_ovs_AirCarrier_Country_tc_Country")]
     public tc_Country ts_ovs_AirCarrier_Country_tc_Country {
@@ -70631,6 +75073,717 @@ public partial class ovs_AirCarrier : ExtendedEntity<ovs_AirCarrierState, ovs_Ai
     }
     
     public static ovs_AirCarrier Retrieve(IOrganizationService service, Guid id, params Expression<Func<ovs_AirCarrier,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
+/// <para>Any area of land or water (including the frozen surface thereof) used for for the arrival, departure, movement or servicing of aircraft.</para>
+/// <para>Display Name: Aerodrome</para>
+/// </summary>
+[EntityLogicalName("ovs_facility")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ovs_Facility : ExtendedEntity<ovs_FacilityState, ovs_Facility_statuscode> {
+    
+    public const string EntityLogicalName = "ovs_facility";
+    
+    public const int EntityTypeCode = 10419;
+    
+    public ovs_Facility() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ovs_Facility(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("ovs_name");
+        }
+    }
+    
+    [AttributeLogicalName("ovs_facilityid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ovs_facilityid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for entity instances</para>
+    /// <para>Display Name: Aerodrome</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_facilityid")]
+    [DisplayName("Aerodrome")]
+    public Guid? ovs_FacilityId {
+        get {
+            return GetAttributeValue<Guid?>("ovs_facilityid");
+        }
+        set {
+            SetId("ovs_facilityid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who created the record.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was created.</para>
+    /// <para>Display Name: Created On</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Created On")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who created the record.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Sequence number of the import that created this record.</para>
+    /// <para>Display Name: Import Sequence Number</para>
+    /// </summary>
+    [AttributeLogicalName("importsequencenumber")]
+    [DisplayName("Import Sequence Number")]
+    [Range(-2147483648, 2147483647)]
+    public int? ImportSequenceNumber {
+        get {
+            return GetAttributeValue<int?>("importsequencenumber");
+        }
+        set {
+            SetAttributeValue("importsequencenumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who modified the record.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was modified.</para>
+    /// <para>Display Name: Modified On</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Modified On")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who modified the record.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time that the record was migrated.</para>
+    /// <para>Display Name: Record Created On</para>
+    /// </summary>
+    [AttributeLogicalName("overriddencreatedon")]
+    [DisplayName("Record Created On")]
+    public DateTime? OverriddenCreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("overriddencreatedon");
+        }
+        set {
+            SetAttributeValue("overriddencreatedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Owner Id</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the business unit that owns the record</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the team that owns the record.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the user that owns the record.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Time Zone Rule Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("timezoneruleversionnumber")]
+    [DisplayName("Time Zone Rule Version Number")]
+    [Range(-1, 2147483647)]
+    public int? TimeZoneRuleVersionNumber {
+        get {
+            return GetAttributeValue<int?>("timezoneruleversionnumber");
+        }
+        set {
+            SetAttributeValue("timezoneruleversionnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Time zone code that was in use when the record was created.</para>
+    /// <para>Display Name: UTC Conversion Time Zone Code</para>
+    /// </summary>
+    [AttributeLogicalName("utcconversiontimezonecode")]
+    [DisplayName("UTC Conversion Time Zone Code")]
+    [Range(-1, 2147483647)]
+    public int? UTCConversionTimeZoneCode {
+        get {
+            return GetAttributeValue<int?>("utcconversiontimezonecode");
+        }
+        set {
+            SetAttributeValue("utcconversiontimezonecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Version Number</para>
+    /// <para>Display Name: Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("versionnumber")]
+    [DisplayName("Version Number")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    /// <summary>
+    /// <para>The city where the aerodrome is located.</para>
+    /// <para>Display Name: City</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1city")]
+    [DisplayName("City")]
+    [MaxLength(100)]
+    public string ovs_Address1City {
+        get {
+            return GetAttributeValue<string>("ovs_address1city");
+        }
+        set {
+            SetAttributeValue("ovs_address1city", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The latitude associated with the aerodrome.</para>
+    /// <para>Display Name: Latitude</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1latitude")]
+    [DisplayName("Latitude")]
+    public double? ovs_Address1Latitude {
+        get {
+            return GetAttributeValue<double?>("ovs_address1latitude");
+        }
+        set {
+            SetAttributeValue("ovs_address1latitude", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The longitude associated with the aerodrome.</para>
+    /// <para>Display Name: Longitude</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1longitude")]
+    [DisplayName("Longitude")]
+    public double? ovs_Address1Longitude {
+        get {
+            return GetAttributeValue<double?>("ovs_address1longitude");
+        }
+        set {
+            SetAttributeValue("ovs_address1longitude", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The postal code associated with the aerodrome.</para>
+    /// <para>Display Name: Postal Code</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1postalcode")]
+    [DisplayName("Postal Code")]
+    [MaxLength(100)]
+    public string ovs_Address1PostalCode {
+        get {
+            return GetAttributeValue<string>("ovs_address1postalcode");
+        }
+        set {
+            SetAttributeValue("ovs_address1postalcode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The state or province where the aerodrome is located.</para>
+    /// <para>Display Name: Region</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1stateprovince")]
+    [DisplayName("Region")]
+    [MaxLength(100)]
+    public string ovs_Address1StateProvince {
+        get {
+            return GetAttributeValue<string>("ovs_address1stateprovince");
+        }
+        set {
+            SetAttributeValue("ovs_address1stateprovince", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The street address associated with the aerodrome.</para>
+    /// <para>Display Name: Address1: Street1</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1street1")]
+    [DisplayName("Address1: Street1")]
+    [MaxLength(100)]
+    public string ovs_Address1Street1 {
+        get {
+            return GetAttributeValue<string>("ovs_address1street1");
+        }
+        set {
+            SetAttributeValue("ovs_address1street1", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The class of aerodrome as designated by ICAO.</para>
+    /// <para>Display Name: Class</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_class")]
+    [DisplayName("Class")]
+    [Range(-2147483648, 2147483647)]
+    public int? ovs_Class {
+        get {
+            return GetAttributeValue<int?>("ovs_class");
+        }
+        set {
+            SetAttributeValue("ovs_class", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The country where the aerodrome is located.</para>
+    /// <para>Display Name: Country</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_countryid")]
+    [DisplayName("Country")]
+    public EntityReference ovs_Countryid {
+        get {
+            return GetAttributeValue<EntityReference>("ovs_countryid");
+        }
+        set {
+            SetAttributeValue("ovs_countryid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The elevation above sea level of the aerodrome.</para>
+    /// <para>Display Name: Elevation</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_elevation")]
+    [DisplayName("Elevation")]
+    [Range(-2147483648, 2147483647)]
+    public int? ovs_Elevation {
+        get {
+            return GetAttributeValue<int?>("ovs_elevation");
+        }
+        set {
+            SetAttributeValue("ovs_elevation", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The legal English name of the aerodrome.</para>
+    /// <para>Display Name: Aerodrome Name (English)</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_facilitynameenglish")]
+    [DisplayName("Aerodrome Name (English)")]
+    [MaxLength(250)]
+    public string ovs_FacilityNameEnglish {
+        get {
+            return GetAttributeValue<string>("ovs_facilitynameenglish");
+        }
+        set {
+            SetAttributeValue("ovs_facilitynameenglish", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The legal French name of the aerodrome.</para>
+    /// <para>Display Name: Aerodrome Name (French)</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_facilitynamefrench")]
+    [DisplayName("Aerodrome Name (French)")]
+    [MaxLength(250)]
+    public string ovs_FacilityNameFrench {
+        get {
+            return GetAttributeValue<string>("ovs_facilitynamefrench");
+        }
+        set {
+            SetAttributeValue("ovs_facilitynamefrench", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The category of facility associated with the location. </para>
+    /// <para>Display Name: Facility Type</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_facilitytype")]
+    [DisplayName("Facility Type")]
+    public ovs_facilitytype? ovs_FacilityType {
+        get {
+            return GetOptionSetValue<ovs_facilitytype>("ovs_facilitytype");
+        }
+        set {
+            SetOptionSetValue("ovs_facilitytype", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The unique airport code that designates each airport around the world.</para>
+    /// <para>Display Name: ICAO Code</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_icaocode")]
+    [DisplayName("ICAO Code")]
+    [MaxLength(100)]
+    public string ovs_ICAOCode {
+        get {
+            return GetAttributeValue<string>("ovs_icaocode");
+        }
+        set {
+            SetAttributeValue("ovs_icaocode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The name of the aerodrome.</para>
+    /// <para>Display Name: Aerodrome Name</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_name")]
+    [DisplayName("Aerodrome Name")]
+    [MaxLength(500)]
+    public string ovs_Name {
+        get {
+            return GetAttributeValue<string>("ovs_name");
+        }
+        set {
+            SetAttributeValue("ovs_name", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Status of the aerodrome</para>
+    /// <para>Display Name: Status</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("Status")]
+    public ovs_FacilityState? statecode {
+        get {
+            return GetOptionSetValue<ovs_FacilityState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for the status of the aerodrome</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public ovs_Facility_statuscode? statuscode {
+        get {
+            return GetOptionSetValue<ovs_Facility_statuscode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("lk_ovs_facility_createdby")]
+    public SystemUser lk_ovs_facility_createdby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ovs_facility_createdby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ovs_facility_createdby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("lk_ovs_facility_createdonbehalfby")]
+    public SystemUser lk_ovs_facility_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ovs_facility_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ovs_facility_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("lk_ovs_facility_modifiedby")]
+    public SystemUser lk_ovs_facility_modifiedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ovs_facility_modifiedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ovs_facility_modifiedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("lk_ovs_facility_modifiedonbehalfby")]
+    public SystemUser lk_ovs_facility_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ovs_facility_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ovs_facility_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ovs_countryid")]
+    [RelationshipSchemaName("ovs_Facility_ovs_Countryid_tc_Country")]
+    public tc_Country ovs_Facility_ovs_Countryid_tc_Country {
+        get {
+            return GetRelatedEntity<tc_Country>("ovs_Facility_ovs_Countryid_tc_Country", null);
+        }
+        set {
+            SetRelatedEntity("ovs_Facility_ovs_Countryid_tc_Country", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_facility_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_facility_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_facility_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_facility_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_facility_SyncErrors")]
+    public IEnumerable<SyncError> ovs_facility_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_facility_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_facility_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection1")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection1 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection1", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection10")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection10 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection10", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection10", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection2")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection2 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection2", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection2", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection3")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection3 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection3", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection3", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection4")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection4 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection4", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection4", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection5")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection5 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection5", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection5", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection6")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection6 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection6", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection6", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection7")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection7 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection7", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection7", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection8")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection8 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection8", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection8", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection9")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection9 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection9", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection9", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightDestination_ovs_Facili")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightDestination_ovs_Facili {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightDestination_ovs_Facili", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightDestination_ovs_Facili", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightOrigin_ovs_Facility")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightOrigin_ovs_Facility {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightOrigin_ovs_Facility", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightOrigin_ovs_Facility", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("owninguser")]
+    [RelationshipSchemaName("user_ovs_facility")]
+    public SystemUser user_ovs_facility {
+        get {
+            return GetRelatedEntity<SystemUser>("user_ovs_facility", null);
+        }
+        set {
+            SetRelatedEntity("user_ovs_facility", null, value);
+        }
+    }
+    
+    public static ovs_Facility Retrieve(IOrganizationService service, Guid id, params Expression<Func<ovs_Facility,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
 }
@@ -71024,6 +76177,62 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
     }
     
     /// <summary>
+    /// <para>Display Name: Country</para>
+    /// </summary>
+    [AttributeLogicalName("ts_country")]
+    [DisplayName("Country")]
+    public EntityReference ts_Country {
+        get {
+            return GetAttributeValue<EntityReference>("ts_country");
+        }
+        set {
+            SetAttributeValue("ts_country", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Operation Type</para>
+    /// </summary>
+    [AttributeLogicalName("ts_operationtype")]
+    [DisplayName("Operation Type")]
+    public EntityReference ts_OperationType {
+        get {
+            return GetAttributeValue<EntityReference>("ts_operationtype");
+        }
+        set {
+            SetAttributeValue("ts_operationtype", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Region</para>
+    /// </summary>
+    [AttributeLogicalName("ts_region")]
+    [DisplayName("Region")]
+    public EntityReference ts_Region {
+        get {
+            return GetAttributeValue<EntityReference>("ts_region");
+        }
+        set {
+            SetAttributeValue("ts_region", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Site</para>
+    /// </summary>
+    [AttributeLogicalName("ts_site")]
+    [DisplayName("Site")]
+    public EntityReference ts_Site {
+        get {
+            return GetAttributeValue<EntityReference>("ts_site");
+        }
+        set {
+            SetAttributeValue("ts_site", value);
+        }
+    }
+    
+    /// <summary>
     /// <para>Display Name: Provision Text En</para>
     /// </summary>
     [AttributeLogicalName("ts_findingprovisiontexten")]
@@ -71064,6 +76273,20 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
         set {
             SetAttributeValue("ts_findingmappingkey", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Stakeholder</para>
+    /// </summary>
+    [AttributeLogicalName("ts_regulatedentity")]
+    [DisplayName("Stakeholder")]
+    public EntityReference ts_regulatedentity {
+        get {
+            return GetAttributeValue<EntityReference>("ts_regulatedentity");
+        }
+        set {
+            SetAttributeValue("ts_regulatedentity", value);
         }
     }
     
@@ -71111,6 +76334,37 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
     }
     
+    [AttributeLogicalName("ts_regulatedentity")]
+    [RelationshipSchemaName("ovs_Finding_regulatedentity_Account")]
+    public Account ovs_Finding_regulatedentity_Account {
+        get {
+            return GetRelatedEntity<Account>("ovs_Finding_regulatedentity_Account", null);
+        }
+        set {
+            SetRelatedEntity("ovs_Finding_regulatedentity_Account", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_finding_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_finding_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_finding_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_finding_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_finding_SyncErrors")]
+    public IEnumerable<SyncError> ovs_finding_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_finding_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_finding_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("ovs_caseid")]
     [RelationshipSchemaName("ovs_incident_ovs_finding")]
     public Incident ovs_incident_ovs_finding {
@@ -71130,6 +76384,50 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
         set {
             SetRelatedEntity("ovs_msdyn_workorderservicetask_ovs_finding", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_country")]
+    [RelationshipSchemaName("ts_ovs_Finding_Country_tc_Country")]
+    public tc_Country ts_ovs_Finding_Country_tc_Country {
+        get {
+            return GetRelatedEntity<tc_Country>("ts_ovs_Finding_Country_tc_Country", null);
+        }
+        set {
+            SetRelatedEntity("ts_ovs_Finding_Country_tc_Country", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_operationtype")]
+    [RelationshipSchemaName("ts_ovs_Finding_OperationType_ovs_operationty")]
+    public ovs_operationtype ts_ovs_Finding_OperationType_ovs_operationty {
+        get {
+            return GetRelatedEntity<ovs_operationtype>("ts_ovs_Finding_OperationType_ovs_operationty", null);
+        }
+        set {
+            SetRelatedEntity("ts_ovs_Finding_OperationType_ovs_operationty", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_region")]
+    [RelationshipSchemaName("ts_ovs_Finding_Region_Territory")]
+    public Territory ts_ovs_Finding_Region_Territory {
+        get {
+            return GetRelatedEntity<Territory>("ts_ovs_Finding_Region_Territory", null);
+        }
+        set {
+            SetRelatedEntity("ts_ovs_Finding_Region_Territory", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_site")]
+    [RelationshipSchemaName("ts_ovs_Finding_Site_Account")]
+    public Account ts_ovs_Finding_Site_Account {
+        get {
+            return GetRelatedEntity<Account>("ts_ovs_Finding_Site_Account", null);
+        }
+        set {
+            SetRelatedEntity("ts_ovs_Finding_Site_Account", null, value);
         }
     }
     
@@ -71595,6 +76893,26 @@ public partial class ovs_Questionnaire : ExtendedEntity<ovs_QuestionnaireState, 
         }
     }
     
+    [RelationshipSchemaName("ovs_questionnaire_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_questionnaire_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_questionnaire_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_questionnaire_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_questionnaire_SyncErrors")]
+    public IEnumerable<SyncError> ovs_questionnaire_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_questionnaire_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_questionnaire_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_ovs_questionnaire")]
     public SystemUser user_ovs_questionnaire {
@@ -71987,6 +77305,26 @@ public partial class ovs_SiteType : ExtendedEntity<ovs_SiteTypeState, ovs_SiteTy
         }
         set {
             SetRelatedEntities("ovs_Account_SiteType_ovs_SiteType", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_sitetype_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_sitetype_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_sitetype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_sitetype_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_sitetype_SyncErrors")]
+    public IEnumerable<SyncError> ovs_sitetype_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_sitetype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_sitetype_SyncErrors", null, value);
         }
     }
     
@@ -72396,6 +77734,26 @@ public partial class ovs_TYRational : ExtendedEntity<ovs_TYRationalState, ovs_TY
         }
     }
     
+    [RelationshipSchemaName("ovs_tyrational_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_tyrational_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_tyrational_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_tyrational_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_tyrational_SyncErrors")]
+    public IEnumerable<SyncError> ovs_tyrational_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_tyrational_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_tyrational_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_ovs_tyrational")]
     public SystemUser user_ovs_tyrational {
@@ -72778,6 +78136,26 @@ public partial class ovs_lob : ExtendedEntity<ovs_lobState, ovs_lob_statuscode> 
         }
         set {
             SetRelatedEntity("lk_ovs_lob_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_lob_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_lob_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_lob_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_lob_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_lob_SyncErrors")]
+    public IEnumerable<SyncError> ovs_lob_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_lob_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_lob_SyncErrors", null, value);
         }
     }
     
@@ -73276,6 +78654,26 @@ public partial class ovs_operation : ExtendedEntity<ovs_operationState, ovs_oper
         }
     }
     
+    [RelationshipSchemaName("ovs_operation_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_operation_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_operation_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_operation_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_operation_SyncErrors")]
+    public IEnumerable<SyncError> ovs_operation_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_operation_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_operation_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("ovs_lobid")]
     [RelationshipSchemaName("ovs_ovs_lob_ovs_operation")]
     public ovs_lob ovs_ovs_lob_ovs_operation {
@@ -73725,6 +79123,26 @@ public partial class ovs_operationtype : ExtendedEntity<ovs_operationtypeState, 
         }
     }
     
+    [RelationshipSchemaName("ovs_operationtype_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_operationtype_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_operationtype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_operationtype_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_operationtype_SyncErrors")]
+    public IEnumerable<SyncError> ovs_operationtype_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_operationtype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_operationtype_SyncErrors", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("ovs_ovs_operationtype_ovs_operation")]
     public IEnumerable<ovs_operation> ovs_ovs_operationtype_ovs_operation {
         get {
@@ -73732,6 +79150,16 @@ public partial class ovs_operationtype : ExtendedEntity<ovs_operationtypeState, 
         }
         set {
             SetRelatedEntities("ovs_ovs_operationtype_ovs_operation", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_Finding_OperationType_ovs_operationty")]
+    public IEnumerable<ovs_Finding> ts_ovs_Finding_OperationType_ovs_operationty {
+        get {
+            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_OperationType_ovs_operationty", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_Finding_OperationType_ovs_operationty", null, value);
         }
     }
     
@@ -74156,6 +79584,26 @@ public partial class ovs_workorderservicetaskprovision : ExtendedEntity<ovs_work
         }
     }
     
+    [RelationshipSchemaName("ovs_workorderservicetaskprovision_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_workorderservicetaskprovision_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_workorderservicetaskprovision_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_workorderservicetaskprovision_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_workorderservicetaskprovision_SyncErrors")]
+    public IEnumerable<SyncError> ovs_workorderservicetaskprovision_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_workorderservicetaskprovision_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_workorderservicetaskprovision_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_ovs_workorderservicetaskprovision")]
     public SystemUser user_ovs_workorderservicetaskprovision {
@@ -74168,6 +79616,1865 @@ public partial class ovs_workorderservicetaskprovision : ExtendedEntity<ovs_work
     }
     
     public static ovs_workorderservicetaskprovision Retrieve(IOrganizationService service, Guid id, params Expression<Func<ovs_workorderservicetaskprovision,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
+/// <para>Entity represents the record to validate a traveller who may be prohibited from flying</para>
+/// <para>Display Name: Traveller Validation</para>
+/// </summary>
+[EntityLogicalName("ppp_traveller")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ppp_Traveller : ExtendedEntity<ppp_TravellerState, ppp_Traveller_statuscode> {
+    
+    public const string EntityLogicalName = "ppp_traveller";
+    
+    public const int EntityTypeCode = 10420;
+    
+    public ppp_Traveller() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ppp_Traveller(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("ppp_name");
+        }
+    }
+    
+    [AttributeLogicalName("ppp_travellerid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ppp_travellerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for entity instances</para>
+    /// <para>Display Name: Traveller</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_travellerid")]
+    [DisplayName("Traveller")]
+    public Guid? ppp_TravellerId {
+        get {
+            return GetAttributeValue<Guid?>("ppp_travellerid");
+        }
+        set {
+            SetId("ppp_travellerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who created the record.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was created.</para>
+    /// <para>Display Name: Created On</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Created On")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who created the record.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Sequence number of the import that created this record.</para>
+    /// <para>Display Name: Import Sequence Number</para>
+    /// </summary>
+    [AttributeLogicalName("importsequencenumber")]
+    [DisplayName("Import Sequence Number")]
+    [Range(-2147483648, 2147483647)]
+    public int? ImportSequenceNumber {
+        get {
+            return GetAttributeValue<int?>("importsequencenumber");
+        }
+        set {
+            SetAttributeValue("importsequencenumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who modified the record.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was modified.</para>
+    /// <para>Display Name: Modified On</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Modified On")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who modified the record.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time on which the record was created.</para>
+    /// <para>Display Name: Record Created On</para>
+    /// </summary>
+    [AttributeLogicalName("overriddencreatedon")]
+    [DisplayName("Record Created On")]
+    public DateTime? OverriddenCreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("overriddencreatedon");
+        }
+        set {
+            SetAttributeValue("overriddencreatedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Owner Id</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the business unit that owns the record</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the team that owns the record.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the user that owns the record.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Time Zone Rule Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("timezoneruleversionnumber")]
+    [DisplayName("Time Zone Rule Version Number")]
+    [Range(-1, 2147483647)]
+    public int? TimeZoneRuleVersionNumber {
+        get {
+            return GetAttributeValue<int?>("timezoneruleversionnumber");
+        }
+        set {
+            SetAttributeValue("timezoneruleversionnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Time zone code that was in use when the record was created.</para>
+    /// <para>Display Name: UTC Conversion Time Zone Code</para>
+    /// </summary>
+    [AttributeLogicalName("utcconversiontimezonecode")]
+    [DisplayName("UTC Conversion Time Zone Code")]
+    [Range(-1, 2147483647)]
+    public int? UTCConversionTimeZoneCode {
+        get {
+            return GetAttributeValue<int?>("utcconversiontimezonecode");
+        }
+        set {
+            SetAttributeValue("utcconversiontimezonecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Version Number</para>
+    /// <para>Display Name: Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("versionnumber")]
+    [DisplayName("Version Number")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Air Carrier associated with the Traveller's travel itinerary.</para>
+    /// <para>Display Name: Air Carrier</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_aircarrier")]
+    [DisplayName("Air Carrier")]
+    public EntityReference ppp_AirCarrier {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_aircarrier");
+        }
+        set {
+            SetAttributeValue("ppp_aircarrier", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The number of pieces of carry on baggage in the possession of the Traveller.</para>
+    /// <para>Display Name: Baggage Carry On</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_baggagecarryon")]
+    [DisplayName("Baggage Carry On")]
+    [Range(0, 1000)]
+    public int? ppp_BaggageCarryOn {
+        get {
+            return GetAttributeValue<int?>("ppp_baggagecarryon");
+        }
+        set {
+            SetAttributeValue("ppp_baggagecarryon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The number of pieces of checked baggage in the possession of the Traveller.</para>
+    /// <para>Display Name: Baggage Checked</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_baggagechecked")]
+    [DisplayName("Baggage Checked")]
+    [Range(0, 1000)]
+    public int? ppp_BaggageChecked {
+        get {
+            return GetAttributeValue<int?>("ppp_baggagechecked");
+        }
+        set {
+            SetAttributeValue("ppp_baggagechecked", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The type of record to be documented by the analyst.</para>
+    /// <para>Display Name: Call Type</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_calltype")]
+    [DisplayName("Call Type")]
+    public ppp_calltype? ppp_CallType {
+        get {
+            return GetOptionSetValue<ppp_calltype>("ppp_calltype");
+        }
+        set {
+            SetOptionSetValue("ppp_calltype", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Details of the Case Brief - Other Measure response.</para>
+    /// <para>Display Name: Case Brief Option Other</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_casebriefoptionother")]
+    [DisplayName("Case Brief Option Other")]
+    [MaxLength(4000)]
+    public string ppp_CaseBriefOptionOther {
+        get {
+            return GetAttributeValue<string>("ppp_casebriefoptionother");
+        }
+        set {
+            SetAttributeValue("ppp_casebriefoptionother", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The list of case brief recommendations that an analyst may select from.</para>
+    /// <para>Display Name: Case Brief Recommendation</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_casebriefoptions")]
+    [DisplayName("Case Brief Recommendation")]
+    public ppp_casebriefoptions? ppp_CaseBriefOptions {
+        get {
+            return GetOptionSetValue<ppp_casebriefoptions>("ppp_casebriefoptions");
+        }
+        set {
+            SetOptionSetValue("ppp_casebriefoptions", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The id/number(s) of the Traveller's checked baggage.</para>
+    /// <para>Display Name: Checked Baggage Tag Number</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_checkedbaggagetagnumber")]
+    [DisplayName("Checked Baggage Tag Number")]
+    [MaxLength(1000)]
+    public string ppp_CheckedBaggageTagNumber {
+        get {
+            return GetAttributeValue<string>("ppp_checkedbaggagetagnumber");
+        }
+        set {
+            SetAttributeValue("ppp_checkedbaggagetagnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's citizenship.</para>
+    /// <para>Display Name: Citizenship</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_citizenship")]
+    [DisplayName("Citizenship")]
+    public EntityReference ppp_Citizenship {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_citizenship");
+        }
+        set {
+            SetAttributeValue("ppp_citizenship", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The date on which the analyst closes the record.</para>
+    /// <para>Display Name: Closed Date</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_closeddate")]
+    [DisplayName("Closed Date")]
+    public DateTime? ppp_ClosedDate {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_closeddate");
+        }
+        set {
+            SetAttributeValue("ppp_closeddate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's date of birth.</para>
+    /// <para>Display Name: Date of Birth</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_dateofbirth")]
+    [DisplayName("Date of Birth")]
+    public DateTime? ppp_DateofBirth {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_dateofbirth");
+        }
+        set {
+            SetAttributeValue("ppp_dateofbirth", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Details of the decision - Other Measure response.</para>
+    /// <para>Display Name: Direction Option Other</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_directionoptionother")]
+    [DisplayName("Direction Option Other")]
+    [MaxLength(4000)]
+    public string ppp_DirectionOptionOther {
+        get {
+            return GetAttributeValue<string>("ppp_directionoptionother");
+        }
+        set {
+            SetAttributeValue("ppp_directionoptionother", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The list of decisions that an analyst must select from.</para>
+    /// <para>Display Name: Direction Options</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_directionoptions")]
+    [DisplayName("Direction Options")]
+    public ppp_directionoptions? ppp_DirectionOptions {
+        get {
+            return GetOptionSetValue<ppp_directionoptions>("ppp_directionoptions");
+        }
+        set {
+            SetOptionSetValue("ppp_directionoptions", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The time at which the analyst documents the decision.</para>
+    /// <para>Display Name: Direction Time</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_directiontime")]
+    [DisplayName("Direction Time")]
+    public DateTime? ppp_DirectionTime {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_directiontime");
+        }
+        set {
+            SetAttributeValue("ppp_directiontime", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The time at which the record is closed.</para>
+    /// <para>Display Name: Final Status Time</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_finalstatustime")]
+    [DisplayName("Final Status Time")]
+    public DateTime? ppp_FinalStatusTime {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_finalstatustime");
+        }
+        set {
+            SetAttributeValue("ppp_finalstatustime", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's first name.</para>
+    /// <para>Display Name: First Name</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_firstname")]
+    [DisplayName("First Name")]
+    [MaxLength(100)]
+    public string ppp_FirstName {
+        get {
+            return GetAttributeValue<string>("ppp_firstname");
+        }
+        set {
+            SetAttributeValue("ppp_firstname", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's first flight connection.</para>
+    /// <para>Display Name: Flight Connection 1</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnection1")]
+    [DisplayName("Flight Connection 1")]
+    public EntityReference ppp_FlightConnection1 {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightconnection1");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnection1", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's  tenth flight connection.</para>
+    /// <para>Display Name: Flight Connection 10</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnection10")]
+    [DisplayName("Flight Connection 10")]
+    public EntityReference ppp_FlightConnection10 {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightconnection10");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnection10", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's second flight connection.</para>
+    /// <para>Display Name: Flight Connection 2</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnection2")]
+    [DisplayName("Flight Connection 2")]
+    public EntityReference ppp_FlightConnection2 {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightconnection2");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnection2", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's third flight connection.</para>
+    /// <para>Display Name: Flight Connection 3</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnection3")]
+    [DisplayName("Flight Connection 3")]
+    public EntityReference ppp_FlightConnection3 {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightconnection3");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnection3", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's fourth flight connection.</para>
+    /// <para>Display Name: Flight Connection 4</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnection4")]
+    [DisplayName("Flight Connection 4")]
+    public EntityReference ppp_FlightConnection4 {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightconnection4");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnection4", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's fifth flight connection.</para>
+    /// <para>Display Name: Flight Connection 5</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnection5")]
+    [DisplayName("Flight Connection 5")]
+    public EntityReference ppp_FlightConnection5 {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightconnection5");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnection5", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's sixth flight connection.</para>
+    /// <para>Display Name: Flight Connection 6</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnection6")]
+    [DisplayName("Flight Connection 6")]
+    public EntityReference ppp_FlightConnection6 {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightconnection6");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnection6", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's seventh flight connection.</para>
+    /// <para>Display Name: Flight Connection 7</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnection7")]
+    [DisplayName("Flight Connection 7")]
+    public EntityReference ppp_FlightConnection7 {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightconnection7");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnection7", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's eighth flight connection.</para>
+    /// <para>Display Name: Flight Connection 8</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnection8")]
+    [DisplayName("Flight Connection 8")]
+    public EntityReference ppp_FlightConnection8 {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightconnection8");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnection8", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's ninth flight connection.</para>
+    /// <para>Display Name: Flight Connection 9</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnection9")]
+    [DisplayName("Flight Connection 9")]
+    public EntityReference ppp_FlightConnection9 {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightconnection9");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnection9", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The number of the Traveller's flight connections. </para>
+    /// <para>Display Name: Flight Connection Count</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightconnectioncount")]
+    [DisplayName("Flight Connection Count")]
+    [Range(0, 10)]
+    public int? ppp_FlightConnectionCount {
+        get {
+            return GetAttributeValue<int?>("ppp_flightconnectioncount");
+        }
+        set {
+            SetAttributeValue("ppp_flightconnectioncount", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Aerodrome identified as the Traveller's final destination.</para>
+    /// <para>Display Name: Flight Destination</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightdestination")]
+    [DisplayName("Flight Destination")]
+    public EntityReference ppp_FlightDestination {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightdestination");
+        }
+        set {
+            SetAttributeValue("ppp_flightdestination", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's departure flight number.</para>
+    /// <para>Display Name: Flight Number</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightnumber")]
+    [DisplayName("Flight Number")]
+    [MaxLength(20)]
+    public string ppp_FlightNumber {
+        get {
+            return GetAttributeValue<string>("ppp_flightnumber");
+        }
+        set {
+            SetAttributeValue("ppp_flightnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Aerodrome identified as the Traveller's departure location.</para>
+    /// <para>Display Name: Flight Origin</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightorigin")]
+    [DisplayName("Flight Origin")]
+    public EntityReference ppp_FlightOrigin {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_flightorigin");
+        }
+        set {
+            SetAttributeValue("ppp_flightorigin", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's departure date of their Origin Flight. </para>
+    /// <para>Display Name: Flight Origin Date</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightorigindate")]
+    [DisplayName("Flight Origin Date")]
+    public DateTime? ppp_FlightOriginDate {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_flightorigindate");
+        }
+        set {
+            SetAttributeValue("ppp_flightorigindate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The estimated time of departure associated with the Traveller's flight.</para>
+    /// <para>Display Name: Flight Origin Hour</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightoriginhour")]
+    [DisplayName("Flight Origin Hour")]
+    [Range(0, 23)]
+    public int? ppp_FlightOriginHour {
+        get {
+            return GetAttributeValue<int?>("ppp_flightoriginhour");
+        }
+        set {
+            SetAttributeValue("ppp_flightoriginhour", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The minute (0 -59) associated with the Traveller's intended initial flight departure.</para>
+    /// <para>Display Name: Flight Origin Minute</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightoriginminute")]
+    [DisplayName("Flight Origin Minute")]
+    [Range(0, 59)]
+    public int? ppp_FlightOriginMinute {
+        get {
+            return GetAttributeValue<int?>("ppp_flightoriginminute");
+        }
+        set {
+            SetAttributeValue("ppp_flightoriginminute", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The combination of Flight Origin Date, Flight Origin Hour and Flight Origin Minute associated with the Traveller's intended initial flight departure.</para>
+    /// <para>Display Name: Flight Origin Time</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_flightorigintime")]
+    [DisplayName("Flight Origin Time")]
+    public DateTime? ppp_FlightOriginTime {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_flightorigintime");
+        }
+        set {
+            SetAttributeValue("ppp_flightorigintime", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The  Traveller's gender.</para>
+    /// <para>Display Name: Gender</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_gender")]
+    [DisplayName("Gender")]
+    public ppp_gender? ppp_Gender {
+        get {
+            return GetOptionSetValue<ppp_gender>("ppp_gender");
+        }
+        set {
+            SetOptionSetValue("ppp_gender", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Country that issued the identification documentation presented by the Traveller.</para>
+    /// <para>Display Name: ID Country</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_idcountry")]
+    [DisplayName("ID Country")]
+    public EntityReference ppp_IDCountry {
+        get {
+            return GetAttributeValue<EntityReference>("ppp_idcountry");
+        }
+        set {
+            SetAttributeValue("ppp_idcountry", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Identification presented to the Air Carrier Representative by the Traveller.</para>
+    /// <para>Display Name: ID Presented</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_idsused")]
+    [DisplayName("ID Presented")]
+    public IEnumerable<ppp_idsused> ppp_IDsUsed {
+        get {
+            return GetOptionSetCollectionValue<ppp_idsused>("ppp_idsused");
+        }
+        set {
+            SetOptionSetCollectionValue("ppp_idsused", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Details regarding the identification provided by the Traveller.</para>
+    /// <para>Display Name: ID Details</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_iddetails")]
+    [DisplayName("ID Details")]
+    [MaxLength(100)]
+    public string ppp_Iddetails {
+        get {
+            return GetAttributeValue<string>("ppp_iddetails");
+        }
+        set {
+            SetAttributeValue("ppp_iddetails", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>An indicator as to whether the Traveller is present at the check-in counter.</para>
+    /// <para>Display Name: Is Present</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_ispresent")]
+    [DisplayName("Is Present")]
+    public bool? ppp_IsPresent {
+        get {
+            return GetAttributeValue<bool?>("ppp_ispresent");
+        }
+        set {
+            SetAttributeValue("ppp_ispresent", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The time at which the analyst indicates the Traveller is present at the check-in counter.</para>
+    /// <para>Display Name: Is Present Time</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_ispresenttime")]
+    [DisplayName("Is Present Time")]
+    public DateTime? ppp_IsPresentTime {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_ispresenttime");
+        }
+        set {
+            SetAttributeValue("ppp_ispresenttime", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's last known address.</para>
+    /// <para>Display Name: Last Known Address</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_lastknownaddress")]
+    [DisplayName("Last Known Address")]
+    [MaxLength(4000)]
+    public string ppp_LastKnownAddress {
+        get {
+            return GetAttributeValue<string>("ppp_lastknownaddress");
+        }
+        set {
+            SetAttributeValue("ppp_lastknownaddress", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's last name.</para>
+    /// <para>Display Name: Last Name</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_lastname")]
+    [DisplayName("Last Name")]
+    [MaxLength(100)]
+    public string ppp_LastName {
+        get {
+            return GetAttributeValue<string>("ppp_lastname");
+        }
+        set {
+            SetAttributeValue("ppp_lastname", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>An indication as to whether or not a Law Enforcement Agency was notified that a Traveller was denied boarding.</para>
+    /// <para>Display Name: Law Enforcement Agency Notified</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_lawenforcementagency")]
+    [DisplayName("Law Enforcement Agency Notified")]
+    public ppp_nominatingagencyadditional? ppp_LawEnforcementAgency {
+        get {
+            return GetOptionSetValue<ppp_nominatingagencyadditional>("ppp_lawenforcementagency");
+        }
+        set {
+            SetOptionSetValue("ppp_lawenforcementagency", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Details of the information provided to the Law Enforcement Agency.</para>
+    /// <para>Display Name: Law Enforcement Notified Details</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_lawenforcementnotifieddetails")]
+    [DisplayName("Law Enforcement Notified Details")]
+    [MaxLength(100)]
+    public string ppp_LawEnforcementNotifiedDetails {
+        get {
+            return GetAttributeValue<string>("ppp_lawenforcementnotifieddetails");
+        }
+        set {
+            SetAttributeValue("ppp_lawenforcementnotifieddetails", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>An indication as to whether the Traveller is a positive match.</para>
+    /// <para>Display Name: Match Found</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_matchfound")]
+    [DisplayName("Match Found")]
+    public ppp_matchfound? ppp_MatchFound {
+        get {
+            return GetOptionSetValue<ppp_matchfound>("ppp_matchfound");
+        }
+        set {
+            SetOptionSetValue("ppp_matchfound", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The time at which a positive match was identified.</para>
+    /// <para>Display Name: Match Found Time</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_matchfoundtime")]
+    [DisplayName("Match Found Time")]
+    public DateTime? ppp_MatchFoundTime {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_matchfoundtime");
+        }
+        set {
+            SetAttributeValue("ppp_matchfoundtime", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's middle name.</para>
+    /// <para>Display Name: Middle Name</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_middlename")]
+    [DisplayName("Middle Name")]
+    [MaxLength(100)]
+    public string ppp_MiddleName {
+        get {
+            return GetAttributeValue<string>("ppp_middlename");
+        }
+        set {
+            SetAttributeValue("ppp_middlename", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The number of minutes that the Traveller has been waiting in line, while a SATA check is being performed.</para>
+    /// <para>Display Name: Minutes Waiting</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_minuteswaiting")]
+    [DisplayName("Minutes Waiting")]
+    [Range(0, 10000)]
+    public int? ppp_MinutesWaiting {
+        get {
+            return GetAttributeValue<int?>("ppp_minuteswaiting");
+        }
+        set {
+            SetAttributeValue("ppp_minuteswaiting", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para> An indication as to whether the name provided by the Traveller is their primary name, or a variant/alias.</para>
+    /// <para>Display Name: Name Provided Options</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_nameprovidedoptions")]
+    [DisplayName("Name Provided Options")]
+    public ppp_nameprovidedoptions? ppp_NameProvidedOptions {
+        get {
+            return GetOptionSetValue<ppp_nameprovidedoptions>("ppp_nameprovidedoptions");
+        }
+        set {
+            SetOptionSetValue("ppp_nameprovidedoptions", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The time when a new Traveller Validation Record is created. </para>
+    /// <para>Display Name: New Record Time</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_newrecordtime")]
+    [DisplayName("New Record Time")]
+    public DateTime? ppp_NewRecordTime {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_newrecordtime");
+        }
+        set {
+            SetAttributeValue("ppp_newrecordtime", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>An indication as to whether or not the Nominating Agency provided additional information.</para>
+    /// <para>Display Name: Nominating Agency</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_nominatingagencyadditional")]
+    [DisplayName("Nominating Agency")]
+    public ppp_nominatingagencyadditional? ppp_NominatingAgencyAdditional {
+        get {
+            return GetOptionSetValue<ppp_nominatingagencyadditional>("ppp_nominatingagencyadditional");
+        }
+        set {
+            SetOptionSetValue("ppp_nominatingagencyadditional", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Details regarding additional Information provided by the Nominating Agency.</para>
+    /// <para>Display Name: Nominating Agency Notes</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_nominatingagencynotes")]
+    [DisplayName("Nominating Agency Notes")]
+    [MaxLength(4000)]
+    public string ppp_NominatingAgencyNotes {
+        get {
+            return GetAttributeValue<string>("ppp_nominatingagencynotes");
+        }
+        set {
+            SetAttributeValue("ppp_nominatingagencynotes", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Details regarding the Nominating Agency - Other Measure response.</para>
+    /// <para>Display Name: Nominating Agency Option Other</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_nominatingagencyoptionother")]
+    [DisplayName("Nominating Agency Option Other")]
+    [MaxLength(4000)]
+    public string ppp_NominatingAgencyOptionOther {
+        get {
+            return GetAttributeValue<string>("ppp_nominatingagencyoptionother");
+        }
+        set {
+            SetAttributeValue("ppp_nominatingagencyoptionother", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The list of options used to select the Nominating Agency Recommendation.</para>
+    /// <para>Display Name: Nominating Agency Options</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_nominatingagencyoptions")]
+    [DisplayName("Nominating Agency Options")]
+    public ppp_nominatingagencyoptions? ppp_NominatingAgencyOptions {
+        get {
+            return GetOptionSetValue<ppp_nominatingagencyoptions>("ppp_nominatingagencyoptions");
+        }
+        set {
+            SetOptionSetValue("ppp_nominatingagencyoptions", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>An indication as to whether or not there is additional Open Source information.</para>
+    /// <para>Display Name: Open Source</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_opensourceadditional")]
+    [DisplayName("Open Source")]
+    public ppp_opensourceadditional? ppp_OpenSourceAdditional {
+        get {
+            return GetOptionSetValue<ppp_opensourceadditional>("ppp_opensourceadditional");
+        }
+        set {
+            SetOptionSetValue("ppp_opensourceadditional", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Details of the Open Source information.</para>
+    /// <para>Display Name: Open Source Notes</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_opensourcenotes")]
+    [DisplayName("Open Source Notes")]
+    [MaxLength(4000)]
+    public string ppp_OpenSourceNotes {
+        get {
+            return GetAttributeValue<string>("ppp_opensourcenotes");
+        }
+        set {
+            SetAttributeValue("ppp_opensourcenotes", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Details of the Other Considerations.</para>
+    /// <para>Display Name: Other Considerations</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_otherconsiderations")]
+    [DisplayName("Other Considerations")]
+    [MaxLength(4000)]
+    public string ppp_OtherConsiderations {
+        get {
+            return GetAttributeValue<string>("ppp_otherconsiderations");
+        }
+        set {
+            SetAttributeValue("ppp_otherconsiderations", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>An indication as to whether or not Other Considerations exist or have been considered.</para>
+    /// <para>Display Name: Other Considerations</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_otherconsiderationsdropdown")]
+    [DisplayName("Other Considerations")]
+    public ppp_otherconsiderationsdropdown? ppp_OtherConsiderationsDropdown {
+        get {
+            return GetOptionSetValue<ppp_otherconsiderationsdropdown>("ppp_otherconsiderationsdropdown");
+        }
+        set {
+            SetOptionSetValue("ppp_otherconsiderationsdropdown", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The method of Payment used by the Traveller to purchase their ticket.</para>
+    /// <para>Display Name: Payment Method</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_paymentmethod")]
+    [DisplayName("Payment Method")]
+    public ppp_paymentmethod? ppp_PaymentMethod {
+        get {
+            return GetOptionSetValue<ppp_paymentmethod>("ppp_paymentmethod");
+        }
+        set {
+            SetOptionSetValue("ppp_paymentmethod", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Additional details regrading the Traveller's itinerary.</para>
+    /// <para>Display Name: Additional Travel Information</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_questionsfortc")]
+    [DisplayName("Additional Travel Information")]
+    [MaxLength(4000)]
+    public string ppp_QuestionsforTC {
+        get {
+            return GetAttributeValue<string>("ppp_questionsfortc");
+        }
+        set {
+            SetAttributeValue("ppp_questionsfortc", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The current status of the record.</para>
+    /// <para>Display Name: Record Status</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_recordstatus")]
+    [DisplayName("Record Status")]
+    public ppp_recordstatus? ppp_RecordStatus {
+        get {
+            return GetOptionSetValue<ppp_recordstatus>("ppp_recordstatus");
+        }
+        set {
+            SetOptionSetValue("ppp_recordstatus", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>An indication as to whether or not the Traveller was provided with a recourse letter.</para>
+    /// <para>Display Name: Recourse Letter Provided</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_recourseletterprovided")]
+    [DisplayName("Recourse Letter Provided")]
+    public ppp_nominatingagencyadditional? ppp_RecourseLetterProvided {
+        get {
+            return GetOptionSetValue<ppp_nominatingagencyadditional>("ppp_recourseletterprovided");
+        }
+        set {
+            SetOptionSetValue("ppp_recourseletterprovided", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's Return flight details.</para>
+    /// <para>Display Name: Return Flight Info</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_returnflightinfo")]
+    [DisplayName("Return Flight Info")]
+    [MaxLength(100)]
+    public string ppp_ReturnFlightInfo {
+        get {
+            return GetAttributeValue<string>("ppp_returnflightinfo");
+        }
+        set {
+            SetAttributeValue("ppp_returnflightinfo", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The date on which the Travellers return flight is scheduled.</para>
+    /// <para>Display Name: Return Flight Date</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_returnticketdate")]
+    [DisplayName("Return Flight Date")]
+    public DateTime? ppp_ReturnTicketDate {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_returnticketdate");
+        }
+        set {
+            SetAttributeValue("ppp_returnticketdate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's SATA ID.</para>
+    /// <para>Display Name: SATA ID</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_sataid")]
+    [DisplayName("SATA ID")]
+    [MaxLength(50)]
+    public string ppp_SATAID {
+        get {
+            return GetAttributeValue<string>("ppp_sataid");
+        }
+        set {
+            SetAttributeValue("ppp_sataid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Details of the seat request made by the Traveller.</para>
+    /// <para>Display Name: Seat Request Details</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_seatrequestdetails")]
+    [DisplayName("Seat Request Details")]
+    [MaxLength(1000)]
+    public string ppp_SeatRequestDetails {
+        get {
+            return GetAttributeValue<string>("ppp_seatrequestdetails");
+        }
+        set {
+            SetAttributeValue("ppp_seatrequestdetails", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>An indication as to whether or not a seat request was made by the Traveller.</para>
+    /// <para>Display Name: Seat Request Made</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_seatrequestmade")]
+    [DisplayName("Seat Request Made")]
+    public ppp_seatrequestmade? ppp_SeatRequestMade {
+        get {
+            return GetOptionSetValue<ppp_seatrequestmade>("ppp_seatrequestmade");
+        }
+        set {
+            SetOptionSetValue("ppp_seatrequestmade", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The date on which the Traveller purchased their flight ticket.</para>
+    /// <para>Display Name: Ticket Purchase Date</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_ticketpurchasedate")]
+    [DisplayName("Ticket Purchase Date")]
+    public DateTime? ppp_TicketPurchaseDate {
+        get {
+            return GetAttributeValue<DateTime?>("ppp_ticketpurchasedate");
+        }
+        set {
+            SetAttributeValue("ppp_ticketpurchasedate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The method by which the Traveller purchased their flight ticket. </para>
+    /// <para>Display Name: Ticket Purchase Method</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_ticketpurchasemethod")]
+    [DisplayName("Ticket Purchase Method")]
+    public ppp_ticketpurchasemethod? ppp_TicketPurchaseMethod {
+        get {
+            return GetOptionSetValue<ppp_ticketpurchasemethod>("ppp_ticketpurchasemethod");
+        }
+        set {
+            SetOptionSetValue("ppp_ticketpurchasemethod", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The type of ticket purchased by the Traveller.</para>
+    /// <para>Display Name: Ticket Type</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_tickettype")]
+    [DisplayName("Ticket Type")]
+    public ppp_tickettype? ppp_TicketType {
+        get {
+            return GetOptionSetValue<ppp_tickettype>("ppp_tickettype");
+        }
+        set {
+            SetOptionSetValue("ppp_tickettype", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The address of the travel agency used by the Traveller to purchase a flight ticket.</para>
+    /// <para>Display Name: Travel Agency Address</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_travelagencyaddress")]
+    [DisplayName("Travel Agency Address")]
+    [MaxLength(1000)]
+    public string ppp_TravelAgencyAddress {
+        get {
+            return GetAttributeValue<string>("ppp_travelagencyaddress");
+        }
+        set {
+            SetAttributeValue("ppp_travelagencyaddress", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The contact at a travel agency used by the Traveller to purchase a flight ticket.</para>
+    /// <para>Display Name: Travel Agency Contact Name</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_travelagencycontactname")]
+    [DisplayName("Travel Agency Contact Name")]
+    [MaxLength(1000)]
+    public string ppp_TravelAgencyContactName {
+        get {
+            return GetAttributeValue<string>("ppp_travelagencycontactname");
+        }
+        set {
+            SetAttributeValue("ppp_travelagencycontactname", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The contact phone number at a travel agency.</para>
+    /// <para>Display Name: Travel Agency Contact Phone Number</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_travelagencycontactphonenumber")]
+    [DisplayName("Travel Agency Contact Phone Number")]
+    [MaxLength(1000)]
+    public string ppp_TravelAgencyContactPhoneNumber {
+        get {
+            return GetAttributeValue<string>("ppp_travelagencycontactphonenumber");
+        }
+        set {
+            SetAttributeValue("ppp_travelagencycontactphonenumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The name of the travel agency used by the Traveller to purchase a flight ticket.</para>
+    /// <para>Display Name: Travel Agency Name</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_travelagencyname")]
+    [DisplayName("Travel Agency Name")]
+    [MaxLength(1000)]
+    public string ppp_TravelAgencyName {
+        get {
+            return GetAttributeValue<string>("ppp_travelagencyname");
+        }
+        set {
+            SetAttributeValue("ppp_travelagencyname", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>A description of the Traveller's companions, if applicable.</para>
+    /// <para>Display Name: Travel Companions Details</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_travelcompanionsdetails")]
+    [DisplayName("Travel Companions Details")]
+    [MaxLength(4000)]
+    public string ppp_TravelCompanionsDetails {
+        get {
+            return GetAttributeValue<string>("ppp_travelcompanionsdetails");
+        }
+        set {
+            SetAttributeValue("ppp_travelcompanionsdetails", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The number of travel companions accompanying the Traveller.</para>
+    /// <para>Display Name: Travel Companions Number</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_travelcompanionsnumber")]
+    [DisplayName("Travel Companions Number")]
+    [Range(0, 1000)]
+    public int? ppp_TravelCompanionsNumber {
+        get {
+            return GetAttributeValue<int?>("ppp_travelcompanionsnumber");
+        }
+        set {
+            SetAttributeValue("ppp_travelcompanionsnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller's identified purpose for travelling.</para>
+    /// <para>Display Name: Travel Purpose</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_travelpurpose")]
+    [DisplayName("Travel Purpose")]
+    public ppp_travelpurpose? ppp_TravelPurpose {
+        get {
+            return GetOptionSetValue<ppp_travelpurpose>("ppp_travelpurpose");
+        }
+        set {
+            SetOptionSetValue("ppp_travelpurpose", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Details regarding the Traveller's reason for travelling.</para>
+    /// <para>Display Name: Travel Purpose Other</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_travelpurposeother")]
+    [DisplayName("Travel Purpose Other")]
+    [MaxLength(100)]
+    public string ppp_TravelPurposeOther {
+        get {
+            return GetAttributeValue<string>("ppp_travelpurposeother");
+        }
+        set {
+            SetAttributeValue("ppp_travelpurposeother", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The unique record number for the Traveller record. </para>
+    /// <para>Display Name: Traveller Auto Number</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_travellerautonumber")]
+    [DisplayName("Traveller Auto Number")]
+    [MaxLength(100)]
+    public string ppp_TravellerAutoNumber {
+        get {
+            return GetAttributeValue<string>("ppp_travellerautonumber");
+        }
+        set {
+            SetAttributeValue("ppp_travellerautonumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The Traveller validation Reference Number.</para>
+    /// <para>Display Name: Reference Number</para>
+    /// </summary>
+    [AttributeLogicalName("ppp_name")]
+    [DisplayName("Reference Number")]
+    [MaxLength(100)]
+    public string ppp_name {
+        get {
+            return GetAttributeValue<string>("ppp_name");
+        }
+        set {
+            SetAttributeValue("ppp_name", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Contains the id of the process associated with the entity.</para>
+    /// <para>Display Name: Process Id</para>
+    /// </summary>
+    [AttributeLogicalName("processid")]
+    [DisplayName("Process Id")]
+    public Guid? processid {
+        get {
+            return GetAttributeValue<Guid?>("processid");
+        }
+        set {
+            SetAttributeValue("processid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Contains the id of the stage where the entity is located.</para>
+    /// <para>Display Name: (Deprecated) Stage Id</para>
+    /// </summary>
+    [AttributeLogicalName("stageid")]
+    [DisplayName("(Deprecated) Stage Id")]
+    public Guid? stageid {
+        get {
+            return GetAttributeValue<Guid?>("stageid");
+        }
+        set {
+            SetAttributeValue("stageid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Status of the Traveller</para>
+    /// <para>Display Name: Status</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("Status")]
+    public ppp_TravellerState? statecode {
+        get {
+            return GetOptionSetValue<ppp_TravellerState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for the status of the Traveller</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public ppp_Traveller_statuscode? statuscode {
+        get {
+            return GetOptionSetValue<ppp_Traveller_statuscode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>A comma separated list of string values representing the unique identifiers of stages in a Business Process Flow Instance in the order that they occur.</para>
+    /// <para>Display Name: (Deprecated) Traversed Path</para>
+    /// </summary>
+    [AttributeLogicalName("traversedpath")]
+    [DisplayName("(Deprecated) Traversed Path")]
+    [MaxLength(1250)]
+    public string traversedpath {
+        get {
+            return GetAttributeValue<string>("traversedpath");
+        }
+        set {
+            SetAttributeValue("traversedpath", value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("lk_ppp_traveller_createdby")]
+    public SystemUser lk_ppp_traveller_createdby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ppp_traveller_createdby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ppp_traveller_createdby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("lk_ppp_traveller_createdonbehalfby")]
+    public SystemUser lk_ppp_traveller_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ppp_traveller_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ppp_traveller_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("lk_ppp_traveller_modifiedby")]
+    public SystemUser lk_ppp_traveller_modifiedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ppp_traveller_modifiedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ppp_traveller_modifiedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("lk_ppp_traveller_modifiedonbehalfby")]
+    public SystemUser lk_ppp_traveller_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ppp_traveller_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ppp_traveller_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_aircarrier")]
+    [RelationshipSchemaName("ppp_Traveller_AirCarrier_ovs_AirCarrier")]
+    public ovs_AirCarrier ppp_Traveller_AirCarrier_ovs_AirCarrier {
+        get {
+            return GetRelatedEntity<ovs_AirCarrier>("ppp_Traveller_AirCarrier_ovs_AirCarrier", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_AirCarrier_ovs_AirCarrier", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_citizenship")]
+    [RelationshipSchemaName("ppp_Traveller_Citizenship_tc_Country")]
+    public tc_Country ppp_Traveller_Citizenship_tc_Country {
+        get {
+            return GetRelatedEntity<tc_Country>("ppp_Traveller_Citizenship_tc_Country", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_Citizenship_tc_Country", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_idcountry")]
+    [RelationshipSchemaName("ppp_Traveller_Country")]
+    public tc_Country ppp_Traveller_Country {
+        get {
+            return GetRelatedEntity<tc_Country>("ppp_Traveller_Country", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_Country", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection1")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection1")]
+    public ovs_Facility ppp_Traveller_FlightConnection1 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection1", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection10")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection10")]
+    public ovs_Facility ppp_Traveller_FlightConnection10 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection10", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection10", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection2")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection2")]
+    public ovs_Facility ppp_Traveller_FlightConnection2 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection2", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection3")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection3")]
+    public ovs_Facility ppp_Traveller_FlightConnection3 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection3", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection3", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection4")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection4")]
+    public ovs_Facility ppp_Traveller_FlightConnection4 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection4", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection4", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection5")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection5")]
+    public ovs_Facility ppp_Traveller_FlightConnection5 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection5", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection5", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection6")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection6")]
+    public ovs_Facility ppp_Traveller_FlightConnection6 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection6", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection6", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection7")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection7")]
+    public ovs_Facility ppp_Traveller_FlightConnection7 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection7", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection7", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection8")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection8")]
+    public ovs_Facility ppp_Traveller_FlightConnection8 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection8", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection8", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection9")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection9")]
+    public ovs_Facility ppp_Traveller_FlightConnection9 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection9", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection9", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightdestination")]
+    [RelationshipSchemaName("ppp_Traveller_FlightDestination_ovs_Facili")]
+    public ovs_Facility ppp_Traveller_FlightDestination_ovs_Facili {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightDestination_ovs_Facili", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightDestination_ovs_Facili", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightorigin")]
+    [RelationshipSchemaName("ppp_Traveller_FlightOrigin_ovs_Facility")]
+    public ovs_Facility ppp_Traveller_FlightOrigin_ovs_Facility {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightOrigin_ovs_Facility", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightOrigin_ovs_Facility", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_ActivityPointers")]
+    public IEnumerable<ActivityPointer> ppp_traveller_ActivityPointers {
+        get {
+            return GetRelatedEntities<ActivityPointer>("ppp_traveller_ActivityPointers", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_ActivityPointers", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_Appointments")]
+    public IEnumerable<Appointment> ppp_traveller_Appointments {
+        get {
+            return GetRelatedEntities<Appointment>("ppp_traveller_Appointments", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_Appointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_Emails")]
+    public IEnumerable<Email> ppp_traveller_Emails {
+        get {
+            return GetRelatedEntities<Email>("ppp_traveller_Emails", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_Emails", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_PhoneCalls")]
+    public IEnumerable<PhoneCall> ppp_traveller_PhoneCalls {
+        get {
+            return GetRelatedEntities<PhoneCall>("ppp_traveller_PhoneCalls", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_PhoneCalls", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_ProcessSession")]
+    public IEnumerable<ProcessSession> ppp_traveller_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ppp_traveller_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_RecurringAppointmentMasters")]
+    public IEnumerable<RecurringAppointmentMaster> ppp_traveller_RecurringAppointmentMasters {
+        get {
+            return GetRelatedEntities<RecurringAppointmentMaster>("ppp_traveller_RecurringAppointmentMasters", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_RecurringAppointmentMasters", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_ServiceAppointments")]
+    public IEnumerable<ServiceAppointment> ppp_traveller_ServiceAppointments {
+        get {
+            return GetRelatedEntities<ServiceAppointment>("ppp_traveller_ServiceAppointments", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_SyncErrors")]
+    public IEnumerable<SyncError> ppp_traveller_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ppp_traveller_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_Tasks")]
+    public IEnumerable<Task> ppp_traveller_Tasks {
+        get {
+            return GetRelatedEntities<Task>("ppp_traveller_Tasks", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_Tasks", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("owninguser")]
+    [RelationshipSchemaName("user_ppp_traveller")]
+    public SystemUser user_ppp_traveller {
+        get {
+            return GetRelatedEntity<SystemUser>("user_ppp_traveller", null);
+        }
+        set {
+            SetRelatedEntity("user_ppp_traveller", null, value);
+        }
+    }
+    
+    public static ppp_Traveller Retrieve(IOrganizationService service, Guid id, params Expression<Func<ppp_Traveller,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
 }
@@ -74863,6 +82170,26 @@ public partial class qm_rclegislation : ExtendedEntity<qm_rclegislationState, qm
         }
     }
     
+    [RelationshipSchemaName("qm_rclegislation_ProcessSession")]
+    public IEnumerable<ProcessSession> qm_rclegislation_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("qm_rclegislation_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("qm_rclegislation_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("qm_rclegislation_SyncErrors")]
+    public IEnumerable<SyncError> qm_rclegislation_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("qm_rclegislation_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("qm_rclegislation_SyncErrors", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("qm_rclegislation_tylegislationcharacteristic")]
     public IEnumerable<qm_tylegislationcharacteristic> qm_rclegislation_tylegislationcharacteristic {
         get {
@@ -75355,6 +82682,26 @@ public partial class qm_tylegislationcharacteristic : ExtendedEntity<qm_tylegisl
         }
     }
     
+    [RelationshipSchemaName("qm_tylegislationcharacteristic_ProcessSession")]
+    public IEnumerable<ProcessSession> qm_tylegislationcharacteristic_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("qm_tylegislationcharacteristic_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("qm_tylegislationcharacteristic_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("qm_tylegislationcharacteristic_SyncErrors")]
+    public IEnumerable<SyncError> qm_tylegislationcharacteristic_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("qm_tylegislationcharacteristic_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("qm_tylegislationcharacteristic_SyncErrors", null, value);
+        }
+    }
+    
     public static qm_tylegislationcharacteristic Retrieve(IOrganizationService service, Guid id, params Expression<Func<qm_tylegislationcharacteristic,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
@@ -75721,6 +83068,26 @@ public partial class qm_tylegislationsource : ExtendedEntity<qm_tylegislationsou
         }
     }
     
+    [RelationshipSchemaName("qm_tylegislationsource_ProcessSession")]
+    public IEnumerable<ProcessSession> qm_tylegislationsource_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("qm_tylegislationsource_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("qm_tylegislationsource_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("qm_tylegislationsource_SyncErrors")]
+    public IEnumerable<SyncError> qm_tylegislationsource_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("qm_tylegislationsource_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("qm_tylegislationsource_SyncErrors", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("qm_tylegislationsource_rclegislation")]
     public IEnumerable<qm_rclegislation> qm_tylegislationsource_rclegislation {
         get {
@@ -76033,6 +83400,26 @@ public partial class qm_tylegislationtype : ExtendedEntity<qm_tylegislationtypeS
         }
         set {
             SetRelatedEntity("lk_qm_tylegislationtype_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("qm_tylegislationtype_ProcessSession")]
+    public IEnumerable<ProcessSession> qm_tylegislationtype_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("qm_tylegislationtype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("qm_tylegislationtype_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("qm_tylegislationtype_SyncErrors")]
+    public IEnumerable<SyncError> qm_tylegislationtype_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("qm_tylegislationtype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("qm_tylegislationtype_SyncErrors", null, value);
         }
     }
     
@@ -76455,6 +83842,66 @@ public partial class tc_Country : ExtendedEntity<tc_CountryState, tc_Country_sta
         }
     }
     
+    [RelationshipSchemaName("ovs_Facility_ovs_Countryid_tc_Country")]
+    public IEnumerable<ovs_Facility> ovs_Facility_ovs_Countryid_tc_Country {
+        get {
+            return GetRelatedEntities<ovs_Facility>("ovs_Facility_ovs_Countryid_tc_Country", null);
+        }
+        set {
+            SetRelatedEntities("ovs_Facility_ovs_Countryid_tc_Country", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_Citizenship_tc_Country")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_Citizenship_tc_Country {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_Citizenship_tc_Country", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_Citizenship_tc_Country", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_Country")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_Country {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_Country", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_Country", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("tc_Province_Country")]
+    public IEnumerable<tc_Province> tc_Province_Country {
+        get {
+            return GetRelatedEntities<tc_Province>("tc_Province_Country", null);
+        }
+        set {
+            SetRelatedEntities("tc_Province_Country", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("tc_country_ProcessSession")]
+    public IEnumerable<ProcessSession> tc_country_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("tc_country_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("tc_country_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("tc_country_SyncErrors")]
+    public IEnumerable<SyncError> tc_country_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("tc_country_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("tc_country_SyncErrors", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("ts_Account_Country_tc_Country")]
     public IEnumerable<Account> ts_Account_Country_tc_Country {
         get {
@@ -76505,6 +83952,16 @@ public partial class tc_Country : ExtendedEntity<tc_CountryState, tc_Country_sta
         }
     }
     
+    [RelationshipSchemaName("ts_ovs_Finding_Country_tc_Country")]
+    public IEnumerable<ovs_Finding> ts_ovs_Finding_Country_tc_Country {
+        get {
+            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_Country_tc_Country", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_Finding_Country_tc_Country", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_tc_country")]
     public SystemUser user_tc_country {
@@ -76517,6 +83974,451 @@ public partial class tc_Country : ExtendedEntity<tc_CountryState, tc_Country_sta
     }
     
     public static tc_Country Retrieve(IOrganizationService service, Guid id, params Expression<Func<tc_Country,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
+/// <para>Display Name: Province</para>
+/// </summary>
+[EntityLogicalName("tc_province")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class tc_Province : ExtendedEntity<tc_ProvinceState, tc_Province_statuscode> {
+    
+    public const string EntityLogicalName = "tc_province";
+    
+    public const int EntityTypeCode = 10422;
+    
+    public tc_Province() : 
+            base(EntityLogicalName) {
+    }
+    
+    public tc_Province(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("tc_provincename");
+        }
+    }
+    
+    [AttributeLogicalName("tc_provinceid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("tc_provinceid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for entity instances</para>
+    /// <para>Display Name: Province</para>
+    /// </summary>
+    [AttributeLogicalName("tc_provinceid")]
+    [DisplayName("Province")]
+    public Guid? tc_ProvinceId {
+        get {
+            return GetAttributeValue<Guid?>("tc_provinceid");
+        }
+        set {
+            SetId("tc_provinceid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who created the record.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was created.</para>
+    /// <para>Display Name: Created On</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Created On")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who created the record.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Sequence number of the import that created this record.</para>
+    /// <para>Display Name: Import Sequence Number</para>
+    /// </summary>
+    [AttributeLogicalName("importsequencenumber")]
+    [DisplayName("Import Sequence Number")]
+    [Range(-2147483648, 2147483647)]
+    public int? ImportSequenceNumber {
+        get {
+            return GetAttributeValue<int?>("importsequencenumber");
+        }
+        set {
+            SetAttributeValue("importsequencenumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who modified the record.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was modified.</para>
+    /// <para>Display Name: Modified On</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Modified On")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who modified the record.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time that the record was migrated.</para>
+    /// <para>Display Name: Record Created On</para>
+    /// </summary>
+    [AttributeLogicalName("overriddencreatedon")]
+    [DisplayName("Record Created On")]
+    public DateTime? OverriddenCreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("overriddencreatedon");
+        }
+        set {
+            SetAttributeValue("overriddencreatedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Owner Id</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the business unit that owns the record</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the team that owns the record.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the user that owns the record.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Time Zone Rule Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("timezoneruleversionnumber")]
+    [DisplayName("Time Zone Rule Version Number")]
+    [Range(-1, 2147483647)]
+    public int? TimeZoneRuleVersionNumber {
+        get {
+            return GetAttributeValue<int?>("timezoneruleversionnumber");
+        }
+        set {
+            SetAttributeValue("timezoneruleversionnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Time zone code that was in use when the record was created.</para>
+    /// <para>Display Name: UTC Conversion Time Zone Code</para>
+    /// </summary>
+    [AttributeLogicalName("utcconversiontimezonecode")]
+    [DisplayName("UTC Conversion Time Zone Code")]
+    [Range(-1, 2147483647)]
+    public int? UTCConversionTimeZoneCode {
+        get {
+            return GetAttributeValue<int?>("utcconversiontimezonecode");
+        }
+        set {
+            SetAttributeValue("utcconversiontimezonecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Version Number</para>
+    /// <para>Display Name: Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("versionnumber")]
+    [DisplayName("Version Number")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Status of the Province</para>
+    /// <para>Display Name: Status</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("Status")]
+    public tc_ProvinceState? statecode {
+        get {
+            return GetOptionSetValue<tc_ProvinceState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for the status of the Province</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public tc_Province_statuscode? statuscode {
+        get {
+            return GetOptionSetValue<tc_Province_statuscode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Country</para>
+    /// </summary>
+    [AttributeLogicalName("tc_country")]
+    [DisplayName("Country")]
+    public EntityReference tc_Country {
+        get {
+            return GetAttributeValue<EntityReference>("tc_country");
+        }
+        set {
+            SetAttributeValue("tc_country", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Province Code</para>
+    /// </summary>
+    [AttributeLogicalName("tc_provincecode")]
+    [DisplayName("Province Code")]
+    [MaxLength(100)]
+    public string tc_ProvinceCode {
+        get {
+            return GetAttributeValue<string>("tc_provincecode");
+        }
+        set {
+            SetAttributeValue("tc_provincecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Required name field</para>
+    /// <para>Display Name: Province Name</para>
+    /// </summary>
+    [AttributeLogicalName("tc_provincename")]
+    [DisplayName("Province Name")]
+    [MaxLength(100)]
+    public string tc_ProvinceName {
+        get {
+            return GetAttributeValue<string>("tc_provincename");
+        }
+        set {
+            SetAttributeValue("tc_provincename", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Province Name (English)</para>
+    /// </summary>
+    [AttributeLogicalName("tc_provincenameenglish")]
+    [DisplayName("Province Name (English)")]
+    [MaxLength(100)]
+    public string tc_ProvinceNameEnglish {
+        get {
+            return GetAttributeValue<string>("tc_provincenameenglish");
+        }
+        set {
+            SetAttributeValue("tc_provincenameenglish", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Province Name (French)</para>
+    /// </summary>
+    [AttributeLogicalName("tc_provincenamefrench")]
+    [DisplayName("Province Name (French)")]
+    [MaxLength(100)]
+    public string tc_ProvinceNameFrench {
+        get {
+            return GetAttributeValue<string>("tc_provincenamefrench");
+        }
+        set {
+            SetAttributeValue("tc_provincenamefrench", value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("lk_tc_province_createdby")]
+    public SystemUser lk_tc_province_createdby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_tc_province_createdby", null);
+        }
+        set {
+            SetRelatedEntity("lk_tc_province_createdby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("lk_tc_province_createdonbehalfby")]
+    public SystemUser lk_tc_province_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_tc_province_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_tc_province_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("lk_tc_province_modifiedby")]
+    public SystemUser lk_tc_province_modifiedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_tc_province_modifiedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_tc_province_modifiedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("lk_tc_province_modifiedonbehalfby")]
+    public SystemUser lk_tc_province_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_tc_province_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_tc_province_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("tc_country")]
+    [RelationshipSchemaName("tc_Province_Country")]
+    public tc_Country tc_Province_Country {
+        get {
+            return GetRelatedEntity<tc_Country>("tc_Province_Country", null);
+        }
+        set {
+            SetRelatedEntity("tc_Province_Country", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("tc_province_ProcessSession")]
+    public IEnumerable<ProcessSession> tc_province_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("tc_province_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("tc_province_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("tc_province_SyncErrors")]
+    public IEnumerable<SyncError> tc_province_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("tc_province_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("tc_province_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("owninguser")]
+    [RelationshipSchemaName("user_tc_province")]
+    public SystemUser user_tc_province {
+        get {
+            return GetRelatedEntity<SystemUser>("user_tc_province", null);
+        }
+        set {
+            SetRelatedEntity("user_tc_province", null, value);
+        }
+    }
+    
+    public static tc_Province Retrieve(IOrganizationService service, Guid id, params Expression<Func<tc_Province,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
 }
@@ -76949,6 +84851,26 @@ public partial class tc_TCFiscalPeriod : ExtendedEntity<tc_TCFiscalPeriodState, 
         }
         set {
             SetRelatedEntity("tc_TCFiscalPeriod_TCMonth", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("tc_tcfiscalperiod_ProcessSession")]
+    public IEnumerable<ProcessSession> tc_tcfiscalperiod_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("tc_tcfiscalperiod_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("tc_tcfiscalperiod_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("tc_tcfiscalperiod_SyncErrors")]
+    public IEnumerable<SyncError> tc_tcfiscalperiod_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("tc_tcfiscalperiod_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("tc_tcfiscalperiod_SyncErrors", null, value);
         }
     }
     
@@ -77469,6 +85391,26 @@ public partial class tc_TCFiscalQuarter : ExtendedEntity<tc_TCFiscalQuarterState
         }
     }
     
+    [RelationshipSchemaName("tc_tcfiscalquarter_ProcessSession")]
+    public IEnumerable<ProcessSession> tc_tcfiscalquarter_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("tc_tcfiscalquarter_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("tc_tcfiscalquarter_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("tc_tcfiscalquarter_SyncErrors")]
+    public IEnumerable<SyncError> tc_tcfiscalquarter_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("tc_tcfiscalquarter_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("tc_tcfiscalquarter_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_tc_tcfiscalquarter")]
     public SystemUser user_tc_tcfiscalquarter {
@@ -77952,6 +85894,26 @@ public partial class tc_TCFiscalYear : ExtendedEntity<tc_TCFiscalYearState, tc_T
         }
     }
     
+    [RelationshipSchemaName("tc_tcfiscalyear_ProcessSession")]
+    public IEnumerable<ProcessSession> tc_tcfiscalyear_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("tc_tcfiscalyear_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("tc_tcfiscalyear_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("tc_tcfiscalyear_SyncErrors")]
+    public IEnumerable<SyncError> tc_tcfiscalyear_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("tc_tcfiscalyear_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("tc_tcfiscalyear_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_tc_tcfiscalyear")]
     public SystemUser user_tc_tcfiscalyear {
@@ -78408,6 +86370,26 @@ public partial class tc_TCMonth : ExtendedEntity<tc_TCMonthState, tc_TCMonth_sta
         }
     }
     
+    [RelationshipSchemaName("tc_tcmonth_ProcessSession")]
+    public IEnumerable<ProcessSession> tc_tcmonth_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("tc_tcmonth_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("tc_tcmonth_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("tc_tcmonth_SyncErrors")]
+    public IEnumerable<SyncError> tc_tcmonth_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("tc_tcmonth_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("tc_tcmonth_SyncErrors", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_tc_tcmonth")]
     public SystemUser user_tc_tcmonth {
@@ -78628,6 +86610,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
         }
     }
     
+    public IQueryable<ProcessSession> ProcessSessionSet {
+        get {
+            return CreateQuery<ProcessSession>();
+        }
+    }
+    
     public IQueryable<Product> ProductSet {
         get {
             return CreateQuery<Product>();
@@ -78685,6 +86673,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
     public IQueryable<ServiceContractContacts> ServiceContractContactsSet {
         get {
             return CreateQuery<ServiceContractContacts>();
+        }
+    }
+    
+    public IQueryable<SyncError> SyncErrorSet {
+        get {
+            return CreateQuery<SyncError>();
         }
     }
     
@@ -78880,6 +86874,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
         }
     }
     
+    public IQueryable<ovs_Facility> ovs_FacilitySet {
+        get {
+            return CreateQuery<ovs_Facility>();
+        }
+    }
+    
     public IQueryable<ovs_Finding> ovs_FindingSet {
         get {
             return CreateQuery<ovs_Finding>();
@@ -78934,6 +86934,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
         }
     }
     
+    public IQueryable<ppp_Traveller> ppp_TravellerSet {
+        get {
+            return CreateQuery<ppp_Traveller>();
+        }
+    }
+    
     public IQueryable<qm_account_tylegislationcharacteristic> qm_account_tylegislationcharacteristicSet {
         get {
             return CreateQuery<qm_account_tylegislationcharacteristic>();
@@ -78973,6 +86979,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
     public IQueryable<tc_Country> tc_CountrySet {
         get {
             return CreateQuery<tc_Country>();
+        }
+    }
+    
+    public IQueryable<tc_Province> tc_ProvinceSet {
+        get {
+            return CreateQuery<tc_Province>();
         }
     }
     
@@ -81854,6 +89866,46 @@ public enum PhoneCall_StatusCode {
 }
 
 [DataContract()]
+public enum ProcessSessionState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Incomplete", Index=0)]
+    Incomplete = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Complete", Index=1)]
+    Complete = 1,
+}
+
+[DataContract()]
+public enum ProcessSession_StatusCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Not Started", Index=0)]
+    NotStarted = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("In Progress", Index=1)]
+    InProgress = 2,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Paused", Index=2)]
+    Paused = 3,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Completed", Index=3)]
+    Completed = 4,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Canceled", Index=4)]
+    Canceled = 5,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Failed", Index=5)]
+    Failed = 6,
+}
+
+[DataContract()]
 public enum ProductState {
     
     [EnumMember()]
@@ -82643,6 +90695,50 @@ public enum ServiceAppointment_StatusCode {
     [EnumMember()]
     [OptionSetMetadata("No Show", Index=8, Color="#FFB573")]
     NoShow = 10,
+}
+
+[DataContract()]
+public enum SyncErrorState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Resolved", Index=1)]
+    Resolved = 1,
+}
+
+[DataContract()]
+public enum SyncError_ErrorType {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Conflict", Index=0)]
+    Conflict = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Record not found", Index=1)]
+    Recordnotfound = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Record already exists", Index=2)]
+    Recordalreadyexists = 2,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Others", Index=3)]
+    Others = 3,
+}
+
+[DataContract()]
+public enum SyncError_StatusCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Fixed", Index=1)]
+    Fixed = 1,
 }
 
 [DataContract()]
@@ -83655,6 +91751,30 @@ public enum ovs_AirCarrier_statuscode {
 }
 
 [DataContract()]
+public enum ovs_FacilityState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 1,
+}
+
+[DataContract()]
+public enum ovs_Facility_statuscode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 2,
+}
+
+[DataContract()]
 public enum ovs_FindingState {
     
     [EnumMember()]
@@ -83847,6 +91967,30 @@ public enum ovs_workorderservicetaskprovision_statuscode {
 }
 
 [DataContract()]
+public enum ppp_TravellerState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 1,
+}
+
+[DataContract()]
+public enum ppp_Traveller_statuscode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 2,
+}
+
+[DataContract()]
 public enum qm_rclegislationState {
     
     [EnumMember()]
@@ -83956,6 +92100,30 @@ public enum tc_CountryState {
 
 [DataContract()]
 public enum tc_Country_statuscode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 2,
+}
+
+[DataContract()]
+public enum tc_ProvinceState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 1,
+}
+
+[DataContract()]
+public enum tc_Province_statuscode {
     
     [EnumMember()]
     [OptionSetMetadata("Active", Index=0)]
@@ -85044,4 +93212,296 @@ public enum msdyn_inspectionresult {
     [EnumMember()]
     [OptionSetMetadata("NA", Index=3, Color="#0000ff")]
     NA = 192350003,
+}
+
+[DataContract()]
+public enum ovs_facilitytype {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Aerodrome", Index=0)]
+    Aerodrome = 918640000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Air Cargo Standalone Facility", Index=1)]
+    AirCargoStandaloneFacility = 918640001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Rail Yard", Index=2)]
+    RailYard = 918640002,
+}
+
+[DataContract()]
+public enum ppp_calltype {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Traveller Validation", Index=0, Color="")]
+    TravellerValidation = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inspector Test", Index=1, Color="")]
+    InspectorTest = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Air Carrier Inquiry", Index=2, Color="")]
+    AirCarrierInquiry = 927820002,
+}
+
+[DataContract()]
+public enum ppp_casebriefoptions {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Direction - Denied Boarding", Index=0)]
+    DirectionDeniedBoarding = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Direction - Additional Screening", Index=1)]
+    DirectionAdditionalScreening = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Allowed - Other Response Measure", Index=2)]
+    AllowedOtherResponseMeasure = 927820002,
+}
+
+[DataContract()]
+public enum ppp_directionoptions {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Direction - Denied Boarding", Index=0)]
+    DirectionDeniedBoarding = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Direction - Additional Screening", Index=1)]
+    DirectionAdditionalScreening = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Allowed - Other Response Measure", Index=2)]
+    AllowedOtherResponseMeasure = 927820002,
+}
+
+[DataContract()]
+public enum ppp_gender {
+    
+    [EnumMember()]
+    [OptionSetMetadata("M", Index=0)]
+    M = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("F", Index=1)]
+    F = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("X", Index=2)]
+    X = 927820002,
+    
+    [EnumMember()]
+    [OptionSetMetadata("U", Index=3)]
+    U = 927820003,
+}
+
+[DataContract()]
+public enum ppp_idsused {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Passport", Index=0, Color="")]
+    Passport = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Drivers Licence", Index=1, Color="")]
+    DriversLicence = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Other (Provide Details)", Index=3, Color="")]
+    OtherProvideDetails = 927820003,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Government Issued ID (Provide Details)", Index=2, Color="")]
+    GovernmentIssuedIDProvideDetails = 927820004,
+}
+
+[DataContract()]
+public enum ppp_matchfound {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Yes", Index=0)]
+    Yes = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("No", Index=1)]
+    No = 927820001,
+}
+
+[DataContract()]
+public enum ppp_nameprovidedoptions {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Primary", Index=0)]
+    Primary = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Alias / Name Variant", Index=1)]
+    AliasNameVariant = 927820001,
+}
+
+[DataContract()]
+public enum ppp_nominatingagencyadditional {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Yes", Index=0)]
+    Yes = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("No", Index=1)]
+    No = 927820001,
+}
+
+[DataContract()]
+public enum ppp_nominatingagencyoptions {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Direction - Denied Boarding", Index=0)]
+    DirectionDeniedBoarding = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Direction - Additional Screening", Index=1)]
+    DirectionAdditionalScreening = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Allowed - Other Response Measure", Index=2)]
+    AllowedOtherResponseMeasure = 927820002,
+}
+
+[DataContract()]
+public enum ppp_opensourceadditional {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Yes", Index=0)]
+    Yes = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("No", Index=1)]
+    No = 927820001,
+}
+
+[DataContract()]
+public enum ppp_otherconsiderationsdropdown {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Yes", Index=0)]
+    Yes = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("No", Index=1)]
+    No = 927820001,
+}
+
+[DataContract()]
+public enum ppp_paymentmethod {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Cash", Index=0)]
+    Cash = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Credit Card", Index=1)]
+    CreditCard = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Debit Card", Index=2)]
+    DebitCard = 927820002,
+}
+
+[DataContract()]
+public enum ppp_recordstatus {
+    
+    [EnumMember()]
+    [OptionSetMetadata("New", Index=0)]
+    New = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Draft", Index=2)]
+    Draft = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Closed", Index=3)]
+    Closed = 927820002,
+    
+    [EnumMember()]
+    [OptionSetMetadata("In Progress", Index=4)]
+    InProgress = 927820003,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Further Action Required", Index=1)]
+    FurtherActionRequired = 927820004,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Unresolved", Index=5)]
+    Unresolved = 927820005,
+}
+
+[DataContract()]
+public enum ppp_seatrequestmade {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Unknown", Index=2, Color="")]
+    Unknown = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("No", Index=1, Color="")]
+    No = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Yes", Index=0, Color="")]
+    Yes = 927820002,
+}
+
+[DataContract()]
+public enum ppp_ticketpurchasemethod {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Online", Index=0)]
+    Online = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Travel Agency", Index=1)]
+    TravelAgency = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Directly from Air Carrier", Index=2)]
+    DirectlyfromAirCarrier = 927820002,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Unknown", Index=3)]
+    Unknown = 927820003,
+}
+
+[DataContract()]
+public enum ppp_tickettype {
+    
+    [EnumMember()]
+    [OptionSetMetadata("One-way", Index=0, Color="")]
+    Oneway = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Return", Index=1, Color="")]
+    Return = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Unknown", Index=2, Color="")]
+    Unknown = 927820002,
+}
+
+[DataContract()]
+public enum ppp_travelpurpose {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Business", Index=0)]
+    Business = 927820000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Pleasure", Index=1)]
+    Pleasure = 927820001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Other", Index=2)]
+    Other = 927820002,
 }
