@@ -85,6 +85,7 @@ namespace TSIS2.Plugins
 
                                 // Retrieve all the findings belonging to this work order service task
                                 var findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
+                                var findingsCount = findings.Count();
 
                                 // If there was at least one finding found
                                 // - Create a case (if work order service task doesn't already belong to a case)
@@ -147,7 +148,7 @@ namespace TSIS2.Plugins
                                                 // Findings are at the 100 level
                                                 var wostName = preImageEntity.Attributes["msdyn_name"].ToString();
                                                 var prefix = wostName.Replace("200-", "100-");
-                                                var suffix = (findings.Count() > 0) ? findings.Count() + 1 : 1;
+                                                var suffix = (findingsCount > 0) ? findingsCount + 1 : 1;
                                                 newFinding.ovs_Finding_1 = string.Format("{0}-{1}", prefix, suffix);
 
                                                 // Store the mapping key to keep track of mapping between finding and surveyjs questionnaire.
@@ -161,6 +162,9 @@ namespace TSIS2.Plugins
 
                                                 // Create new ovs_finding
                                                 Guid newFindingId = service.Create(newFinding);
+
+                                                // Increment findings count for next finding name
+                                                findingsCount++;
                                             }
                                             else
                                             {

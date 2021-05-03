@@ -6,7 +6,7 @@ using Xunit;
 using FakeItEasy;
 using FakeXrmEasy;
 using Microsoft.Xrm.Sdk;
-using TSIS2.Common;
+using DG.XrmContext;
 
 namespace TSIS2.Plugins.Tests
 {
@@ -100,7 +100,6 @@ namespace TSIS2.Plugins.Tests
             var context = new XrmFakedContext();
 
             // Setup prefixes and IDs
-            var workOrderPrefix = "300";
             var workOrderServiceTaskPrefix = "200";
             var uniqueId = "34567";
 
