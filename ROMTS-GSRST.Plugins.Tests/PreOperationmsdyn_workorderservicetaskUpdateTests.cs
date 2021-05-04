@@ -576,11 +576,5 @@ namespace ROMTS_GSRST.Plugins.Tests
                 Assert.Empty(findings);
             }
         }
-
-        [Fact]
-        public void When_parent_work_order_does_not_have_regulated_entity_throw_argument_null_exception()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
