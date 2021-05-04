@@ -9,7 +9,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xrm.Sdk;
-using TSIS2.Common;
+using DG.XrmContext;
 
 namespace TSIS2.Plugins
 {
@@ -62,7 +62,7 @@ namespace TSIS2.Plugins
                         if (workOrderServiceTask.msdyn_name != null)
                         {
                             // Set the new work order service task to be prefixed with the parent work order name
-                            using (var serviceContext = new CrmServiceContext(service))
+                            using (var serviceContext = new Xrm(service))
                             {
                                 msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.FirstOrDefault(wo => wo.Id == workOrderServiceTask.msdyn_WorkOrder.Id);
 
@@ -85,7 +85,7 @@ namespace TSIS2.Plugins
                             && (!target.Attributes.Contains("ovs_questionnaire") || target.Attributes["ovs_questionnaire"] != null))
                         {
                             EntityReference tasktype = (EntityReference)target.Attributes["msdyn_tasktype"];
-                            using (var servicecontext = new CrmServiceContext(service))
+                            using (var servicecontext = new Xrm(service))
                             {
                                 var servicetasktype = (from tt in servicecontext.msdyn_servicetasktypeSet
                                                        where tt.Id == tasktype.Id

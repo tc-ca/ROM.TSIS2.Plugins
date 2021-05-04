@@ -10,7 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
-using TSIS2.Common;
+using DG.XrmContext;
 using System.Json;
 
 namespace TSIS2.Plugins
@@ -73,7 +73,7 @@ namespace TSIS2.Plugins
                         var questionnaireResponse = !String.IsNullOrEmpty(workOrderServiceTask.ovs_QuestionnaireResponse) ? workOrderServiceTask.ovs_QuestionnaireResponse : workOrderServiceTaskPreImage.ovs_QuestionnaireResponse;
                         if (!String.IsNullOrWhiteSpace(questionnaireResponse))
                         {
-                            using (var serviceContext = new CrmServiceContext(service))
+                            using (var serviceContext = new Xrm(service))
                             {
 
                                 // Lookup the referenced work order
@@ -100,7 +100,6 @@ namespace TSIS2.Plugins
                                         if (workOrder.msdyn_ServiceAccount != null) newIncident.ovs_Site = workOrder.msdyn_ServiceAccount;
                                         if (workOrder.msdyn_ServiceTerritory != null) newIncident.ovs_Region = workOrder.msdyn_ServiceTerritory;
                                         if (workOrder.ovs_regulatedentity != null) newIncident.ovs_RegulatedEntity = workOrder.ovs_regulatedentity;
-                                        if (workOrder.ts_Country != null) newIncident.ovs_CountryId = workOrder.ts_Country;
                                         // Regulated Entity is a mandatory field on work order but, just in case, throw an error
                                         if (workOrder.ovs_regulatedentity == null) throw new ArgumentNullException("msdyn_workorder.ovs_regulatedentity");
 
@@ -119,7 +118,7 @@ namespace TSIS2.Plugins
                                     }
 
                                     // Mark the inspection result to fail
-                                    workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_InspectionResult.Fail;
+                                    workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Fail;
 
                                     // loop through each root property in the json object
                                     foreach (var rootProperty in jsonObject)
@@ -150,7 +149,7 @@ namespace TSIS2.Plugins
                                                 var wostName = preImageEntity.Attributes["msdyn_name"].ToString();
                                                 var prefix = wostName.Replace("200-", "100-");
                                                 var suffix = (findingsCount > 0) ? findingsCount + 1 : 1;
-                                                newFinding.ovs_Finding1 = string.Format("{0}-{1}", prefix, suffix);
+                                                newFinding.ovs_Finding_1 = string.Format("{0}-{1}", prefix, suffix);
 
                                                 // Store the mapping key to keep track of mapping between finding and surveyjs questionnaire.
                                                 newFinding.ts_findingmappingkey = findingMappingKey;
@@ -187,7 +186,7 @@ namespace TSIS2.Plugins
                                 else
                                 {
                                     // Mark the inspection result to Pass if there are no findings found
-                                    workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_InspectionResult.Pass;
+                                    workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Pass;
                                 }
 
                                 // Need to deactivate any old referenced findings in the work order service task and case
@@ -201,14 +200,14 @@ namespace TSIS2.Plugins
                                     // If the existing finding is not in the JSON response, we need to disable it
                                     if (!findingMappingKeys.Contains(finding.ts_findingmappingkey))
                                     {
-                                        finding.StatusCode = ovs_Finding_StatusCode.Inactive;
-                                        finding.StateCode = ovs_FindingState.Inactive;
+                                        finding.statuscode = ovs_Finding_statuscode.Inactive;
+                                        finding.statecode = ovs_FindingState.Inactive;
                                     } 
                                     // Otherwise, re-enable it
                                     else
                                     {
-                                        finding.StatusCode = ovs_Finding_StatusCode.Active;
-                                        finding.StateCode = ovs_FindingState.Active;
+                                        finding.statuscode = ovs_Finding_statuscode.Active;
+                                        finding.statecode = ovs_FindingState.Active;
                                     }
                                     serviceContext.UpdateObject(finding);
                                 }

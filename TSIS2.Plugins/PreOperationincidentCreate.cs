@@ -20,7 +20,7 @@ using System.ServiceModel;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Xrm.Sdk;
-using TSIS2.Common;
+using DG.XrmContext;
 
 namespace TSIS2.Plugins
 {
