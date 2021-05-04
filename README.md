@@ -41,7 +41,7 @@ To generate Type Declarations based on our Dynamics 365 solution, we use [XrmCon
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
   <appSettings>
-    <add key="url" value="https://romts-gsrst-dev-tcd365.crm3.dynamics.com/XRMServices/2011/Organization.svc" />
+    <add key="url" value="https://<Your Instance>.crm3.dynamics.com/XRMServices/2011/Organization.svc" />
     <add key="method" value="ClientSecret" />
     <add key="mfaAppId" value="<Your App ID>" />
     <add key="mfaClientSecret" value="<Your Client Secret>" />
