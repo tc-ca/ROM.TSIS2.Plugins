@@ -15,6 +15,40 @@ namespace ROMTS_GSRST.Plugins.Tests
         public PreOperationmsdyn_workorderservicetaskUpdateTests(XrmMockupFixture fixture) : base(fixture) { }
 
         [Fact]
+        public void When_work_order_service_task_is_complete_expect_parent_work_order_to_be_open_completed()
+        {
+            // ARRANGE
+            var regulatedEntityId = orgAdminUIService.Create(new Account { Name = "Test Regulated Entity" });
+            var incidentId = orgAdminUIService.Create(new Incident { });
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder
+            {
+                msdyn_name = "300-345678",
+                msdyn_SystemStatus = msdyn_wosystemstatus.OpenUnscheduled,
+                msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
+                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+            });
+            var existingWorkOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
+            {
+                msdyn_name = "200-345678-1",
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 0,
+                ovs_QuestionnaireResponse = ""
+            });
+
+            // ACT
+            orgAdminUIService.Update(new msdyn_workorderservicetask
+            {
+                Id = existingWorkOrderServiceTaskId,
+                msdyn_PercentComplete = 100.00,
+                ovs_QuestionnaireResponse = ""
+            });
+
+            // ASSERT
+            var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_systemstatus")).ToEntity<msdyn_workorder>();
+            Assert.Equal(msdyn_wosystemstatus.OpenCompleted, workOrder.msdyn_SystemStatus);
+        }
+
+        [Fact]
         public void When_work_order_service_task_already_has_finding_expect_next_findings_to_have_name_with_incremented_suffix()
         {
             // ARRANGE

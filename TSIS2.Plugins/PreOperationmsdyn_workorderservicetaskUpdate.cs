@@ -65,20 +65,18 @@ namespace TSIS2.Plugins
                     // or work order service task was already 100% complete (from pre-image)
                     if (workOrderServiceTask.msdyn_PercentComplete == 100.00 || (workOrderServiceTask.msdyn_PercentComplete == null && workOrderServiceTaskPreImage.msdyn_PercentComplete == 100.00))
                     {
-
-                        // Get the referenced work order from the preImage
-                        EntityReference workOrderReference = (EntityReference)preImageEntity.Attributes["msdyn_workorder"];
-
-                        // Determine if we use the questionnaire response from this update or from the pre-image since it is not always passed in the update
-                        var questionnaireResponse = !String.IsNullOrEmpty(workOrderServiceTask.ovs_QuestionnaireResponse) ? workOrderServiceTask.ovs_QuestionnaireResponse : workOrderServiceTaskPreImage.ovs_QuestionnaireResponse;
-                        if (!String.IsNullOrWhiteSpace(questionnaireResponse))
+                        using (var serviceContext = new Xrm(service))
                         {
-                            using (var serviceContext = new Xrm(service))
+                            // Get the referenced work order from the preImage
+                            EntityReference workOrderReference = (EntityReference)preImageEntity.Attributes["msdyn_workorder"];
+
+                            // Lookup the referenced work order
+                            msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrderReference.Id).FirstOrDefault();
+
+                            // Determine if we use the questionnaire response from this update or from the pre-image since it is not always passed in the update
+                            var questionnaireResponse = !String.IsNullOrEmpty(workOrderServiceTask.ovs_QuestionnaireResponse) ? workOrderServiceTask.ovs_QuestionnaireResponse : workOrderServiceTaskPreImage.ovs_QuestionnaireResponse;
+                            if (!String.IsNullOrWhiteSpace(questionnaireResponse))
                             {
-
-                                // Lookup the referenced work order
-                                msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrderReference.Id).FirstOrDefault();
-
                                 // parse json response
                                 JsonValue jsonValue = JsonValue.Parse(questionnaireResponse);
                                 JsonObject jsonObject = jsonValue as JsonObject;
@@ -105,10 +103,11 @@ namespace TSIS2.Plugins
 
                                         //newIncident.Title = workOrder.ovs_regulatedentity.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
                                         Guid newIncidentId = service.Create(newIncident);
-                                        msdyn_workorder uWorkOrder = new msdyn_workorder();
-                                        uWorkOrder.Id = workOrderReference.Id;
-                                        uWorkOrder.msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, newIncidentId);
-                                        service.Update(uWorkOrder);
+                                        service.Update(new msdyn_workorder
+                                        {
+                                            Id = workOrderReference.Id,
+                                            msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, newIncidentId)
+                                        });
                                         workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, newIncidentId);
                                     }
                                     // Already part of a case, just assign the work order case to the work order service task case
@@ -202,7 +201,7 @@ namespace TSIS2.Plugins
                                     {
                                         finding.statuscode = ovs_Finding_statuscode.Inactive;
                                         finding.statecode = ovs_FindingState.Inactive;
-                                    } 
+                                    }
                                     // Otherwise, re-enable it
                                     else
                                     {
@@ -211,12 +210,18 @@ namespace TSIS2.Plugins
                                     }
                                     serviceContext.UpdateObject(finding);
                                 }
-
-                                // Save all the changes made in the service context
-                                serviceContext.SaveChanges();
                             }
-                        }
 
+                            // If we got this far, mark the parent work order system status to Open - Completed
+                            service.Update(new msdyn_workorder
+                            {
+                                Id = workOrderReference.Id,
+                                msdyn_SystemStatus = msdyn_wosystemstatus.OpenCompleted
+                            });
+
+                            // Save all the changes in the context as well.
+                            serviceContext.SaveChanges();
+                        }
                     }
                 }
 
