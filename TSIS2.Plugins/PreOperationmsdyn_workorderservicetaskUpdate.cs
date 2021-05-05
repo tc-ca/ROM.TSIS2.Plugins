@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.Serialization.Json;
-using System.ServiceModel;
-using System.Text;
-using System.Text.RegularExpressions;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
-using DG.XrmContext;
 using System.Json;
+using System.Linq;
+using System.ServiceModel;
+using Microsoft.Xrm.Sdk;
 
 namespace TSIS2.Plugins
 {
@@ -35,22 +26,22 @@ namespace TSIS2.Plugins
             ITracingService tracingService =
             (ITracingService)serviceProvider.GetService(typeof(ITracingService));
 
-            // Obtain the execution context from the service provider.  
+            // Obtain the execution context from the service provider.
             IPluginExecutionContext context = (IPluginExecutionContext)
                 serviceProvider.GetService(typeof(IPluginExecutionContext));
 
-            // The InputParameters collection contains all the data passed in the message request.  
+            // The InputParameters collection contains all the data passed in the message request.
             if (context.InputParameters.Contains("Target") &&
                 context.InputParameters["Target"] is Entity)
             {
-                // Obtain the target entity from the input parameters.  
+                // Obtain the target entity from the input parameters.
                 Entity target = (Entity)context.InputParameters["Target"];
 
                 // Obtain the preimage entity
                 Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
 
-                // Obtain the organization service reference which you will need for  
-                // web service calls.  
+                // Obtain the organization service reference which you will need for
+                // web service calls.
                 IOrganizationServiceFactory serviceFactory =
                     (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
                 IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
@@ -95,11 +86,11 @@ namespace TSIS2.Plugins
                                     {
                                         Incident newIncident = new Incident();
                                         newIncident.CustomerId = workOrder.ovs_regulatedentity;
-                                        if (workOrder.msdyn_ServiceAccount != null) newIncident.ovs_Site = workOrder.msdyn_ServiceAccount;
-                                        if (workOrder.msdyn_ServiceTerritory != null) newIncident.ovs_Region = workOrder.msdyn_ServiceTerritory;
-                                        if (workOrder.ovs_regulatedentity != null) newIncident.ovs_RegulatedEntity = workOrder.ovs_regulatedentity;
-                                        // Regulated Entity is a mandatory field on work order but, just in case, throw an error
-                                        if (workOrder.ovs_regulatedentity == null) throw new ArgumentNullException("msdyn_workorder.ovs_regulatedentity");
+                                        if (workOrder.ts_Site != null) newIncident.msdyn_FunctionalLocation = workOrder.ts_Site;
+                                        if (workOrder.ts_Region != null) newIncident.ovs_Region = workOrder.ts_Region;
+                                        if (workOrder.msdyn_ServiceAccount != null) newIncident.CustomerId = workOrder.msdyn_ServiceAccount;
+                                        // Stakeholder is a mandatory field on work order but, just in case, throw an error
+                                        if (workOrder.msdyn_ServiceAccount == null) throw new ArgumentNullException("msdyn_workorder.msdyn_ServiceAccount");
 
                                         //newIncident.Title = workOrder.ovs_regulatedentity.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
                                         Guid newIncidentId = service.Create(newIncident);
@@ -225,7 +216,7 @@ namespace TSIS2.Plugins
                     }
                 }
 
-                // Seems to be a bug if exception variables have the same name. 
+                // Seems to be a bug if exception variables have the same name.
                 // Make sure the name of each exception variable is different.
                 catch (FaultException<OrganizationServiceFault> orgServiceEx)
                 {
