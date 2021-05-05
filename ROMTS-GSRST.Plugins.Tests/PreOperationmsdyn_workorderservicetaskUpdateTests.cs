@@ -18,14 +18,14 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_work_order_service_task_is_complete_expect_parent_work_order_to_be_open_completed()
         {
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident { });
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder
             {
                 msdyn_name = "300-345678",
                 msdyn_SystemStatus = msdyn_wosystemstatus.OpenUnscheduled,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
             });
             var existingWorkOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
             {
@@ -52,12 +52,12 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_work_order_service_task_already_has_finding_expect_next_findings_to_have_name_with_incremented_suffix()
         {
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident { });
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder { 
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
             });
             var existingWorkOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
             {
@@ -136,12 +136,12 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_ovs_questionnaireresponse_contains_finding_but_work_order_service_task_is_not_100_percent_complete_expect_ovs_finding_not_created()
         {
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account() { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -185,13 +185,13 @@ namespace ROMTS_GSRST.Plugins.Tests
         {
 
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account() { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -253,13 +253,13 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_ovs_questionnaireresponse_contains_finding_that_already_exists_expect_existing_ovs_finding_record_to_be_updated()
         {
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account() { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -313,13 +313,13 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_ovs_questionnaireresponse_contains_finding_that_already_exists_but_is_deactivated_expect_existing_ovs_finding_record_to_be_activated_in_case()
         {
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account() { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
@@ -377,13 +377,13 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_ovs_questionnaireresponse_no_longer_contains_finding_that_already_exists_expect_existing_ovs_finding_record_to_be_deactived_in_case()
         {
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account() { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
@@ -434,12 +434,12 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_ovs_questionnaireresponse_contains_finding_with_missing_optional_values_expect_ovs_finding_record_to_still_be_created()
         {
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account() { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -480,12 +480,12 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_ovs_questionnaireresponse_contains_finding_expect_msdyn_inspectiontaskresult_fail()
         {
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account() { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -529,12 +529,12 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_ovs_questionnaireresponse_contains_finding_expect_create_incident_and_ovs_finding_if_they_do_not_exist()
         {
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account() { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -578,13 +578,12 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_ovs_questionnaireresponse_does_not_contain_finding_expect_no_ovs_finding_record_created()
         {
             // ARRANGE
-            var regulatedEntityId = orgAdminUIService.Create(new Account() { Name = "Test Regulated Entity" });
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, regulatedEntityId)
-
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
             {
