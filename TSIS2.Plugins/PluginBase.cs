@@ -1,11 +1,9 @@
-﻿using Microsoft.Xrm.Sdk;
-using System;
-using System.Collections.ObjectModel;
+﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.ServiceModel;
+using Microsoft.Xrm.Sdk;
 
-namespace TSIS2.Plugins 
+namespace TSIS2.Plugins
 {
     public abstract class PluginBase : IPlugin
     {
@@ -53,7 +51,7 @@ namespace TSIS2.Plugins
                 }
 
                 // Obtain the execution context service from the service provider.
-                PluginExecutionContext = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));                
+                PluginExecutionContext = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
 
                 // Obtain the tracing service from the service provider.
                 TracingService = (ITracingService)serviceProvider.GetService(typeof(ITracingService));

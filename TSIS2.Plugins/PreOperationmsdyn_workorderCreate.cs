@@ -10,17 +10,8 @@
 // </auto-generated>
 
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.Serialization.Json;
-using System.ServiceModel;
-using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.Xrm.Sdk;
-using DG.XrmContext;
 
 namespace TSIS2.Plugins
 {

@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Runtime.Serialization.Json;
-using System.ServiceModel;
-using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.Xrm.Sdk;
-using DG.XrmContext;
 
 namespace TSIS2.Plugins
 {
@@ -22,11 +13,11 @@ namespace TSIS2.Plugins
     "",
     "TSIS2.Plugins.PreOperationmsdyn_workorderservicetaskCreate Plugin",
     1,
-    IsolationModeEnum.Sandbox, 
+    IsolationModeEnum.Sandbox,
     Description = "Copies the JSON Questionnaire Definition from a Service Task to a Work Order Service Task.")]
     /// <summary>
     /// PostOperationmsdyn_workorderservicetaskCreate Plugin.
-    /// </summary>    
+    /// </summary>
     public class PreOperationmsdyn_workorderservicetaskCreate : IPlugin
     {
         public void Execute(IServiceProvider serviceProvider)
@@ -35,19 +26,19 @@ namespace TSIS2.Plugins
             ITracingService tracingService =
             (ITracingService)serviceProvider.GetService(typeof(ITracingService));
 
-            // Obtain the execution context from the service provider.  
+            // Obtain the execution context from the service provider.
             IPluginExecutionContext context = (IPluginExecutionContext)
                 serviceProvider.GetService(typeof(IPluginExecutionContext));
 
-            // The InputParameters collection contains all the data passed in the message request.  
+            // The InputParameters collection contains all the data passed in the message request.
             if (context.InputParameters.Contains("Target") &&
                 context.InputParameters["Target"] is Entity)
             {
-                // Obtain the target entity from the input parameters.  
+                // Obtain the target entity from the input parameters.
                 Entity target = (Entity)context.InputParameters["Target"];
 
-                // Obtain the organization service reference which you will need for  
-                // web service calls.  
+                // Obtain the organization service reference which you will need for
+                // web service calls.
                 IOrganizationServiceFactory serviceFactory =
                     (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
                 IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);

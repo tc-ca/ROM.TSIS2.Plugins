@@ -3234,16 +3234,6 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
     }
     
-    [RelationshipSchemaName("ovs_Finding_regulatedentity_Account")]
-    public IEnumerable<ovs_Finding> ovs_Finding_regulatedentity_Account {
-        get {
-            return GetRelatedEntities<ovs_Finding>("ovs_Finding_regulatedentity_Account", null);
-        }
-        set {
-            SetRelatedEntities("ovs_Finding_regulatedentity_Account", null, value);
-        }
-    }
-    
     [RelationshipSchemaName("ovs_Incident_Site_Account")]
     public IEnumerable<Incident> ovs_Incident_Site_Account {
         get {
@@ -3344,16 +3334,6 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
         set {
             SetRelatedEntity("ts_Account_Country_tc_Country", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("ts_ovs_Finding_Site_Account")]
-    public IEnumerable<ovs_Finding> ts_ovs_Finding_Site_Account {
-        get {
-            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_Site_Account", null);
-        }
-        set {
-            SetRelatedEntities("ts_ovs_Finding_Site_Account", null, value);
         }
     }
     
@@ -24410,10 +24390,10 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
     
     /// <summary>
     /// <para>Select the customer account or contact to provide a quick link to additional customer details, such as account information, activities, and opportunities.</para>
-    /// <para>Display Name: Customer</para>
+    /// <para>Display Name: Stakeholder</para>
     /// </summary>
     [AttributeLogicalName("customerid")]
-    [DisplayName("Customer")]
+    [DisplayName("Stakeholder")]
     public EntityReference CustomerId {
         get {
             return GetAttributeValue<EntityReference>("customerid");
@@ -25403,10 +25383,10 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
     }
     
     /// <summary>
-    /// <para>Display Name: Regulated Entity</para>
+    /// <para>Display Name: Regulated Entity (to delete)</para>
     /// </summary>
     [AttributeLogicalName("ovs_regulatedentity")]
-    [DisplayName("Regulated Entity")]
+    [DisplayName("Regulated Entity (to delete)")]
     public EntityReference ovs_RegulatedEntity {
         get {
             return GetAttributeValue<EntityReference>("ovs_regulatedentity");
@@ -25417,10 +25397,10 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
     }
     
     /// <summary>
-    /// <para>Display Name: Site</para>
+    /// <para>Display Name: Site (to delete)</para>
     /// </summary>
     [AttributeLogicalName("ovs_site")]
-    [DisplayName("Site")]
+    [DisplayName("Site (to delete)")]
     public EntityReference ovs_Site {
         get {
             return GetAttributeValue<EntityReference>("ovs_site");
@@ -54004,16 +53984,6 @@ public partial class Territory : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
-    [RelationshipSchemaName("ts_ovs_Finding_Region_Territory")]
-    public IEnumerable<ovs_Finding> ts_ovs_Finding_Region_Territory {
-        get {
-            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_Region_Territory", null);
-        }
-        set {
-            SetRelatedEntities("ts_ovs_Finding_Region_Territory", null, value);
-        }
-    }
-    
     public static Territory Retrieve(IOrganizationService service, Guid id, params Expression<Func<Territory,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
@@ -67908,10 +67878,10 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     
     /// <summary>
     /// <para>The service territory this work order relates to. By default this will be set to the Service Territory defined on the service account</para>
-    /// <para>Display Name: Region</para>
+    /// <para>Display Name: Service Territory</para>
     /// </summary>
     [AttributeLogicalName("msdyn_serviceterritory")]
-    [DisplayName("Region")]
+    [DisplayName("Service Territory")]
     public EntityReference msdyn_ServiceTerritory {
         get {
             return GetAttributeValue<EntityReference>("msdyn_serviceterritory");
@@ -68369,10 +68339,10 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     }
     
     /// <summary>
-    /// <para>Display Name: Asset Category</para>
+    /// <para>Display Name: Operation Asset Category</para>
     /// </summary>
     [AttributeLogicalName("ovs_assetcategory")]
-    [DisplayName("Asset Category")]
+    [DisplayName("Operation Asset Category")]
     public EntityReference ovs_AssetCategory {
         get {
             return GetAttributeValue<EntityReference>("ovs_assetcategory");
@@ -68556,10 +68526,10 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     }
     
     /// <summary>
-    /// <para>Display Name: Asset</para>
+    /// <para>Display Name: Operation Asset</para>
     /// </summary>
     [AttributeLogicalName("ovs_asset")]
-    [DisplayName("Asset")]
+    [DisplayName("Operation Asset")]
     public EntityReference ovs_asset {
         get {
             return GetAttributeValue<EntityReference>("ovs_asset");
@@ -68756,6 +68726,34 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
         set {
             SetAttributeValue("ts_site", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Work Order End Date</para>
+    /// </summary>
+    [AttributeLogicalName("ts_workorderenddate")]
+    [DisplayName("Work Order End Date")]
+    public DateTime? ts_workorderenddate {
+        get {
+            return GetAttributeValue<DateTime?>("ts_workorderenddate");
+        }
+        set {
+            SetAttributeValue("ts_workorderenddate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Work Order Start Date</para>
+    /// </summary>
+    [AttributeLogicalName("ts_workorderstartdate")]
+    [DisplayName("Work Order Start Date")]
+    public DateTime? ts_workorderstartdate {
+        get {
+            return GetAttributeValue<DateTime?>("ts_workorderstartdate");
+        }
+        set {
+            SetAttributeValue("ts_workorderstartdate", value);
         }
     }
     
@@ -69364,6 +69362,16 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
         set {
             SetRelatedEntities("ts_msdyn_workorder_msdyn_customer_asset", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_Finding_WorkOrder_msdyn_workorder")]
+    public IEnumerable<ovs_Finding> ts_ovs_Finding_WorkOrder_msdyn_workorder {
+        get {
+            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_WorkOrder_msdyn_workorder", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_Finding_WorkOrder_msdyn_workorder", null, value);
         }
     }
     
@@ -76177,58 +76185,16 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
     }
     
     /// <summary>
-    /// <para>Display Name: Country</para>
+    /// <para>Display Name: Work Order</para>
     /// </summary>
-    [AttributeLogicalName("ts_country")]
-    [DisplayName("Country")]
-    public EntityReference ts_Country {
+    [AttributeLogicalName("ts_workorder")]
+    [DisplayName("Work Order")]
+    public EntityReference ts_WorkOrder {
         get {
-            return GetAttributeValue<EntityReference>("ts_country");
+            return GetAttributeValue<EntityReference>("ts_workorder");
         }
         set {
-            SetAttributeValue("ts_country", value);
-        }
-    }
-    
-    /// <summary>
-    /// <para>Display Name: Operation Type</para>
-    /// </summary>
-    [AttributeLogicalName("ts_operationtype")]
-    [DisplayName("Operation Type")]
-    public EntityReference ts_OperationType {
-        get {
-            return GetAttributeValue<EntityReference>("ts_operationtype");
-        }
-        set {
-            SetAttributeValue("ts_operationtype", value);
-        }
-    }
-    
-    /// <summary>
-    /// <para>Display Name: Region</para>
-    /// </summary>
-    [AttributeLogicalName("ts_region")]
-    [DisplayName("Region")]
-    public EntityReference ts_Region {
-        get {
-            return GetAttributeValue<EntityReference>("ts_region");
-        }
-        set {
-            SetAttributeValue("ts_region", value);
-        }
-    }
-    
-    /// <summary>
-    /// <para>Display Name: Site</para>
-    /// </summary>
-    [AttributeLogicalName("ts_site")]
-    [DisplayName("Site")]
-    public EntityReference ts_Site {
-        get {
-            return GetAttributeValue<EntityReference>("ts_site");
-        }
-        set {
-            SetAttributeValue("ts_site", value);
+            SetAttributeValue("ts_workorder", value);
         }
     }
     
@@ -76276,20 +76242,6 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
     }
     
-    /// <summary>
-    /// <para>Display Name: Stakeholder</para>
-    /// </summary>
-    [AttributeLogicalName("ts_regulatedentity")]
-    [DisplayName("Stakeholder")]
-    public EntityReference ts_regulatedentity {
-        get {
-            return GetAttributeValue<EntityReference>("ts_regulatedentity");
-        }
-        set {
-            SetAttributeValue("ts_regulatedentity", value);
-        }
-    }
-    
     [AttributeLogicalName("createdby")]
     [RelationshipSchemaName("lk_ovs_finding_createdby")]
     public SystemUser lk_ovs_finding_createdby {
@@ -76331,17 +76283,6 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
         set {
             SetRelatedEntity("lk_ovs_finding_modifiedonbehalfby", null, value);
-        }
-    }
-    
-    [AttributeLogicalName("ts_regulatedentity")]
-    [RelationshipSchemaName("ovs_Finding_regulatedentity_Account")]
-    public Account ovs_Finding_regulatedentity_Account {
-        get {
-            return GetRelatedEntity<Account>("ovs_Finding_regulatedentity_Account", null);
-        }
-        set {
-            SetRelatedEntity("ovs_Finding_regulatedentity_Account", null, value);
         }
     }
     
@@ -76387,47 +76328,14 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
     }
     
-    [AttributeLogicalName("ts_country")]
-    [RelationshipSchemaName("ts_ovs_Finding_Country_tc_Country")]
-    public tc_Country ts_ovs_Finding_Country_tc_Country {
+    [AttributeLogicalName("ts_workorder")]
+    [RelationshipSchemaName("ts_ovs_Finding_WorkOrder_msdyn_workorder")]
+    public msdyn_workorder ts_ovs_Finding_WorkOrder_msdyn_workorder {
         get {
-            return GetRelatedEntity<tc_Country>("ts_ovs_Finding_Country_tc_Country", null);
+            return GetRelatedEntity<msdyn_workorder>("ts_ovs_Finding_WorkOrder_msdyn_workorder", null);
         }
         set {
-            SetRelatedEntity("ts_ovs_Finding_Country_tc_Country", null, value);
-        }
-    }
-    
-    [AttributeLogicalName("ts_operationtype")]
-    [RelationshipSchemaName("ts_ovs_Finding_OperationType_ovs_operationty")]
-    public ovs_operationtype ts_ovs_Finding_OperationType_ovs_operationty {
-        get {
-            return GetRelatedEntity<ovs_operationtype>("ts_ovs_Finding_OperationType_ovs_operationty", null);
-        }
-        set {
-            SetRelatedEntity("ts_ovs_Finding_OperationType_ovs_operationty", null, value);
-        }
-    }
-    
-    [AttributeLogicalName("ts_region")]
-    [RelationshipSchemaName("ts_ovs_Finding_Region_Territory")]
-    public Territory ts_ovs_Finding_Region_Territory {
-        get {
-            return GetRelatedEntity<Territory>("ts_ovs_Finding_Region_Territory", null);
-        }
-        set {
-            SetRelatedEntity("ts_ovs_Finding_Region_Territory", null, value);
-        }
-    }
-    
-    [AttributeLogicalName("ts_site")]
-    [RelationshipSchemaName("ts_ovs_Finding_Site_Account")]
-    public Account ts_ovs_Finding_Site_Account {
-        get {
-            return GetRelatedEntity<Account>("ts_ovs_Finding_Site_Account", null);
-        }
-        set {
-            SetRelatedEntity("ts_ovs_Finding_Site_Account", null, value);
+            SetRelatedEntity("ts_ovs_Finding_WorkOrder_msdyn_workorder", null, value);
         }
     }
     
@@ -79150,16 +79058,6 @@ public partial class ovs_operationtype : ExtendedEntity<ovs_operationtypeState, 
         }
         set {
             SetRelatedEntities("ovs_ovs_operationtype_ovs_operation", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("ts_ovs_Finding_OperationType_ovs_operationty")]
-    public IEnumerable<ovs_Finding> ts_ovs_Finding_OperationType_ovs_operationty {
-        get {
-            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_OperationType_ovs_operationty", null);
-        }
-        set {
-            SetRelatedEntities("ts_ovs_Finding_OperationType_ovs_operationty", null, value);
         }
     }
     
@@ -83949,16 +83847,6 @@ public partial class tc_Country : ExtendedEntity<tc_CountryState, tc_Country_sta
         }
         set {
             SetRelatedEntities("ts_ovs_AirCarrier_Country_tc_Country", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("ts_ovs_Finding_Country_tc_Country")]
-    public IEnumerable<ovs_Finding> ts_ovs_Finding_Country_tc_Country {
-        get {
-            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_Country_tc_Country", null);
-        }
-        set {
-            SetRelatedEntities("ts_ovs_Finding_Country_tc_Country", null, value);
         }
     }
     
@@ -91662,7 +91550,7 @@ public enum msdyn_workorderservicetask_statuscode {
     Active = 1,
     
     [EnumMember()]
-    [OptionSetMetadata("Inactive", Index=3, Color="#0000ff")]
+    [OptionSetMetadata("Inactive", Index=4, Color="#0000ff")]
     Inactive = 2,
     
     [EnumMember()]
@@ -91670,12 +91558,16 @@ public enum msdyn_workorderservicetask_statuscode {
     Complete = 918640002,
     
     [EnumMember()]
-    [OptionSetMetadata("Closed", Index=4, Color="#0000ff")]
+    [OptionSetMetadata("Closed", Index=5, Color="#0000ff")]
     Closed = 918640003,
     
     [EnumMember()]
     [OptionSetMetadata("In Progress", Index=2, Color="#0000ff")]
     InProgress = 918640004,
+    
+    [EnumMember()]
+    [OptionSetMetadata("New", Index=3, Color="#0000ff")]
+    New = 918640005,
 }
 
 [DataContract()]
