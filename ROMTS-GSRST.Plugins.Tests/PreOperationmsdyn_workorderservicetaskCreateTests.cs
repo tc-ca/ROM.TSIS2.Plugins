@@ -13,18 +13,17 @@ namespace ROMTS_GSRST.Plugins.Tests
     public class PreOperationmsdyn_workorderservicetaskCreateTests : UnitTestBase
     {
 
-        Guid _regulatedEntityId;
+        Guid _serviceAccountId;
         Guid _workOrderId;
 
         public PreOperationmsdyn_workorderservicetaskCreateTests(XrmMockupFixture fixture) : base(fixture) 
         {
-            _regulatedEntityId = orgAdminUIService.Create(new Account() { Name = "Test Regulated Entity" });
+            _serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             _workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                ovs_regulatedentity = new EntityReference(Account.EntityLogicalName, _regulatedEntityId)
-
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, _serviceAccountId)
             });
         }
 
