@@ -2752,16 +2752,6 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
     }
     
-    [RelationshipSchemaName("Incident_RegulatedEntity_Account")]
-    public IEnumerable<Incident> Incident_RegulatedEntity_Account {
-        get {
-            return GetRelatedEntities<Incident>("Incident_RegulatedEntity_Account", null);
-        }
-        set {
-            SetRelatedEntities("Incident_RegulatedEntity_Account", null, value);
-        }
-    }
-    
     [RelationshipSchemaName("account_master_account", EntityRole.Referenced)]
     public IEnumerable<Account> Referencedaccount_master_account {
         get {
@@ -3234,16 +3224,6 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
     }
     
-    [RelationshipSchemaName("ovs_Incident_Site_Account")]
-    public IEnumerable<Incident> ovs_Incident_Site_Account {
-        get {
-            return GetRelatedEntities<Incident>("ovs_Incident_Site_Account", null);
-        }
-        set {
-            SetRelatedEntities("ovs_Incident_Site_Account", null, value);
-        }
-    }
-    
     [RelationshipSchemaName("ovs_msdyn_workorder_regulatedentity_account")]
     public IEnumerable<msdyn_workorder> ovs_msdyn_workorder_regulatedentity_account {
         get {
@@ -3334,6 +3314,16 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
         set {
             SetRelatedEntity("ts_Account_Country_tc_Country", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_Incident_Stakeholder_Account")]
+    public IEnumerable<Incident> ts_Incident_Stakeholder_Account {
+        get {
+            return GetRelatedEntities<Incident>("ts_Incident_Stakeholder_Account", null);
+        }
+        set {
+            SetRelatedEntities("ts_Incident_Stakeholder_Account", null, value);
         }
     }
     
@@ -24390,10 +24380,10 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
     
     /// <summary>
     /// <para>Select the customer account or contact to provide a quick link to additional customer details, such as account information, activities, and opportunities.</para>
-    /// <para>Display Name: Stakeholder</para>
+    /// <para>Display Name: Contravenor</para>
     /// </summary>
     [AttributeLogicalName("customerid")]
-    [DisplayName("Stakeholder")]
+    [DisplayName("Contravenor")]
     public EntityReference CustomerId {
         get {
             return GetAttributeValue<EntityReference>("customerid");
@@ -25383,34 +25373,6 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
     }
     
     /// <summary>
-    /// <para>Display Name: Regulated Entity (to delete)</para>
-    /// </summary>
-    [AttributeLogicalName("ovs_regulatedentity")]
-    [DisplayName("Regulated Entity (to delete)")]
-    public EntityReference ovs_RegulatedEntity {
-        get {
-            return GetAttributeValue<EntityReference>("ovs_regulatedentity");
-        }
-        set {
-            SetAttributeValue("ovs_regulatedentity", value);
-        }
-    }
-    
-    /// <summary>
-    /// <para>Display Name: Site (to delete)</para>
-    /// </summary>
-    [AttributeLogicalName("ovs_site")]
-    [DisplayName("Site (to delete)")]
-    public EntityReference ovs_Site {
-        get {
-            return GetAttributeValue<EntityReference>("ovs_site");
-        }
-        set {
-            SetAttributeValue("ovs_site", value);
-        }
-    }
-    
-    /// <summary>
     /// <para>Display Name: Country</para>
     /// </summary>
     [AttributeLogicalName("ts_country")]
@@ -25421,6 +25383,20 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
         set {
             SetAttributeValue("ts_country", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Stakeholder</para>
+    /// </summary>
+    [AttributeLogicalName("ts_stakeholder")]
+    [DisplayName("Stakeholder")]
+    public EntityReference ts_Stakeholder {
+        get {
+            return GetAttributeValue<EntityReference>("ts_stakeholder");
+        }
+        set {
+            SetAttributeValue("ts_stakeholder", value);
         }
     }
     
@@ -25481,17 +25457,6 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
         set {
             SetRelatedEntities("Incident_RecurringAppointmentMasters", null, value);
-        }
-    }
-    
-    [AttributeLogicalName("ovs_regulatedentity")]
-    [RelationshipSchemaName("Incident_RegulatedEntity_Account")]
-    public Account Incident_RegulatedEntity_Account {
-        get {
-            return GetRelatedEntity<Account>("Incident_RegulatedEntity_Account", null);
-        }
-        set {
-            SetRelatedEntity("Incident_RegulatedEntity_Account", null, value);
         }
     }
     
@@ -25793,17 +25758,6 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
     }
     
-    [AttributeLogicalName("ovs_site")]
-    [RelationshipSchemaName("ovs_Incident_Site_Account")]
-    public Account ovs_Incident_Site_Account {
-        get {
-            return GetRelatedEntity<Account>("ovs_Incident_Site_Account", null);
-        }
-        set {
-            SetRelatedEntity("ovs_Incident_Site_Account", null, value);
-        }
-    }
-    
     [RelationshipSchemaName("ovs_incident_msdyn_workorderservicetask")]
     public IEnumerable<msdyn_workorderservicetask> ovs_incident_msdyn_workorderservicetask {
         get {
@@ -25854,6 +25808,17 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
         set {
             SetRelatedEntity("ts_Incident_Country_tc_Country", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_stakeholder")]
+    [RelationshipSchemaName("ts_Incident_Stakeholder_Account")]
+    public Account ts_Incident_Stakeholder_Account {
+        get {
+            return GetRelatedEntity<Account>("ts_Incident_Stakeholder_Account", null);
+        }
+        set {
+            SetRelatedEntity("ts_Incident_Stakeholder_Account", null, value);
         }
     }
     
@@ -59507,6 +59472,36 @@ public partial class msdyn_customerassetcategory : ExtendedEntity<msdyn_customer
         }
         set {
             SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Asset Category Name (English)</para>
+    /// </summary>
+    [AttributeLogicalName("ts_assetcategorynameenglish")]
+    [DisplayName("Asset Category Name (English)")]
+    [MaxLength(100)]
+    public string ts_AssetCategoryNameEnglish {
+        get {
+            return GetAttributeValue<string>("ts_assetcategorynameenglish");
+        }
+        set {
+            SetAttributeValue("ts_assetcategorynameenglish", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Asset Category Name (French)</para>
+    /// </summary>
+    [AttributeLogicalName("ts_assetcategorynamefrench")]
+    [DisplayName("Asset Category Name (French)")]
+    [MaxLength(100)]
+    public string ts_AssetCategoryNameFrench {
+        get {
+            return GetAttributeValue<string>("ts_assetcategorynamefrench");
+        }
+        set {
+            SetAttributeValue("ts_assetcategorynamefrench", value);
         }
     }
     
