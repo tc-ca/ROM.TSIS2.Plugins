@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Messages;
-using System.ServiceModel;
-using DG.Tools.XrmMockup;
 using Xunit;
-using Xunit.Sdk;
 
 namespace ROMTS_GSRST.Plugins.Tests
 {
@@ -16,7 +11,7 @@ namespace ROMTS_GSRST.Plugins.Tests
         Guid _serviceAccountId;
         Guid _workOrderId;
 
-        public PreOperationmsdyn_workorderservicetaskCreateTests(XrmMockupFixture fixture) : base(fixture) 
+        public PreOperationmsdyn_workorderservicetaskCreateTests(XrmMockupFixture fixture) : base(fixture)
         {
             _serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             _workOrderId = orgAdminUIService.Create(new msdyn_workorder()

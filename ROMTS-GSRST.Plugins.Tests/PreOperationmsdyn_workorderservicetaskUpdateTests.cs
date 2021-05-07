@@ -1,12 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
-using Microsoft.Xrm.Sdk.Messages;
-using System.ServiceModel;
-using DG.Tools.XrmMockup;
 using Xunit;
-using Xunit.Sdk;
 
 namespace ROMTS_GSRST.Plugins.Tests
 {
@@ -54,7 +49,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident { });
-            var workOrderId = orgAdminUIService.Create(new msdyn_workorder { 
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
                 msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
@@ -176,7 +171,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             };
             var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().ToList();
 
-            // Expect no findings created because questionnaire is not completed 
+            // Expect no findings created because questionnaire is not completed
             Assert.Empty(findings);
         }
 
