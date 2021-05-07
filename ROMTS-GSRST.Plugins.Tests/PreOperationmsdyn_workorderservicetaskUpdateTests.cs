@@ -10,7 +10,7 @@ namespace ROMTS_GSRST.Plugins.Tests
         public PreOperationmsdyn_workorderservicetaskUpdateTests(XrmMockupFixture fixture) : base(fixture) { }
 
         [Fact]
-        public void When_work_order_service_task_is_complete_expect_parent_work_order_to_be_open_completed()
+        public void When_not_all_work_order_service_task_is_complete_expect_parent_work_order_to_not_change()
         {
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account { Name = "Test Service Account" });
@@ -22,21 +22,63 @@ namespace ROMTS_GSRST.Plugins.Tests
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
                 msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
             });
-            var existingWorkOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
+            var existingWorkOrderServiceTask1Id = orgAdminUIService.Create(new msdyn_workorderservicetask
             {
                 msdyn_name = "200-345678-1",
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
                 msdyn_PercentComplete = 0,
-                ovs_QuestionnaireResponse = ""
+                ovs_QuestionnaireResponse = "",
+                statuscode = msdyn_workorderservicetask_statuscode.InProgress
+            });
+            var existingWorkOrderServiceTask2Id = orgAdminUIService.Create(new msdyn_workorderservicetask
+            {
+                msdyn_name = "200-345678-2",
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 0,
+                ovs_QuestionnaireResponse = "",
+                statuscode = msdyn_workorderservicetask_statuscode.New
             });
 
             // ACT
-            orgAdminUIService.Update(new msdyn_workorderservicetask
+            orgAdminUIService.Update(new msdyn_workorderservicetask { Id = existingWorkOrderServiceTask2Id, msdyn_PercentComplete = 100.00, ovs_QuestionnaireResponse = "" });
+
+            // ASSERT
+            var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_systemstatus")).ToEntity<msdyn_workorder>();
+            Assert.Equal(msdyn_wosystemstatus.OpenUnscheduled, workOrder.msdyn_SystemStatus);
+        }
+
+        [Fact]
+        public void When_all_work_order_service_tasks_are_complete_expect_parent_work_order_to_be_open_completed()
+        {
+            // ARRANGE
+            var serviceAccountId = orgAdminUIService.Create(new Account { Name = "Test Service Account" });
+            var incidentId = orgAdminUIService.Create(new Incident { });
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder
             {
-                Id = existingWorkOrderServiceTaskId,
-                msdyn_PercentComplete = 100.00,
-                ovs_QuestionnaireResponse = ""
+                msdyn_name = "300-345678",
+                msdyn_SystemStatus = msdyn_wosystemstatus.OpenUnscheduled,
+                msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
             });
+            var existingWorkOrderServiceTask1Id = orgAdminUIService.Create(new msdyn_workorderservicetask
+            {
+                msdyn_name = "200-345678-1",
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 100.00,
+                ovs_QuestionnaireResponse = "",
+                statuscode = msdyn_workorderservicetask_statuscode.Complete
+            });
+            var existingWorkOrderServiceTask2Id = orgAdminUIService.Create(new msdyn_workorderservicetask
+            {
+                msdyn_name = "200-345678-2",
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 0,
+                ovs_QuestionnaireResponse = "",
+                statuscode = msdyn_workorderservicetask_statuscode.InProgress
+            });
+
+            // ACT
+            orgAdminUIService.Update(new msdyn_workorderservicetask { Id = existingWorkOrderServiceTask2Id, msdyn_PercentComplete = 100.00, ovs_QuestionnaireResponse = "" });
 
             // ASSERT
             var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_systemstatus")).ToEntity<msdyn_workorder>();

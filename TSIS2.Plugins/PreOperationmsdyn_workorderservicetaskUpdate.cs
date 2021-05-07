@@ -3,6 +3,7 @@ using System.Json;
 using System.Linq;
 using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
@@ -205,12 +206,16 @@ namespace TSIS2.Plugins
                                 }
                             }
 
-                            // If we got this far, mark the parent work order system status to Open - Completed
-                            service.Update(new msdyn_workorder
+                            // If all other work order service tasks are already completed as well, mark the parent work order system status to Open - Completed
+                            var otherWorkOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(wost => wost.msdyn_WorkOrder == workOrderReference && wost.Id != workOrderServiceTask.Id).ToList<msdyn_workorderservicetask>();
+                            if (otherWorkOrderServiceTasks.All(x => x.statuscode == msdyn_workorderservicetask_statuscode.Complete))
                             {
-                                Id = workOrderReference.Id,
-                                msdyn_SystemStatus = msdyn_wosystemstatus.OpenCompleted
-                            });
+                                service.Update(new msdyn_workorder
+                                {
+                                    Id = workOrderReference.Id,
+                                    msdyn_SystemStatus = msdyn_wosystemstatus.OpenCompleted
+                                });
+                            }
 
                             // Save all the changes in the context as well.
                             serviceContext.SaveChanges();
