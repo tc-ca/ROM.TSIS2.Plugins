@@ -127,9 +127,9 @@ namespace TSIS2.Plugins
                                             {
                                                 // if no, initialize new ovs_finding
                                                 ovs_Finding newFinding = new ovs_Finding();
-                                                newFinding.ovs_FindingProvisionReference = (string)finding["provisionReference"];
-                                                newFinding.ts_findingProvisionTextEn = (string)finding["provisionTextEn"];
-                                                newFinding.ts_findingProvisionTextFr = (string)finding["provisionTextFr"];
+                                                newFinding.ovs_FindingProvisionReference = finding.ContainsKey("provisionReference") ? (string)finding["provisionReference"] : "";
+                                                newFinding.ts_findingProvisionTextEn = finding.ContainsKey("provisionTextEn") ? (string)finding["provisionTextEn"] : "";
+                                                newFinding.ts_findingProvisionTextFr = finding.ContainsKey("provisionTextFr") ? (string)finding["provisionTextFr"] : "";
                                                 newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
 
                                                 // Don't do anything with the files yet until we have the proper infrastructure decision
