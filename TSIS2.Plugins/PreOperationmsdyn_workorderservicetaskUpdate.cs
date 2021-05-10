@@ -3,7 +3,6 @@ using System.Json;
 using System.Linq;
 using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
@@ -95,7 +94,6 @@ namespace TSIS2.Plugins
                                         // Stakeholder is a mandatory field on work order but, just in case, throw an error
                                         if (workOrder.msdyn_ServiceAccount == null) throw new ArgumentNullException("msdyn_workorder.msdyn_ServiceAccount");
 
-                                        //newIncident.Title = workOrder.ovs_regulatedentity.Name + " Work Order " + workOrder.msdyn_name + " Inspection Failed on " + DateTime.Now.ToString("dd-MM-yy");
                                         Guid newIncidentId = service.Create(newIncident);
                                         service.Update(new msdyn_workorder
                                         {
@@ -149,6 +147,7 @@ namespace TSIS2.Plugins
 
                                                 // reference work order service task
                                                 newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
+                                                newFinding.ts_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrder.Id);
 
                                                 // reference case (should already be saved in the work order service task)
                                                 newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
