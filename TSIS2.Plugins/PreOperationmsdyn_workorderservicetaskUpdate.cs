@@ -207,15 +207,17 @@ namespace TSIS2.Plugins
 
                             // If all other work order service tasks are already completed as well, mark the parent work order system status to Open - Completed
                             var otherWorkOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(wost => wost.msdyn_WorkOrder == workOrderReference && wost.Id != workOrderServiceTask.Id).ToList<msdyn_workorderservicetask>();
-                            if (otherWorkOrderServiceTasks.All(x => x.statuscode == msdyn_workorderservicetask_statuscode.Complete))
+                            if(workOrder.msdyn_SystemStatus != msdyn_wosystemstatus.ClosedPosted)
                             {
-                                service.Update(new msdyn_workorder
+                                if (otherWorkOrderServiceTasks.All(x => x.statuscode == msdyn_workorderservicetask_statuscode.Complete))
                                 {
-                                    Id = workOrderReference.Id,
-                                    msdyn_SystemStatus = msdyn_wosystemstatus.OpenCompleted
-                                });
+                                    service.Update(new msdyn_workorder
+                                    {
+                                        Id = workOrderReference.Id,
+                                        msdyn_SystemStatus = msdyn_wosystemstatus.OpenCompleted
+                                    });
+                                }
                             }
-
                             // Save all the changes in the context as well.
                             serviceContext.SaveChanges();
                         }
