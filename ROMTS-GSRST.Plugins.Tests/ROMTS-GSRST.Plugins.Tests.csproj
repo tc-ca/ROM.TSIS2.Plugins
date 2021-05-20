@@ -110,6 +110,7 @@
     <Compile Include="PreOperationmsdyn_workorderservicetaskCreateTests.cs" />
     <Compile Include="Metadata\TypeDeclarations.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskUpdateTests.cs" />
+    <Compile Include="PreOperationmsdyn_workorderUpdateTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="XrmMockupFixture.cs" />
