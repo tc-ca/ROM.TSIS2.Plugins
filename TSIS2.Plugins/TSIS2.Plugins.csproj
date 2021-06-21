@@ -174,9 +174,9 @@
     <None Include="spkl\pack+import.bat" />
     <None Include="spkl\unpack.bat" />
     <None Include="TSIS2.Plugins.Key.snk" />
+    <None Include="XrmContext\XrmContext.exe.config" />
     <None Include="XrmContext\Run.fsx" />
     <None Include="XrmContext\Run.ps1" />
-    <None Include="XrmContext\XrmContext.exe.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Debug\" />

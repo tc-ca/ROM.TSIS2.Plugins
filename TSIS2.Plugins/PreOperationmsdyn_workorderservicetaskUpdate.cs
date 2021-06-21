@@ -120,9 +120,9 @@ namespace TSIS2.Plugins
                                             var finding = rootProperty.Value;
 
                                             // if finding, does it already exist?
-                                            var findingMappingKey = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString();
+                                            var findingMappingKey = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString() + "-" + workOrder.ovs_asset.Id.ToString();
                                             var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ts_findingmappingkey == findingMappingKey);
-
+                                            
                                             if (existingFinding == null)
                                             {
                                                 // if no, initialize new ovs_finding
@@ -139,8 +139,9 @@ namespace TSIS2.Plugins
                                                 // Findings are at the 100 level
                                                 var wostName = preImageEntity.Attributes["msdyn_name"].ToString();
                                                 var prefix = wostName.Replace("200-", "100-");
-                                                var suffix = (findingsCount > 0) ? findingsCount + 1 : 1;
-                                                newFinding.ovs_Finding_1 = string.Format("{0}-{1}", prefix, suffix);
+                                                var infix = (findingsCount > 0) ? findingsCount + 1 : 1;
+                                                var suffix = 1;
+                                                newFinding.ovs_Finding_1 = string.Format("{0}-{1}-{2}", prefix, infix, suffix);
 
                                                 // Store the mapping key to keep track of mapping between finding and surveyjs questionnaire.
                                                 newFinding.ts_findingmappingkey = findingMappingKey;
@@ -152,8 +153,50 @@ namespace TSIS2.Plugins
                                                 // reference case (should already be saved in the work order service task)
                                                 newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
 
+                                                // reference Work Order's Stakeholder (Account Entity) (Lookup logical name: msdyn_serviceaccount)
+                                                newFinding.ts_accountid = new EntityReference(Account.EntityLogicalName, workOrder.msdyn_ServiceAccount.Id);
+
+                                                // reference Work Order's Operation (Customer Asset Entity) (Lookup logical name: ovs_asset)
+                                                newFinding.ts_Assetid = new EntityReference(msdyn_customerasset.EntityLogicalName, workOrder.ovs_asset.Id);
+
                                                 // Create new ovs_finding
                                                 Guid newFindingId = service.Create(newFinding);
+
+                                                // The finding JSON may contain an array of string Id's of operation records
+                                                var operations = finding.ContainsKey("operations") ? finding["operations"] : new JsonArray();
+
+                                                //Iterate through operations array and create a copy of the finding for each operation, associated to their opperation's parent account
+                                                foreach (System.Json.JsonPrimitive operation in operations)
+                                                {
+                                                    suffix++;
+                                                    var operationid = (string)operation;
+                                                    string newMappingKey = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString() + "-" + operationid;
+                                                    EntityReference operationReference = new EntityReference(msdyn_customerasset.EntityLogicalName, new Guid(operationid));
+
+                                                    // Lookup the operation (Customer Asset Entity) to know its parent Account's id
+                                                    msdyn_customerasset operationEntity = serviceContext.msdyn_customerassetSet.Where(op => op.Id == operationReference.Id).FirstOrDefault();
+
+                                                    // Create entity reference to the operation's parent account
+                                                    EntityReference parentAccountReference = new EntityReference(Account.EntityLogicalName, operationEntity.msdyn_Account.Id);
+
+                                                    //EntityReference parentAccountReference = new EntityReference(Account.EntityLogicalName, operationReference.)
+                                                    ovs_Finding newFindingCopy = new ovs_Finding()
+                                                    {
+                                                        ovs_FindingProvisionReference = newFinding.ovs_FindingProvisionReference,
+                                                        ts_findingProvisionTextEn = newFinding.ts_findingProvisionTextEn,
+                                                        ts_findingProvisionTextFr = newFinding.ts_findingProvisionTextFr,
+                                                        ovs_FindingComments = newFinding.ovs_FindingComments,
+                                                        ts_findingmappingkey = newMappingKey,
+                                                        ts_WorkOrder = newFinding.ts_WorkOrder,
+                                                        ovs_WorkOrderServiceTaskId = newFinding.ovs_WorkOrderServiceTaskId,
+                                                        ovs_CaseId = newFinding.ovs_CaseId,
+                                                        ts_Assetid = operationReference,
+                                                        ts_accountid = new EntityReference(Account.EntityLogicalName, operationEntity.msdyn_Account.Id),
+                                                        ovs_Finding_1 = string.Format("{0}-{1}-{2}", prefix, infix, suffix),
+                                                    };
+
+                                                    service.Create(newFindingCopy);
+                                                }
 
                                                 // Increment findings count for next finding name
                                                 findingsCount++;
@@ -185,7 +228,7 @@ namespace TSIS2.Plugins
                                 // that no longer exist in the questionnaire response.
 
                                 // Get a list of unique finding names from the JSON response
-                                var findingMappingKeys = jsonObject.Keys.Select(k => workOrderServiceTask.Id.ToString() + "-" + k);
+                                var findingMappingKeys = jsonObject.Keys.Select(k => workOrderServiceTask.Id.ToString() + "-" + k + "-" + workOrder.ovs_asset.Id.ToString());
 
                                 foreach (var finding in findings)
                                 {

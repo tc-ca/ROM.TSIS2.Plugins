@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Xunit;
@@ -86,15 +87,17 @@ namespace ROMTS_GSRST.Plugins.Tests
         }
 
         [Fact]
-        public void When_work_order_service_task_already_has_finding_expect_next_findings_to_have_name_with_incremented_suffix()
+        public void When_work_order_service_task_already_has_finding_expect_next_findings_to_have_name_with_incremented_infix()
         {
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident { });
+            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
             });
             var existingWorkOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
             {
@@ -158,16 +161,119 @@ namespace ROMTS_GSRST.Plugins.Tests
 
             // Expect first ovs_finding to still have the same name
             var first = findings[0];
-            Assert.Equal("100-345678-1-1", first.ovs_Finding_1);
+            Assert.Equal("100-345678-1-1-1", first.ovs_Finding_1);
 
             // Expect newly created second ovs_finding to have the proper name
             var second = findings[1];
-            Assert.Equal("100-345678-1-2", second.ovs_Finding_1);
+            Assert.Equal("100-345678-1-2-1", second.ovs_Finding_1);
 
             // Expect newly created third ovs_finding to have the proper name
             var third = findings[2];
-            Assert.Equal("100-345678-1-3", third.ovs_Finding_1);
+            Assert.Equal("100-345678-1-3-1", third.ovs_Finding_1);
         }
+
+        [Fact]
+        public void When_ovs_questionnaireresponse_contains_finding_containing_operation_array_expect_findings_for_each_operation_to_be_created_with_incremented_name_suffix()
+        {
+
+            // ARRANGE
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
+            var incidentId = orgAdminUIService.Create(new Incident());
+            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
+            {
+                msdyn_name = "300-345678",
+                msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
+            });
+
+            var testAccount1Id = orgAdminUIService.Create(new Account());
+            var testAccount2Id = orgAdminUIService.Create(new Account());
+            var testAccount3Id = orgAdminUIService.Create(new Account());
+            var testAccount4Id = orgAdminUIService.Create(new Account());
+
+            var testAccountReference1 = new EntityReference(Account.EntityLogicalName, testAccount1Id);
+            var testAccountReference2 = new EntityReference(Account.EntityLogicalName, testAccount2Id);
+            var testAccountReference3 = new EntityReference(Account.EntityLogicalName, testAccount3Id);
+            var testAccountReference4 = new EntityReference(Account.EntityLogicalName, testAccount4Id);
+
+            var testOperation1Id = orgAdminUIService.Create(new msdyn_customerasset()
+            {
+                Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
+                msdyn_Account = testAccountReference1
+            });
+            var testOperation2Id = orgAdminUIService.Create(new msdyn_customerasset()
+            {
+                Id = new Guid("6b796de3-b3a4-eb11-9442-000d3a8410dc"),
+                msdyn_Account = testAccountReference2
+            });
+            var testOperation3Id = orgAdminUIService.Create(new msdyn_customerasset()
+            {
+                Id = new Guid("7d085d54-c2a9-eb11-9442-000d3a8410dc"),
+                msdyn_Account = testAccountReference3
+            });
+            var testOperation4Id = orgAdminUIService.Create(new msdyn_customerasset()
+            {
+                Id = new Guid("22364b7e-e1ce-eb11-bacc-0022483c068d"),
+                msdyn_Account = testAccountReference4
+            });
+
+            var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
+            {
+                msdyn_name = "200-345678-1",
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 100.00,
+                ovs_QuestionnaireResponse = @"
+                {
+                    ""finding-sq_142"": {
+                        ""provisionReference"": ""SATR 4"",
+                        ""provisionTextEn"": ""<strong>Verification of Identity</strong></br><strong><mark><mark>SATR 4</mark></mark></strong>: An air carrier must, at the boarding gate for an international flight, verify the identity of each passenger who appears to be 18 years of age or older using</br><ul style='list-style-type:none;'><li><strong>(a)</strong> one of the following pieces of photo identification issued by a government authority that shows the passenger’s surname, first name and any middle names, their date of birth and gender and that is valid:</li><ul style='list-style-type:none;'><li><strong>(i)</strong> a passport issued by the country of which the passenger is a citizen or a national,</li><li><strong>(ii)</strong> a NEXUS card,</li><li><strong>(iii)</strong> any document referred to in subsection 50(1) or 52(1) of the Immigration and Refugee Protection Regulations; or</li></ul><li><strong>(b)</strong> a valid restricted area identity card, as defined in section 3 of the Canadian Aviation Security Regulations, 2012.</li></ul>"",
+                        ""provisionTextFr"": ""<strong>Verification of Identity</strong></br><strong><mark><mark><mark>SATR 4</mark></mark></mark></strong>: Tout transporteur aérien vérifie, à la porte d’embarquement pour un vol international, l’identité de chaque passager qui semble âgé de 18 ans ou plus au moyen :</br><ul style='list-style-type:none;'><li><strong>(a)</strong> soit de l’une des pièces d’identité avec photo ci-après qui est délivrée par une autorité gouvernementale, qui indique les nom et prénoms, date de naissance et genre du passager et qui est valide :</li><ul style='list-style-type:none;'><li><strong>(i)</strong> un passeport délivré au passager par le pays dont il est citoyen ou ressortissant,</li><li><strong>(ii)</strong> une carte NEXUS,</li><li><strong>(iii)</strong> un document visé au paragraphe 50(1) ou 52(1) du Règlement sur l’immigration et la protection des réfugiés;</li></ul><li><strong>(b)</strong> soit d’une carte d’identité de zone réglementée au sens de l’article 3 du Règlement canadien de 2012 sur la sûreté aérienne qui est valide.</li></ul>"",
+                        ""comments"": ""old comments"",
+                        ""operations"": [""9de3a6e3-c4ad-eb11-8236-000d3ae8b866"", ""6b796de3-b3a4-eb11-9442-000d3a8410dc"", ""7d085d54-c2a9-eb11-9442-000d3a8410dc"", ""22364b7e-e1ce-eb11-bacc-0022483c068d""],
+                        ""documentaryEvidence"": ""C:\\fakepath\\oldfile.png""
+                    }
+                }
+                "
+            });
+
+            // ACT
+
+            orgAdminUIService.Update(new msdyn_workorderservicetask { Id = workOrderServiceTaskId });
+
+            // ASSERT
+            var query = new QueryExpression(ovs_Finding.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet("ovs_finding")
+            };
+            var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().ToList();
+
+            // Expect 5 findings to be created
+            Assert.Equal(5, findings.Count);
+
+            // Expect first ovs_finding to still have the same name
+            var first = findings[0];
+            Assert.Equal("100-345678-1-1-1", first.ovs_Finding_1);
+
+            // Expect newly created second ovs_finding to have the proper name
+            var second = findings[1];
+            Assert.Equal("100-345678-1-1-2", second.ovs_Finding_1);
+
+            // Expect newly created third ovs_finding to have the proper name
+            var third = findings[2];
+            Assert.Equal("100-345678-1-1-3", third.ovs_Finding_1);
+
+            // Expect newly created fourth ovs_finding to have the proper name
+            var fourth = findings[3];
+            Assert.Equal("100-345678-1-1-4", fourth.ovs_Finding_1);
+
+            // Expect newly created fifth ovs_finding to have the proper name
+            var fifth = findings[4];
+            Assert.Equal("100-345678-1-1-5", fifth.ovs_Finding_1);
+
+        }
+
 
         [Fact]
         public void When_ovs_questionnaireresponse_contains_finding_but_work_order_service_task_is_not_100_percent_complete_expect_ovs_finding_not_created()
@@ -224,13 +330,14 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
+            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
-
-            });
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
+        });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
             {
                 msdyn_name = "200-345678-1",
@@ -250,7 +357,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var findingId = orgAdminUIService.Create(new ovs_Finding()
             {
-                ts_findingmappingkey = workOrderServiceTaskId + "-finding-sq_142",
+                ts_findingmappingkey = workOrderServiceTaskId + "-finding-sq_142-" + assetId.ToString(),
                 ovs_FindingProvisionReference = "SATR 4",
                 ovs_FindingComments = "original comments",
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
@@ -292,12 +399,13 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
+            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
-
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
             {
@@ -352,11 +460,13 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
+            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
@@ -367,7 +477,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var findingId = orgAdminUIService.Create(new ovs_Finding
             {
-                ts_findingmappingkey = workOrderServiceTaskId + "-finding-sq_142", // unique finding names are created using the work order service task ID and the reference ID in the questionnaire
+                ts_findingmappingkey = workOrderServiceTaskId + "-finding-sq_142-" + assetId.ToString(), // unique finding names are created using the work order service task ID and the reference ID in the questionnaire
                 ovs_FindingProvisionReference = "SATR 4",
                 ovs_FindingComments = "original comments",
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
@@ -472,11 +582,13 @@ namespace ROMTS_GSRST.Plugins.Tests
         {
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
+            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -518,11 +630,13 @@ namespace ROMTS_GSRST.Plugins.Tests
         {
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
+            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -567,12 +681,13 @@ namespace ROMTS_GSRST.Plugins.Tests
         {
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
+            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
-
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
             {
