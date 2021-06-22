@@ -160,6 +160,11 @@ namespace TSIS2.Plugins
                                                     var wostName = preImageEntity.Attributes["msdyn_name"].ToString();
                                                     var prefix = wostName.Replace("200-", "100-");
                                                     var infix = (highestInfix > 0) ? highestInfix + 1 : 1;
+                                                    //If there are copies for this finding, use their infix instead
+                                                    if (findingCopies.Count > 0)
+                                                    {
+                                                        infix = Int32.Parse(findingCopies[0].ovs_Finding_1.Split('-')[3]);
+                                                    }
                                                     var suffix = findingCopies.Count + 1;
                                                     newFinding.ovs_Finding_1 = string.Format("{0}-{1}-{2}", prefix, infix, suffix);
 
