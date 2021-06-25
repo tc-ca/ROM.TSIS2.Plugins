@@ -113,6 +113,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PluginBase.cs" />
+    <Compile Include="PostOperationts_workorderactivitytypeUpdate.cs" />
+    <Compile Include="PostOperationts_workordercreationwizardCreate.cs" />
     <Compile Include="PostOperationmsdyn_workorderservicetaskCreate.cs" />
     <Compile Include="PreOperationincidentCreate.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskUpdate.cs" />
