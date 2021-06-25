@@ -25,7 +25,7 @@ namespace TSIS2.Plugins
     "TSIS2.Plugins.PostOperationts_workorderactivitytypeUpdate Plugin",
     1,
     IsolationModeEnum.Sandbox,
-    Image1Name = "PostImage", Image1Type = ImageTypeEnum.PostImage, Image1Attributes = "ts_activitytypeid, ownerid, ts_workorderwizardid",
+    Image1Name = "PostImage", Image1Type = ImageTypeEnum.PostImage, Image1Attributes = "ts_activitytypeid,ownerid,ts_workorderwizardid",
     Description = "Create Work Orders after changing 'Create Work Order' to Yes.")]
     /// <summary>
     /// PostOperationts_workorderactivitytypeUpdate Plugin.
