@@ -25867,6 +25867,16 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
     }
     
+    [RelationshipSchemaName("ts_incident_ts_workordercreationwizard")]
+    public IEnumerable<ts_workordercreationwizard> ts_incident_ts_workordercreationwizard {
+        get {
+            return GetRelatedEntities<ts_workordercreationwizard>("ts_incident_ts_workordercreationwizard", null);
+        }
+        set {
+            SetRelatedEntities("ts_incident_ts_workordercreationwizard", null, value);
+        }
+    }
+    
     public static Incident Retrieve(IOrganizationService service, Guid id, params Expression<Func<Incident,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
@@ -35417,6 +35427,17 @@ public partial class ProcessSession : ExtendedEntity<ProcessSessionState, Proces
         }
         set {
             SetRelatedEntity("tc_tcmonth_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_workorderactivitytype_ProcessSession")]
+    public ts_workorderactivitytype ts_workorderactivitytype_ProcessSession {
+        get {
+            return GetRelatedEntity<ts_workorderactivitytype>("ts_workorderactivitytype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ts_workorderactivitytype_ProcessSession", null, value);
         }
     }
     
@@ -45884,6 +45905,17 @@ public partial class SyncError : ExtendedEntity<SyncErrorState, SyncError_Status
     }
     
     [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_propertyassetassociation_SyncErrors")]
+    public msdyn_propertyassetassociation msdyn_propertyassetassociation_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_propertyassetassociation>("msdyn_propertyassetassociation_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_propertyassetassociation_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("msdyn_propertylog_SyncErrors")]
     public msdyn_propertylog msdyn_propertylog_SyncErrors {
         get {
@@ -46265,6 +46297,17 @@ public partial class SyncError : ExtendedEntity<SyncErrorState, SyncError_Status
         }
         set {
             SetRelatedEntity("tc_tcmonth_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_workorderactivitytype_SyncErrors")]
+    public ts_workorderactivitytype ts_workorderactivitytype_SyncErrors {
+        get {
+            return GetRelatedEntity<ts_workorderactivitytype>("ts_workorderactivitytype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ts_workorderactivitytype_SyncErrors", null, value);
         }
     }
     
@@ -49697,6 +49740,66 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("lk_msdyn_propertyassetassociation_createdby")]
+    public IEnumerable<msdyn_propertyassetassociation> lk_msdyn_propertyassetassociation_createdby {
+        get {
+            return GetRelatedEntities<msdyn_propertyassetassociation>("lk_msdyn_propertyassetassociation_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_msdyn_propertyassetassociation_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_msdyn_propertyassetassociation_createdonbehalfby")]
+    public IEnumerable<msdyn_propertyassetassociation> lk_msdyn_propertyassetassociation_createdonbehalfby {
+        get {
+            return GetRelatedEntities<msdyn_propertyassetassociation>("lk_msdyn_propertyassetassociation_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_msdyn_propertyassetassociation_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_msdyn_propertyassetassociation_modifiedby")]
+    public IEnumerable<msdyn_propertyassetassociation> lk_msdyn_propertyassetassociation_modifiedby {
+        get {
+            return GetRelatedEntities<msdyn_propertyassetassociation>("lk_msdyn_propertyassetassociation_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_msdyn_propertyassetassociation_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_msdyn_propertyassetassociation_modifiedonbehalfby")]
+    public IEnumerable<msdyn_propertyassetassociation> lk_msdyn_propertyassetassociation_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<msdyn_propertyassetassociation>("lk_msdyn_propertyassetassociation_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_msdyn_propertyassetassociation_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_msdyn_propertylog_createdby")]
+    public IEnumerable<msdyn_propertylog> lk_msdyn_propertylog_createdby {
+        get {
+            return GetRelatedEntities<msdyn_propertylog>("lk_msdyn_propertylog_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_msdyn_propertylog_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_msdyn_propertylog_createdonbehalfby")]
+    public IEnumerable<msdyn_propertylog> lk_msdyn_propertylog_createdonbehalfby {
+        get {
+            return GetRelatedEntities<msdyn_propertylog>("lk_msdyn_propertylog_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_msdyn_propertylog_createdonbehalfby", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("lk_msdyn_propertylog_modifiedby")]
     public IEnumerable<msdyn_propertylog> lk_msdyn_propertylog_modifiedby {
         get {
@@ -51647,6 +51750,56 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("lk_ts_workorderactivitytype_createdby")]
+    public IEnumerable<ts_workorderactivitytype> lk_ts_workorderactivitytype_createdby {
+        get {
+            return GetRelatedEntities<ts_workorderactivitytype>("lk_ts_workorderactivitytype_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ts_workorderactivitytype_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ts_workorderactivitytype_createdonbehalfby")]
+    public IEnumerable<ts_workorderactivitytype> lk_ts_workorderactivitytype_createdonbehalfby {
+        get {
+            return GetRelatedEntities<ts_workorderactivitytype>("lk_ts_workorderactivitytype_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ts_workorderactivitytype_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ts_workorderactivitytype_modifiedby")]
+    public IEnumerable<ts_workorderactivitytype> lk_ts_workorderactivitytype_modifiedby {
+        get {
+            return GetRelatedEntities<ts_workorderactivitytype>("lk_ts_workorderactivitytype_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ts_workorderactivitytype_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ts_workorderactivitytype_modifiedonbehalfby")]
+    public IEnumerable<ts_workorderactivitytype> lk_ts_workorderactivitytype_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<ts_workorderactivitytype>("lk_ts_workorderactivitytype_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ts_workorderactivitytype_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ts_workordercreationwizard_createdby")]
+    public IEnumerable<ts_workordercreationwizard> lk_ts_workordercreationwizard_createdby {
+        get {
+            return GetRelatedEntities<ts_workordercreationwizard>("lk_ts_workordercreationwizard_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ts_workordercreationwizard_createdby", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("lk_ts_workordercreationwizard_createdonbehalfby")]
     public IEnumerable<ts_workordercreationwizard> lk_ts_workordercreationwizard_createdonbehalfby {
         get {
@@ -52159,6 +52312,26 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("user_msdyn_propertyassetassociation")]
+    public IEnumerable<msdyn_propertyassetassociation> user_msdyn_propertyassetassociation {
+        get {
+            return GetRelatedEntities<msdyn_propertyassetassociation>("user_msdyn_propertyassetassociation", null);
+        }
+        set {
+            SetRelatedEntities("user_msdyn_propertyassetassociation", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("user_msdyn_propertylog")]
+    public IEnumerable<msdyn_propertylog> user_msdyn_propertylog {
+        get {
+            return GetRelatedEntities<msdyn_propertylog>("user_msdyn_propertylog", null);
+        }
+        set {
+            SetRelatedEntities("user_msdyn_propertylog", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("user_msdyn_purchaseorder")]
     public IEnumerable<msdyn_purchaseorder> user_msdyn_purchaseorder {
         get {
@@ -52486,6 +52659,16 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("user_tc_tcmonth", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("user_ts_workorderactivitytype")]
+    public IEnumerable<ts_workorderactivitytype> user_ts_workorderactivitytype {
+        get {
+            return GetRelatedEntities<ts_workorderactivitytype>("user_ts_workorderactivitytype", null);
+        }
+        set {
+            SetRelatedEntities("user_ts_workorderactivitytype", null, value);
         }
     }
     
@@ -54795,6 +54978,50 @@ public partial class msdyn_FunctionalLocation : ExtendedEntity<msdyn_FunctionalL
         }
     }
     
+    /// <summary>
+    /// <para>Display Name: Site Type</para>
+    /// </summary>
+    [AttributeLogicalName("ts_sitetype")]
+    [DisplayName("Site Type")]
+    public EntityReference ts_SiteType {
+        get {
+            return GetAttributeValue<EntityReference>("ts_sitetype");
+        }
+        set {
+            SetAttributeValue("ts_sitetype", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Functional Location Name (English)</para>
+    /// </summary>
+    [AttributeLogicalName("ts_functionallocationnameenglish")]
+    [DisplayName("Functional Location Name (English)")]
+    [MaxLength(100)]
+    public string ts_functionallocationnameenglish {
+        get {
+            return GetAttributeValue<string>("ts_functionallocationnameenglish");
+        }
+        set {
+            SetAttributeValue("ts_functionallocationnameenglish", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Functional Location Name (French)</para>
+    /// </summary>
+    [AttributeLogicalName("ts_functionallocationnamefrench")]
+    [DisplayName("Functional Location Name (French)")]
+    [MaxLength(100)]
+    public string ts_functionallocationnamefrench {
+        get {
+            return GetAttributeValue<string>("ts_functionallocationnamefrench");
+        }
+        set {
+            SetAttributeValue("ts_functionallocationnamefrench", value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_FunctionalLocation_ParentFunctional", EntityRole.Referenced)]
     public IEnumerable<msdyn_FunctionalLocation> Referencedmsdyn_FunctionalLocation_ParentFunctional {
         get {
@@ -54990,6 +55217,16 @@ public partial class msdyn_FunctionalLocation : ExtendedEntity<msdyn_FunctionalL
         }
         set {
             SetRelatedEntities("ts_msdyn_functionallocation_ts_workordercrea", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_msdyn_functionallocation_ts_workordercw")]
+    public IEnumerable<ts_workordercreationwizard> ts_msdyn_functionallocation_ts_workordercw {
+        get {
+            return GetRelatedEntities<ts_workordercreationwizard>("ts_msdyn_functionallocation_ts_workordercw", null);
+        }
+        set {
+            SetRelatedEntities("ts_msdyn_functionallocation_ts_workordercw", null, value);
         }
     }
     
@@ -60050,6 +60287,16 @@ public partial class msdyn_customerassetcategory : ExtendedEntity<msdyn_customer
         }
     }
     
+    [RelationshipSchemaName("ts_msdyn_customerassetcategory_ts_workorderc")]
+    public IEnumerable<ts_workordercreationwizard> ts_msdyn_customerassetcategory_ts_workorderc {
+        get {
+            return GetRelatedEntities<ts_workordercreationwizard>("ts_msdyn_customerassetcategory_ts_workorderc", null);
+        }
+        set {
+            SetRelatedEntities("ts_msdyn_customerassetcategory_ts_workorderc", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_msdyn_customerassetcategory")]
     public SystemUser user_msdyn_customerassetcategory {
@@ -60725,6 +60972,16 @@ public partial class msdyn_incidenttype : ExtendedEntity<msdyn_incidenttypeState
         }
     }
     
+    [RelationshipSchemaName("ts_msdyn_incidenttype_ts_workorderactivityty")]
+    public IEnumerable<ts_workorderactivitytype> ts_msdyn_incidenttype_ts_workorderactivityty {
+        get {
+            return GetRelatedEntities<ts_workorderactivitytype>("ts_msdyn_incidenttype_ts_workorderactivityty", null);
+        }
+        set {
+            SetRelatedEntities("ts_msdyn_incidenttype_ts_workorderactivityty", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("ts_msdyn_workordertype_msdyn_incidenttype")]
     public IEnumerable<msdyn_workordertype> ts_msdyn_workordertype_msdyn_incidenttype {
         get {
@@ -60732,16 +60989,6 @@ public partial class msdyn_incidenttype : ExtendedEntity<msdyn_incidenttypeState
         }
         set {
             SetRelatedEntities("ts_msdyn_workordertype_msdyn_incidenttype", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("ts_ts_workordercreationwizard_msdyn_incident")]
-    public IEnumerable<ts_workordercreationwizard> ts_ts_workordercreationwizard_msdyn_incident {
-        get {
-            return GetRelatedEntities<ts_workordercreationwizard>("ts_ts_workordercreationwizard_msdyn_incident", null);
-        }
-        set {
-            SetRelatedEntities("ts_ts_workordercreationwizard_msdyn_incident", null, value);
         }
     }
     
@@ -70175,6 +70422,21 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     }
     
     /// <summary>
+    /// <para>Unique identifier for Work Order Creation Wizard associated with Work Order.</para>
+    /// <para>Display Name: Work Order Creation Wizard</para>
+    /// </summary>
+    [AttributeLogicalName("ts_workordercreationwizardid")]
+    [DisplayName("Work Order Creation Wizard")]
+    public EntityReference ts_WorkOrderCreationWizardId {
+        get {
+            return GetAttributeValue<EntityReference>("ts_workordercreationwizardid");
+        }
+        set {
+            SetAttributeValue("ts_workordercreationwizardid", value);
+        }
+    }
+    
+    /// <summary>
     /// <para>Display Name: Work Order End Date</para>
     /// </summary>
     [AttributeLogicalName("ts_workorderenddate")]
@@ -70827,6 +71089,17 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
         set {
             SetRelatedEntities("ts_ovs_Finding_WorkOrder_msdyn_workorder", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_workordercreationwizardid")]
+    [RelationshipSchemaName("ts_ts_workordercreationwizard_msdyn_workorde")]
+    public ts_workordercreationwizard ts_ts_workordercreationwizard_msdyn_workorde {
+        get {
+            return GetRelatedEntity<ts_workordercreationwizard>("ts_ts_workordercreationwizard_msdyn_workorde", null);
+        }
+        set {
+            SetRelatedEntity("ts_ts_workordercreationwizard_msdyn_workorde", null, value);
         }
     }
     
@@ -85395,6 +85668,16 @@ public partial class tc_Country : ExtendedEntity<tc_CountryState, tc_Country_sta
         }
     }
     
+    [RelationshipSchemaName("ts_tc_country_ts_workordercreationwizard")]
+    public IEnumerable<ts_workordercreationwizard> ts_tc_country_ts_workordercreationwizard {
+        get {
+            return GetRelatedEntities<ts_workordercreationwizard>("ts_tc_country_ts_workordercreationwizard", null);
+        }
+        set {
+            SetRelatedEntities("ts_tc_country_ts_workordercreationwizard", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_tc_country")]
     public SystemUser user_tc_country {
@@ -88115,6 +88398,654 @@ public partial class ts_ts_workordercreationwizard_msdyn_incide : ExtendedEntity
     }
 }
 
+[EntityLogicalName("ts_msdyn_customerasset_msdyn_customerasset")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ts_msdyn_customerasset_msdyn_customerasset : ExtendedEntity<EmptyEnum, EmptyEnum> {
+    
+    public const string EntityLogicalName = "ts_msdyn_customerasset_msdyn_customerasset";
+    
+    public const int EntityTypeCode = 10561;
+    
+    public ts_msdyn_customerasset_msdyn_customerasset() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ts_msdyn_customerasset_msdyn_customerasset(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay(null);
+        }
+    }
+    
+    [AttributeLogicalName("ts_msdyn_customerasset_msdyn_customerassetid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ts_msdyn_customerasset_msdyn_customerassetid", value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_msdyn_customerasset_msdyn_customerassetid")]
+    public Guid? ts_msdyn_customerasset_msdyn_customerassetId {
+        get {
+            return GetAttributeValue<Guid?>("ts_msdyn_customerasset_msdyn_customerassetid");
+        }
+        set {
+            SetId("ts_msdyn_customerasset_msdyn_customerassetid", value);
+        }
+    }
+    
+    [AttributeLogicalName("versionnumber")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [AttributeLogicalName("msdyn_customerassetidone")]
+    public Guid? msdyn_customerassetidOne {
+        get {
+            return GetAttributeValue<Guid?>("msdyn_customerassetidone");
+        }
+    }
+    
+    [AttributeLogicalName("msdyn_customerassetidtwo")]
+    public Guid? msdyn_customerassetidTwo {
+        get {
+            return GetAttributeValue<Guid?>("msdyn_customerassetidtwo");
+        }
+    }
+    
+    public static ts_msdyn_customerasset_msdyn_customerasset Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_msdyn_customerasset_msdyn_customerasset,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+[EntityLogicalName("ts_msdyn_customerasset_msdyn_workorder")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ts_msdyn_customerasset_msdyn_workorder : ExtendedEntity<EmptyEnum, EmptyEnum> {
+    
+    public const string EntityLogicalName = "ts_msdyn_customerasset_msdyn_workorder";
+    
+    public const int EntityTypeCode = 10549;
+    
+    public ts_msdyn_customerasset_msdyn_workorder() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ts_msdyn_customerasset_msdyn_workorder(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay(null);
+        }
+    }
+    
+    [AttributeLogicalName("ts_msdyn_customerasset_msdyn_workorderid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ts_msdyn_customerasset_msdyn_workorderid", value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_msdyn_customerasset_msdyn_workorderid")]
+    public Guid? ts_msdyn_customerasset_msdyn_workorderId {
+        get {
+            return GetAttributeValue<Guid?>("ts_msdyn_customerasset_msdyn_workorderid");
+        }
+        set {
+            SetId("ts_msdyn_customerasset_msdyn_workorderid", value);
+        }
+    }
+    
+    [AttributeLogicalName("versionnumber")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [AttributeLogicalName("msdyn_customerassetid")]
+    public Guid? msdyn_customerassetid {
+        get {
+            return GetAttributeValue<Guid?>("msdyn_customerassetid");
+        }
+    }
+    
+    [AttributeLogicalName("msdyn_workorderid")]
+    public Guid? msdyn_workorderid {
+        get {
+            return GetAttributeValue<Guid?>("msdyn_workorderid");
+        }
+    }
+    
+    public static ts_msdyn_customerasset_msdyn_workorder Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_msdyn_customerasset_msdyn_workorder,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+[EntityLogicalName("ts_msdyn_workordertype_msdyn_incidenttype")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ts_msdyn_workordertype_msdyn_incidenttype : ExtendedEntity<EmptyEnum, EmptyEnum> {
+    
+    public const string EntityLogicalName = "ts_msdyn_workordertype_msdyn_incidenttype";
+    
+    public const int EntityTypeCode = 10563;
+    
+    public ts_msdyn_workordertype_msdyn_incidenttype() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ts_msdyn_workordertype_msdyn_incidenttype(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay(null);
+        }
+    }
+    
+    [AttributeLogicalName("ts_msdyn_workordertype_msdyn_incidenttypeid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ts_msdyn_workordertype_msdyn_incidenttypeid", value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_msdyn_workordertype_msdyn_incidenttypeid")]
+    public Guid? ts_msdyn_workordertype_msdyn_incidenttypeId {
+        get {
+            return GetAttributeValue<Guid?>("ts_msdyn_workordertype_msdyn_incidenttypeid");
+        }
+        set {
+            SetId("ts_msdyn_workordertype_msdyn_incidenttypeid", value);
+        }
+    }
+    
+    [AttributeLogicalName("versionnumber")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [AttributeLogicalName("msdyn_incidenttypeid")]
+    public Guid? msdyn_incidenttypeid {
+        get {
+            return GetAttributeValue<Guid?>("msdyn_incidenttypeid");
+        }
+    }
+    
+    [AttributeLogicalName("msdyn_workordertypeid")]
+    public Guid? msdyn_workordertypeid {
+        get {
+            return GetAttributeValue<Guid?>("msdyn_workordertypeid");
+        }
+    }
+    
+    public static ts_msdyn_workordertype_msdyn_incidenttype Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_msdyn_workordertype_msdyn_incidenttype,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
+/// <para>Display Name: Work Order Activity Type</para>
+/// </summary>
+[EntityLogicalName("ts_workorderactivitytype")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ts_workorderactivitytype : ExtendedEntity<ts_workorderactivitytypeState, ts_workorderactivitytype_statuscode> {
+    
+    public const string EntityLogicalName = "ts_workorderactivitytype";
+    
+    public const int EntityTypeCode = 10568;
+    
+    public ts_workorderactivitytype() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ts_workorderactivitytype(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("ts_name");
+        }
+    }
+    
+    [AttributeLogicalName("ts_workorderactivitytypeid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ts_workorderactivitytypeid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for entity instances</para>
+    /// <para>Display Name: Work Order Activity Type</para>
+    /// </summary>
+    [AttributeLogicalName("ts_workorderactivitytypeid")]
+    [DisplayName("Work Order Activity Type")]
+    public Guid? ts_workorderactivitytypeId {
+        get {
+            return GetAttributeValue<Guid?>("ts_workorderactivitytypeid");
+        }
+        set {
+            SetId("ts_workorderactivitytypeid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who created the record.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was created.</para>
+    /// <para>Display Name: Created On</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Created On")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who created the record.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Sequence number of the import that created this record.</para>
+    /// <para>Display Name: Import Sequence Number</para>
+    /// </summary>
+    [AttributeLogicalName("importsequencenumber")]
+    [DisplayName("Import Sequence Number")]
+    [Range(-2147483648, 2147483647)]
+    public int? ImportSequenceNumber {
+        get {
+            return GetAttributeValue<int?>("importsequencenumber");
+        }
+        set {
+            SetAttributeValue("importsequencenumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who modified the record.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was modified.</para>
+    /// <para>Display Name: Modified On</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Modified On")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who modified the record.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time that the record was migrated.</para>
+    /// <para>Display Name: Record Created On</para>
+    /// </summary>
+    [AttributeLogicalName("overriddencreatedon")]
+    [DisplayName("Record Created On")]
+    public DateTime? OverriddenCreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("overriddencreatedon");
+        }
+        set {
+            SetAttributeValue("overriddencreatedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Owner Id</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the business unit that owns the record</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the team that owns the record.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the user that owns the record.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Time Zone Rule Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("timezoneruleversionnumber")]
+    [DisplayName("Time Zone Rule Version Number")]
+    [Range(-1, 2147483647)]
+    public int? TimeZoneRuleVersionNumber {
+        get {
+            return GetAttributeValue<int?>("timezoneruleversionnumber");
+        }
+        set {
+            SetAttributeValue("timezoneruleversionnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Time zone code that was in use when the record was created.</para>
+    /// <para>Display Name: UTC Conversion Time Zone Code</para>
+    /// </summary>
+    [AttributeLogicalName("utcconversiontimezonecode")]
+    [DisplayName("UTC Conversion Time Zone Code")]
+    [Range(-1, 2147483647)]
+    public int? UTCConversionTimeZoneCode {
+        get {
+            return GetAttributeValue<int?>("utcconversiontimezonecode");
+        }
+        set {
+            SetAttributeValue("utcconversiontimezonecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Version Number</para>
+    /// <para>Display Name: Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("versionnumber")]
+    [DisplayName("Version Number")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Status of the Work Order Activity Type</para>
+    /// <para>Display Name: Status</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("Status")]
+    public ts_workorderactivitytypeState? statecode {
+        get {
+            return GetOptionSetValue<ts_workorderactivitytypeState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for the status of the Work Order Activity Type</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public ts_workorderactivitytype_statuscode? statuscode {
+        get {
+            return GetOptionSetValue<ts_workorderactivitytype_statuscode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for Incident Type associated with Work Order Activity Type.</para>
+    /// <para>Display Name: Activity Type</para>
+    /// </summary>
+    [AttributeLogicalName("ts_activitytypeid")]
+    [DisplayName("Activity Type")]
+    public EntityReference ts_ActivityTypeId {
+        get {
+            return GetAttributeValue<EntityReference>("ts_activitytypeid");
+        }
+        set {
+            SetAttributeValue("ts_activitytypeid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Create Work Order</para>
+    /// </summary>
+    [AttributeLogicalName("ts_createworkorder")]
+    [DisplayName("Create Work Order")]
+    public bool? ts_CreateWorkOrder {
+        get {
+            return GetAttributeValue<bool?>("ts_createworkorder");
+        }
+        set {
+            SetAttributeValue("ts_createworkorder", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for Work Order Creation Wizard associated with Work Order Activity Type.</para>
+    /// <para>Display Name: Work Order Wizard</para>
+    /// </summary>
+    [AttributeLogicalName("ts_workorderwizardid")]
+    [DisplayName("Work Order Wizard")]
+    public EntityReference ts_WorkOrderWizardId {
+        get {
+            return GetAttributeValue<EntityReference>("ts_workorderwizardid");
+        }
+        set {
+            SetAttributeValue("ts_workorderwizardid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The name of the custom entity.</para>
+    /// <para>Display Name: Name</para>
+    /// </summary>
+    [AttributeLogicalName("ts_name")]
+    [DisplayName("Name")]
+    [MaxLength(100)]
+    public string ts_name {
+        get {
+            return GetAttributeValue<string>("ts_name");
+        }
+        set {
+            SetAttributeValue("ts_name", value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("lk_ts_workorderactivitytype_createdby")]
+    public SystemUser lk_ts_workorderactivitytype_createdby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ts_workorderactivitytype_createdby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ts_workorderactivitytype_createdby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("lk_ts_workorderactivitytype_createdonbehalfby")]
+    public SystemUser lk_ts_workorderactivitytype_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ts_workorderactivitytype_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ts_workorderactivitytype_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("lk_ts_workorderactivitytype_modifiedby")]
+    public SystemUser lk_ts_workorderactivitytype_modifiedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ts_workorderactivitytype_modifiedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ts_workorderactivitytype_modifiedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("lk_ts_workorderactivitytype_modifiedonbehalfby")]
+    public SystemUser lk_ts_workorderactivitytype_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ts_workorderactivitytype_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ts_workorderactivitytype_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_activitytypeid")]
+    [RelationshipSchemaName("ts_msdyn_incidenttype_ts_workorderactivityty")]
+    public msdyn_incidenttype ts_msdyn_incidenttype_ts_workorderactivityty {
+        get {
+            return GetRelatedEntity<msdyn_incidenttype>("ts_msdyn_incidenttype_ts_workorderactivityty", null);
+        }
+        set {
+            SetRelatedEntity("ts_msdyn_incidenttype_ts_workorderactivityty", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_workorderwizardid")]
+    [RelationshipSchemaName("ts_ts_workordercreationwizard_ts_workorderac")]
+    public ts_workordercreationwizard ts_ts_workordercreationwizard_ts_workorderac {
+        get {
+            return GetRelatedEntity<ts_workordercreationwizard>("ts_ts_workordercreationwizard_ts_workorderac", null);
+        }
+        set {
+            SetRelatedEntity("ts_ts_workordercreationwizard_ts_workorderac", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_workorderactivitytype_ProcessSession")]
+    public IEnumerable<ProcessSession> ts_workorderactivitytype_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ts_workorderactivitytype_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ts_workorderactivitytype_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_workorderactivitytype_SyncErrors")]
+    public IEnumerable<SyncError> ts_workorderactivitytype_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ts_workorderactivitytype_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ts_workorderactivitytype_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("owninguser")]
+    [RelationshipSchemaName("user_ts_workorderactivitytype")]
+    public SystemUser user_ts_workorderactivitytype {
+        get {
+            return GetRelatedEntity<SystemUser>("user_ts_workorderactivitytype", null);
+        }
+        set {
+            SetRelatedEntity("user_ts_workorderactivitytype", null, value);
+        }
+    }
+    
+    public static ts_workorderactivitytype Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_workorderactivitytype,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
 /// <summary>
 /// <para>Display Name: Work Order Creation Wizard</para>
 /// </summary>
@@ -88395,6 +89326,21 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
     }
     
     /// <summary>
+    /// <para>Unique identifier for Case associated with Work Order Creation Wizard.</para>
+    /// <para>Display Name: Case</para>
+    /// </summary>
+    [AttributeLogicalName("ts_caseid")]
+    [DisplayName("Case")]
+    public EntityReference ts_CaseId {
+        get {
+            return GetAttributeValue<EntityReference>("ts_caseid");
+        }
+        set {
+            SetAttributeValue("ts_caseid", value);
+        }
+    }
+    
+    /// <summary>
     /// <para>Unique identifier for Country associated with Work Order Creation Wizard.</para>
     /// <para>Display Name: Country</para>
     /// </summary>
@@ -88410,6 +89356,21 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
     }
     
     /// <summary>
+    /// <para>Unique identifier for Functional Location associated with Work Order Creation Wizard.</para>
+    /// <para>Display Name: Functional Location</para>
+    /// </summary>
+    [AttributeLogicalName("ts_functionallocationid")]
+    [DisplayName("Functional Location")]
+    public EntityReference ts_FunctionalLocationId {
+        get {
+            return GetAttributeValue<EntityReference>("ts_functionallocationid");
+        }
+        set {
+            SetAttributeValue("ts_functionallocationid", value);
+        }
+    }
+    
+    /// <summary>
     /// <para>Unique identifier for Customer Asset associated with Work Order Creation Wizard.</para>
     /// <para>Display Name: Operation</para>
     /// </summary>
@@ -88421,6 +89382,21 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
         }
         set {
             SetAttributeValue("ts_operationid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for Customer Asset Category associated with Work Order Creation Wizard.</para>
+    /// <para>Display Name: Operation Type</para>
+    /// </summary>
+    [AttributeLogicalName("ts_operationtypeid")]
+    [DisplayName("Operation Type")]
+    public EntityReference ts_OperationTypeId {
+        get {
+            return GetAttributeValue<EntityReference>("ts_operationtypeid");
+        }
+        set {
+            SetAttributeValue("ts_operationtypeid", value);
         }
     }
     
@@ -88555,6 +89531,17 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
         }
     }
     
+    [AttributeLogicalName("ts_caseid")]
+    [RelationshipSchemaName("ts_incident_ts_workordercreationwizard")]
+    public Incident ts_incident_ts_workordercreationwizard {
+        get {
+            return GetRelatedEntity<Incident>("ts_incident_ts_workordercreationwizard", null);
+        }
+        set {
+            SetRelatedEntity("ts_incident_ts_workordercreationwizard", null, value);
+        }
+    }
+    
     [AttributeLogicalName("ts_operationid")]
     [RelationshipSchemaName("ts_msdyn_customerasset_ts_workordercreationw")]
     public msdyn_customerasset ts_msdyn_customerasset_ts_workordercreationw {
@@ -88566,6 +89553,17 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
         }
     }
     
+    [AttributeLogicalName("ts_operationtypeid")]
+    [RelationshipSchemaName("ts_msdyn_customerassetcategory_ts_workorderc")]
+    public msdyn_customerassetcategory ts_msdyn_customerassetcategory_ts_workorderc {
+        get {
+            return GetRelatedEntity<msdyn_customerassetcategory>("ts_msdyn_customerassetcategory_ts_workorderc", null);
+        }
+        set {
+            SetRelatedEntity("ts_msdyn_customerassetcategory_ts_workorderc", null, value);
+        }
+    }
+    
     [AttributeLogicalName("ts_siteid")]
     [RelationshipSchemaName("ts_msdyn_functionallocation_ts_workordercrea")]
     public msdyn_FunctionalLocation ts_msdyn_functionallocation_ts_workordercrea {
@@ -88574,6 +89572,17 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
         }
         set {
             SetRelatedEntity("ts_msdyn_functionallocation_ts_workordercrea", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_functionallocationid")]
+    [RelationshipSchemaName("ts_msdyn_functionallocation_ts_workordercw")]
+    public msdyn_FunctionalLocation ts_msdyn_functionallocation_ts_workordercw {
+        get {
+            return GetRelatedEntity<msdyn_FunctionalLocation>("ts_msdyn_functionallocation_ts_workordercw", null);
+        }
+        set {
+            SetRelatedEntity("ts_msdyn_functionallocation_ts_workordercw", null, value);
         }
     }
     
@@ -88610,13 +89619,23 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
         }
     }
     
-    [RelationshipSchemaName("ts_ts_workordercreationwizard_msdyn_incident")]
-    public IEnumerable<msdyn_incidenttype> ts_ts_workordercreationwizard_msdyn_incident {
+    [RelationshipSchemaName("ts_ts_workordercreationwizard_msdyn_workorde")]
+    public IEnumerable<msdyn_workorder> ts_ts_workordercreationwizard_msdyn_workorde {
         get {
-            return GetRelatedEntities<msdyn_incidenttype>("ts_ts_workordercreationwizard_msdyn_incident", null);
+            return GetRelatedEntities<msdyn_workorder>("ts_ts_workordercreationwizard_msdyn_workorde", null);
         }
         set {
-            SetRelatedEntities("ts_ts_workordercreationwizard_msdyn_incident", null, value);
+            SetRelatedEntities("ts_ts_workordercreationwizard_msdyn_workorde", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ts_workordercreationwizard_ts_workorderac")]
+    public IEnumerable<ts_workorderactivitytype> ts_ts_workordercreationwizard_ts_workorderac {
+        get {
+            return GetRelatedEntities<ts_workorderactivitytype>("ts_ts_workordercreationwizard_ts_workorderac", null);
+        }
+        set {
+            SetRelatedEntities("ts_ts_workordercreationwizard_ts_workorderac", null, value);
         }
     }
     
@@ -89292,9 +90311,9 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
         }
     }
     
-    public IQueryable<ts_ts_workordercreationwizard_msdyn_incide> ts_ts_workordercreationwizard_msdyn_incideSet {
+    public IQueryable<ts_workorderactivitytype> ts_workorderactivitytypeSet {
         get {
-            return CreateQuery<ts_ts_workordercreationwizard_msdyn_incide>();
+            return CreateQuery<ts_workorderactivitytype>();
         }
     }
     
@@ -94520,6 +95539,30 @@ public enum tc_TCMonthState {
 
 [DataContract()]
 public enum tc_TCMonth_statuscode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 2,
+}
+
+[DataContract()]
+public enum ts_workorderactivitytypeState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 1,
+}
+
+[DataContract()]
+public enum ts_workorderactivitytype_statuscode {
     
     [EnumMember()]
     [OptionSetMetadata("Active", Index=0)]
