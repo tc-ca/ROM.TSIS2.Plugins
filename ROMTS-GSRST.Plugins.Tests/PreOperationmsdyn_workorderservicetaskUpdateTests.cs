@@ -369,22 +369,22 @@ namespace ROMTS_GSRST.Plugins.Tests
             // Expect 4 findings to be created
             Assert.Equal(4, findings.Count);
 
-            // Expect newly created second ovs_finding to have the proper name
+            // Expect first ovs_finding to have the correct account and asset references
             var first = findings[0];
             Assert.Equal(testAccount1Id, first.ts_accountid.Id);
             Assert.Equal(testOperation1Id, first.ts_Assetid.Id);
 
-            // Expect newly created third ovs_finding to have the proper name
+            // Expect second ovs_finding to have the correct account and asset references
             var second = findings[1];
             Assert.Equal(testAccount2Id, second.ts_accountid.Id);
             Assert.Equal(testOperation2Id, second.ts_Assetid.Id);
 
-            // Expect newly created fourth ovs_finding to have the proper name
+            // Expect third ovs_finding to have the correct account and asset references
             var third = findings[2];
             Assert.Equal(testAccount3Id, third.ts_accountid.Id);
             Assert.Equal(testOperation3Id, third.ts_Assetid.Id);
 
-            // Expect newly created fifth ovs_finding to have the proper name
+            // Expect fourth ovs_finding to have the correct account and asset references
             var fourth = findings[3];
             Assert.Equal(testAccount4Id, fourth.ts_accountid.Id);
             Assert.Equal(testOperation4Id, fourth.ts_Assetid.Id);
@@ -532,13 +532,11 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
-            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
-                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
             });
             var account = orgAdminUIService.Create(new Account());
             var accountReference = new EntityReference(Account.EntityLogicalName, account);
@@ -680,8 +678,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
-                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
@@ -826,7 +823,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             var second = findings[1];
             Assert.Equal("new comments", second.ovs_FindingComments);
 
-            // Expect first ovs_finding to have updated comments
+            // Expect third ovs_finding to have updated comments
             var third = findings[2];
             Assert.Equal("new comments", third.ovs_FindingComments);
         }
@@ -836,13 +833,11 @@ namespace ROMTS_GSRST.Plugins.Tests
         {
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
-            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
-                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -891,13 +886,11 @@ namespace ROMTS_GSRST.Plugins.Tests
         {
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
-            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = null,
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
-                ovs_asset = new EntityReference(msdyn_customerasset.EntityLogicalName, assetId)
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -1181,15 +1174,15 @@ namespace ROMTS_GSRST.Plugins.Tests
             // Expect target to contain 7 ovs_finding references
             Assert.Equal(10, findings.Count());
 
-            // Expect previosly created first ovs_finding to have the same name
+            // Expect previously created first ovs_finding to have the same name
             var first = findings[0];
             Assert.Equal("100-345678-1-1-1", first.ovs_Finding_1);
 
-            // Expect previosly created second ovs_finding to have the same name
+            // Expect previously created second ovs_finding to have the same name
             var second = findings[1];
             Assert.Equal("100-345678-1-1-2", second.ovs_Finding_1);
 
-            // Expect previosly created third ovs_finding to have the same name
+            // Expect previously created third ovs_finding to have the same name
             var third = findings[2];
             Assert.Equal("100-345678-1-1-3", third.ovs_Finding_1);
 
@@ -1209,15 +1202,15 @@ namespace ROMTS_GSRST.Plugins.Tests
             var seventh = findings[6];
             Assert.Equal("100-345678-1-2-4", seventh.ovs_Finding_1);
 
-            // Expect newly created seventh ovs_finding to have the proper name
+            // Expect newly created eight ovs_finding to have the proper name
             var eighth = findings[7];
             Assert.Equal("100-345678-1-3-1", eighth.ovs_Finding_1);
 
-            // Expect newly created seventh ovs_finding to have the proper name
+            // Expect newly created ninth ovs_finding to have the proper name
             var ninth = findings[8];
             Assert.Equal("100-345678-1-3-2", ninth.ovs_Finding_1);
 
-            // Expect newly created seventh ovs_finding to have the proper name
+            // Expect newly created tenth ovs_finding to have the proper name
             var tenth = findings[9];
             Assert.Equal("100-345678-1-3-3", tenth.ovs_Finding_1);
         }
