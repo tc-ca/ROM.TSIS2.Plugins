@@ -76,14 +76,6 @@ namespace TSIS2.Plugins
                                 // Retrieve all the findings belonging to this work order service task
                                 var findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
 
-                                // Determine the current highest infix of all the findings for the service task
-                                var highestInfix = 0;
-                                foreach (ovs_Finding finding in findings)
-                                {
-                                    var infix = Int32.Parse(finding.ovs_Finding_1.Split('-')[3]);
-                                    if (infix > highestInfix) highestInfix = infix;
-                                }
-
                                 // Start a list of all the used mapping keys
                                 var findingMappingKeys = new List<string>();
 
@@ -152,14 +144,29 @@ namespace TSIS2.Plugins
                                                     // Don't do anything with the files yet until we have the proper infrastructure decision
                                                     //newFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
 
-                                                    //Do any other copies already exist for this finding?
-                                                    var findingCopies = serviceContext.ovs_FindingSet.Where(f => f.ts_findingmappingkey.StartsWith(workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString())).ToList();
+                                                    //Update the list of findings for this service task in case a finding was added in a previous loop
+                                                    findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
+
+                                                    //Find all the findings that share the same root property key and add to findingCopies list
+                                                    //The count of copies is needed to determine the suffix for the next finding record created
+                                                    var findingCopies = new List<ovs_Finding>();
+                                                    foreach (var f in findings) {
+                                                        if (f.ts_findingmappingkey.StartsWith(workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString())) findingCopies.Add(f);                                                       
+                                                    }
+
+                                                    // Determine the current highest infix of all the findings for the service task
+                                                    var highestInfix = 0;
+                                                    foreach (ovs_Finding f in findings)
+                                                    {
+                                                        var currentInfix = Int32.Parse(f.ovs_Finding_1.Split('-')[3]);
+                                                        if (currentInfix > highestInfix) highestInfix = currentInfix;
+                                                    }
 
                                                     // Setup the finding name
                                                     // Findings are at the 100 level
                                                     var wostName = preImageEntity.Attributes["msdyn_name"].ToString();
                                                     var prefix = wostName.Replace("200-", "100-");
-                                                    var infix = (highestInfix > 0) ? highestInfix + 1 : 1;
+                                                    var infix = highestInfix + 1;
                                                     //If there are copies for this finding, use their infix instead
                                                     if (findingCopies.Count > 0)
                                                     {
@@ -194,6 +201,7 @@ namespace TSIS2.Plugins
 
                                                     // Create new ovs_finding
                                                     Guid newFindingId = service.Create(newFinding);
+
                                                 }
                                                 else
                                                 {
@@ -207,9 +215,7 @@ namespace TSIS2.Plugins
                                                     //existingFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
 
                                                 }
-
                                             }
-                                            highestInfix++;
                                         }
                                     }
 

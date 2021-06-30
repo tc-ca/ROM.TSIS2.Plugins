@@ -45905,17 +45905,6 @@ public partial class SyncError : ExtendedEntity<SyncErrorState, SyncError_Status
     }
     
     [AttributeLogicalName("regardingobjectid")]
-    [RelationshipSchemaName("msdyn_propertyassetassociation_SyncErrors")]
-    public msdyn_propertyassetassociation msdyn_propertyassetassociation_SyncErrors {
-        get {
-            return GetRelatedEntity<msdyn_propertyassetassociation>("msdyn_propertyassetassociation_SyncErrors", null);
-        }
-        set {
-            SetRelatedEntity("msdyn_propertyassetassociation_SyncErrors", null, value);
-        }
-    }
-    
-    [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("msdyn_propertylog_SyncErrors")]
     public msdyn_propertylog msdyn_propertylog_SyncErrors {
         get {
@@ -49740,66 +49729,6 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
-    [RelationshipSchemaName("lk_msdyn_propertyassetassociation_createdby")]
-    public IEnumerable<msdyn_propertyassetassociation> lk_msdyn_propertyassetassociation_createdby {
-        get {
-            return GetRelatedEntities<msdyn_propertyassetassociation>("lk_msdyn_propertyassetassociation_createdby", null);
-        }
-        set {
-            SetRelatedEntities("lk_msdyn_propertyassetassociation_createdby", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("lk_msdyn_propertyassetassociation_createdonbehalfby")]
-    public IEnumerable<msdyn_propertyassetassociation> lk_msdyn_propertyassetassociation_createdonbehalfby {
-        get {
-            return GetRelatedEntities<msdyn_propertyassetassociation>("lk_msdyn_propertyassetassociation_createdonbehalfby", null);
-        }
-        set {
-            SetRelatedEntities("lk_msdyn_propertyassetassociation_createdonbehalfby", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("lk_msdyn_propertyassetassociation_modifiedby")]
-    public IEnumerable<msdyn_propertyassetassociation> lk_msdyn_propertyassetassociation_modifiedby {
-        get {
-            return GetRelatedEntities<msdyn_propertyassetassociation>("lk_msdyn_propertyassetassociation_modifiedby", null);
-        }
-        set {
-            SetRelatedEntities("lk_msdyn_propertyassetassociation_modifiedby", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("lk_msdyn_propertyassetassociation_modifiedonbehalfby")]
-    public IEnumerable<msdyn_propertyassetassociation> lk_msdyn_propertyassetassociation_modifiedonbehalfby {
-        get {
-            return GetRelatedEntities<msdyn_propertyassetassociation>("lk_msdyn_propertyassetassociation_modifiedonbehalfby", null);
-        }
-        set {
-            SetRelatedEntities("lk_msdyn_propertyassetassociation_modifiedonbehalfby", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("lk_msdyn_propertylog_createdby")]
-    public IEnumerable<msdyn_propertylog> lk_msdyn_propertylog_createdby {
-        get {
-            return GetRelatedEntities<msdyn_propertylog>("lk_msdyn_propertylog_createdby", null);
-        }
-        set {
-            SetRelatedEntities("lk_msdyn_propertylog_createdby", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("lk_msdyn_propertylog_createdonbehalfby")]
-    public IEnumerable<msdyn_propertylog> lk_msdyn_propertylog_createdonbehalfby {
-        get {
-            return GetRelatedEntities<msdyn_propertylog>("lk_msdyn_propertylog_createdonbehalfby", null);
-        }
-        set {
-            SetRelatedEntities("lk_msdyn_propertylog_createdonbehalfby", null, value);
-        }
-    }
-    
     [RelationshipSchemaName("lk_msdyn_propertylog_modifiedby")]
     public IEnumerable<msdyn_propertylog> lk_msdyn_propertylog_modifiedby {
         get {
@@ -51740,16 +51669,6 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
-    [RelationshipSchemaName("lk_ts_workordercreationwizard_createdby")]
-    public IEnumerable<ts_workordercreationwizard> lk_ts_workordercreationwizard_createdby {
-        get {
-            return GetRelatedEntities<ts_workordercreationwizard>("lk_ts_workordercreationwizard_createdby", null);
-        }
-        set {
-            SetRelatedEntities("lk_ts_workordercreationwizard_createdby", null, value);
-        }
-    }
-    
     [RelationshipSchemaName("lk_ts_workorderactivitytype_createdby")]
     public IEnumerable<ts_workorderactivitytype> lk_ts_workorderactivitytype_createdby {
         get {
@@ -52289,26 +52208,6 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("user_msdyn_orderinvoicingproduct", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("user_msdyn_propertyassetassociation")]
-    public IEnumerable<msdyn_propertyassetassociation> user_msdyn_propertyassetassociation {
-        get {
-            return GetRelatedEntities<msdyn_propertyassetassociation>("user_msdyn_propertyassetassociation", null);
-        }
-        set {
-            SetRelatedEntities("user_msdyn_propertyassetassociation", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("user_msdyn_propertylog")]
-    public IEnumerable<msdyn_propertylog> user_msdyn_propertylog {
-        get {
-            return GetRelatedEntities<msdyn_propertylog>("user_msdyn_propertylog", null);
-        }
-        set {
-            SetRelatedEntities("user_msdyn_propertylog", null, value);
         }
     }
     
@@ -54931,50 +54830,6 @@ public partial class msdyn_FunctionalLocation : ExtendedEntity<msdyn_FunctionalL
         }
         set {
             SetAttributeValue("ts_region", value);
-        }
-    }
-    
-    /// <summary>
-    /// <para>Display Name: Site Type</para>
-    /// </summary>
-    [AttributeLogicalName("ts_sitetype")]
-    [DisplayName("Site Type")]
-    public EntityReference ts_SiteType {
-        get {
-            return GetAttributeValue<EntityReference>("ts_sitetype");
-        }
-        set {
-            SetAttributeValue("ts_sitetype", value);
-        }
-    }
-    
-    /// <summary>
-    /// <para>Display Name: Functional Location Name (English)</para>
-    /// </summary>
-    [AttributeLogicalName("ts_functionallocationnameenglish")]
-    [DisplayName("Functional Location Name (English)")]
-    [MaxLength(100)]
-    public string ts_functionallocationnameenglish {
-        get {
-            return GetAttributeValue<string>("ts_functionallocationnameenglish");
-        }
-        set {
-            SetAttributeValue("ts_functionallocationnameenglish", value);
-        }
-    }
-    
-    /// <summary>
-    /// <para>Display Name: Functional Location Name (French)</para>
-    /// </summary>
-    [AttributeLogicalName("ts_functionallocationnamefrench")]
-    [DisplayName("Functional Location Name (French)")]
-    [MaxLength(100)]
-    public string ts_functionallocationnamefrench {
-        get {
-            return GetAttributeValue<string>("ts_functionallocationnamefrench");
-        }
-        set {
-            SetAttributeValue("ts_functionallocationnamefrench", value);
         }
     }
     
@@ -59369,7 +59224,7 @@ public partial class msdyn_customerasset : ExtendedEntity<msdyn_customerassetSta
     /// </summary>
     [AttributeLogicalName("msdyn_name")]
     [DisplayName("Name")]
-    [MaxLength(100)]
+    [MaxLength(200)]
     public string msdyn_name {
         get {
             return GetAttributeValue<string>("msdyn_name");
@@ -85668,16 +85523,6 @@ public partial class tc_Country : ExtendedEntity<tc_CountryState, tc_Country_sta
         }
     }
     
-    [RelationshipSchemaName("ts_tc_country_ts_workordercreationwizard")]
-    public IEnumerable<ts_workordercreationwizard> ts_tc_country_ts_workordercreationwizard {
-        get {
-            return GetRelatedEntities<ts_workordercreationwizard>("ts_tc_country_ts_workordercreationwizard", null);
-        }
-        set {
-            SetRelatedEntities("ts_tc_country_ts_workordercreationwizard", null, value);
-        }
-    }
-    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_tc_country")]
     public SystemUser user_tc_country {
@@ -88118,282 +87963,6 @@ public partial class tc_TCMonth : ExtendedEntity<tc_TCMonthState, tc_TCMonth_sta
     }
     
     public static tc_TCMonth Retrieve(IOrganizationService service, Guid id, params Expression<Func<tc_TCMonth,object>>[] attrs) {
-        return service.Retrieve(id, attrs);
-    }
-}
-
-[EntityLogicalName("ts_msdyn_customerasset_msdyn_customerasset")]
-[DebuggerDisplay("{DebuggerDisplay,nq}")]
-[DataContract()]
-public partial class ts_msdyn_customerasset_msdyn_customerasset : ExtendedEntity<EmptyEnum, EmptyEnum> {
-    
-    public const string EntityLogicalName = "ts_msdyn_customerasset_msdyn_customerasset";
-    
-    public const int EntityTypeCode = 10561;
-    
-    public ts_msdyn_customerasset_msdyn_customerasset() : 
-            base(EntityLogicalName) {
-    }
-    
-    public ts_msdyn_customerasset_msdyn_customerasset(Guid Id) : 
-            base(EntityLogicalName, Id) {
-    }
-    
-    private string DebuggerDisplay {
-        get {
-            return GetDebuggerDisplay(null);
-        }
-    }
-    
-    [AttributeLogicalName("ts_msdyn_customerasset_msdyn_customerassetid")]
-    public override Guid Id {
-        get {
-            return base.Id;
-        }
-        set {
-            SetId("ts_msdyn_customerasset_msdyn_customerassetid", value);
-        }
-    }
-    
-    [AttributeLogicalName("ts_msdyn_customerasset_msdyn_customerassetid")]
-    public Guid? ts_msdyn_customerasset_msdyn_customerassetId {
-        get {
-            return GetAttributeValue<Guid?>("ts_msdyn_customerasset_msdyn_customerassetid");
-        }
-        set {
-            SetId("ts_msdyn_customerasset_msdyn_customerassetid", value);
-        }
-    }
-    
-    [AttributeLogicalName("versionnumber")]
-    public long? VersionNumber {
-        get {
-            return GetAttributeValue<long?>("versionnumber");
-        }
-    }
-    
-    [AttributeLogicalName("msdyn_customerassetidone")]
-    public Guid? msdyn_customerassetidOne {
-        get {
-            return GetAttributeValue<Guid?>("msdyn_customerassetidone");
-        }
-    }
-    
-    [AttributeLogicalName("msdyn_customerassetidtwo")]
-    public Guid? msdyn_customerassetidTwo {
-        get {
-            return GetAttributeValue<Guid?>("msdyn_customerassetidtwo");
-        }
-    }
-    
-    public static ts_msdyn_customerasset_msdyn_customerasset Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_msdyn_customerasset_msdyn_customerasset,object>>[] attrs) {
-        return service.Retrieve(id, attrs);
-    }
-}
-
-[EntityLogicalName("ts_msdyn_customerasset_msdyn_workorder")]
-[DebuggerDisplay("{DebuggerDisplay,nq}")]
-[DataContract()]
-public partial class ts_msdyn_customerasset_msdyn_workorder : ExtendedEntity<EmptyEnum, EmptyEnum> {
-    
-    public const string EntityLogicalName = "ts_msdyn_customerasset_msdyn_workorder";
-    
-    public const int EntityTypeCode = 10549;
-    
-    public ts_msdyn_customerasset_msdyn_workorder() : 
-            base(EntityLogicalName) {
-    }
-    
-    public ts_msdyn_customerasset_msdyn_workorder(Guid Id) : 
-            base(EntityLogicalName, Id) {
-    }
-    
-    private string DebuggerDisplay {
-        get {
-            return GetDebuggerDisplay(null);
-        }
-    }
-    
-    [AttributeLogicalName("ts_msdyn_customerasset_msdyn_workorderid")]
-    public override Guid Id {
-        get {
-            return base.Id;
-        }
-        set {
-            SetId("ts_msdyn_customerasset_msdyn_workorderid", value);
-        }
-    }
-    
-    [AttributeLogicalName("ts_msdyn_customerasset_msdyn_workorderid")]
-    public Guid? ts_msdyn_customerasset_msdyn_workorderId {
-        get {
-            return GetAttributeValue<Guid?>("ts_msdyn_customerasset_msdyn_workorderid");
-        }
-        set {
-            SetId("ts_msdyn_customerasset_msdyn_workorderid", value);
-        }
-    }
-    
-    [AttributeLogicalName("versionnumber")]
-    public long? VersionNumber {
-        get {
-            return GetAttributeValue<long?>("versionnumber");
-        }
-    }
-    
-    [AttributeLogicalName("msdyn_customerassetid")]
-    public Guid? msdyn_customerassetid {
-        get {
-            return GetAttributeValue<Guid?>("msdyn_customerassetid");
-        }
-    }
-    
-    [AttributeLogicalName("msdyn_workorderid")]
-    public Guid? msdyn_workorderid {
-        get {
-            return GetAttributeValue<Guid?>("msdyn_workorderid");
-        }
-    }
-    
-    public static ts_msdyn_customerasset_msdyn_workorder Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_msdyn_customerasset_msdyn_workorder,object>>[] attrs) {
-        return service.Retrieve(id, attrs);
-    }
-}
-
-[EntityLogicalName("ts_msdyn_workordertype_msdyn_incidenttype")]
-[DebuggerDisplay("{DebuggerDisplay,nq}")]
-[DataContract()]
-public partial class ts_msdyn_workordertype_msdyn_incidenttype : ExtendedEntity<EmptyEnum, EmptyEnum> {
-    
-    public const string EntityLogicalName = "ts_msdyn_workordertype_msdyn_incidenttype";
-    
-    public const int EntityTypeCode = 10563;
-    
-    public ts_msdyn_workordertype_msdyn_incidenttype() : 
-            base(EntityLogicalName) {
-    }
-    
-    public ts_msdyn_workordertype_msdyn_incidenttype(Guid Id) : 
-            base(EntityLogicalName, Id) {
-    }
-    
-    private string DebuggerDisplay {
-        get {
-            return GetDebuggerDisplay(null);
-        }
-    }
-    
-    [AttributeLogicalName("ts_msdyn_workordertype_msdyn_incidenttypeid")]
-    public override Guid Id {
-        get {
-            return base.Id;
-        }
-        set {
-            SetId("ts_msdyn_workordertype_msdyn_incidenttypeid", value);
-        }
-    }
-    
-    [AttributeLogicalName("ts_msdyn_workordertype_msdyn_incidenttypeid")]
-    public Guid? ts_msdyn_workordertype_msdyn_incidenttypeId {
-        get {
-            return GetAttributeValue<Guid?>("ts_msdyn_workordertype_msdyn_incidenttypeid");
-        }
-        set {
-            SetId("ts_msdyn_workordertype_msdyn_incidenttypeid", value);
-        }
-    }
-    
-    [AttributeLogicalName("versionnumber")]
-    public long? VersionNumber {
-        get {
-            return GetAttributeValue<long?>("versionnumber");
-        }
-    }
-    
-    [AttributeLogicalName("msdyn_incidenttypeid")]
-    public Guid? msdyn_incidenttypeid {
-        get {
-            return GetAttributeValue<Guid?>("msdyn_incidenttypeid");
-        }
-    }
-    
-    [AttributeLogicalName("msdyn_workordertypeid")]
-    public Guid? msdyn_workordertypeid {
-        get {
-            return GetAttributeValue<Guid?>("msdyn_workordertypeid");
-        }
-    }
-    
-    public static ts_msdyn_workordertype_msdyn_incidenttype Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_msdyn_workordertype_msdyn_incidenttype,object>>[] attrs) {
-        return service.Retrieve(id, attrs);
-    }
-}
-
-[EntityLogicalName("ts_ts_workordercreationwizard_msdyn_incide")]
-[DebuggerDisplay("{DebuggerDisplay,nq}")]
-[DataContract()]
-public partial class ts_ts_workordercreationwizard_msdyn_incide : ExtendedEntity<EmptyEnum, EmptyEnum> {
-    
-    public const string EntityLogicalName = "ts_ts_workordercreationwizard_msdyn_incide";
-    
-    public const int EntityTypeCode = 10565;
-    
-    public ts_ts_workordercreationwizard_msdyn_incide() : 
-            base(EntityLogicalName) {
-    }
-    
-    public ts_ts_workordercreationwizard_msdyn_incide(Guid Id) : 
-            base(EntityLogicalName, Id) {
-    }
-    
-    private string DebuggerDisplay {
-        get {
-            return GetDebuggerDisplay(null);
-        }
-    }
-    
-    [AttributeLogicalName("ts_ts_workordercreationwizard_msdyn_incideid")]
-    public override Guid Id {
-        get {
-            return base.Id;
-        }
-        set {
-            SetId("ts_ts_workordercreationwizard_msdyn_incideid", value);
-        }
-    }
-    
-    [AttributeLogicalName("ts_ts_workordercreationwizard_msdyn_incideid")]
-    public Guid? ts_ts_workordercreationwizard_msdyn_incideId {
-        get {
-            return GetAttributeValue<Guid?>("ts_ts_workordercreationwizard_msdyn_incideid");
-        }
-        set {
-            SetId("ts_ts_workordercreationwizard_msdyn_incideid", value);
-        }
-    }
-    
-    [AttributeLogicalName("versionnumber")]
-    public long? VersionNumber {
-        get {
-            return GetAttributeValue<long?>("versionnumber");
-        }
-    }
-    
-    [AttributeLogicalName("msdyn_incidenttypeid")]
-    public Guid? msdyn_incidenttypeid {
-        get {
-            return GetAttributeValue<Guid?>("msdyn_incidenttypeid");
-        }
-    }
-    
-    [AttributeLogicalName("ts_workordercreationwizardid")]
-    public Guid? ts_workordercreationwizardid {
-        get {
-            return GetAttributeValue<Guid?>("ts_workordercreationwizardid");
-        }
-    }
-    
-    public static ts_ts_workordercreationwizard_msdyn_incide Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_ts_workordercreationwizard_msdyn_incide,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
 }
@@ -95733,15 +95302,15 @@ public enum socialprofile_community {
 public enum msdyn_crewstrategy {
     
     [EnumMember()]
-    [OptionSetMetadata("Cascade and Accept Cascade Completely", Index=0, Description="CascadeandAcceptCascadeCompletely", Color="#0000ff")]
-    CascadeandAcceptCascadeCompletely = 192350000,
+    [OptionSetMetadata("Cascade and Accept Cascade Completely (Not Recommended)", Index=2, Description="CascadeandAcceptCascadeCompletelyNotRecommended", Color="#0000ff")]
+    CascadeandAcceptCascadeCompletelyNotRecommended = 192350000,
     
     [EnumMember()]
-    [OptionSetMetadata("Crew Leader Management", Index=1, Description="CrewLeaderManagement", Color="#0000ff")]
+    [OptionSetMetadata("Crew Leader Management", Index=0, Description="CrewLeaderManagement", Color="#0000ff")]
     CrewLeaderManagement = 192350001,
     
     [EnumMember()]
-    [OptionSetMetadata("Crew Member Self-Management", Index=2, Description="CrewMemberSelfManagement", Color="#0000ff")]
+    [OptionSetMetadata("Crew Member Self-Management", Index=1, Description="CrewMemberSelfManagement", Color="#0000ff")]
     CrewMemberSelfManagement = 192350002,
 }
 
