@@ -141,9 +141,6 @@ namespace TSIS2.Plugins
                                                     newFinding.ts_findingProvisionTextFr = finding.ContainsKey("provisionTextFr") ? (string)finding["provisionTextFr"] : "";
                                                     newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
 
-                                                    // Don't do anything with the files yet until we have the proper infrastructure decision
-                                                    //newFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
-
                                                     //Update the list of findings for this service task in case a finding was added in a previous loop
                                                     findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
 
@@ -205,14 +202,9 @@ namespace TSIS2.Plugins
                                                 }
                                                 else
                                                 {
-                                                    // Retrieve the account containing several of its attributes.
-                                                    //ColumnSet cols = new ColumnSet(new String[] { });
-
+                                                    //Update the Finding record's comment
                                                     existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
                                                     serviceContext.UpdateObject(existingFinding);
-
-                                                    // Don't do anything with the files yet until we have the proper infrastructure decision
-                                                    //existingFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
 
                                                 }
                                             }
