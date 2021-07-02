@@ -59224,7 +59224,7 @@ public partial class msdyn_customerasset : ExtendedEntity<msdyn_customerassetSta
     /// </summary>
     [AttributeLogicalName("msdyn_name")]
     [DisplayName("Name")]
-    [MaxLength(100)]
+    [MaxLength(200)]
     public string msdyn_name {
         get {
             return GetAttributeValue<string>("msdyn_name");
@@ -95302,15 +95302,15 @@ public enum socialprofile_community {
 public enum msdyn_crewstrategy {
     
     [EnumMember()]
-    [OptionSetMetadata("Cascade and Accept Cascade Completely", Index=0, Description="CascadeandAcceptCascadeCompletely", Color="#0000ff")]
-    CascadeandAcceptCascadeCompletely = 192350000,
+    [OptionSetMetadata("Cascade and Accept Cascade Completely (Not Recommended)", Index=2, Description="CascadeandAcceptCascadeCompletelyNotRecommended", Color="#0000ff")]
+    CascadeandAcceptCascadeCompletelyNotRecommended = 192350000,
     
     [EnumMember()]
-    [OptionSetMetadata("Crew Leader Management", Index=1, Description="CrewLeaderManagement", Color="#0000ff")]
+    [OptionSetMetadata("Crew Leader Management", Index=0, Description="CrewLeaderManagement", Color="#0000ff")]
     CrewLeaderManagement = 192350001,
     
     [EnumMember()]
-    [OptionSetMetadata("Crew Member Self-Management", Index=2, Description="CrewMemberSelfManagement", Color="#0000ff")]
+    [OptionSetMetadata("Crew Member Self-Management", Index=1, Description="CrewMemberSelfManagement", Color="#0000ff")]
     CrewMemberSelfManagement = 192350002,
 }
 

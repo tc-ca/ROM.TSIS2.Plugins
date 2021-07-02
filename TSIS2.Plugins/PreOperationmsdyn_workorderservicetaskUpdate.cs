@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Json;
 using System.Linq;
 using System.ServiceModel;
@@ -74,7 +75,9 @@ namespace TSIS2.Plugins
 
                                 // Retrieve all the findings belonging to this work order service task
                                 var findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
-                                var findingsCount = findings.Count();
+
+                                // Start a list of all the used mapping keys
+                                var findingMappingKeys = new List<string>();
 
                                 // If there was at least one finding found
                                 // - Create a case (if work order service task doesn't already belong to a case)
@@ -119,57 +122,91 @@ namespace TSIS2.Plugins
                                         {
                                             var finding = rootProperty.Value;
 
-                                            // if finding, does it already exist?
-                                            var findingMappingKey = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString();
-                                            var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ts_findingmappingkey == findingMappingKey);
+                                            // The finding JSON may contain an array of string Id's of operation records
+                                            var operations = finding.ContainsKey("operations") ? finding["operations"] : new JsonArray();
 
-                                            if (existingFinding == null)
+                                            //Loop through the operations. Check if a finding already exists for that operation. Update the comment if it exists, or make a new finding if it doesn't
+                                            foreach (JsonPrimitive operation in operations)
                                             {
-                                                // if no, initialize new ovs_finding
-                                                ovs_Finding newFinding = new ovs_Finding();
-                                                newFinding.ovs_FindingProvisionReference = finding.ContainsKey("provisionReference") ? (string)finding["provisionReference"] : "";
-                                                newFinding.ts_findingProvisionTextEn = finding.ContainsKey("provisionTextEn") ? (string)finding["provisionTextEn"] : "";
-                                                newFinding.ts_findingProvisionTextFr = finding.ContainsKey("provisionTextFr") ? (string)finding["provisionTextFr"] : "";
-                                                newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
+                                                var operationid = (string)operation;
+                                                var findingMappingKey = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString() + "-" + operationid;
+                                                findingMappingKeys.Add(findingMappingKey);
+                                                var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ts_findingmappingkey == findingMappingKey);
+                                                if (existingFinding == null)
+                                                {
+                                                    // if no, initialize new ovs_finding
+                                                    ovs_Finding newFinding = new ovs_Finding();
+                                                    newFinding.ovs_FindingProvisionReference = finding.ContainsKey("provisionReference") ? (string)finding["provisionReference"] : "";
+                                                    newFinding.ts_findingProvisionTextEn = finding.ContainsKey("provisionTextEn") ? (string)finding["provisionTextEn"] : "";
+                                                    newFinding.ts_findingProvisionTextFr = finding.ContainsKey("provisionTextFr") ? (string)finding["provisionTextFr"] : "";
+                                                    newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
 
-                                                // Don't do anything with the files yet until we have the proper infrastructure decision
-                                                //newFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
+                                                    //Update the list of findings for this service task in case a finding was added in a previous loop
+                                                    findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
 
-                                                // Setup the finding name
-                                                // Findings are at the 100 level
-                                                var wostName = preImageEntity.Attributes["msdyn_name"].ToString();
-                                                var prefix = wostName.Replace("200-", "100-");
-                                                var suffix = (findingsCount > 0) ? findingsCount + 1 : 1;
-                                                newFinding.ovs_Finding_1 = string.Format("{0}-{1}", prefix, suffix);
+                                                    //Find all the findings that share the same root property key and add to findingCopies list
+                                                    //The count of copies is needed to determine the suffix for the next finding record created
+                                                    var findingCopies = new List<ovs_Finding>();
+                                                    foreach (var f in findings) {
+                                                        if (f.ts_findingmappingkey.StartsWith(workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString())) findingCopies.Add(f);                                                       
+                                                    }
 
-                                                // Store the mapping key to keep track of mapping between finding and surveyjs questionnaire.
-                                                newFinding.ts_findingmappingkey = findingMappingKey;
+                                                    // Determine the current highest infix of all the findings for the service task
+                                                    var highestInfix = 0;
+                                                    foreach (ovs_Finding f in findings)
+                                                    {
+                                                        var currentInfix = Int32.Parse(f.ovs_Finding_1.Split('-')[3]);
+                                                        if (currentInfix > highestInfix) highestInfix = currentInfix;
+                                                    }
 
-                                                // reference work order service task
-                                                newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
-                                                newFinding.ts_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrder.Id);
+                                                    // Setup the finding name
+                                                    // Findings are at the 100 level
+                                                    var wostName = preImageEntity.Attributes["msdyn_name"].ToString();
+                                                    var prefix = wostName.Replace("200-", "100-");
+                                                    var infix = highestInfix + 1;
+                                                    //If there are copies for this finding, use their infix instead
+                                                    if (findingCopies.Count > 0)
+                                                    {
+                                                        infix = Int32.Parse(findingCopies[0].ovs_Finding_1.Split('-')[3]);
+                                                    }
+                                                    var suffix = findingCopies.Count + 1;
+                                                    newFinding.ovs_Finding_1 = string.Format("{0}-{1}-{2}", prefix, infix, suffix);
 
-                                                // reference case (should already be saved in the work order service task)
-                                                newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
+                                                    // Store the mapping key to keep track of mapping between finding and surveyjs questionnaire.
+                                                    newFinding.ts_findingmappingkey = findingMappingKey;
 
-                                                // Create new ovs_finding
-                                                Guid newFindingId = service.Create(newFinding);
+                                                    // reference work order service task
+                                                    newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
+                                                    newFinding.ts_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrder.Id);
 
-                                                // Increment findings count for next finding name
-                                                findingsCount++;
-                                            }
-                                            else
-                                            {
-                                                // Retrieve the account containing several of its attributes.
-                                                //ColumnSet cols = new ColumnSet(new String[] { });
+                                                    // reference case (should already be saved in the work order service task)
+                                                    newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
 
-                                                // Update existing finding
-                                                existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
+                                                    EntityReference operationReference = new EntityReference(msdyn_customerasset.EntityLogicalName, new Guid(operationid));
 
-                                                // Don't do anything with the files yet until we have the proper infrastructure decision
-                                                //existingFinding.ovs_FindingFile = finding.ContainsKey("documentaryEvidence") ? (string)finding["documentaryEvidence"] : "";
+                                                    // Lookup the operation (Customer Asset Entity) to know its parent Account's id
+                                                    msdyn_customerasset operationEntity = serviceContext.msdyn_customerassetSet.Where(ca => ca.Id == operationReference.Id).FirstOrDefault();
 
-                                                serviceContext.UpdateObject(existingFinding);
+                                                    // Create entity reference to the operation's parent account
+                                                    EntityReference parentAccountReference = new EntityReference(Account.EntityLogicalName, operationEntity.msdyn_Account.Id);
+
+                                                    // reference the current operation's parent account (Account Entity) (Lookup logical name: msdyn_serviceaccount)
+                                                    newFinding.ts_accountid = new EntityReference(Account.EntityLogicalName, operationEntity.msdyn_Account.Id);
+
+                                                    // reference current operation (Customer Asset Entity) (Lookup logical name: ovs_asset)
+                                                    newFinding.ts_Assetid = operationReference;
+
+                                                    // Create new ovs_finding
+                                                    Guid newFindingId = service.Create(newFinding);
+
+                                                }
+                                                else
+                                                {
+                                                    //Update the Finding record's comment
+                                                    existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
+                                                    serviceContext.UpdateObject(existingFinding);
+
+                                                }
                                             }
                                         }
                                     }
@@ -183,9 +220,6 @@ namespace TSIS2.Plugins
 
                                 // Need to deactivate any old referenced findings in the work order service task and case
                                 // that no longer exist in the questionnaire response.
-
-                                // Get a list of unique finding names from the JSON response
-                                var findingMappingKeys = jsonObject.Keys.Select(k => workOrderServiceTask.Id.ToString() + "-" + k);
 
                                 foreach (var finding in findings)
                                 {
