@@ -2889,6 +2889,26 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
     }
     
+    [RelationshipSchemaName("account_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> account_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("account_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("account_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("account_msfp_alerts")]
+    public IEnumerable<msfp_alert> account_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("account_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("account_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("originatingleadid")]
     [RelationshipSchemaName("account_originating_lead")]
     public Lead account_originating_lead {
@@ -3248,26 +3268,6 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
     }
     
-    [RelationshipSchemaName("ovs_regulated_entity_ovs_operation")]
-    public IEnumerable<ovs_operation> ovs_regulated_entity_ovs_operation {
-        get {
-            return GetRelatedEntities<ovs_operation>("ovs_regulated_entity_ovs_operation", null);
-        }
-        set {
-            SetRelatedEntities("ovs_regulated_entity_ovs_operation", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("ovs_site_ovs_operation")]
-    public IEnumerable<ovs_operation> ovs_site_ovs_operation {
-        get {
-            return GetRelatedEntities<ovs_operation>("ovs_site_ovs_operation", null);
-        }
-        set {
-            SetRelatedEntities("ovs_site_ovs_operation", null, value);
-        }
-    }
-    
     [RelationshipSchemaName("ovs_workorder_SiteofViolation_Account")]
     public IEnumerable<msdyn_workorder> ovs_workorder_SiteofViolation_Account {
         get {
@@ -3369,6 +3369,16 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
         set {
             SetRelatedEntities("ts_ovs_Finding_accountid_Account", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_operation_stakeholder_account")]
+    public IEnumerable<ovs_operation> ts_ovs_operation_stakeholder_account {
+        get {
+            return GetRelatedEntities<ovs_operation>("ts_ovs_operation_stakeholder_account", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_operation_stakeholder_account", null, value);
         }
     }
     
@@ -3996,6 +4006,28 @@ public partial class ActivityParty : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntity("lead_activity_parties", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("activityid")]
+    [RelationshipSchemaName("msdyn_bookingalert_activity_parties")]
+    public msdyn_bookingalert msdyn_bookingalert_activity_parties {
+        get {
+            return GetRelatedEntity<msdyn_bookingalert>("msdyn_bookingalert_activity_parties", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingalert_activity_parties", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("activityid")]
+    [RelationshipSchemaName("msfp_alert_activity_parties")]
+    public msfp_alert msfp_alert_activity_parties {
+        get {
+            return GetRelatedEntity<msfp_alert>("msfp_alert_activity_parties", null);
+        }
+        set {
+            SetRelatedEntity("msfp_alert_activity_parties", null, value);
         }
     }
     
@@ -5109,6 +5141,26 @@ public partial class ActivityPointer : ExtendedEntity<ActivityPointerState, Acti
         }
     }
     
+    [RelationshipSchemaName("activity_pointer_msdyn_bookingalert")]
+    public IEnumerable<msdyn_bookingalert> activity_pointer_msdyn_bookingalert {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("activity_pointer_msdyn_bookingalert", null);
+        }
+        set {
+            SetRelatedEntities("activity_pointer_msdyn_bookingalert", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("activity_pointer_msfp_alert")]
+    public IEnumerable<msfp_alert> activity_pointer_msfp_alert {
+        get {
+            return GetRelatedEntities<msfp_alert>("activity_pointer_msfp_alert", null);
+        }
+        set {
+            SetRelatedEntities("activity_pointer_msfp_alert", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("activity_pointer_phonecall")]
     public IEnumerable<PhoneCall> activity_pointer_phonecall {
         get {
@@ -5420,6 +5472,17 @@ public partial class ActivityPointer : ExtendedEntity<ActivityPointerState, Acti
         }
         set {
             SetRelatedEntity("ppp_traveller_ActivityPointers", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_ActivityPointers")]
+    public ts_request ts_request_ActivityPointers {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_ActivityPointers", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_ActivityPointers", null, value);
         }
     }
     
@@ -6827,6 +6890,17 @@ public partial class Appointment : ExtendedEntity<AppointmentState, Appointment_
         }
         set {
             SetRelatedEntity("recurringappointmentmaster_appointment", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_Appointments")]
+    public ts_request ts_request_Appointments {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_Appointments", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_Appointments", null, value);
         }
     }
     
@@ -8935,6 +9009,22 @@ public partial class BookableResourceBooking : ExtendedEntity<BookableResourceBo
     }
     
     /// <summary>
+    /// <para>Requirement Group Set</para>
+    /// <para>Display Name: Requirement Group Set</para>
+    /// </summary>
+    [AttributeLogicalName("msdyn_requirementgroupset")]
+    [DisplayName("Requirement Group Set")]
+    [MaxLength(40)]
+    public string msdyn_requirementgroupset {
+        get {
+            return GetAttributeValue<string>("msdyn_requirementgroupset");
+        }
+        set {
+            SetAttributeValue("msdyn_requirementgroupset", value);
+        }
+    }
+    
+    /// <summary>
     /// <para>Unique identifier for Service Appointment associated with Resource Booking.</para>
     /// <para>Display Name: Service Activity</para>
     /// </summary>
@@ -9122,6 +9212,26 @@ public partial class BookableResourceBooking : ExtendedEntity<BookableResourceBo
         }
         set {
             SetRelatedEntities("bookableresourcebooking_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("bookableresourcebooking_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> bookableresourcebooking_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("bookableresourcebooking_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("bookableresourcebooking_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("bookableresourcebooking_msfp_alerts")]
+    public IEnumerable<msfp_alert> bookableresourcebooking_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("bookableresourcebooking_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("bookableresourcebooking_msfp_alerts", null, value);
         }
     }
     
@@ -10654,6 +10764,26 @@ public partial class Campaign : ExtendedEntity<CampaignState, Campaign_StatusCod
         }
     }
     
+    [RelationshipSchemaName("campaign_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> campaign_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("campaign_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("campaign_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("campaign_msfp_alerts")]
+    public IEnumerable<msfp_alert> campaign_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("campaign_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("campaign_msfp_alerts", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("campaign_opportunities")]
     public IEnumerable<Opportunity> campaign_opportunities {
         get {
@@ -12083,6 +12213,26 @@ public partial class CampaignActivity : ExtendedEntity<CampaignActivityState, Ca
         }
         set {
             SetRelatedEntities("campaignactivity_activityparties", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("campaignactivity_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> campaignactivity_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("campaignactivity_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("campaignactivity_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("campaignactivity_msfp_alerts")]
+    public IEnumerable<msfp_alert> campaignactivity_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("campaignactivity_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("campaignactivity_msfp_alerts", null, value);
         }
     }
     
@@ -13892,6 +14042,28 @@ public partial class CampaignResponse : ExtendedEntity<CampaignResponseState, Ca
         }
         set {
             SetRelatedEntities("CampaignResponse_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("originatingactivityid")]
+    [RelationshipSchemaName("CampaignResponse_msdyn_bookingalerts")]
+    public msdyn_bookingalert CampaignResponse_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_bookingalert>("CampaignResponse_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("CampaignResponse_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("originatingactivityid")]
+    [RelationshipSchemaName("CampaignResponse_msfp_alerts")]
+    public msfp_alert CampaignResponse_msfp_alerts {
+        get {
+            return GetRelatedEntity<msfp_alert>("CampaignResponse_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("CampaignResponse_msfp_alerts", null, value);
         }
     }
     
@@ -17347,6 +17519,26 @@ public partial class Contact : ExtendedEntity<ContactState, Contact_StatusCode> 
         }
     }
     
+    [RelationshipSchemaName("contact_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> contact_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("contact_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("contact_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("contact_msfp_alerts")]
+    public IEnumerable<msfp_alert> contact_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("contact_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("contact_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("originatingleadid")]
     [RelationshipSchemaName("contact_originating_lead")]
     public Lead contact_originating_lead {
@@ -19208,6 +19400,26 @@ public partial class Contract : ExtendedEntity<ContractState, Contract_StatusCod
         }
         set {
             SetRelatedEntities("contract_line_items", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("contract_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> contract_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("contract_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("contract_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("contract_msfp_alerts")]
+    public IEnumerable<msfp_alert> contract_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("contract_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("contract_msfp_alerts", null, value);
         }
     }
     
@@ -22131,6 +22343,17 @@ public partial class Email : ExtendedEntity<EmailState, Email_StatusCode> {
         }
     }
     
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_Emails")]
+    public ts_request ts_request_Emails {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_Emails", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_Emails", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_email")]
     public SystemUser user_email {
@@ -22978,6 +23201,26 @@ public partial class Entitlement : ExtendedEntity<EntitlementState, Entitlement_
         }
         set {
             SetRelatedEntities("entitlement_cases", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("entitlement_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> entitlement_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("entitlement_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("entitlement_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("entitlement_msfp_alerts")]
+    public IEnumerable<msfp_alert> entitlement_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("entitlement_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("entitlement_msfp_alerts", null, value);
         }
     }
     
@@ -23901,6 +24144,26 @@ public partial class EntitlementTemplate : ExtendedEntity<EmptyEnum, EmptyEnum> 
         }
         set {
             SetRelatedEntities("entitlementtemplate_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("entitlementtemplate_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> entitlementtemplate_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("entitlementtemplate_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("entitlementtemplate_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("entitlementtemplate_msfp_alerts")]
+    public IEnumerable<msfp_alert> entitlementtemplate_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("entitlementtemplate_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("entitlementtemplate_msfp_alerts", null, value);
         }
     }
     
@@ -25695,6 +25958,26 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
     }
     
+    [RelationshipSchemaName("incident_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> incident_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("incident_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("incident_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("incident_msfp_alerts")]
+    public IEnumerable<msfp_alert> incident_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("incident_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("incident_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("kbarticleid")]
     [RelationshipSchemaName("kbarticle_incidents")]
     public KbArticle kbarticle_incidents {
@@ -27370,6 +27653,26 @@ public partial class Invoice : ExtendedEntity<InvoiceState, Invoice_StatusCode> 
         }
         set {
             SetRelatedEntity("invoice_customer_contacts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("invoice_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> invoice_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("invoice_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("invoice_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("invoice_msfp_alerts")]
+    public IEnumerable<msfp_alert> invoice_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("invoice_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("invoice_msfp_alerts", null, value);
         }
     }
     
@@ -30464,6 +30767,26 @@ public partial class Lead : ExtendedEntity<LeadState, Lead_StatusCode> {
         }
     }
     
+    [RelationshipSchemaName("lead_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> lead_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("lead_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("lead_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lead_msfp_alerts")]
+    public IEnumerable<msfp_alert> lead_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("lead_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("lead_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("lead_owning_user")]
     public SystemUser lead_owning_user {
@@ -32596,6 +32919,26 @@ public partial class Opportunity : ExtendedEntity<OpportunityState, Opportunity_
         }
     }
     
+    [RelationshipSchemaName("opportunity_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> opportunity_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("opportunity_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("opportunity_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("opportunity_msfp_alerts")]
+    public IEnumerable<msfp_alert> opportunity_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("opportunity_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("opportunity_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("originatingleadid")]
     [RelationshipSchemaName("opportunity_originating_lead")]
     public Lead opportunity_originating_lead {
@@ -33881,6 +34224,17 @@ public partial class PhoneCall : ExtendedEntity<PhoneCallState, PhoneCall_Status
         }
     }
     
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_PhoneCalls")]
+    public ts_request ts_request_PhoneCalls {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_PhoneCalls", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_PhoneCalls", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_phonecall")]
     public SystemUser user_phonecall {
@@ -34936,6 +35290,17 @@ public partial class ProcessSession : ExtendedEntity<ProcessSessionState, Proces
     }
     
     [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_bookingalert_ProcessSession")]
+    public msdyn_bookingalert msdyn_bookingalert_ProcessSession {
+        get {
+            return GetRelatedEntity<msdyn_bookingalert>("msdyn_bookingalert_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingalert_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("msdyn_bookingjournal_ProcessSession")]
     public msdyn_bookingjournal msdyn_bookingjournal_ProcessSession {
         get {
@@ -35200,6 +35565,17 @@ public partial class ProcessSession : ExtendedEntity<ProcessSessionState, Proces
     }
     
     [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msfp_alert_ProcessSession")]
+    public msfp_alert msfp_alert_ProcessSession {
+        get {
+            return GetRelatedEntity<msfp_alert>("msfp_alert_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("msfp_alert_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("ovs_aircarrier_ProcessSession")]
     public ovs_AirCarrier ovs_aircarrier_ProcessSession {
         get {
@@ -35427,6 +35803,17 @@ public partial class ProcessSession : ExtendedEntity<ProcessSessionState, Proces
         }
         set {
             SetRelatedEntity("tc_tcmonth_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_ProcessSession")]
+    public ts_request ts_request_ProcessSession {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_ProcessSession", null, value);
         }
     }
     
@@ -39349,6 +39736,26 @@ public partial class Quote : ExtendedEntity<QuoteState, Quote_StatusCode> {
         }
     }
     
+    [RelationshipSchemaName("quote_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> quote_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("quote_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("quote_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("quote_msfp_alerts")]
+    public IEnumerable<msfp_alert> quote_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("quote_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("quote_msfp_alerts", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("quote_orders")]
     public IEnumerable<SalesOrder> quote_orders {
         get {
@@ -40919,6 +41326,17 @@ public partial class RecurringAppointmentMaster : ExtendedEntity<RecurringAppoin
         }
         set {
             SetRelatedEntities("recurringappointmentmaster_campaignresponse", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_RecurringAppointmentMasters")]
+    public ts_request ts_request_RecurringAppointmentMasters {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_RecurringAppointmentMasters", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_RecurringAppointmentMasters", null, value);
         }
     }
     
@@ -43205,6 +43623,26 @@ public partial class SalesOrder : ExtendedEntity<SalesOrderState, SalesOrder_Sta
         }
     }
     
+    [RelationshipSchemaName("salesorder_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> salesorder_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("salesorder_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("salesorder_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("salesorder_msfp_alerts")]
+    public IEnumerable<msfp_alert> salesorder_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("salesorder_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("salesorder_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("system_user_orders")]
     public SystemUser system_user_orders {
@@ -44760,6 +45198,17 @@ public partial class ServiceAppointment : ExtendedEntity<ServiceAppointmentState
         }
     }
     
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_ServiceAppointments")]
+    public ts_request ts_request_ServiceAppointments {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_ServiceAppointments", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_ServiceAppointments", null, value);
+        }
+    }
+    
     public static ServiceAppointment Retrieve(IOrganizationService service, Guid id, params Expression<Func<ServiceAppointment,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
@@ -45795,6 +46244,17 @@ public partial class SyncError : ExtendedEntity<SyncErrorState, SyncError_Status
     }
     
     [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_bookingalert_SyncErrors")]
+    public msdyn_bookingalert msdyn_bookingalert_SyncErrors {
+        get {
+            return GetRelatedEntity<msdyn_bookingalert>("msdyn_bookingalert_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingalert_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("msdyn_bookingjournal_SyncErrors")]
     public msdyn_bookingjournal msdyn_bookingjournal_SyncErrors {
         get {
@@ -46059,6 +46519,17 @@ public partial class SyncError : ExtendedEntity<SyncErrorState, SyncError_Status
     }
     
     [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msfp_alert_SyncErrors")]
+    public msfp_alert msfp_alert_SyncErrors {
+        get {
+            return GetRelatedEntity<msfp_alert>("msfp_alert_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("msfp_alert_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("ovs_aircarrier_SyncErrors")]
     public ovs_AirCarrier ovs_aircarrier_SyncErrors {
         get {
@@ -46286,6 +46757,17 @@ public partial class SyncError : ExtendedEntity<SyncErrorState, SyncError_Status
         }
         set {
             SetRelatedEntity("tc_tcmonth_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_SyncErrors")]
+    public ts_request ts_request_SyncErrors {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_SyncErrors", null, value);
         }
     }
     
@@ -51669,6 +52151,46 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("lk_ts_request_createdby")]
+    public IEnumerable<ts_request> lk_ts_request_createdby {
+        get {
+            return GetRelatedEntities<ts_request>("lk_ts_request_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ts_request_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ts_request_createdonbehalfby")]
+    public IEnumerable<ts_request> lk_ts_request_createdonbehalfby {
+        get {
+            return GetRelatedEntities<ts_request>("lk_ts_request_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ts_request_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ts_request_modifiedby")]
+    public IEnumerable<ts_request> lk_ts_request_modifiedby {
+        get {
+            return GetRelatedEntities<ts_request>("lk_ts_request_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ts_request_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ts_request_modifiedonbehalfby")]
+    public IEnumerable<ts_request> lk_ts_request_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<ts_request>("lk_ts_request_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ts_request_modifiedonbehalfby", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("lk_ts_workorderactivitytype_createdby")]
     public IEnumerable<ts_workorderactivitytype> lk_ts_workorderactivitytype_createdby {
         get {
@@ -51749,6 +52271,56 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("msdyn_bookingalert_systemuser_createdby")]
+    public IEnumerable<msdyn_bookingalert> msdyn_bookingalert_systemuser_createdby {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_bookingalert_systemuser_createdby", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingalert_systemuser_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingalert_systemuser_createdonbehalfby")]
+    public IEnumerable<msdyn_bookingalert> msdyn_bookingalert_systemuser_createdonbehalfby {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_bookingalert_systemuser_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingalert_systemuser_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingalert_systemuser_modifiedby")]
+    public IEnumerable<msdyn_bookingalert> msdyn_bookingalert_systemuser_modifiedby {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_bookingalert_systemuser_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingalert_systemuser_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingalert_systemuser_modifiedonbehalfby")]
+    public IEnumerable<msdyn_bookingalert> msdyn_bookingalert_systemuser_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_bookingalert_systemuser_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingalert_systemuser_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingalert_systemuser_owninguser")]
+    public IEnumerable<msdyn_bookingalert> msdyn_bookingalert_systemuser_owninguser {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_bookingalert_systemuser_owninguser", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingalert_systemuser_owninguser", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_systemuser_msdyn_purchaseorder_ApprovedRejectedBy")]
     public IEnumerable<msdyn_purchaseorder> msdyn_systemuser_msdyn_purchaseorder_ApprovedRejectedBy {
         get {
@@ -51796,6 +52368,56 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("msdyn_systemuser_msdyn_workorder_ClosedBy", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msfp_alert_systemuser_createdby")]
+    public IEnumerable<msfp_alert> msfp_alert_systemuser_createdby {
+        get {
+            return GetRelatedEntities<msfp_alert>("msfp_alert_systemuser_createdby", null);
+        }
+        set {
+            SetRelatedEntities("msfp_alert_systemuser_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msfp_alert_systemuser_createdonbehalfby")]
+    public IEnumerable<msfp_alert> msfp_alert_systemuser_createdonbehalfby {
+        get {
+            return GetRelatedEntities<msfp_alert>("msfp_alert_systemuser_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("msfp_alert_systemuser_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msfp_alert_systemuser_modifiedby")]
+    public IEnumerable<msfp_alert> msfp_alert_systemuser_modifiedby {
+        get {
+            return GetRelatedEntities<msfp_alert>("msfp_alert_systemuser_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("msfp_alert_systemuser_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msfp_alert_systemuser_modifiedonbehalfby")]
+    public IEnumerable<msfp_alert> msfp_alert_systemuser_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<msfp_alert>("msfp_alert_systemuser_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("msfp_alert_systemuser_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msfp_alert_systemuser_owninguser")]
+    public IEnumerable<msfp_alert> msfp_alert_systemuser_owninguser {
+        get {
+            return GetRelatedEntities<msfp_alert>("msfp_alert_systemuser_owninguser", null);
+        }
+        set {
+            SetRelatedEntities("msfp_alert_systemuser_owninguser", null, value);
         }
     }
     
@@ -52558,6 +53180,16 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("user_tc_tcmonth", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("user_ts_request")]
+    public IEnumerable<ts_request> user_ts_request {
+        get {
+            return GetRelatedEntities<ts_request>("user_ts_request", null);
+        }
+        set {
+            SetRelatedEntities("user_ts_request", null, value);
         }
     }
     
@@ -53764,6 +54396,17 @@ public partial class Task : ExtendedEntity<TaskState, Task_StatusCode> {
         }
     }
     
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_Tasks")]
+    public ts_request ts_request_Tasks {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_Tasks", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_Tasks", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_task")]
     public SystemUser user_task {
@@ -54687,7 +55330,7 @@ public partial class msdyn_FunctionalLocation : ExtendedEntity<msdyn_FunctionalL
     /// </summary>
     [AttributeLogicalName("msdyn_name")]
     [DisplayName("Name")]
-    [MaxLength(60)]
+    [MaxLength(150)]
     public string msdyn_Name {
         get {
             return GetAttributeValue<string>("msdyn_name");
@@ -54806,6 +55449,20 @@ public partial class msdyn_FunctionalLocation : ExtendedEntity<msdyn_FunctionalL
     }
     
     /// <summary>
+    /// <para>Display Name: Class</para>
+    /// </summary>
+    [AttributeLogicalName("ts_class")]
+    [DisplayName("Class")]
+    public msdyn_FunctionalLocation_ts_Class? ts_Class {
+        get {
+            return GetOptionSetValue<msdyn_FunctionalLocation_ts_Class>("ts_class");
+        }
+        set {
+            SetOptionSetValue("ts_class", value);
+        }
+    }
+    
+    /// <summary>
     /// <para>Display Name: Country</para>
     /// </summary>
     [AttributeLogicalName("ts_country")]
@@ -54816,6 +55473,36 @@ public partial class msdyn_FunctionalLocation : ExtendedEntity<msdyn_FunctionalL
         }
         set {
             SetAttributeValue("ts_country", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: IATA Code</para>
+    /// </summary>
+    [AttributeLogicalName("ts_iatacode")]
+    [DisplayName("IATA Code")]
+    [MaxLength(100)]
+    public string ts_IATACode {
+        get {
+            return GetAttributeValue<string>("ts_iatacode");
+        }
+        set {
+            SetAttributeValue("ts_iatacode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: ICAO Code</para>
+    /// </summary>
+    [AttributeLogicalName("ts_icaocode")]
+    [DisplayName("ICAO Code")]
+    [MaxLength(100)]
+    public string ts_ICAOCode {
+        get {
+            return GetAttributeValue<string>("ts_icaocode");
+        }
+        set {
+            SetAttributeValue("ts_icaocode", value);
         }
     }
     
@@ -55092,6 +55779,26 @@ public partial class msdyn_FunctionalLocation : ExtendedEntity<msdyn_FunctionalL
         }
         set {
             SetRelatedEntities("ts_msdyn_workorder_Site_msdyn_FunctionalLoca", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_operation_site_msdyn_functionallocati")]
+    public IEnumerable<ovs_operation> ts_ovs_operation_site_msdyn_functionallocati {
+        get {
+            return GetRelatedEntities<ovs_operation>("ts_ovs_operation_site_msdyn_functionallocati", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_operation_site_msdyn_functionallocati", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_operation_subsite_msdyn_functionalloc")]
+    public IEnumerable<ovs_operation> ts_ovs_operation_subsite_msdyn_functionalloc {
+        get {
+            return GetRelatedEntities<ovs_operation>("ts_ovs_operation_subsite_msdyn_functionalloc", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_operation_subsite_msdyn_functionalloc", null, value);
         }
     }
     
@@ -55917,6 +56624,26 @@ public partial class msdyn_agreement : ExtendedEntity<msdyn_agreementState, msdy
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreement_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_agreement_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_agreement_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreement_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreement_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_agreement_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_agreement_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreement_msfp_alerts", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_msdyn_agreement_msdyn_agreementbookingproduct_Agreement")]
     public IEnumerable<msdyn_agreementbookingproduct> msdyn_msdyn_agreement_msdyn_agreementbookingproduct_Agreement {
         get {
@@ -56659,6 +57386,26 @@ public partial class msdyn_agreementbookingproduct : ExtendedEntity<msdyn_agreem
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_agreementbookingproduct_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_agreementbookingproduct_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingproduct_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_agreementbookingproduct_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_agreementbookingproduct_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingproduct_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("msdyn_agreement")]
     [RelationshipSchemaName("msdyn_msdyn_agreement_msdyn_agreementbookingproduct_Agreement")]
     public msdyn_agreement msdyn_msdyn_agreement_msdyn_agreementbookingproduct_Agreement {
@@ -57398,6 +58145,26 @@ public partial class msdyn_agreementbookingservice : ExtendedEntity<msdyn_agreem
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreementbookingservice_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_agreementbookingservice_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_agreementbookingservice_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingservice_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreementbookingservice_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_agreementbookingservice_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_agreementbookingservice_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingservice_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("msdyn_agreement")]
     [RelationshipSchemaName("msdyn_msdyn_agreement_msdyn_agreementbookingservice_Agreement")]
     public msdyn_agreement msdyn_msdyn_agreement_msdyn_agreementbookingservice_Agreement {
@@ -58050,6 +58817,26 @@ public partial class msdyn_agreementinvoiceproduct : ExtendedEntity<msdyn_agreem
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_agreementinvoiceproduct_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_agreementinvoiceproduct_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementinvoiceproduct_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_agreementinvoiceproduct_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_agreementinvoiceproduct_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementinvoiceproduct_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("msdyn_agreement")]
     [RelationshipSchemaName("msdyn_msdyn_agreement_msdyn_agreementinvoiceproduct_Agreement")]
     public msdyn_agreement msdyn_msdyn_agreement_msdyn_agreementinvoiceproduct_Agreement {
@@ -58084,6 +58871,1443 @@ public partial class msdyn_agreementinvoiceproduct : ExtendedEntity<msdyn_agreem
     }
     
     public static msdyn_agreementinvoiceproduct Retrieve(IOrganizationService service, Guid id, params Expression<Func<msdyn_agreementinvoiceproduct,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
+/// <para>Alerts that notify schedule board users of booking issues or information.</para>
+/// <para>Display Name: Booking Alert</para>
+/// </summary>
+[EntityLogicalName("msdyn_bookingalert")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class msdyn_bookingalert : ExtendedEntity<msdyn_bookingalertState, msdyn_bookingalert_StatusCode> {
+    
+    public const string EntityLogicalName = "msdyn_bookingalert";
+    
+    public const int EntityTypeCode = 10256;
+    
+    public msdyn_bookingalert() : 
+            base(EntityLogicalName) {
+    }
+    
+    public msdyn_bookingalert(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("subject");
+        }
+    }
+    
+    [AttributeLogicalName("activityid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("activityid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the activity.</para>
+    /// <para>Display Name: Activity</para>
+    /// </summary>
+    [AttributeLogicalName("activityid")]
+    [DisplayName("Activity")]
+    public Guid? ActivityId {
+        get {
+            return GetAttributeValue<Guid?>("activityid");
+        }
+        set {
+            SetId("activityid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows additional information provided by the external application as JSON. For internal use only.</para>
+    /// <para>Display Name: Activity Additional Parameters</para>
+    /// </summary>
+    [AttributeLogicalName("activityadditionalparams")]
+    [DisplayName("Activity Additional Parameters")]
+    public string ActivityAdditionalParams {
+        get {
+            return GetAttributeValue<string>("activityadditionalparams");
+        }
+        set {
+            SetAttributeValue("activityadditionalparams", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Type of activity.</para>
+    /// <para>Display Name: Activity Type</para>
+    /// </summary>
+    [AttributeLogicalName("activitytypecode")]
+    [DisplayName("Activity Type")]
+    public string ActivityTypeCode {
+        get {
+            return GetAttributeValue<string>("activitytypecode");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the actual duration of the activity in minutes.</para>
+    /// <para>Display Name: Actual Duration</para>
+    /// </summary>
+    [AttributeLogicalName("actualdurationminutes")]
+    [DisplayName("Actual Duration")]
+    [Range(0, 2147483647)]
+    public int? ActualDurationMinutes {
+        get {
+            return GetAttributeValue<int?>("actualdurationminutes");
+        }
+        set {
+            SetAttributeValue("actualdurationminutes", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the actual end time of the activity.</para>
+    /// <para>Display Name: Actual End</para>
+    /// </summary>
+    [AttributeLogicalName("actualend")]
+    [DisplayName("Actual End")]
+    public DateTime? ActualEnd {
+        get {
+            return GetAttributeValue<DateTime?>("actualend");
+        }
+        set {
+            SetAttributeValue("actualend", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the actual start time of the activity.</para>
+    /// <para>Display Name: Actual Start</para>
+    /// </summary>
+    [AttributeLogicalName("actualstart")]
+    [DisplayName("Actual Start")]
+    public DateTime? ActualStart {
+        get {
+            return GetAttributeValue<DateTime?>("actualstart");
+        }
+        set {
+            SetAttributeValue("actualstart", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the blind carbon-copy (bcc) recipients of the activity.</para>
+    /// <para>Display Name: BCC</para>
+    /// </summary>
+    [AttributeLogicalName("bcc")]
+    [DisplayName("BCC")]
+    public IEnumerable<ActivityParty> Bcc {
+        get {
+            return GetEntityCollection<ActivityParty>("bcc");
+        }
+        set {
+            SetEntityCollection("bcc", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the carbon-copy (cc) recipients of the activity.</para>
+    /// <para>Display Name: CC</para>
+    /// </summary>
+    [AttributeLogicalName("cc")]
+    [DisplayName("CC")]
+    public IEnumerable<ActivityParty> Cc {
+        get {
+            return GetEntityCollection<ActivityParty>("cc");
+        }
+        set {
+            SetEntityCollection("cc", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Social Channel</para>
+    /// </summary>
+    [AttributeLogicalName("community")]
+    [DisplayName("Social Channel")]
+    public socialprofile_community? Community {
+        get {
+            return GetOptionSetValue<socialprofile_community>("community");
+        }
+        set {
+            SetOptionSetValue("community", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who created the activity.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the date and time when the activity was created. The date and time are displayed in the time zone selected in Microsoft Dynamics CRM options.</para>
+    /// <para>Display Name: Date Created</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Date Created")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows who created the activity pointer on behalf of another user.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the customer that the activity is associated with.</para>
+    /// <para>Display Name: Customers</para>
+    /// </summary>
+    [AttributeLogicalName("customers")]
+    [DisplayName("Customers")]
+    public IEnumerable<ActivityParty> Customers {
+        get {
+            return GetEntityCollection<ActivityParty>("customers");
+        }
+        set {
+            SetEntityCollection("customers", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the date and time when the delivery of the activity was last attempted.</para>
+    /// <para>Display Name: Date Delivery Last Attempted</para>
+    /// </summary>
+    [AttributeLogicalName("deliverylastattemptedon")]
+    [DisplayName("Date Delivery Last Attempted")]
+    public DateTime? DeliveryLastAttemptedOn {
+        get {
+            return GetAttributeValue<DateTime?>("deliverylastattemptedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the priority of delivery of the activity to the email server.</para>
+    /// <para>Display Name: Delivery Priority</para>
+    /// </summary>
+    [AttributeLogicalName("deliveryprioritycode")]
+    [DisplayName("Delivery Priority")]
+    public activitypointer_deliveryprioritycode? DeliveryPriorityCode {
+        get {
+            return GetOptionSetValue<activitypointer_deliveryprioritycode>("deliveryprioritycode");
+        }
+        set {
+            SetOptionSetValue("deliveryprioritycode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Type a description of the activity.</para>
+    /// <para>Display Name: Description</para>
+    /// </summary>
+    [AttributeLogicalName("description")]
+    [DisplayName("Description")]
+    public string Description {
+        get {
+            return GetAttributeValue<string>("description");
+        }
+        set {
+            SetAttributeValue("description", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The message id of activity which is returned from Exchange Server.</para>
+    /// <para>Display Name: Exchange Item ID</para>
+    /// </summary>
+    [AttributeLogicalName("exchangeitemid")]
+    [DisplayName("Exchange Item ID")]
+    [MaxLength(200)]
+    public string ExchangeItemId {
+        get {
+            return GetAttributeValue<string>("exchangeitemid");
+        }
+        set {
+            SetAttributeValue("exchangeitemid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Exchange rate for the currency associated with the activitypointer with respect to the base currency.</para>
+    /// <para>Display Name: Exchange Rate</para>
+    /// </summary>
+    [AttributeLogicalName("exchangerate")]
+    [DisplayName("Exchange Rate")]
+    public decimal? ExchangeRate {
+        get {
+            return GetAttributeValue<decimal?>("exchangerate");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the web link of Activity of type email.</para>
+    /// <para>Display Name: Exchange WebLink</para>
+    /// </summary>
+    [AttributeLogicalName("exchangeweblink")]
+    [DisplayName("Exchange WebLink")]
+    [MaxLength(1250)]
+    public string ExchangeWebLink {
+        get {
+            return GetAttributeValue<string>("exchangeweblink");
+        }
+        set {
+            SetAttributeValue("exchangeweblink", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the person who the activity is from.</para>
+    /// <para>Display Name: From</para>
+    /// </summary>
+    [AttributeLogicalName("from")]
+    [DisplayName("From")]
+    public IEnumerable<ActivityParty> From {
+        get {
+            return GetEntityCollection<ActivityParty>("from");
+        }
+        set {
+            SetEntityCollection("from", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the sequence number of the import that created this record.</para>
+    /// <para>Display Name: Import Sequence Number</para>
+    /// </summary>
+    [AttributeLogicalName("importsequencenumber")]
+    [DisplayName("Import Sequence Number")]
+    [Range(-2147483648, 2147483647)]
+    public int? ImportSequenceNumber {
+        get {
+            return GetAttributeValue<int?>("importsequencenumber");
+        }
+        set {
+            SetAttributeValue("importsequencenumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Type of instance of a recurring series.</para>
+    /// <para>Display Name: Recurring Instance Type</para>
+    /// </summary>
+    [AttributeLogicalName("instancetypecode")]
+    [DisplayName("Recurring Instance Type")]
+    public msdyn_bookingalert_InstanceTypeCode? InstanceTypeCode {
+        get {
+            return GetOptionSetValue<msdyn_bookingalert_InstanceTypeCode>("instancetypecode");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Information regarding whether the activity was billed as part of resolving a case.</para>
+    /// <para>Display Name: Is Billed</para>
+    /// </summary>
+    [AttributeLogicalName("isbilled")]
+    [DisplayName("Is Billed")]
+    public bool? IsBilled {
+        get {
+            return GetAttributeValue<bool?>("isbilled");
+        }
+        set {
+            SetAttributeValue("isbilled", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Is Private</para>
+    /// </summary>
+    [AttributeLogicalName("ismapiprivate")]
+    [DisplayName("Is Private")]
+    public bool? IsMapiPrivate {
+        get {
+            return GetAttributeValue<bool?>("ismapiprivate");
+        }
+        set {
+            SetAttributeValue("ismapiprivate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows whether the activity is a regular activity type or event type.</para>
+    /// <para>Display Name: Is Regular Activity</para>
+    /// </summary>
+    [AttributeLogicalName("isregularactivity")]
+    [DisplayName("Is Regular Activity")]
+    public bool? IsRegularActivity {
+        get {
+            return GetAttributeValue<bool?>("isregularactivity");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Information regarding whether the activity was created from a workflow rule.</para>
+    /// <para>Display Name: Is Workflow Created</para>
+    /// </summary>
+    [AttributeLogicalName("isworkflowcreated")]
+    [DisplayName("Is Workflow Created")]
+    public bool? IsWorkflowCreated {
+        get {
+            return GetAttributeValue<bool?>("isworkflowcreated");
+        }
+        set {
+            SetAttributeValue("isworkflowcreated", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Contains the date and time stamp of the last on hold time.</para>
+    /// <para>Display Name: Last On Hold Time</para>
+    /// </summary>
+    [AttributeLogicalName("lastonholdtime")]
+    [DisplayName("Last On Hold Time")]
+    public DateTime? LastOnHoldTime {
+        get {
+            return GetAttributeValue<DateTime?>("lastonholdtime");
+        }
+        set {
+            SetAttributeValue("lastonholdtime", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows whether a voice mail was left.</para>
+    /// <para>Display Name: Left Voice Mail</para>
+    /// </summary>
+    [AttributeLogicalName("leftvoicemail")]
+    [DisplayName("Left Voice Mail")]
+    public bool? LeftVoiceMail {
+        get {
+            return GetAttributeValue<bool?>("leftvoicemail");
+        }
+        set {
+            SetAttributeValue("leftvoicemail", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of user who last modified the activity.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the date and time when the activity was last updated. The date and time are displayed in the time zone selected in Microsoft Dynamics CRM options.</para>
+    /// <para>Display Name: Last Updated</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Last Updated")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows who last updated the activity pointer on behalf of another user.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows how long, in minutes, that the record was on hold.</para>
+    /// <para>Display Name: On Hold Time (Minutes)</para>
+    /// </summary>
+    [AttributeLogicalName("onholdtime")]
+    [DisplayName("On Hold Time (Minutes)")]
+    [Range(-2147483648, 2147483647)]
+    public int? OnHoldTime {
+        get {
+            return GetAttributeValue<int?>("onholdtime");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the list of optional attendees for the activity.</para>
+    /// <para>Display Name: Optional Attendees</para>
+    /// </summary>
+    [AttributeLogicalName("optionalattendees")]
+    [DisplayName("Optional Attendees")]
+    public IEnumerable<ActivityParty> OptionalAttendees {
+        get {
+            return GetEntityCollection<ActivityParty>("optionalattendees");
+        }
+        set {
+            SetEntityCollection("optionalattendees", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the person who organized the activity.</para>
+    /// <para>Display Name: Organizer</para>
+    /// </summary>
+    [AttributeLogicalName("organizer")]
+    [DisplayName("Organizer")]
+    public IEnumerable<ActivityParty> Organizer {
+        get {
+            return GetEntityCollection<ActivityParty>("organizer");
+        }
+        set {
+            SetEntityCollection("organizer", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the date and time that the record was migrated.</para>
+    /// <para>Display Name: Record Created On</para>
+    /// </summary>
+    [AttributeLogicalName("overriddencreatedon")]
+    [DisplayName("Record Created On")]
+    public DateTime? OverriddenCreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("overriddencreatedon");
+        }
+        set {
+            SetAttributeValue("overriddencreatedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user or team who owns the activity.</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the business unit that owns the activity.</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the team that owns the activity.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user that owns the activity.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the outsource vendor that the activity is associated with.</para>
+    /// <para>Display Name: Outsource Vendors</para>
+    /// </summary>
+    [AttributeLogicalName("partners")]
+    [DisplayName("Outsource Vendors")]
+    public IEnumerable<ActivityParty> Partners {
+        get {
+            return GetEntityCollection<ActivityParty>("partners");
+        }
+        set {
+            SetEntityCollection("partners", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Delay activity processing until</para>
+    /// </summary>
+    [AttributeLogicalName("postponeactivityprocessinguntil")]
+    [DisplayName("Delay activity processing until")]
+    public DateTime? PostponeActivityProcessingUntil {
+        get {
+            return GetAttributeValue<DateTime?>("postponeactivityprocessinguntil");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Priority of the activity.</para>
+    /// <para>Display Name: Priority</para>
+    /// </summary>
+    [AttributeLogicalName("prioritycode")]
+    [DisplayName("Priority")]
+    public msdyn_bookingalert_PriorityCode? PriorityCode {
+        get {
+            return GetOptionSetValue<msdyn_bookingalert_PriorityCode>("prioritycode");
+        }
+        set {
+            SetOptionSetValue("prioritycode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the process.</para>
+    /// <para>Display Name: Process</para>
+    /// </summary>
+    [AttributeLogicalName("processid")]
+    [DisplayName("Process")]
+    public Guid? ProcessId {
+        get {
+            return GetAttributeValue<Guid?>("processid");
+        }
+        set {
+            SetAttributeValue("processid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the object with which the activity is associated.</para>
+    /// <para>Display Name: Regarding</para>
+    /// </summary>
+    [AttributeLogicalName("regardingobjectid")]
+    [DisplayName("Regarding")]
+    public EntityReference RegardingObjectId {
+        get {
+            return GetAttributeValue<EntityReference>("regardingobjectid");
+        }
+        set {
+            SetAttributeValue("regardingobjectid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the list of assignees to be notified by alert.</para>
+    /// <para>Display Name: Assignees</para>
+    /// </summary>
+    [AttributeLogicalName("requiredattendees")]
+    [DisplayName("Assignees")]
+    public IEnumerable<ActivityParty> RequiredAttendees {
+        get {
+            return GetEntityCollection<ActivityParty>("requiredattendees");
+        }
+        set {
+            SetEntityCollection("requiredattendees", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the users or facility/equipment that are required for the activity.</para>
+    /// <para>Display Name: Resources</para>
+    /// </summary>
+    [AttributeLogicalName("resources")]
+    [DisplayName("Resources")]
+    public IEnumerable<ActivityParty> Resources {
+        get {
+            return GetEntityCollection<ActivityParty>("resources");
+        }
+        set {
+            SetEntityCollection("resources", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Choose the service level agreement (SLA) that you want to apply to the case record.</para>
+    /// <para>Display Name: SLA</para>
+    /// </summary>
+    [AttributeLogicalName("slaid")]
+    [DisplayName("SLA")]
+    public EntityReference SLAId {
+        get {
+            return GetAttributeValue<EntityReference>("slaid");
+        }
+        set {
+            SetAttributeValue("slaid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the last service level agreement (SLA) that was applied to this case. This field is for internal use only.</para>
+    /// <para>Display Name: Last SLA applied</para>
+    /// </summary>
+    [AttributeLogicalName("slainvokedid")]
+    [DisplayName("Last SLA applied")]
+    public EntityReference SLAInvokedId {
+        get {
+            return GetAttributeValue<EntityReference>("slainvokedid");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the scheduled duration of the activity, in minutes.</para>
+    /// <para>Display Name: Estimated Duration</para>
+    /// </summary>
+    [AttributeLogicalName("scheduleddurationminutes")]
+    [DisplayName("Estimated Duration")]
+    [Range(0, 2147483647)]
+    public int? ScheduledDurationMinutes {
+        get {
+            return GetAttributeValue<int?>("scheduleddurationminutes");
+        }
+        set {
+            SetAttributeValue("scheduleddurationminutes", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the scheduled end time of the activity.</para>
+    /// <para>Display Name: Due Date</para>
+    /// </summary>
+    [AttributeLogicalName("scheduledend")]
+    [DisplayName("Due Date")]
+    public DateTime? ScheduledEnd {
+        get {
+            return GetAttributeValue<DateTime?>("scheduledend");
+        }
+        set {
+            SetAttributeValue("scheduledend", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the scheduled start time of the activity.</para>
+    /// <para>Display Name: Start Date</para>
+    /// </summary>
+    [AttributeLogicalName("scheduledstart")]
+    [DisplayName("Start Date")]
+    public DateTime? ScheduledStart {
+        get {
+            return GetAttributeValue<DateTime?>("scheduledstart");
+        }
+        set {
+            SetAttributeValue("scheduledstart", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the mailbox associated with the sender of the email message.</para>
+    /// <para>Display Name: Sender's Mailbox</para>
+    /// </summary>
+    [AttributeLogicalName("sendermailboxid")]
+    [DisplayName("Sender\'s Mailbox")]
+    public EntityReference SenderMailboxId {
+        get {
+            return GetAttributeValue<EntityReference>("sendermailboxid");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the date and time when the activity was sent.</para>
+    /// <para>Display Name: Date Sent</para>
+    /// </summary>
+    [AttributeLogicalName("senton")]
+    [DisplayName("Date Sent")]
+    public DateTime? SentOn {
+        get {
+            return GetAttributeValue<DateTime?>("senton");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the ID of the recurring series of an instance.</para>
+    /// <para>Display Name: Series Id</para>
+    /// </summary>
+    [AttributeLogicalName("seriesid")]
+    [DisplayName("Series Id")]
+    public Guid? SeriesId {
+        get {
+            return GetAttributeValue<Guid?>("seriesid");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of an associated service.</para>
+    /// <para>Display Name: Service</para>
+    /// </summary>
+    [AttributeLogicalName("serviceid")]
+    [DisplayName("Service")]
+    public EntityReference ServiceId {
+        get {
+            return GetAttributeValue<EntityReference>("serviceid");
+        }
+        set {
+            SetAttributeValue("serviceid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the date and time by which the activities are sorted.</para>
+    /// <para>Display Name: Sort Date</para>
+    /// </summary>
+    [AttributeLogicalName("sortdate")]
+    [DisplayName("Sort Date")]
+    public DateTime? SortDate {
+        get {
+            return GetAttributeValue<DateTime?>("sortdate");
+        }
+        set {
+            SetAttributeValue("sortdate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the stage.</para>
+    /// <para>Display Name: Process Stage</para>
+    /// </summary>
+    [AttributeLogicalName("stageid")]
+    [DisplayName("Process Stage")]
+    public Guid? StageId {
+        get {
+            return GetAttributeValue<Guid?>("stageid");
+        }
+        set {
+            SetAttributeValue("stageid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Status of the activity.</para>
+    /// <para>Display Name: Activity Status</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("Activity Status")]
+    public msdyn_bookingalertState? StateCode {
+        get {
+            return GetOptionSetValue<msdyn_bookingalertState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for the status of the activity.</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public msdyn_bookingalert_StatusCode? StatusCode {
+        get {
+            return GetOptionSetValue<msdyn_bookingalert_StatusCode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the subject associated with the activity.</para>
+    /// <para>Display Name: Subject</para>
+    /// </summary>
+    [AttributeLogicalName("subject")]
+    [DisplayName("Subject")]
+    [MaxLength(200)]
+    public string Subject {
+        get {
+            return GetAttributeValue<string>("subject");
+        }
+        set {
+            SetAttributeValue("subject", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Time Zone Rule Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("timezoneruleversionnumber")]
+    [DisplayName("Time Zone Rule Version Number")]
+    [Range(-1, 2147483647)]
+    public int? TimeZoneRuleVersionNumber {
+        get {
+            return GetAttributeValue<int?>("timezoneruleversionnumber");
+        }
+        set {
+            SetAttributeValue("timezoneruleversionnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the person who is the receiver of the activity.</para>
+    /// <para>Display Name: To</para>
+    /// </summary>
+    [AttributeLogicalName("to")]
+    [DisplayName("To")]
+    public IEnumerable<ActivityParty> To {
+        get {
+            return GetEntityCollection<ActivityParty>("to");
+        }
+        set {
+            SetEntityCollection("to", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the currency associated with the activitypointer.</para>
+    /// <para>Display Name: Currency</para>
+    /// </summary>
+    [AttributeLogicalName("transactioncurrencyid")]
+    [DisplayName("Currency")]
+    public EntityReference TransactionCurrencyId {
+        get {
+            return GetAttributeValue<EntityReference>("transactioncurrencyid");
+        }
+        set {
+            SetAttributeValue("transactioncurrencyid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Traversed Path</para>
+    /// </summary>
+    [AttributeLogicalName("traversedpath")]
+    [DisplayName("Traversed Path")]
+    [MaxLength(1250)]
+    public string TraversedPath {
+        get {
+            return GetAttributeValue<string>("traversedpath");
+        }
+        set {
+            SetAttributeValue("traversedpath", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the time zone code that was in use when the record was created.</para>
+    /// <para>Display Name: UTC Conversion Time Zone Code</para>
+    /// </summary>
+    [AttributeLogicalName("utcconversiontimezonecode")]
+    [DisplayName("UTC Conversion Time Zone Code")]
+    [Range(-1, 2147483647)]
+    public int? UTCConversionTimeZoneCode {
+        get {
+            return GetAttributeValue<int?>("utcconversiontimezonecode");
+        }
+        set {
+            SetAttributeValue("utcconversiontimezonecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Version number of the activity.</para>
+    /// <para>Display Name: Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("versionnumber")]
+    [DisplayName("Version Number")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [RelationshipSchemaName("CampaignResponse_msdyn_bookingalerts")]
+    public IEnumerable<CampaignResponse> CampaignResponse_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<CampaignResponse>("CampaignResponse_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("CampaignResponse_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("account_msdyn_bookingalerts")]
+    public Account account_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<Account>("account_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("account_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("activityid")]
+    [RelationshipSchemaName("activity_pointer_msdyn_bookingalert")]
+    public ActivityPointer activity_pointer_msdyn_bookingalert {
+        get {
+            return GetRelatedEntity<ActivityPointer>("activity_pointer_msdyn_bookingalert", null);
+        }
+        set {
+            SetRelatedEntity("activity_pointer_msdyn_bookingalert", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("bookableresourcebooking_msdyn_bookingalerts")]
+    public BookableResourceBooking bookableresourcebooking_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<BookableResourceBooking>("bookableresourcebooking_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("bookableresourcebooking_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("campaign_msdyn_bookingalerts")]
+    public Campaign campaign_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<Campaign>("campaign_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("campaign_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("campaignactivity_msdyn_bookingalerts")]
+    public CampaignActivity campaignactivity_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<CampaignActivity>("campaignactivity_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("campaignactivity_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("contact_msdyn_bookingalerts")]
+    public Contact contact_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<Contact>("contact_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("contact_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("contract_msdyn_bookingalerts")]
+    public Contract contract_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<Contract>("contract_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("contract_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("entitlement_msdyn_bookingalerts")]
+    public Entitlement entitlement_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<Entitlement>("entitlement_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("entitlement_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("entitlementtemplate_msdyn_bookingalerts")]
+    public EntitlementTemplate entitlementtemplate_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<EntitlementTemplate>("entitlementtemplate_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("entitlementtemplate_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("incident_msdyn_bookingalerts")]
+    public Incident incident_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<Incident>("incident_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("incident_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("invoice_msdyn_bookingalerts")]
+    public Invoice invoice_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<Invoice>("invoice_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("invoice_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("lead_msdyn_bookingalerts")]
+    public Lead lead_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<Lead>("lead_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("lead_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreement_msdyn_bookingalerts")]
+    public msdyn_agreement msdyn_agreement_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_agreement>("msdyn_agreement_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreement_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_msdyn_bookingalerts")]
+    public msdyn_agreementbookingproduct msdyn_agreementbookingproduct_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingproduct>("msdyn_agreementbookingproduct_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingproduct_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementbookingservice_msdyn_bookingalerts")]
+    public msdyn_agreementbookingservice msdyn_agreementbookingservice_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingservice>("msdyn_agreementbookingservice_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingservice_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_msdyn_bookingalerts")]
+    public msdyn_agreementinvoiceproduct msdyn_agreementinvoiceproduct_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_agreementinvoiceproduct>("msdyn_agreementinvoiceproduct_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementinvoiceproduct_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingalert_ProcessSession")]
+    public IEnumerable<ProcessSession> msdyn_bookingalert_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msdyn_bookingalert_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingalert_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingalert_SyncErrors")]
+    public IEnumerable<SyncError> msdyn_bookingalert_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msdyn_bookingalert_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingalert_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingalert_activity_parties")]
+    public IEnumerable<ActivityParty> msdyn_bookingalert_activity_parties {
+        get {
+            return GetRelatedEntities<ActivityParty>("msdyn_bookingalert_activity_parties", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingalert_activity_parties", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("msdyn_bookingalert_systemuser_createdby")]
+    public SystemUser msdyn_bookingalert_systemuser_createdby {
+        get {
+            return GetRelatedEntity<SystemUser>("msdyn_bookingalert_systemuser_createdby", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingalert_systemuser_createdby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("msdyn_bookingalert_systemuser_createdonbehalfby")]
+    public SystemUser msdyn_bookingalert_systemuser_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("msdyn_bookingalert_systemuser_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingalert_systemuser_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("msdyn_bookingalert_systemuser_modifiedby")]
+    public SystemUser msdyn_bookingalert_systemuser_modifiedby {
+        get {
+            return GetRelatedEntity<SystemUser>("msdyn_bookingalert_systemuser_modifiedby", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingalert_systemuser_modifiedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("msdyn_bookingalert_systemuser_modifiedonbehalfby")]
+    public SystemUser msdyn_bookingalert_systemuser_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("msdyn_bookingalert_systemuser_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingalert_systemuser_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("owninguser")]
+    [RelationshipSchemaName("msdyn_bookingalert_systemuser_owninguser")]
+    public SystemUser msdyn_bookingalert_systemuser_owninguser {
+        get {
+            return GetRelatedEntity<SystemUser>("msdyn_bookingalert_systemuser_owninguser", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingalert_systemuser_owninguser", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_customerasset_msdyn_bookingalerts")]
+    public msdyn_customerasset msdyn_customerasset_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_customerasset>("msdyn_customerasset_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_customerasset_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_msdyn_bookingalerts")]
+    public msdyn_incidenttypeproduct msdyn_incidenttypeproduct_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeproduct>("msdyn_incidenttypeproduct_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeproduct_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttypeservice_msdyn_bookingalerts")]
+    public msdyn_incidenttypeservice msdyn_incidenttypeservice_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeservice>("msdyn_incidenttypeservice_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeservice_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_purchaseorder_msdyn_bookingalerts")]
+    public msdyn_purchaseorder msdyn_purchaseorder_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorder>("msdyn_purchaseorder_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorder_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_msdyn_bookingalerts")]
+    public msdyn_purchaseorderproduct msdyn_purchaseorderproduct_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorderproduct>("msdyn_purchaseorderproduct_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorderproduct_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_rma_msdyn_bookingalerts")]
+    public msdyn_rma msdyn_rma_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_rma>("msdyn_rma_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_rma_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_timeoffrequest_msdyn_bookingalerts")]
+    public msdyn_timeoffrequest msdyn_timeoffrequest_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_timeoffrequest>("msdyn_timeoffrequest_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_timeoffrequest_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorder_msdyn_bookingalerts")]
+    public msdyn_workorder msdyn_workorder_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_workorder>("msdyn_workorder_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorder_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderincident_msdyn_bookingalerts")]
+    public msdyn_workorderincident msdyn_workorderincident_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_workorderincident>("msdyn_workorderincident_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderincident_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderproduct_msdyn_bookingalerts")]
+    public msdyn_workorderproduct msdyn_workorderproduct_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_workorderproduct>("msdyn_workorderproduct_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderproduct_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderservice_msdyn_bookingalerts")]
+    public msdyn_workorderservice msdyn_workorderservice_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_workorderservice>("msdyn_workorderservice_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservice_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderservicetask_msdyn_bookingalerts")]
+    public msdyn_workorderservicetask msdyn_workorderservicetask_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<msdyn_workorderservicetask>("msdyn_workorderservicetask_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservicetask_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("opportunity_msdyn_bookingalerts")]
+    public Opportunity opportunity_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<Opportunity>("opportunity_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("opportunity_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_msdyn_bookingalerts")]
+    public ppp_Traveller ppp_traveller_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("quote_msdyn_bookingalerts")]
+    public Quote quote_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<Quote>("quote_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("quote_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("salesorder_msdyn_bookingalerts")]
+    public SalesOrder salesorder_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<SalesOrder>("salesorder_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("salesorder_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_msdyn_bookingalerts")]
+    public ts_request ts_request_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    public static msdyn_bookingalert Retrieve(IOrganizationService service, Guid id, params Expression<Func<msdyn_bookingalert,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
 }
@@ -59492,6 +61716,26 @@ public partial class msdyn_customerasset : ExtendedEntity<msdyn_customerassetSta
         }
     }
     
+    [RelationshipSchemaName("msdyn_customerasset_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_customerasset_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_customerasset_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_customerasset_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_customerasset_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_customerasset_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_customerasset_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_customerasset_msfp_alerts", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_incident_msdyn_customerasset")]
     public IEnumerable<Incident> msdyn_incident_msdyn_customerasset {
         get {
@@ -60112,16 +62356,6 @@ public partial class msdyn_customerassetcategory : ExtendedEntity<msdyn_customer
         }
     }
     
-    [RelationshipSchemaName("msdyn_incidenttype_OperationType_msdyn_cu")]
-    public IEnumerable<msdyn_incidenttype> msdyn_incidenttype_OperationType_msdyn_cu {
-        get {
-            return GetRelatedEntities<msdyn_incidenttype>("msdyn_incidenttype_OperationType_msdyn_cu", null);
-        }
-        set {
-            SetRelatedEntities("msdyn_incidenttype_OperationType_msdyn_cu", null, value);
-        }
-    }
-    
     [RelationshipSchemaName("msdyn_msdyn_customerassetcategory_msdyn_customerasset_CustomerAssetCategory")]
     public IEnumerable<msdyn_customerasset> msdyn_msdyn_customerassetcategory_msdyn_customerasset_CustomerAssetCategory {
         get {
@@ -60139,16 +62373,6 @@ public partial class msdyn_customerassetcategory : ExtendedEntity<msdyn_customer
         }
         set {
             SetRelatedEntities("ovs_msdyn_workorder_AssetCategory_msdyn_custo", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("ts_msdyn_customerassetcategory_ts_workorderc")]
-    public IEnumerable<ts_workordercreationwizard> ts_msdyn_customerassetcategory_ts_workorderc {
-        get {
-            return GetRelatedEntities<ts_workordercreationwizard>("ts_msdyn_customerassetcategory_ts_workorderc", null);
-        }
-        set {
-            SetRelatedEntities("ts_msdyn_customerassetcategory_ts_workorderc", null, value);
         }
     }
     
@@ -60725,17 +62949,6 @@ public partial class msdyn_incidenttype : ExtendedEntity<msdyn_incidenttypeState
         }
     }
     
-    [AttributeLogicalName("ts_operationtype")]
-    [RelationshipSchemaName("msdyn_incidenttype_OperationType_msdyn_cu")]
-    public msdyn_customerassetcategory msdyn_incidenttype_OperationType_msdyn_cu {
-        get {
-            return GetRelatedEntity<msdyn_customerassetcategory>("msdyn_incidenttype_OperationType_msdyn_cu", null);
-        }
-        set {
-            SetRelatedEntity("msdyn_incidenttype_OperationType_msdyn_cu", null, value);
-        }
-    }
-    
     [RelationshipSchemaName("msdyn_incidenttype_ProcessSession")]
     public IEnumerable<ProcessSession> msdyn_incidenttype_ProcessSession {
         get {
@@ -60824,6 +63037,17 @@ public partial class msdyn_incidenttype : ExtendedEntity<msdyn_incidenttypeState
         }
         set {
             SetRelatedEntity("msdyn_msdyn_workordertype_msdyn_incidenttype_DefaultWorkOrderType", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_operationtype")]
+    [RelationshipSchemaName("ts_msdyn_incidenttype_OperationType_ovs_oper")]
+    public ovs_operationtype ts_msdyn_incidenttype_OperationType_ovs_oper {
+        get {
+            return GetRelatedEntity<ovs_operationtype>("ts_msdyn_incidenttype_OperationType_ovs_oper", null);
+        }
+        set {
+            SetRelatedEntity("ts_msdyn_incidenttype_OperationType_ovs_oper", null, value);
         }
     }
     
@@ -61413,6 +63637,26 @@ public partial class msdyn_incidenttypeproduct : ExtendedEntity<msdyn_incidentty
         }
     }
     
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_incidenttypeproduct_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_incidenttypeproduct_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeproduct_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_incidenttypeproduct_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_incidenttypeproduct_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeproduct_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("msdyn_incidenttype")]
     [RelationshipSchemaName("msdyn_msdyn_incidenttype_msdyn_incidenttypeproduct_IncidentType")]
     public msdyn_incidenttype msdyn_msdyn_incidenttype_msdyn_incidenttypeproduct_IncidentType {
@@ -61999,6 +64243,26 @@ public partial class msdyn_incidenttypeservice : ExtendedEntity<msdyn_incidentty
         }
         set {
             SetRelatedEntities("msdyn_incidenttypeservice_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttypeservice_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_incidenttypeservice_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_incidenttypeservice_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeservice_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttypeservice_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_incidenttypeservice_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_incidenttypeservice_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeservice_msfp_alerts", null, value);
         }
     }
     
@@ -65229,6 +67493,26 @@ public partial class msdyn_purchaseorder : ExtendedEntity<msdyn_purchaseorderSta
         }
     }
     
+    [RelationshipSchemaName("msdyn_purchaseorder_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_purchaseorder_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_purchaseorder_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorder_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_purchaseorder_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_purchaseorder_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_purchaseorder_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorder_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("msdyn_approvedrejectedby")]
     [RelationshipSchemaName("msdyn_systemuser_msdyn_purchaseorder_ApprovedRejectedBy")]
     public SystemUser msdyn_systemuser_msdyn_purchaseorder_ApprovedRejectedBy {
@@ -66043,6 +68327,26 @@ public partial class msdyn_purchaseorderproduct : ExtendedEntity<msdyn_purchaseo
         }
         set {
             SetRelatedEntities("msdyn_purchaseorderproduct_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_purchaseorderproduct_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_purchaseorderproduct_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorderproduct_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_purchaseorderproduct_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_purchaseorderproduct_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorderproduct_msfp_alerts", null, value);
         }
     }
     
@@ -67434,6 +69738,26 @@ public partial class msdyn_rma : ExtendedEntity<msdyn_rmaState, msdyn_rma_status
         }
     }
     
+    [RelationshipSchemaName("msdyn_rma_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_rma_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_rma_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_rma_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_rma_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_rma_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_rma_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_rma_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("msdyn_approvedby")]
     [RelationshipSchemaName("msdyn_systemuser_msdyn_rma_ApprovedBy")]
     public SystemUser msdyn_systemuser_msdyn_rma_ApprovedBy {
@@ -68548,6 +70872,26 @@ public partial class msdyn_timeoffrequest : ExtendedEntity<msdyn_timeoffrequestS
         }
         set {
             SetRelatedEntities("msdyn_timeoffrequest_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_timeoffrequest_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_timeoffrequest_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_timeoffrequest_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_timeoffrequest_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_timeoffrequest_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_timeoffrequest_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_timeoffrequest_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_timeoffrequest_msfp_alerts", null, value);
         }
     }
     
@@ -69974,10 +72318,10 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     
     /// <summary>
     /// <para>Unique identifier for Operation associated with Work Order.</para>
-    /// <para>Display Name: Operation (to delete)</para>
+    /// <para>Display Name: Operation</para>
     /// </summary>
     [AttributeLogicalName("ovs_operationid")]
-    [DisplayName("Operation (to delete)")]
+    [DisplayName("Operation")]
     public EntityReference ovs_OperationId {
         get {
             return GetAttributeValue<EntityReference>("ovs_operationid");
@@ -70073,10 +72417,10 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     }
     
     /// <summary>
-    /// <para>Display Name: Operation Asset</para>
+    /// <para>Display Name: Operation Asset (old, to delete)</para>
     /// </summary>
     [AttributeLogicalName("ovs_asset")]
-    [DisplayName("Operation Asset")]
+    [DisplayName("Operation Asset (old, to delete)")]
     public EntityReference ovs_asset {
         get {
             return GetAttributeValue<EntityReference>("ovs_asset");
@@ -70087,10 +72431,10 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     }
     
     /// <summary>
-    /// <para>Display Name: Operation Type (to delete)</para>
+    /// <para>Display Name: Operation Type</para>
     /// </summary>
     [AttributeLogicalName("ovs_operationtypeid")]
-    [DisplayName("Operation Type (to delete)")]
+    [DisplayName("Operation Type")]
     public EntityReference ovs_operationtypeid {
         get {
             return GetAttributeValue<EntityReference>("ovs_operationtypeid");
@@ -70738,6 +73082,26 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
         set {
             SetRelatedEntities("msdyn_workorder_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorder_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_workorder_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_workorder_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorder_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorder_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_workorder_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_workorder_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorder_msfp_alerts", null, value);
         }
     }
     
@@ -71697,6 +74061,26 @@ public partial class msdyn_workorderincident : ExtendedEntity<msdyn_workorderinc
         }
         set {
             SetRelatedEntities("msdyn_workorderincident_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderincident_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_workorderincident_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_workorderincident_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderincident_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderincident_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_workorderincident_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_workorderincident_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderincident_msfp_alerts", null, value);
         }
     }
     
@@ -72997,6 +75381,26 @@ public partial class msdyn_workorderproduct : ExtendedEntity<msdyn_workorderprod
         }
         set {
             SetRelatedEntities("msdyn_workorderproduct_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderproduct_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_workorderproduct_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_workorderproduct_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderproduct_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderproduct_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_workorderproduct_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_workorderproduct_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderproduct_msfp_alerts", null, value);
         }
     }
     
@@ -74344,6 +76748,26 @@ public partial class msdyn_workorderservice : ExtendedEntity<msdyn_workorderserv
         }
     }
     
+    [RelationshipSchemaName("msdyn_workorderservice_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_workorderservice_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_workorderservice_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservice_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderservice_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_workorderservice_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_workorderservice_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservice_msfp_alerts", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_msdyn_workorderservice")]
     public SystemUser user_msdyn_workorderservice {
@@ -75241,6 +77665,26 @@ public partial class msdyn_workorderservicetask : ExtendedEntity<msdyn_workorder
         }
         set {
             SetRelatedEntities("msdyn_workorderservicetask_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderservicetask_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> msdyn_workorderservicetask_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("msdyn_workorderservicetask_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservicetask_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderservicetask_msfp_alerts")]
+    public IEnumerable<msfp_alert> msdyn_workorderservicetask_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("msdyn_workorderservicetask_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservicetask_msfp_alerts", null, value);
         }
     }
     
@@ -76215,6 +78659,1690 @@ public partial class msdyn_workordertype : ExtendedEntity<msdyn_workordertypeSta
     }
     
     public static msdyn_workordertype Retrieve(IOrganizationService service, Guid id, params Expression<Func<msdyn_workordertype,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
+/// <para>Display Name: Customer Voice alert</para>
+/// </summary>
+[EntityLogicalName("msfp_alert")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class msfp_alert : ExtendedEntity<msfp_alertState, msfp_alert_StatusCode> {
+    
+    public const string EntityLogicalName = "msfp_alert";
+    
+    public const int EntityTypeCode = 10235;
+    
+    public msfp_alert() : 
+            base(EntityLogicalName) {
+    }
+    
+    public msfp_alert(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("subject");
+        }
+    }
+    
+    [AttributeLogicalName("activityid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("activityid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the activity.</para>
+    /// <para>Display Name: Activity</para>
+    /// </summary>
+    [AttributeLogicalName("activityid")]
+    [DisplayName("Activity")]
+    public Guid? ActivityId {
+        get {
+            return GetAttributeValue<Guid?>("activityid");
+        }
+        set {
+            SetId("activityid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Additional information provided by the external application as JSON. For internal use only.</para>
+    /// <para>Display Name: Activity Additional Parameters</para>
+    /// </summary>
+    [AttributeLogicalName("activityadditionalparams")]
+    [DisplayName("Activity Additional Parameters")]
+    public string ActivityAdditionalParams {
+        get {
+            return GetAttributeValue<string>("activityadditionalparams");
+        }
+        set {
+            SetAttributeValue("activityadditionalparams", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Type of activity.</para>
+    /// <para>Display Name: Activity Type</para>
+    /// </summary>
+    [AttributeLogicalName("activitytypecode")]
+    [DisplayName("Activity Type")]
+    public string ActivityTypeCode {
+        get {
+            return GetAttributeValue<string>("activitytypecode");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Actual duration of the activity in minutes.</para>
+    /// <para>Display Name: Actual Duration</para>
+    /// </summary>
+    [AttributeLogicalName("actualdurationminutes")]
+    [DisplayName("Actual Duration")]
+    [Range(0, 2147483647)]
+    public int? ActualDurationMinutes {
+        get {
+            return GetAttributeValue<int?>("actualdurationminutes");
+        }
+        set {
+            SetAttributeValue("actualdurationminutes", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Actual end time of the activity.</para>
+    /// <para>Display Name: Actual End</para>
+    /// </summary>
+    [AttributeLogicalName("actualend")]
+    [DisplayName("Actual End")]
+    public DateTime? ActualEnd {
+        get {
+            return GetAttributeValue<DateTime?>("actualend");
+        }
+        set {
+            SetAttributeValue("actualend", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Actual start time of the activity.</para>
+    /// <para>Display Name: Actual Start</para>
+    /// </summary>
+    [AttributeLogicalName("actualstart")]
+    [DisplayName("Actual Start")]
+    public DateTime? ActualStart {
+        get {
+            return GetAttributeValue<DateTime?>("actualstart");
+        }
+        set {
+            SetAttributeValue("actualstart", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Blind Carbon-copy (bcc) recipients of the activity.</para>
+    /// <para>Display Name: BCC</para>
+    /// </summary>
+    [AttributeLogicalName("bcc")]
+    [DisplayName("BCC")]
+    public IEnumerable<ActivityParty> Bcc {
+        get {
+            return GetEntityCollection<ActivityParty>("bcc");
+        }
+        set {
+            SetEntityCollection("bcc", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Carbon-copy (cc) recipients of the activity.</para>
+    /// <para>Display Name: CC</para>
+    /// </summary>
+    [AttributeLogicalName("cc")]
+    [DisplayName("CC")]
+    public IEnumerable<ActivityParty> Cc {
+        get {
+            return GetEntityCollection<ActivityParty>("cc");
+        }
+        set {
+            SetEntityCollection("cc", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows how contact about the social activity originated, such as from Twitter or Facebook. This field is read-only.</para>
+    /// <para>Display Name: Social Channel</para>
+    /// </summary>
+    [AttributeLogicalName("community")]
+    [DisplayName("Social Channel")]
+    public socialprofile_community? Community {
+        get {
+            return GetOptionSetValue<socialprofile_community>("community");
+        }
+        set {
+            SetOptionSetValue("community", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who created the activity.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the activity was created.</para>
+    /// <para>Display Name: Date Created</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Date Created")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who created the activitypointer.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Customer with which the activity is associated.</para>
+    /// <para>Display Name: Customers</para>
+    /// </summary>
+    [AttributeLogicalName("customers")]
+    [DisplayName("Customers")]
+    public IEnumerable<ActivityParty> Customers {
+        get {
+            return GetEntityCollection<ActivityParty>("customers");
+        }
+        set {
+            SetEntityCollection("customers", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the delivery of the activity was last attempted.</para>
+    /// <para>Display Name: Date Delivery Last Attempted</para>
+    /// </summary>
+    [AttributeLogicalName("deliverylastattemptedon")]
+    [DisplayName("Date Delivery Last Attempted")]
+    public DateTime? DeliveryLastAttemptedOn {
+        get {
+            return GetAttributeValue<DateTime?>("deliverylastattemptedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Priority of delivery of the activity to the email server.</para>
+    /// <para>Display Name: Delivery Priority</para>
+    /// </summary>
+    [AttributeLogicalName("deliveryprioritycode")]
+    [DisplayName("Delivery Priority")]
+    public activitypointer_deliveryprioritycode? DeliveryPriorityCode {
+        get {
+            return GetOptionSetValue<activitypointer_deliveryprioritycode>("deliveryprioritycode");
+        }
+        set {
+            SetOptionSetValue("deliveryprioritycode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Description of the activity.</para>
+    /// <para>Display Name: Description</para>
+    /// </summary>
+    [AttributeLogicalName("description")]
+    [DisplayName("Description")]
+    public string Description {
+        get {
+            return GetAttributeValue<string>("description");
+        }
+        set {
+            SetAttributeValue("description", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The message id of activity which is returned from Exchange Server.</para>
+    /// <para>Display Name: Exchange Item ID</para>
+    /// </summary>
+    [AttributeLogicalName("exchangeitemid")]
+    [DisplayName("Exchange Item ID")]
+    [MaxLength(200)]
+    public string ExchangeItemId {
+        get {
+            return GetAttributeValue<string>("exchangeitemid");
+        }
+        set {
+            SetAttributeValue("exchangeitemid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Exchange rate for the currency associated with the activitypointer with respect to the base currency.</para>
+    /// <para>Display Name: Exchange Rate</para>
+    /// </summary>
+    [AttributeLogicalName("exchangerate")]
+    [DisplayName("Exchange Rate")]
+    public decimal? ExchangeRate {
+        get {
+            return GetAttributeValue<decimal?>("exchangerate");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the web link of Activity of type email.</para>
+    /// <para>Display Name: Exchange WebLink</para>
+    /// </summary>
+    [AttributeLogicalName("exchangeweblink")]
+    [DisplayName("Exchange WebLink")]
+    [MaxLength(1250)]
+    public string ExchangeWebLink {
+        get {
+            return GetAttributeValue<string>("exchangeweblink");
+        }
+        set {
+            SetAttributeValue("exchangeweblink", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Person who the activity is from.</para>
+    /// <para>Display Name: From</para>
+    /// </summary>
+    [AttributeLogicalName("from")]
+    [DisplayName("From")]
+    public IEnumerable<ActivityParty> From {
+        get {
+            return GetEntityCollection<ActivityParty>("from");
+        }
+        set {
+            SetEntityCollection("from", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Sequence number of the import that created this record.</para>
+    /// <para>Display Name: Import Sequence Number</para>
+    /// </summary>
+    [AttributeLogicalName("importsequencenumber")]
+    [DisplayName("Import Sequence Number")]
+    [Range(-2147483648, 2147483647)]
+    public int? ImportSequenceNumber {
+        get {
+            return GetAttributeValue<int?>("importsequencenumber");
+        }
+        set {
+            SetAttributeValue("importsequencenumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Type of instance of a recurring series.</para>
+    /// <para>Display Name: Recurring Instance Type</para>
+    /// </summary>
+    [AttributeLogicalName("instancetypecode")]
+    [DisplayName("Recurring Instance Type")]
+    public msfp_alert_InstanceTypeCode? InstanceTypeCode {
+        get {
+            return GetOptionSetValue<msfp_alert_InstanceTypeCode>("instancetypecode");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Information regarding whether the activity was billed as part of resolving a case.</para>
+    /// <para>Display Name: Is Billed</para>
+    /// </summary>
+    [AttributeLogicalName("isbilled")]
+    [DisplayName("Is Billed")]
+    public bool? IsBilled {
+        get {
+            return GetAttributeValue<bool?>("isbilled");
+        }
+        set {
+            SetAttributeValue("isbilled", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Is Private</para>
+    /// </summary>
+    [AttributeLogicalName("ismapiprivate")]
+    [DisplayName("Is Private")]
+    public bool? IsMapiPrivate {
+        get {
+            return GetAttributeValue<bool?>("ismapiprivate");
+        }
+        set {
+            SetAttributeValue("ismapiprivate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Information regarding whether the activity is a regular activity type or event type.</para>
+    /// <para>Display Name: Is Regular Activity</para>
+    /// </summary>
+    [AttributeLogicalName("isregularactivity")]
+    [DisplayName("Is Regular Activity")]
+    public bool? IsRegularActivity {
+        get {
+            return GetAttributeValue<bool?>("isregularactivity");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Information regarding whether the activity was created from a workflow rule.</para>
+    /// <para>Display Name: Is Workflow Created</para>
+    /// </summary>
+    [AttributeLogicalName("isworkflowcreated")]
+    [DisplayName("Is Workflow Created")]
+    public bool? IsWorkflowCreated {
+        get {
+            return GetAttributeValue<bool?>("isworkflowcreated");
+        }
+        set {
+            SetAttributeValue("isworkflowcreated", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Contains the date and time stamp of the last on hold time.</para>
+    /// <para>Display Name: Last On Hold Time</para>
+    /// </summary>
+    [AttributeLogicalName("lastonholdtime")]
+    [DisplayName("Last On Hold Time")]
+    public DateTime? LastOnHoldTime {
+        get {
+            return GetAttributeValue<DateTime?>("lastonholdtime");
+        }
+        set {
+            SetAttributeValue("lastonholdtime", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Left the voice mail</para>
+    /// <para>Display Name: Left Voice Mail</para>
+    /// </summary>
+    [AttributeLogicalName("leftvoicemail")]
+    [DisplayName("Left Voice Mail")]
+    public bool? LeftVoiceMail {
+        get {
+            return GetAttributeValue<bool?>("leftvoicemail");
+        }
+        set {
+            SetAttributeValue("leftvoicemail", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of user who last modified the activity.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when activity was last modified.</para>
+    /// <para>Display Name: Last Updated</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Last Updated")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who last modified the activitypointer.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows how long, in minutes, that the record was on hold.</para>
+    /// <para>Display Name: On Hold Time (Minutes)</para>
+    /// </summary>
+    [AttributeLogicalName("onholdtime")]
+    [DisplayName("On Hold Time (Minutes)")]
+    [Range(-2147483648, 2147483647)]
+    public int? OnHoldTime {
+        get {
+            return GetAttributeValue<int?>("onholdtime");
+        }
+    }
+    
+    /// <summary>
+    /// <para>List of optional attendees for the activity.</para>
+    /// <para>Display Name: Optional Attendees</para>
+    /// </summary>
+    [AttributeLogicalName("optionalattendees")]
+    [DisplayName("Optional Attendees")]
+    public IEnumerable<ActivityParty> OptionalAttendees {
+        get {
+            return GetEntityCollection<ActivityParty>("optionalattendees");
+        }
+        set {
+            SetEntityCollection("optionalattendees", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Person who organized the activity.</para>
+    /// <para>Display Name: Organizer</para>
+    /// </summary>
+    [AttributeLogicalName("organizer")]
+    [DisplayName("Organizer")]
+    public IEnumerable<ActivityParty> Organizer {
+        get {
+            return GetEntityCollection<ActivityParty>("organizer");
+        }
+        set {
+            SetEntityCollection("organizer", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time that the record was migrated.</para>
+    /// <para>Display Name: Record Created On</para>
+    /// </summary>
+    [AttributeLogicalName("overriddencreatedon")]
+    [DisplayName("Record Created On")]
+    public DateTime? OverriddenCreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("overriddencreatedon");
+        }
+        set {
+            SetAttributeValue("overriddencreatedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user or team who owns the activity.</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the business unit that owns the activity.</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the team that owns the activity.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user that owns the activity.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Outsource vendor with which activity is associated.</para>
+    /// <para>Display Name: Outsource Vendors</para>
+    /// </summary>
+    [AttributeLogicalName("partners")]
+    [DisplayName("Outsource Vendors")]
+    public IEnumerable<ActivityParty> Partners {
+        get {
+            return GetEntityCollection<ActivityParty>("partners");
+        }
+        set {
+            SetEntityCollection("partners", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Delay activity processing until</para>
+    /// </summary>
+    [AttributeLogicalName("postponeactivityprocessinguntil")]
+    [DisplayName("Delay activity processing until")]
+    public DateTime? PostponeActivityProcessingUntil {
+        get {
+            return GetAttributeValue<DateTime?>("postponeactivityprocessinguntil");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Priority of the activity.</para>
+    /// <para>Display Name: Priority</para>
+    /// </summary>
+    [AttributeLogicalName("prioritycode")]
+    [DisplayName("Priority")]
+    public msfp_alert_PriorityCode? PriorityCode {
+        get {
+            return GetOptionSetValue<msfp_alert_PriorityCode>("prioritycode");
+        }
+        set {
+            SetOptionSetValue("prioritycode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the Process.</para>
+    /// <para>Display Name: Process</para>
+    /// </summary>
+    [AttributeLogicalName("processid")]
+    [DisplayName("Process")]
+    public Guid? ProcessId {
+        get {
+            return GetAttributeValue<Guid?>("processid");
+        }
+        set {
+            SetAttributeValue("processid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the object with which the activity is associated.</para>
+    /// <para>Display Name: Regarding</para>
+    /// </summary>
+    [AttributeLogicalName("regardingobjectid")]
+    [DisplayName("Regarding")]
+    public EntityReference RegardingObjectId {
+        get {
+            return GetAttributeValue<EntityReference>("regardingobjectid");
+        }
+        set {
+            SetAttributeValue("regardingobjectid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>List of required attendees for the activity.</para>
+    /// <para>Display Name: Required Attendees</para>
+    /// </summary>
+    [AttributeLogicalName("requiredattendees")]
+    [DisplayName("Required Attendees")]
+    public IEnumerable<ActivityParty> RequiredAttendees {
+        get {
+            return GetEntityCollection<ActivityParty>("requiredattendees");
+        }
+        set {
+            SetEntityCollection("requiredattendees", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Users or facility/equipment that are required for the activity.</para>
+    /// <para>Display Name: Resources</para>
+    /// </summary>
+    [AttributeLogicalName("resources")]
+    [DisplayName("Resources")]
+    public IEnumerable<ActivityParty> Resources {
+        get {
+            return GetEntityCollection<ActivityParty>("resources");
+        }
+        set {
+            SetEntityCollection("resources", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Choose the service level agreement (SLA) that you want to apply to the case record.</para>
+    /// <para>Display Name: SLA</para>
+    /// </summary>
+    [AttributeLogicalName("slaid")]
+    [DisplayName("SLA")]
+    public EntityReference SLAId {
+        get {
+            return GetAttributeValue<EntityReference>("slaid");
+        }
+        set {
+            SetAttributeValue("slaid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Last SLA that was applied to this case. This field is for internal use only.</para>
+    /// <para>Display Name: Last SLA applied</para>
+    /// </summary>
+    [AttributeLogicalName("slainvokedid")]
+    [DisplayName("Last SLA applied")]
+    public EntityReference SLAInvokedId {
+        get {
+            return GetAttributeValue<EntityReference>("slainvokedid");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Scheduled duration of the activity, specified in minutes.</para>
+    /// <para>Display Name: Scheduled Duration</para>
+    /// </summary>
+    [AttributeLogicalName("scheduleddurationminutes")]
+    [DisplayName("Scheduled Duration")]
+    [Range(0, 2147483647)]
+    public int? ScheduledDurationMinutes {
+        get {
+            return GetAttributeValue<int?>("scheduleddurationminutes");
+        }
+        set {
+            SetAttributeValue("scheduleddurationminutes", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Scheduled end time of the activity.</para>
+    /// <para>Display Name: Due Date</para>
+    /// </summary>
+    [AttributeLogicalName("scheduledend")]
+    [DisplayName("Due Date")]
+    public DateTime? ScheduledEnd {
+        get {
+            return GetAttributeValue<DateTime?>("scheduledend");
+        }
+        set {
+            SetAttributeValue("scheduledend", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Scheduled start time of the activity.</para>
+    /// <para>Display Name: Start Date</para>
+    /// </summary>
+    [AttributeLogicalName("scheduledstart")]
+    [DisplayName("Start Date")]
+    public DateTime? ScheduledStart {
+        get {
+            return GetAttributeValue<DateTime?>("scheduledstart");
+        }
+        set {
+            SetAttributeValue("scheduledstart", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the mailbox associated with the sender of the email message.</para>
+    /// <para>Display Name: Sender's Mailbox</para>
+    /// </summary>
+    [AttributeLogicalName("sendermailboxid")]
+    [DisplayName("Sender\'s Mailbox")]
+    public EntityReference SenderMailboxId {
+        get {
+            return GetAttributeValue<EntityReference>("sendermailboxid");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the activity was sent.</para>
+    /// <para>Display Name: Date Sent</para>
+    /// </summary>
+    [AttributeLogicalName("senton")]
+    [DisplayName("Date Sent")]
+    public DateTime? SentOn {
+        get {
+            return GetAttributeValue<DateTime?>("senton");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Uniqueidentifier specifying the id of recurring series of an instance.</para>
+    /// <para>Display Name: Series Id</para>
+    /// </summary>
+    [AttributeLogicalName("seriesid")]
+    [DisplayName("Series Id")]
+    public Guid? SeriesId {
+        get {
+            return GetAttributeValue<Guid?>("seriesid");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of an associated service.</para>
+    /// <para>Display Name: Service</para>
+    /// </summary>
+    [AttributeLogicalName("serviceid")]
+    [DisplayName("Service")]
+    public EntityReference ServiceId {
+        get {
+            return GetAttributeValue<EntityReference>("serviceid");
+        }
+        set {
+            SetAttributeValue("serviceid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the date and time by which the activities are sorted.</para>
+    /// <para>Display Name: Sort Date</para>
+    /// </summary>
+    [AttributeLogicalName("sortdate")]
+    [DisplayName("Sort Date")]
+    public DateTime? SortDate {
+        get {
+            return GetAttributeValue<DateTime?>("sortdate");
+        }
+        set {
+            SetAttributeValue("sortdate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the Stage.</para>
+    /// <para>Display Name: (Deprecated) Process Stage</para>
+    /// </summary>
+    [AttributeLogicalName("stageid")]
+    [DisplayName("(Deprecated) Process Stage")]
+    public Guid? StageId {
+        get {
+            return GetAttributeValue<Guid?>("stageid");
+        }
+        set {
+            SetAttributeValue("stageid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Status of the activity.</para>
+    /// <para>Display Name: Activity Status</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("Activity Status")]
+    public msfp_alertState? StateCode {
+        get {
+            return GetOptionSetValue<msfp_alertState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for the status of the activity.</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public msfp_alert_StatusCode? StatusCode {
+        get {
+            return GetOptionSetValue<msfp_alert_StatusCode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Subject associated with the activity.</para>
+    /// <para>Display Name: Subject</para>
+    /// </summary>
+    [AttributeLogicalName("subject")]
+    [DisplayName("Subject")]
+    [MaxLength(400)]
+    public string Subject {
+        get {
+            return GetAttributeValue<string>("subject");
+        }
+        set {
+            SetAttributeValue("subject", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Time Zone Rule Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("timezoneruleversionnumber")]
+    [DisplayName("Time Zone Rule Version Number")]
+    [Range(-1, 2147483647)]
+    public int? TimeZoneRuleVersionNumber {
+        get {
+            return GetAttributeValue<int?>("timezoneruleversionnumber");
+        }
+        set {
+            SetAttributeValue("timezoneruleversionnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Person who is the receiver of the activity.</para>
+    /// <para>Display Name: To</para>
+    /// </summary>
+    [AttributeLogicalName("to")]
+    [DisplayName("To")]
+    public IEnumerable<ActivityParty> To {
+        get {
+            return GetEntityCollection<ActivityParty>("to");
+        }
+        set {
+            SetEntityCollection("to", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the currency associated with the activitypointer.</para>
+    /// <para>Display Name: Currency</para>
+    /// </summary>
+    [AttributeLogicalName("transactioncurrencyid")]
+    [DisplayName("Currency")]
+    public EntityReference TransactionCurrencyId {
+        get {
+            return GetAttributeValue<EntityReference>("transactioncurrencyid");
+        }
+        set {
+            SetAttributeValue("transactioncurrencyid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: (Deprecated) Traversed Path</para>
+    /// </summary>
+    [AttributeLogicalName("traversedpath")]
+    [DisplayName("(Deprecated) Traversed Path")]
+    [MaxLength(1250)]
+    public string TraversedPath {
+        get {
+            return GetAttributeValue<string>("traversedpath");
+        }
+        set {
+            SetAttributeValue("traversedpath", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Time zone code that was in use when the record was created.</para>
+    /// <para>Display Name: UTC Conversion Time Zone Code</para>
+    /// </summary>
+    [AttributeLogicalName("utcconversiontimezonecode")]
+    [DisplayName("UTC Conversion Time Zone Code")]
+    [Range(-1, 2147483647)]
+    public int? UTCConversionTimeZoneCode {
+        get {
+            return GetAttributeValue<int?>("utcconversiontimezonecode");
+        }
+        set {
+            SetAttributeValue("utcconversiontimezonecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Version number of the activity.</para>
+    /// <para>Display Name: Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("versionnumber")]
+    [DisplayName("Version Number")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Rule associated with this alert.</para>
+    /// <para>Display Name: Alert rule</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_alertrule")]
+    [DisplayName("Alert rule")]
+    public EntityReference msfp_alertrule {
+        get {
+            return GetAttributeValue<EntityReference>("msfp_alertrule");
+        }
+        set {
+            SetAttributeValue("msfp_alertrule", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Email address of the assignee of the alert.</para>
+    /// <para>Display Name: Assignee email</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_assigneeemail")]
+    [DisplayName("Assignee email")]
+    [MaxLength(200)]
+    public string msfp_assigneeemail {
+        get {
+            return GetAttributeValue<string>("msfp_assigneeemail");
+        }
+        set {
+            SetAttributeValue("msfp_assigneeemail", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Name of the assignee of the alert.</para>
+    /// <para>Display Name: Assignee name</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_assigneename")]
+    [DisplayName("Assignee name")]
+    [MaxLength(200)]
+    public string msfp_assigneename {
+        get {
+            return GetAttributeValue<string>("msfp_assigneename");
+        }
+        set {
+            SetAttributeValue("msfp_assigneename", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Customer email</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_customeremail")]
+    [DisplayName("Customer email")]
+    [MaxLength(100)]
+    public string msfp_customeremail {
+        get {
+            return GetAttributeValue<string>("msfp_customeremail");
+        }
+        set {
+            SetAttributeValue("msfp_customeremail", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Customer name</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_customername")]
+    [DisplayName("Customer name")]
+    [MaxLength(100)]
+    public string msfp_customername {
+        get {
+            return GetAttributeValue<string>("msfp_customername");
+        }
+        set {
+            SetAttributeValue("msfp_customername", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Additional detail for the alert.</para>
+    /// <para>Display Name: Notes</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_notes")]
+    [DisplayName("Notes")]
+    [MaxLength(4000)]
+    public string msfp_notes {
+        get {
+            return GetAttributeValue<string>("msfp_notes");
+        }
+        set {
+            SetAttributeValue("msfp_notes", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Project to which the alert belongs.</para>
+    /// <para>Display Name: Project</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_project")]
+    [DisplayName("Project")]
+    public EntityReference msfp_project {
+        get {
+            return GetAttributeValue<EntityReference>("msfp_project");
+        }
+        set {
+            SetAttributeValue("msfp_project", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Questions associated with the alert.</para>
+    /// <para>Display Name: Questions</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_questions")]
+    [DisplayName("Questions")]
+    [MaxLength(4000)]
+    public string msfp_questions {
+        get {
+            return GetAttributeValue<string>("msfp_questions");
+        }
+        set {
+            SetAttributeValue("msfp_questions", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for creating the alert.</para>
+    /// <para>Display Name: Reason</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_reason")]
+    [DisplayName("Reason")]
+    [MaxLength(4000)]
+    public string msfp_reason {
+        get {
+            return GetAttributeValue<string>("msfp_reason");
+        }
+        set {
+            SetAttributeValue("msfp_reason", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Detail on how the alert was resolved.</para>
+    /// <para>Display Name: Resolution detail</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_resolutiondetail")]
+    [DisplayName("Resolution detail")]
+    public string msfp_resolutiondetail {
+        get {
+            return GetAttributeValue<string>("msfp_resolutiondetail");
+        }
+        set {
+            SetAttributeValue("msfp_resolutiondetail", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Sentiment while resolving the alert.</para>
+    /// <para>Display Name: Resolution sentiment</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_resolutionsentiment")]
+    [DisplayName("Resolution sentiment")]
+    [Range(-2147483648, 2147483647)]
+    public int? msfp_resolutionsentiment {
+        get {
+            return GetAttributeValue<int?>("msfp_resolutionsentiment");
+        }
+        set {
+            SetAttributeValue("msfp_resolutionsentiment", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Email address of the user who resolved the alert.</para>
+    /// <para>Display Name: Resolver email</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_resolveremail")]
+    [DisplayName("Resolver email")]
+    [MaxLength(100)]
+    public string msfp_resolveremail {
+        get {
+            return GetAttributeValue<string>("msfp_resolveremail");
+        }
+        set {
+            SetAttributeValue("msfp_resolveremail", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Name of the user who resolved the alert.</para>
+    /// <para>Display Name: Resolver name</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_resolvername")]
+    [DisplayName("Resolver name")]
+    [MaxLength(100)]
+    public string msfp_resolvername {
+        get {
+            return GetAttributeValue<string>("msfp_resolvername");
+        }
+        set {
+            SetAttributeValue("msfp_resolvername", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Satisfaction metric associated with the alert.</para>
+    /// <para>Display Name: Satisfaction metric</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_satisfactionmetric")]
+    [DisplayName("Satisfaction metric")]
+    public EntityReference msfp_satisfactionmetric {
+        get {
+            return GetAttributeValue<EntityReference>("msfp_satisfactionmetric");
+        }
+        set {
+            SetAttributeValue("msfp_satisfactionmetric", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Survey associated with the alert.</para>
+    /// <para>Display Name: Survey</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_survey")]
+    [DisplayName("Survey")]
+    public EntityReference msfp_survey {
+        get {
+            return GetAttributeValue<EntityReference>("msfp_survey");
+        }
+        set {
+            SetAttributeValue("msfp_survey", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Survey response associated with the alert.</para>
+    /// <para>Display Name: Survey Response</para>
+    /// </summary>
+    [AttributeLogicalName("msfp_surveyresponse")]
+    [DisplayName("Survey Response")]
+    public EntityReference msfp_surveyresponse {
+        get {
+            return GetAttributeValue<EntityReference>("msfp_surveyresponse");
+        }
+        set {
+            SetAttributeValue("msfp_surveyresponse", value);
+        }
+    }
+    
+    [RelationshipSchemaName("CampaignResponse_msfp_alerts")]
+    public IEnumerable<CampaignResponse> CampaignResponse_msfp_alerts {
+        get {
+            return GetRelatedEntities<CampaignResponse>("CampaignResponse_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("CampaignResponse_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("account_msfp_alerts")]
+    public Account account_msfp_alerts {
+        get {
+            return GetRelatedEntity<Account>("account_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("account_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("activityid")]
+    [RelationshipSchemaName("activity_pointer_msfp_alert")]
+    public ActivityPointer activity_pointer_msfp_alert {
+        get {
+            return GetRelatedEntity<ActivityPointer>("activity_pointer_msfp_alert", null);
+        }
+        set {
+            SetRelatedEntity("activity_pointer_msfp_alert", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("bookableresourcebooking_msfp_alerts")]
+    public BookableResourceBooking bookableresourcebooking_msfp_alerts {
+        get {
+            return GetRelatedEntity<BookableResourceBooking>("bookableresourcebooking_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("bookableresourcebooking_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("campaign_msfp_alerts")]
+    public Campaign campaign_msfp_alerts {
+        get {
+            return GetRelatedEntity<Campaign>("campaign_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("campaign_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("campaignactivity_msfp_alerts")]
+    public CampaignActivity campaignactivity_msfp_alerts {
+        get {
+            return GetRelatedEntity<CampaignActivity>("campaignactivity_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("campaignactivity_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("contact_msfp_alerts")]
+    public Contact contact_msfp_alerts {
+        get {
+            return GetRelatedEntity<Contact>("contact_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("contact_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("contract_msfp_alerts")]
+    public Contract contract_msfp_alerts {
+        get {
+            return GetRelatedEntity<Contract>("contract_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("contract_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("entitlement_msfp_alerts")]
+    public Entitlement entitlement_msfp_alerts {
+        get {
+            return GetRelatedEntity<Entitlement>("entitlement_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("entitlement_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("entitlementtemplate_msfp_alerts")]
+    public EntitlementTemplate entitlementtemplate_msfp_alerts {
+        get {
+            return GetRelatedEntity<EntitlementTemplate>("entitlementtemplate_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("entitlementtemplate_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("incident_msfp_alerts")]
+    public Incident incident_msfp_alerts {
+        get {
+            return GetRelatedEntity<Incident>("incident_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("incident_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("invoice_msfp_alerts")]
+    public Invoice invoice_msfp_alerts {
+        get {
+            return GetRelatedEntity<Invoice>("invoice_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("invoice_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("lead_msfp_alerts")]
+    public Lead lead_msfp_alerts {
+        get {
+            return GetRelatedEntity<Lead>("lead_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("lead_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreement_msfp_alerts")]
+    public msdyn_agreement msdyn_agreement_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_agreement>("msdyn_agreement_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreement_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_msfp_alerts")]
+    public msdyn_agreementbookingproduct msdyn_agreementbookingproduct_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingproduct>("msdyn_agreementbookingproduct_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingproduct_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementbookingservice_msfp_alerts")]
+    public msdyn_agreementbookingservice msdyn_agreementbookingservice_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingservice>("msdyn_agreementbookingservice_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingservice_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_msfp_alerts")]
+    public msdyn_agreementinvoiceproduct msdyn_agreementinvoiceproduct_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_agreementinvoiceproduct>("msdyn_agreementinvoiceproduct_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementinvoiceproduct_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_customerasset_msfp_alerts")]
+    public msdyn_customerasset msdyn_customerasset_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_customerasset>("msdyn_customerasset_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_customerasset_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_msfp_alerts")]
+    public msdyn_incidenttypeproduct msdyn_incidenttypeproduct_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeproduct>("msdyn_incidenttypeproduct_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeproduct_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_incidenttypeservice_msfp_alerts")]
+    public msdyn_incidenttypeservice msdyn_incidenttypeservice_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeservice>("msdyn_incidenttypeservice_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeservice_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_purchaseorder_msfp_alerts")]
+    public msdyn_purchaseorder msdyn_purchaseorder_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorder>("msdyn_purchaseorder_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorder_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_msfp_alerts")]
+    public msdyn_purchaseorderproduct msdyn_purchaseorderproduct_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorderproduct>("msdyn_purchaseorderproduct_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorderproduct_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_rma_msfp_alerts")]
+    public msdyn_rma msdyn_rma_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_rma>("msdyn_rma_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_rma_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_timeoffrequest_msfp_alerts")]
+    public msdyn_timeoffrequest msdyn_timeoffrequest_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_timeoffrequest>("msdyn_timeoffrequest_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_timeoffrequest_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorder_msfp_alerts")]
+    public msdyn_workorder msdyn_workorder_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_workorder>("msdyn_workorder_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorder_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderincident_msfp_alerts")]
+    public msdyn_workorderincident msdyn_workorderincident_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_workorderincident>("msdyn_workorderincident_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderincident_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderproduct_msfp_alerts")]
+    public msdyn_workorderproduct msdyn_workorderproduct_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_workorderproduct>("msdyn_workorderproduct_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderproduct_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderservice_msfp_alerts")]
+    public msdyn_workorderservice msdyn_workorderservice_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_workorderservice>("msdyn_workorderservice_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservice_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("msdyn_workorderservicetask_msfp_alerts")]
+    public msdyn_workorderservicetask msdyn_workorderservicetask_msfp_alerts {
+        get {
+            return GetRelatedEntity<msdyn_workorderservicetask>("msdyn_workorderservicetask_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservicetask_msfp_alerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msfp_alert_ProcessSession")]
+    public IEnumerable<ProcessSession> msfp_alert_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("msfp_alert_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("msfp_alert_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msfp_alert_SyncErrors")]
+    public IEnumerable<SyncError> msfp_alert_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("msfp_alert_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("msfp_alert_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msfp_alert_activity_parties")]
+    public IEnumerable<ActivityParty> msfp_alert_activity_parties {
+        get {
+            return GetRelatedEntities<ActivityParty>("msfp_alert_activity_parties", null);
+        }
+        set {
+            SetRelatedEntities("msfp_alert_activity_parties", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("msfp_alert_systemuser_createdby")]
+    public SystemUser msfp_alert_systemuser_createdby {
+        get {
+            return GetRelatedEntity<SystemUser>("msfp_alert_systemuser_createdby", null);
+        }
+        set {
+            SetRelatedEntity("msfp_alert_systemuser_createdby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("msfp_alert_systemuser_createdonbehalfby")]
+    public SystemUser msfp_alert_systemuser_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("msfp_alert_systemuser_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("msfp_alert_systemuser_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("msfp_alert_systemuser_modifiedby")]
+    public SystemUser msfp_alert_systemuser_modifiedby {
+        get {
+            return GetRelatedEntity<SystemUser>("msfp_alert_systemuser_modifiedby", null);
+        }
+        set {
+            SetRelatedEntity("msfp_alert_systemuser_modifiedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("msfp_alert_systemuser_modifiedonbehalfby")]
+    public SystemUser msfp_alert_systemuser_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("msfp_alert_systemuser_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("msfp_alert_systemuser_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("owninguser")]
+    [RelationshipSchemaName("msfp_alert_systemuser_owninguser")]
+    public SystemUser msfp_alert_systemuser_owninguser {
+        get {
+            return GetRelatedEntity<SystemUser>("msfp_alert_systemuser_owninguser", null);
+        }
+        set {
+            SetRelatedEntity("msfp_alert_systemuser_owninguser", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("opportunity_msfp_alerts")]
+    public Opportunity opportunity_msfp_alerts {
+        get {
+            return GetRelatedEntity<Opportunity>("opportunity_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("opportunity_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ppp_traveller_msfp_alerts")]
+    public ppp_Traveller ppp_traveller_msfp_alerts {
+        get {
+            return GetRelatedEntity<ppp_Traveller>("ppp_traveller_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("ppp_traveller_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("quote_msfp_alerts")]
+    public Quote quote_msfp_alerts {
+        get {
+            return GetRelatedEntity<Quote>("quote_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("quote_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("salesorder_msfp_alerts")]
+    public SalesOrder salesorder_msfp_alerts {
+        get {
+            return GetRelatedEntity<SalesOrder>("salesorder_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("salesorder_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ts_request_msfp_alerts")]
+    public ts_request ts_request_msfp_alerts {
+        get {
+            return GetRelatedEntity<ts_request>("ts_request_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntity("ts_request_msfp_alerts", null, value);
+        }
+    }
+    
+    public static msfp_alert Retrieve(IOrganizationService service, Guid id, params Expression<Func<msfp_alert,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
 }
@@ -80106,36 +84234,6 @@ public partial class ovs_operation : ExtendedEntity<ovs_operationState, ovs_oper
     }
     
     /// <summary>
-    /// <para>Unique identifier for Account associated with Operation.</para>
-    /// <para>Display Name: Regulated Entity</para>
-    /// </summary>
-    [AttributeLogicalName("ovs_regulatedentityid")]
-    [DisplayName("Regulated Entity")]
-    public EntityReference ovs_RegulatedEntityId {
-        get {
-            return GetAttributeValue<EntityReference>("ovs_regulatedentityid");
-        }
-        set {
-            SetAttributeValue("ovs_regulatedentityid", value);
-        }
-    }
-    
-    /// <summary>
-    /// <para>Unique identifier for Account associated with Operation.</para>
-    /// <para>Display Name: Site</para>
-    /// </summary>
-    [AttributeLogicalName("ovs_siteid")]
-    [DisplayName("Site")]
-    public EntityReference ovs_SiteId {
-        get {
-            return GetAttributeValue<EntityReference>("ovs_siteid");
-        }
-        set {
-            SetAttributeValue("ovs_siteid", value);
-        }
-    }
-    
-    /// <summary>
     /// <para>The name of the custom entity.</para>
     /// <para>Display Name: Name</para>
     /// </summary>
@@ -80178,6 +84276,51 @@ public partial class ovs_operation : ExtendedEntity<ovs_operationState, ovs_oper
         }
         set {
             SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Functional location of this operation</para>
+    /// <para>Display Name: Site</para>
+    /// </summary>
+    [AttributeLogicalName("ts_site")]
+    [DisplayName("Site")]
+    public EntityReference ts_site {
+        get {
+            return GetAttributeValue<EntityReference>("ts_site");
+        }
+        set {
+            SetAttributeValue("ts_site", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Stakeholder responsible for this operation</para>
+    /// <para>Display Name: Stakeholder</para>
+    /// </summary>
+    [AttributeLogicalName("ts_stakeholder")]
+    [DisplayName("Stakeholder")]
+    public EntityReference ts_stakeholder {
+        get {
+            return GetAttributeValue<EntityReference>("ts_stakeholder");
+        }
+        set {
+            SetAttributeValue("ts_stakeholder", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Subsite of this operation</para>
+    /// <para>Display Name: Subsite</para>
+    /// </summary>
+    [AttributeLogicalName("ts_subsite")]
+    [DisplayName("Subsite")]
+    public EntityReference ts_subsite {
+        get {
+            return GetAttributeValue<EntityReference>("ts_subsite");
+        }
+        set {
+            SetAttributeValue("ts_subsite", value);
         }
     }
     
@@ -80277,25 +84420,36 @@ public partial class ovs_operation : ExtendedEntity<ovs_operationState, ovs_oper
         }
     }
     
-    [AttributeLogicalName("ovs_regulatedentityid")]
-    [RelationshipSchemaName("ovs_regulated_entity_ovs_operation")]
-    public Account ovs_regulated_entity_ovs_operation {
+    [AttributeLogicalName("ts_site")]
+    [RelationshipSchemaName("ts_ovs_operation_site_msdyn_functionallocati")]
+    public msdyn_FunctionalLocation ts_ovs_operation_site_msdyn_functionallocati {
         get {
-            return GetRelatedEntity<Account>("ovs_regulated_entity_ovs_operation", null);
+            return GetRelatedEntity<msdyn_FunctionalLocation>("ts_ovs_operation_site_msdyn_functionallocati", null);
         }
         set {
-            SetRelatedEntity("ovs_regulated_entity_ovs_operation", null, value);
+            SetRelatedEntity("ts_ovs_operation_site_msdyn_functionallocati", null, value);
         }
     }
     
-    [AttributeLogicalName("ovs_siteid")]
-    [RelationshipSchemaName("ovs_site_ovs_operation")]
-    public Account ovs_site_ovs_operation {
+    [AttributeLogicalName("ts_stakeholder")]
+    [RelationshipSchemaName("ts_ovs_operation_stakeholder_account")]
+    public Account ts_ovs_operation_stakeholder_account {
         get {
-            return GetRelatedEntity<Account>("ovs_site_ovs_operation", null);
+            return GetRelatedEntity<Account>("ts_ovs_operation_stakeholder_account", null);
         }
         set {
-            SetRelatedEntity("ovs_site_ovs_operation", null, value);
+            SetRelatedEntity("ts_ovs_operation_stakeholder_account", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_subsite")]
+    [RelationshipSchemaName("ts_ovs_operation_subsite_msdyn_functionalloc")]
+    public msdyn_FunctionalLocation ts_ovs_operation_subsite_msdyn_functionalloc {
+        get {
+            return GetRelatedEntity<msdyn_FunctionalLocation>("ts_ovs_operation_subsite_msdyn_functionalloc", null);
+        }
+        set {
+            SetRelatedEntity("ts_ovs_operation_subsite_msdyn_functionalloc", null, value);
         }
     }
     
@@ -80721,6 +84875,26 @@ public partial class ovs_operationtype : ExtendedEntity<ovs_operationtypeState, 
         }
         set {
             SetRelatedEntities("ovs_ovs_operationtype_ovs_operation", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_msdyn_incidenttype_OperationType_ovs_oper")]
+    public IEnumerable<msdyn_incidenttype> ts_msdyn_incidenttype_OperationType_ovs_oper {
+        get {
+            return GetRelatedEntities<msdyn_incidenttype>("ts_msdyn_incidenttype_OperationType_ovs_oper", null);
+        }
+        set {
+            SetRelatedEntities("ts_msdyn_incidenttype_OperationType_ovs_oper", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_operationtype_ts_workordercreationwiz")]
+    public IEnumerable<ts_workordercreationwizard> ts_ovs_operationtype_ts_workordercreationwiz {
+        get {
+            return GetRelatedEntities<ts_workordercreationwizard>("ts_ovs_operationtype_ts_workordercreationwiz", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_operationtype_ts_workordercreationwiz", null, value);
         }
     }
     
@@ -83021,6 +87195,26 @@ public partial class ppp_Traveller : ExtendedEntity<ppp_TravellerState, ppp_Trav
         }
         set {
             SetRelatedEntities("ppp_traveller_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> ppp_traveller_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("ppp_traveller_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_traveller_msfp_alerts")]
+    public IEnumerable<msfp_alert> ppp_traveller_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("ppp_traveller_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("ppp_traveller_msfp_alerts", null, value);
         }
     }
     
@@ -88175,6 +92369,501 @@ public partial class ts_msdyn_workordertype_msdyn_incidenttype : ExtendedEntity<
 }
 
 /// <summary>
+/// <para>Display Name: Request</para>
+/// </summary>
+[EntityLogicalName("ts_request")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ts_request : ExtendedEntity<ts_requestState, ts_request_statuscode> {
+    
+    public const string EntityLogicalName = "ts_request";
+    
+    public const int EntityTypeCode = 10559;
+    
+    public ts_request() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ts_request(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("ts_name");
+        }
+    }
+    
+    [AttributeLogicalName("ts_requestid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ts_requestid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for entity instances</para>
+    /// <para>Display Name: Request</para>
+    /// </summary>
+    [AttributeLogicalName("ts_requestid")]
+    [DisplayName("Request")]
+    public Guid? ts_requestId {
+        get {
+            return GetAttributeValue<Guid?>("ts_requestid");
+        }
+        set {
+            SetId("ts_requestid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who created the record.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was created.</para>
+    /// <para>Display Name: Created On</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Created On")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who created the record.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Sequence number of the import that created this record.</para>
+    /// <para>Display Name: Import Sequence Number</para>
+    /// </summary>
+    [AttributeLogicalName("importsequencenumber")]
+    [DisplayName("Import Sequence Number")]
+    [Range(-2147483648, 2147483647)]
+    public int? ImportSequenceNumber {
+        get {
+            return GetAttributeValue<int?>("importsequencenumber");
+        }
+        set {
+            SetAttributeValue("importsequencenumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who modified the record.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was modified.</para>
+    /// <para>Display Name: Modified On</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Modified On")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who modified the record.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time that the record was migrated.</para>
+    /// <para>Display Name: Record Created On</para>
+    /// </summary>
+    [AttributeLogicalName("overriddencreatedon")]
+    [DisplayName("Record Created On")]
+    public DateTime? OverriddenCreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("overriddencreatedon");
+        }
+        set {
+            SetAttributeValue("overriddencreatedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Owner Id</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the business unit that owns the record</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the team that owns the record.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the user that owns the record.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Time Zone Rule Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("timezoneruleversionnumber")]
+    [DisplayName("Time Zone Rule Version Number")]
+    [Range(-1, 2147483647)]
+    public int? TimeZoneRuleVersionNumber {
+        get {
+            return GetAttributeValue<int?>("timezoneruleversionnumber");
+        }
+        set {
+            SetAttributeValue("timezoneruleversionnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Time zone code that was in use when the record was created.</para>
+    /// <para>Display Name: UTC Conversion Time Zone Code</para>
+    /// </summary>
+    [AttributeLogicalName("utcconversiontimezonecode")]
+    [DisplayName("UTC Conversion Time Zone Code")]
+    [Range(-1, 2147483647)]
+    public int? UTCConversionTimeZoneCode {
+        get {
+            return GetAttributeValue<int?>("utcconversiontimezonecode");
+        }
+        set {
+            SetAttributeValue("utcconversiontimezonecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Version Number</para>
+    /// <para>Display Name: Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("versionnumber")]
+    [DisplayName("Version Number")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Status of the Request</para>
+    /// <para>Display Name: Status</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("Status")]
+    public ts_requestState? statecode {
+        get {
+            return GetOptionSetValue<ts_requestState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for the status of the Request</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public ts_request_statuscode? statuscode {
+        get {
+            return GetOptionSetValue<ts_request_statuscode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Required name field</para>
+    /// <para>Display Name: Name</para>
+    /// </summary>
+    [AttributeLogicalName("ts_name")]
+    [DisplayName("Name")]
+    [MaxLength(100)]
+    public string ts_name {
+        get {
+            return GetAttributeValue<string>("ts_name");
+        }
+        set {
+            SetAttributeValue("ts_name", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Describes the request</para>
+    /// <para>Display Name: Description</para>
+    /// </summary>
+    [AttributeLogicalName("ts_requestdescription")]
+    [DisplayName("Description")]
+    public string ts_requestdescription {
+        get {
+            return GetAttributeValue<string>("ts_requestdescription");
+        }
+        set {
+            SetAttributeValue("ts_requestdescription", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Type of this request</para>
+    /// <para>Display Name: Request Type</para>
+    /// </summary>
+    [AttributeLogicalName("ts_requesttype")]
+    [DisplayName("Request Type")]
+    public ts_requesttype? ts_requesttype {
+        get {
+            return GetOptionSetValue<ts_requesttype>("ts_requesttype");
+        }
+        set {
+            SetOptionSetValue("ts_requesttype", value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("lk_ts_request_createdby")]
+    public SystemUser lk_ts_request_createdby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ts_request_createdby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ts_request_createdby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("lk_ts_request_createdonbehalfby")]
+    public SystemUser lk_ts_request_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ts_request_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ts_request_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("lk_ts_request_modifiedby")]
+    public SystemUser lk_ts_request_modifiedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ts_request_modifiedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ts_request_modifiedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("lk_ts_request_modifiedonbehalfby")]
+    public SystemUser lk_ts_request_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ts_request_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ts_request_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_ActivityPointers")]
+    public IEnumerable<ActivityPointer> ts_request_ActivityPointers {
+        get {
+            return GetRelatedEntities<ActivityPointer>("ts_request_ActivityPointers", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_ActivityPointers", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_Appointments")]
+    public IEnumerable<Appointment> ts_request_Appointments {
+        get {
+            return GetRelatedEntities<Appointment>("ts_request_Appointments", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_Appointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_Emails")]
+    public IEnumerable<Email> ts_request_Emails {
+        get {
+            return GetRelatedEntities<Email>("ts_request_Emails", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_Emails", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_PhoneCalls")]
+    public IEnumerable<PhoneCall> ts_request_PhoneCalls {
+        get {
+            return GetRelatedEntities<PhoneCall>("ts_request_PhoneCalls", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_PhoneCalls", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_ProcessSession")]
+    public IEnumerable<ProcessSession> ts_request_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ts_request_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_RecurringAppointmentMasters")]
+    public IEnumerable<RecurringAppointmentMaster> ts_request_RecurringAppointmentMasters {
+        get {
+            return GetRelatedEntities<RecurringAppointmentMaster>("ts_request_RecurringAppointmentMasters", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_RecurringAppointmentMasters", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_ServiceAppointments")]
+    public IEnumerable<ServiceAppointment> ts_request_ServiceAppointments {
+        get {
+            return GetRelatedEntities<ServiceAppointment>("ts_request_ServiceAppointments", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_ServiceAppointments", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_SyncErrors")]
+    public IEnumerable<SyncError> ts_request_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ts_request_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_Tasks")]
+    public IEnumerable<Task> ts_request_Tasks {
+        get {
+            return GetRelatedEntities<Task>("ts_request_Tasks", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_msdyn_bookingalerts")]
+    public IEnumerable<msdyn_bookingalert> ts_request_msdyn_bookingalerts {
+        get {
+            return GetRelatedEntities<msdyn_bookingalert>("ts_request_msdyn_bookingalerts", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_msdyn_bookingalerts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_request_msfp_alerts")]
+    public IEnumerable<msfp_alert> ts_request_msfp_alerts {
+        get {
+            return GetRelatedEntities<msfp_alert>("ts_request_msfp_alerts", null);
+        }
+        set {
+            SetRelatedEntities("ts_request_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("owninguser")]
+    [RelationshipSchemaName("user_ts_request")]
+    public SystemUser user_ts_request {
+        get {
+            return GetRelatedEntity<SystemUser>("user_ts_request", null);
+        }
+        set {
+            SetRelatedEntity("user_ts_request", null, value);
+        }
+    }
+    
+    public static ts_request Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_request,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
 /// <para>Display Name: Work Order Activity Type</para>
 /// </summary>
 [EntityLogicalName("ts_workorderactivitytype")]
@@ -88616,7 +93305,7 @@ public partial class ts_workorderactivitytype : ExtendedEntity<ts_workorderactiv
 }
 
 /// <summary>
-/// <para>Display Name: Work Order Creation Wizard</para>
+/// <para>Display Name: Work Order Wizard</para>
 /// </summary>
 [EntityLogicalName("ts_workordercreationwizard")]
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
@@ -88955,7 +93644,7 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
     }
     
     /// <summary>
-    /// <para>Unique identifier for Customer Asset Category associated with Work Order Creation Wizard.</para>
+    /// <para>Unique identifier for Operation Type associated with Work Order Wizard.</para>
     /// <para>Display Name: Operation Type</para>
     /// </summary>
     [AttributeLogicalName("ts_operationtypeid")]
@@ -89122,17 +93811,6 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
         }
     }
     
-    [AttributeLogicalName("ts_operationtypeid")]
-    [RelationshipSchemaName("ts_msdyn_customerassetcategory_ts_workorderc")]
-    public msdyn_customerassetcategory ts_msdyn_customerassetcategory_ts_workorderc {
-        get {
-            return GetRelatedEntity<msdyn_customerassetcategory>("ts_msdyn_customerassetcategory_ts_workorderc", null);
-        }
-        set {
-            SetRelatedEntity("ts_msdyn_customerassetcategory_ts_workorderc", null, value);
-        }
-    }
-    
     [AttributeLogicalName("ts_siteid")]
     [RelationshipSchemaName("ts_msdyn_functionallocation_ts_workordercrea")]
     public msdyn_FunctionalLocation ts_msdyn_functionallocation_ts_workordercrea {
@@ -89163,6 +93841,17 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
         }
         set {
             SetRelatedEntity("ts_msdyn_workordertype_ts_workordercreationw", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_operationtypeid")]
+    [RelationshipSchemaName("ts_ovs_operationtype_ts_workordercreationwiz")]
+    public ovs_operationtype ts_ovs_operationtype_ts_workordercreationwiz {
+        get {
+            return GetRelatedEntity<ovs_operationtype>("ts_ovs_operationtype_ts_workordercreationwiz", null);
+        }
+        set {
+            SetRelatedEntity("ts_ovs_operationtype_ts_workordercreationwiz", null, value);
         }
     }
     
@@ -89568,6 +94257,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
         }
     }
     
+    public IQueryable<msdyn_bookingalert> msdyn_bookingalertSet {
+        get {
+            return CreateQuery<msdyn_bookingalert>();
+        }
+    }
+    
     public IQueryable<msdyn_bookingjournal> msdyn_bookingjournalSet {
         get {
             return CreateQuery<msdyn_bookingjournal>();
@@ -89715,6 +94410,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
     public IQueryable<msdyn_workordertype> msdyn_workordertypeSet {
         get {
             return CreateQuery<msdyn_workordertype>();
+        }
+    }
+    
+    public IQueryable<msfp_alert> msfp_alertSet {
+        get {
+            return CreateQuery<msfp_alert>();
         }
     }
     
@@ -89877,6 +94578,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
     public IQueryable<ts_msdyn_workordertype_msdyn_incidenttype> ts_msdyn_workordertype_msdyn_incidenttypeSet {
         get {
             return CreateQuery<ts_msdyn_workordertype_msdyn_incidenttype>();
+        }
+    }
+    
+    public IQueryable<ts_request> ts_requestSet {
+        get {
+            return CreateQuery<ts_request>();
         }
     }
     
@@ -93906,6 +98613,30 @@ public enum msdyn_FunctionalLocation_statuscode {
 }
 
 [DataContract()]
+public enum msdyn_FunctionalLocation_ts_Class {
+    
+    [EnumMember()]
+    [OptionSetMetadata("International", Index=0, Color="#0000ff")]
+    International = 717750000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("1", Index=1, Color="#0000ff")]
+    _1 = 717750001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("2", Index=2, Color="#0000ff")]
+    _2 = 717750002,
+    
+    [EnumMember()]
+    [OptionSetMetadata("3", Index=3, Color="#0000ff")]
+    _3 = 717750003,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Other", Index=4, Color="#0000ff")]
+    Other = 717750004,
+}
+
+[DataContract()]
 public enum msdyn_agreementState {
     
     [EnumMember()]
@@ -93999,6 +98730,86 @@ public enum msdyn_agreementinvoiceproduct_statuscode {
     [EnumMember()]
     [OptionSetMetadata("Inactive", Index=1)]
     Inactive = 2,
+}
+
+[DataContract()]
+public enum msdyn_bookingalertState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Open", Index=0)]
+    Open = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Completed", Index=1)]
+    Completed = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Canceled", Index=2)]
+    Canceled = 2,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Scheduled", Index=3)]
+    Scheduled = 3,
+}
+
+[DataContract()]
+public enum msdyn_bookingalert_InstanceTypeCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Not Recurring", Index=0)]
+    NotRecurring = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Recurring Master", Index=1)]
+    RecurringMaster = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Recurring Instance", Index=2)]
+    RecurringInstance = 2,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Recurring Exception", Index=3)]
+    RecurringException = 3,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Recurring Future Exception", Index=4)]
+    RecurringFutureException = 4,
+}
+
+[DataContract()]
+public enum msdyn_bookingalert_PriorityCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Low", Index=0)]
+    Low = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Normal", Index=1)]
+    Normal = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("High", Index=2)]
+    High = 2,
+}
+
+[DataContract()]
+public enum msdyn_bookingalert_StatusCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Open", Index=0)]
+    Open = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Completed", Index=1)]
+    Completed = 2,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Canceled", Index=2)]
+    Canceled = 3,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Scheduled", Index=3)]
+    Scheduled = 4,
 }
 
 [DataContract()]
@@ -94615,6 +99426,86 @@ public enum msdyn_workordertype_statuscode {
 }
 
 [DataContract()]
+public enum msfp_alertState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Open", Index=0)]
+    Open = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Completed", Index=1)]
+    Completed = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Canceled", Index=2)]
+    Canceled = 2,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Scheduled", Index=3)]
+    Scheduled = 3,
+}
+
+[DataContract()]
+public enum msfp_alert_InstanceTypeCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Not Recurring", Index=0)]
+    NotRecurring = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Recurring Master", Index=1)]
+    RecurringMaster = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Recurring Instance", Index=2)]
+    RecurringInstance = 2,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Recurring Exception", Index=3)]
+    RecurringException = 3,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Recurring Future Exception", Index=4)]
+    RecurringFutureException = 4,
+}
+
+[DataContract()]
+public enum msfp_alert_PriorityCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Low", Index=0)]
+    Low = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Normal", Index=1)]
+    Normal = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("High", Index=2)]
+    High = 2,
+}
+
+[DataContract()]
+public enum msfp_alert_StatusCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Open", Index=0)]
+    Open = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Completed", Index=1)]
+    Completed = 2,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Canceled", Index=2)]
+    Canceled = 3,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Scheduled", Index=3)]
+    Scheduled = 4,
+}
+
+[DataContract()]
 public enum ovs_AirCarrierState {
     
     [EnumMember()]
@@ -95119,6 +100010,30 @@ public enum tc_TCMonth_statuscode {
 }
 
 [DataContract()]
+public enum ts_requestState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 1,
+}
+
+[DataContract()]
+public enum ts_request_statuscode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0, Color="#0000ff")]
+    Active = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Closed", Index=1, Color="#0000ff")]
+    Closed = 2,
+}
+
+[DataContract()]
 public enum ts_workorderactivitytypeState {
     
     [EnumMember()]
@@ -95514,27 +100429,27 @@ public enum msdyn_entitlementappliesto {
 public enum incident_caseorigincode {
     
     [EnumMember()]
-    [OptionSetMetadata("Phone", Index=1, Color="#FCD116")]
+    [OptionSetMetadata("Phone", Index=0, Color="#FCD116")]
     Phone = 1,
     
     [EnumMember()]
-    [OptionSetMetadata("Email", Index=2, Color="#00B294")]
+    [OptionSetMetadata("Email", Index=1, Color="#00B294")]
     Email = 2,
     
     [EnumMember()]
-    [OptionSetMetadata("Web", Index=3, Color="#FF8C00")]
+    [OptionSetMetadata("Web", Index=2, Color="#FF8C00")]
     Web = 3,
     
     [EnumMember()]
-    [OptionSetMetadata("Facebook", Index=4, Color="#0086FF")]
+    [OptionSetMetadata("Facebook", Index=3, Color="#0086FF")]
     Facebook = 2483,
     
     [EnumMember()]
-    [OptionSetMetadata("Twitter", Index=5, Color="#0086FF")]
+    [OptionSetMetadata("Twitter", Index=4, Color="#0086FF")]
     Twitter = 3986,
     
     [EnumMember()]
-    [OptionSetMetadata("IoT", Index=0, Color="#0000ff")]
+    [OptionSetMetadata("IoT", Index=5, Color="#0000ff")]
     IoT = 700610000,
 }
 
@@ -96440,4 +101355,56 @@ public enum ppp_travelpurpose {
     [EnumMember()]
     [OptionSetMetadata("Other", Index=2)]
     Other = 927820002,
+}
+
+[DataContract()]
+public enum ts_requesttype {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Create Stakeholder", Index=0)]
+    CreateStakeholder = 717750000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Update Stakeholder", Index=1)]
+    UpdateStakeholder = 717750001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Remove Stakeholder", Index=2)]
+    RemoveStakeholder = 717750002,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Create Work Order", Index=3)]
+    CreateWorkOrder = 717750003,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Update Work Order", Index=4)]
+    UpdateWorkOrder = 717750004,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Remove Work Order", Index=5)]
+    RemoveWorkOrder = 717750005,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Create Site", Index=6)]
+    CreateSite = 717750006,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Update Site", Index=7)]
+    UpdateSite = 717750007,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Remove Site", Index=8)]
+    RemoveSite = 717750008,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Create Operation", Index=9)]
+    CreateOperation = 717750009,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Update Operation", Index=10)]
+    UpdateOperation = 717750010,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Remove Operation", Index=11)]
+    RemoveOperation = 717750011,
 }
