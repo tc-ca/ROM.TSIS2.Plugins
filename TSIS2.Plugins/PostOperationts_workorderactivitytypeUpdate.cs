@@ -115,11 +115,11 @@ namespace TSIS2.Plugins
                                     workorder.msdyn_ServiceRequest = workordercreationwizards.ts_CaseId;
                                     workorder.ts_Country = workordercreationwizards.ts_CountryId;
                                     workorder.msdyn_FunctionalLocation = workordercreationwizards.ts_FunctionalLocationId;
-                                    workorder.ovs_asset = workordercreationwizards.ts_OperationId;
+                                    workorder.ovs_OperationId = workordercreationwizards.ts_OperationId;
                                     workorder.msdyn_ServiceTerritory = workordercreationwizards.ts_RegionId;
                                     workorder.ts_Region = workordercreationwizards.ts_RegionId;
                                     workorder.ts_Site = workordercreationwizards.ts_SiteId;
-                                    workorder.ovs_AssetCategory = workordercreationwizards.ts_OperationTypeId;
+                                    workorder.ovs_operationtypeid = workordercreationwizards.ts_OperationTypeId;
                                     workorder.msdyn_ServiceAccount = workordercreationwizards.ts_StakeholderId;
                                     workorder.msdyn_WorkOrderType = workordercreationwizards.ts_WorkOrderTypeId;
                                     workorder.msdyn_PrimaryIncidentType = activitytype;
