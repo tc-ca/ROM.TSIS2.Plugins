@@ -89,13 +89,13 @@ namespace TSIS2.Plugins
                                                    where tt.Id == operation.Id
                                                    select new
                                                    {
-                                                       tt.ovs_RegulatedEntityId
+                                                       tt.ts_stakeholder
                                                    }).FirstOrDefault();
                             if (regulatedentity != null)
                             {
-                                if (regulatedentity.ovs_RegulatedEntityId != null && regulatedentity.ovs_RegulatedEntityId.Id != null)
+                                if (regulatedentity.ts_stakeholder != null && regulatedentity.ts_stakeholder.Id != null)
                                 {
-                                    target.Attributes["msdyn_billingaccount"] = regulatedentity.ovs_RegulatedEntityId;
+                                    target.Attributes["msdyn_billingaccount"] = regulatedentity.ts_stakeholder;
                                 }
                             }
                         }
