@@ -99,10 +99,10 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var account = orgAdminUIService.Create(new Account());
             var accountReference = new EntityReference(Account.EntityLogicalName, account);
-            var operationId = orgAdminUIService.Create(new msdyn_customerasset()
+            var operationId = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = accountReference
+                ts_stakeholder = accountReference
             });
             var existingWorkOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
             {
@@ -218,25 +218,25 @@ namespace ROMTS_GSRST.Plugins.Tests
             var testAccountReference3 = new EntityReference(Account.EntityLogicalName, testAccount3Id);
             var testAccountReference4 = new EntityReference(Account.EntityLogicalName, testAccount4Id);
 
-            var testOperation1Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation1Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = testAccountReference1
+                ts_stakeholder = testAccountReference1
             });
-            var testOperation2Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation2Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("6b796de3-b3a4-eb11-9442-000d3a8410dc"),
-                msdyn_Account = testAccountReference2
+                ts_stakeholder = testAccountReference2
             });
-            var testOperation3Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation3Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("7d085d54-c2a9-eb11-9442-000d3a8410dc"),
-                msdyn_Account = testAccountReference3
+                ts_stakeholder = testAccountReference3
             });
-            var testOperation4Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation4Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("22364b7e-e1ce-eb11-bacc-0022483c068d"),
-                msdyn_Account = testAccountReference4
+                ts_stakeholder = testAccountReference4
             });
 
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -292,7 +292,7 @@ namespace ROMTS_GSRST.Plugins.Tests
         }
 
         [Fact]
-        public void When_ovs_questionnaireresponse_contains_finding_containing_operation_array_expect_findings_for_each_operation_to_be_created_with_Entity_References_to_Account_and_Customer_Asset()
+        public void When_ovs_questionnaireresponse_contains_finding_containing_operation_array_expect_findings_for_each_operation_to_be_created_with_Entity_References_to_Account_and_Operation()
         {
 
             // ARRANGE
@@ -315,25 +315,25 @@ namespace ROMTS_GSRST.Plugins.Tests
             var testAccountReference3 = new EntityReference(Account.EntityLogicalName, testAccount3Id);
             var testAccountReference4 = new EntityReference(Account.EntityLogicalName, testAccount4Id);
 
-            var testOperation1Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation1Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = testAccountReference1
+                ts_stakeholder = testAccountReference1
             });
-            var testOperation2Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation2Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("6b796de3-b3a4-eb11-9442-000d3a8410dc"),
-                msdyn_Account = testAccountReference2
+                ts_stakeholder = testAccountReference2
             });
-            var testOperation3Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation3Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("7d085d54-c2a9-eb11-9442-000d3a8410dc"),
-                msdyn_Account = testAccountReference3
+                ts_stakeholder = testAccountReference3
             });
-            var testOperation4Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation4Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("22364b7e-e1ce-eb11-bacc-0022483c068d"),
-                msdyn_Account = testAccountReference4
+                ts_stakeholder = testAccountReference4
             });
 
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -362,7 +362,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ASSERT
             var query = new QueryExpression(ovs_Finding.EntityLogicalName)
             {
-                ColumnSet = new ColumnSet("ovs_finding", "ts_accountid", "ts_assetid")
+                ColumnSet = new ColumnSet("ovs_finding", "ts_accountid", "ts_operationid")
             };
             var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().OrderBy(f => f.ovs_Finding_1.Split('-')[4]).ToList();
 
@@ -372,22 +372,22 @@ namespace ROMTS_GSRST.Plugins.Tests
             // Expect first ovs_finding to have the correct account and asset references
             var first = findings[0];
             Assert.Equal(testAccount1Id, first.ts_accountid.Id);
-            Assert.Equal(testOperation1Id, first.ts_Assetid.Id);
+            Assert.Equal(testOperation1Id, first.ts_operationid.Id);
 
             // Expect second ovs_finding to have the correct account and asset references
             var second = findings[1];
             Assert.Equal(testAccount2Id, second.ts_accountid.Id);
-            Assert.Equal(testOperation2Id, second.ts_Assetid.Id);
+            Assert.Equal(testOperation2Id, second.ts_operationid.Id);
 
             // Expect third ovs_finding to have the correct account and asset references
             var third = findings[2];
             Assert.Equal(testAccount3Id, third.ts_accountid.Id);
-            Assert.Equal(testOperation3Id, third.ts_Assetid.Id);
+            Assert.Equal(testOperation3Id, third.ts_operationid.Id);
 
             // Expect fourth ovs_finding to have the correct account and asset references
             var fourth = findings[3];
             Assert.Equal(testAccount4Id, fourth.ts_accountid.Id);
-            Assert.Equal(testOperation4Id, fourth.ts_Assetid.Id);
+            Assert.Equal(testOperation4Id, fourth.ts_operationid.Id);
 
         }
 
@@ -412,10 +412,10 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var account = orgAdminUIService.Create(new Account());
             var accountReference = new EntityReference(Account.EntityLogicalName, account);
-            var operation = orgAdminUIService.Create(new msdyn_customerasset()
+            var operation = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = accountReference
+                ts_stakeholder = accountReference
             });
 
             // ACT
@@ -463,10 +463,10 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var account = orgAdminUIService.Create(new Account());
             var accountReference = new EntityReference(Account.EntityLogicalName, account);
-            var operation = orgAdminUIService.Create(new msdyn_customerasset()
+            var operation = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = accountReference
+                ts_stakeholder = accountReference
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
             {
@@ -540,10 +540,10 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var account = orgAdminUIService.Create(new Account());
             var accountReference = new EntityReference(Account.EntityLogicalName, account);
-            var operation = orgAdminUIService.Create(new msdyn_customerasset()
+            var operation = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = accountReference
+                ts_stakeholder = accountReference
             });
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
             {
@@ -615,10 +615,10 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var account = orgAdminUIService.Create(new Account());
             var accountReference = new EntityReference(Account.EntityLogicalName, account);
-            var operation = orgAdminUIService.Create(new msdyn_customerasset()
+            var operation = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = accountReference
+                ts_stakeholder = accountReference
             });
             var findingId = orgAdminUIService.Create(new ovs_Finding
             {
@@ -673,7 +673,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
-            var assetId = orgAdminUIService.Create(new msdyn_customerasset());
+            var assetId = orgAdminUIService.Create(new ovs_operation());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
@@ -747,10 +747,10 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var account = orgAdminUIService.Create(new Account());
             var accountReference = new EntityReference(Account.EntityLogicalName, account);
-            var operation = orgAdminUIService.Create(new msdyn_customerasset()
+            var operation = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = accountReference
+                ts_stakeholder = accountReference
             });
             var findingId1 = orgAdminUIService.Create(new ovs_Finding
             {
@@ -848,10 +848,10 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var account = orgAdminUIService.Create(new Account());
             var accountReference = new EntityReference(Account.EntityLogicalName, account);
-            var operation = orgAdminUIService.Create(new msdyn_customerasset()
+            var operation = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = accountReference
+                ts_stakeholder = accountReference
             });
             // ACT
             orgAdminUIService.Update(new msdyn_workorderservicetask
@@ -901,10 +901,10 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var account = orgAdminUIService.Create(new Account());
             var accountReference = new EntityReference(Account.EntityLogicalName, account);
-            var operation = orgAdminUIService.Create(new msdyn_customerasset()
+            var operation = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = accountReference
+                ts_stakeholder = accountReference
             });
             // ACT
             orgAdminUIService.Update(new msdyn_workorderservicetask
@@ -956,10 +956,10 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
             var account = orgAdminUIService.Create(new Account());
             var accountReference = new EntityReference(Account.EntityLogicalName, account);
-            var operation = orgAdminUIService.Create(new msdyn_customerasset()
+            var operation = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = accountReference
+                ts_stakeholder = accountReference
             });
 
             // ACT
@@ -1051,25 +1051,25 @@ namespace ROMTS_GSRST.Plugins.Tests
             var testAccountReference3 = new EntityReference(Account.EntityLogicalName, testAccount3Id);
             var testAccountReference4 = new EntityReference(Account.EntityLogicalName, testAccount4Id);
 
-            var testOperation1Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation1Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                msdyn_Account = testAccountReference1
+                ts_stakeholder = testAccountReference1
             });
-            var testOperation2Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation2Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("6b796de3-b3a4-eb11-9442-000d3a8410dc"),
-                msdyn_Account = testAccountReference2
+                ts_stakeholder = testAccountReference2
             });
-            var testOperation3Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation3Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("7d085d54-c2a9-eb11-9442-000d3a8410dc"),
-                msdyn_Account = testAccountReference3
+                ts_stakeholder = testAccountReference3
             });
-            var testOperation4Id = orgAdminUIService.Create(new msdyn_customerasset()
+            var testOperation4Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("22364b7e-e1ce-eb11-bacc-0022483c068d"),
-                msdyn_Account = testAccountReference4
+                ts_stakeholder = testAccountReference4
             });
 
             var existingWorkOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask

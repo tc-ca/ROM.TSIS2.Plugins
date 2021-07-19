@@ -61909,16 +61909,6 @@ public partial class msdyn_customerasset : ExtendedEntity<msdyn_customerassetSta
         }
     }
     
-    [RelationshipSchemaName("ts_ovs_Finding_Assetid_msdyn_customerasset")]
-    public IEnumerable<ovs_Finding> ts_ovs_Finding_Assetid_msdyn_customerasset {
-        get {
-            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_Assetid_msdyn_customerasset", null);
-        }
-        set {
-            SetRelatedEntities("ts_ovs_Finding_Assetid_msdyn_customerasset", null, value);
-        }
-    }
-    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_msdyn_customerasset")]
     public SystemUser user_msdyn_customerasset {
@@ -73301,6 +73291,16 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
     }
     
+    [RelationshipSchemaName("ts_msdyn_workorder_relatedoperations_ovs_ope")]
+    public IEnumerable<ovs_operation> ts_msdyn_workorder_relatedoperations_ovs_ope {
+        get {
+            return GetRelatedEntities<ovs_operation>("ts_msdyn_workorder_relatedoperations_ovs_ope", null);
+        }
+        set {
+            SetRelatedEntities("ts_msdyn_workorder_relatedoperations_ovs_ope", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("ts_ovs_Finding_WorkOrder_msdyn_workorder")]
     public IEnumerable<ovs_Finding> ts_ovs_Finding_WorkOrder_msdyn_workorder {
         get {
@@ -81916,20 +81916,6 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
     }
     
     /// <summary>
-    /// <para>Display Name: Asset</para>
-    /// </summary>
-    [AttributeLogicalName("ts_assetid")]
-    [DisplayName("Asset")]
-    public EntityReference ts_Assetid {
-        get {
-            return GetAttributeValue<EntityReference>("ts_assetid");
-        }
-        set {
-            SetAttributeValue("ts_assetid", value);
-        }
-    }
-    
-    /// <summary>
     /// <para>Display Name: Work Order</para>
     /// </summary>
     [AttributeLogicalName("ts_workorder")]
@@ -81998,6 +81984,20 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
         set {
             SetAttributeValue("ts_findingmappingkey", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Operation</para>
+    /// </summary>
+    [AttributeLogicalName("ts_operationid")]
+    [DisplayName("Operation")]
+    public EntityReference ts_operationid {
+        get {
+            return GetAttributeValue<EntityReference>("ts_operationid");
+        }
+        set {
+            SetAttributeValue("ts_operationid", value);
         }
     }
     
@@ -82087,17 +82087,6 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
     }
     
-    [AttributeLogicalName("ts_assetid")]
-    [RelationshipSchemaName("ts_ovs_Finding_Assetid_msdyn_customerasset")]
-    public msdyn_customerasset ts_ovs_Finding_Assetid_msdyn_customerasset {
-        get {
-            return GetRelatedEntity<msdyn_customerasset>("ts_ovs_Finding_Assetid_msdyn_customerasset", null);
-        }
-        set {
-            SetRelatedEntity("ts_ovs_Finding_Assetid_msdyn_customerasset", null, value);
-        }
-    }
-    
     [AttributeLogicalName("ts_workorder")]
     [RelationshipSchemaName("ts_ovs_Finding_WorkOrder_msdyn_workorder")]
     public msdyn_workorder ts_ovs_Finding_WorkOrder_msdyn_workorder {
@@ -82117,6 +82106,17 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
         set {
             SetRelatedEntity("ts_ovs_Finding_accountid_Account", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_operationid")]
+    [RelationshipSchemaName("ts_ovs_Finding_operationid_ovs_operation")]
+    public ovs_operation ts_ovs_Finding_operationid_ovs_operation {
+        get {
+            return GetRelatedEntity<ovs_operation>("ts_ovs_Finding_operationid_ovs_operation", null);
+        }
+        set {
+            SetRelatedEntity("ts_ovs_Finding_operationid_ovs_operation", null, value);
         }
     }
     
@@ -84280,6 +84280,21 @@ public partial class ovs_operation : ExtendedEntity<ovs_operationState, ovs_oper
     }
     
     /// <summary>
+    /// <para>Secondary operations that are related to this work order</para>
+    /// <para>Display Name: Related Operations</para>
+    /// </summary>
+    [AttributeLogicalName("ts_relatedoperations")]
+    [DisplayName("Related Operations")]
+    public EntityReference ts_relatedoperations {
+        get {
+            return GetAttributeValue<EntityReference>("ts_relatedoperations");
+        }
+        set {
+            SetAttributeValue("ts_relatedoperations", value);
+        }
+    }
+    
+    /// <summary>
     /// <para>Functional location of this operation</para>
     /// <para>Display Name: Site</para>
     /// </summary>
@@ -84417,6 +84432,27 @@ public partial class ovs_operation : ExtendedEntity<ovs_operationState, ovs_oper
         }
         set {
             SetRelatedEntity("ovs_ovs_operationtype_ovs_operation", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_relatedoperations")]
+    [RelationshipSchemaName("ts_msdyn_workorder_relatedoperations_ovs_ope")]
+    public msdyn_workorder ts_msdyn_workorder_relatedoperations_ovs_ope {
+        get {
+            return GetRelatedEntity<msdyn_workorder>("ts_msdyn_workorder_relatedoperations_ovs_ope", null);
+        }
+        set {
+            SetRelatedEntity("ts_msdyn_workorder_relatedoperations_ovs_ope", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_Finding_operationid_ovs_operation")]
+    public IEnumerable<ovs_Finding> ts_ovs_Finding_operationid_ovs_operation {
+        get {
+            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_operationid_ovs_operation", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_Finding_operationid_ovs_operation", null, value);
         }
     }
     
