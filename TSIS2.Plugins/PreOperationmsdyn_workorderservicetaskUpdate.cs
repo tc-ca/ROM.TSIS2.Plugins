@@ -182,19 +182,19 @@ namespace TSIS2.Plugins
                                                     // reference case (should already be saved in the work order service task)
                                                     newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
 
-                                                    EntityReference operationReference = new EntityReference(msdyn_customerasset.EntityLogicalName, new Guid(operationid));
+                                                    EntityReference operationReference = new EntityReference(ovs_operation.EntityLogicalName, new Guid(operationid));
 
                                                     // Lookup the operation (Customer Asset Entity) to know its parent Account's id
-                                                    msdyn_customerasset operationEntity = serviceContext.msdyn_customerassetSet.Where(ca => ca.Id == operationReference.Id).FirstOrDefault();
+                                                    ovs_operation operationEntity = serviceContext.ovs_operationSet.Where(ca => ca.Id == operationReference.Id).FirstOrDefault();
 
                                                     // Create entity reference to the operation's parent account
-                                                    EntityReference parentAccountReference = new EntityReference(Account.EntityLogicalName, operationEntity.msdyn_Account.Id);
+                                                    EntityReference parentAccountReference = new EntityReference(Account.EntityLogicalName, operationEntity.ts_stakeholder.Id);
 
-                                                    // reference the current operation's parent account (Account Entity) (Lookup logical name: msdyn_serviceaccount)
-                                                    newFinding.ts_accountid = new EntityReference(Account.EntityLogicalName, operationEntity.msdyn_Account.Id);
+                                                    // reference the current operation's stakeholder (Account Entity) (Lookup logical name: ts_stakeholder)
+                                                    newFinding.ts_accountid = new EntityReference(Account.EntityLogicalName, operationEntity.ts_stakeholder.Id);
 
                                                     // reference current operation (Customer Asset Entity) (Lookup logical name: ovs_asset)
-                                                    newFinding.ts_Assetid = operationReference;
+                                                    newFinding.ts_operationid = operationReference;
 
                                                     // Create new ovs_finding
                                                     Guid newFindingId = service.Create(newFinding);
