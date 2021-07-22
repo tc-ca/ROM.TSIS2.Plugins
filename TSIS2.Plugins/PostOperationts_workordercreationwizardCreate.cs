@@ -87,7 +87,7 @@ namespace TSIS2.Plugins
                         {
                             var incidenttypes = (from tt in servicecontext.msdyn_incidenttypeSet
                                                  where tt.msdyn_DefaultWorkOrderType.Id == workordertype.Id
-                                                 where tt.ts_OperationType.Id == operationtype.Id
+                                                 where tt.ts_ovs_operationtype.Id == operationtype.Id
                                                  where tt.statecode == 0
                                                  select new
                                                    {

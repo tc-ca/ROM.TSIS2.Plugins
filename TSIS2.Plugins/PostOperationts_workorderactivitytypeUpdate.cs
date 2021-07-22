@@ -105,7 +105,7 @@ namespace TSIS2.Plugins
                                                                     tt.ts_RegionId,
                                                                     tt.ts_SiteId,
                                                                     tt.ts_StakeholderId,
-                                                                    tt.ts_OperationTypeId,
+                                                                    tt.ts_ovs_operationtype,
                                                                     tt.ts_WorkOrderTypeId
                                                                 }).FirstOrDefault();
 
@@ -119,7 +119,7 @@ namespace TSIS2.Plugins
                                     workorder.msdyn_ServiceTerritory = workordercreationwizards.ts_RegionId;
                                     workorder.ts_Region = workordercreationwizards.ts_RegionId;
                                     workorder.ts_Site = workordercreationwizards.ts_SiteId;
-                                    workorder.ovs_operationtypeid = workordercreationwizards.ts_OperationTypeId;
+                                    workorder.ovs_operationtypeid = workordercreationwizards.ts_ovs_operationtype;
                                     workorder.msdyn_ServiceAccount = workordercreationwizards.ts_StakeholderId;
                                     workorder.msdyn_WorkOrderType = workordercreationwizards.ts_WorkOrderTypeId;
                                     workorder.msdyn_PrimaryIncidentType = activitytype;
