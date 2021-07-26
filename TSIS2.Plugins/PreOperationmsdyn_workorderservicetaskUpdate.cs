@@ -140,6 +140,8 @@ namespace TSIS2.Plugins
                                                     newFinding.ts_findingProvisionTextEn = finding.ContainsKey("provisionTextEn") ? (string)finding["provisionTextEn"] : "";
                                                     newFinding.ts_findingProvisionTextFr = finding.ContainsKey("provisionTextFr") ? (string)finding["provisionTextFr"] : "";
                                                     newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
+                                                    OptionSetValue findingType = finding.ContainsKey("findingType") ? new OptionSetValue(finding["findingType"]) : new OptionSetValue(717750000); //717750000 is Undecided
+                                                    newFinding.Attributes.Add("ts_findingtype", findingType);
 
                                                     //Update the list of findings for this service task in case a finding was added in a previous loop
                                                     findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
@@ -204,6 +206,9 @@ namespace TSIS2.Plugins
                                                 {
                                                     //Update the Finding record's comment
                                                     existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
+                                                    //Update the Finding record's Finding Type
+                                                    OptionSetValue findingType = finding.ContainsKey("findingType") ? new OptionSetValue(finding["findingType"]) : new OptionSetValue(717750000); //717750000 is Undecided
+                                                    existingFinding["ts_findingtype"] = findingType;
                                                     serviceContext.UpdateObject(existingFinding);
 
                                                 }
