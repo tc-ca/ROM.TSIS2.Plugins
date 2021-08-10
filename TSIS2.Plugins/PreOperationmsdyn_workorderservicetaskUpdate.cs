@@ -126,9 +126,17 @@ namespace TSIS2.Plugins
                                             var operations = finding.ContainsKey("operations") ? finding["operations"] : new JsonArray();
 
                                             //Loop through the operations. Check if a finding already exists for that operation. Update the comment if it exists, or make a new finding if it doesn't
-                                            foreach (JsonPrimitive operation in operations)
+                                            foreach (JsonObject operation in operations)
                                             {
-                                                var operationid = (string)operation;
+                                                string operationid;
+                                                //Grab operationid from Json operation object. If it wasn't populated for some reason, continue to next operation
+                                                if (operation.ContainsKey("operationID"))
+                                                {
+                                                    operationid = operation["operationID"];
+                                                } else
+                                                {
+                                                    continue;
+                                                }
                                                 var findingMappingKey = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString() + "-" + operationid;
                                                 findingMappingKeys.Add(findingMappingKey);
                                                 var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ts_findingmappingkey == findingMappingKey);
@@ -140,7 +148,7 @@ namespace TSIS2.Plugins
                                                     newFinding.ts_findingProvisionTextEn = finding.ContainsKey("provisionTextEn") ? (string)finding["provisionTextEn"] : "";
                                                     newFinding.ts_findingProvisionTextFr = finding.ContainsKey("provisionTextFr") ? (string)finding["provisionTextFr"] : "";
                                                     newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
-                                                    OptionSetValue findingType = finding.ContainsKey("findingType") ? new OptionSetValue(finding["findingType"]) : new OptionSetValue(717750000); //717750000 is Undecided
+                                                    OptionSetValue findingType = operation.ContainsKey("findingType") ? new OptionSetValue(operation["findingType"]) : new OptionSetValue(717750000); //717750000 is Undecided
                                                     newFinding.Attributes.Add("ts_findingtype", findingType);
 
                                                     //Update the list of findings for this service task in case a finding was added in a previous loop
@@ -207,7 +215,7 @@ namespace TSIS2.Plugins
                                                     //Update the Finding record's comment
                                                     existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
                                                     //Update the Finding record's Finding Type
-                                                    OptionSetValue findingType = finding.ContainsKey("findingType") ? new OptionSetValue(finding["findingType"]) : new OptionSetValue(717750000); //717750000 is Undecided
+                                                    OptionSetValue findingType = operation.ContainsKey("findingType") ? new OptionSetValue(operation["findingType"]) : new OptionSetValue(717750000); //717750000 is Undecided
                                                     existingFinding["ts_findingtype"] = findingType;
                                                     serviceContext.UpdateObject(existingFinding);
 
