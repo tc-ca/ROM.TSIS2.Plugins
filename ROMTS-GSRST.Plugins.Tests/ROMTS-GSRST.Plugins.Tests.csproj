@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PreOperationovs_questionnaireCreateTests.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskCreateTests.cs" />
     <Compile Include="Metadata\TypeDeclarations.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskUpdateTests.cs" />

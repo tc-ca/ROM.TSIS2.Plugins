@@ -8,9 +8,6 @@ namespace ROMTS_GSRST.Plugins.Tests
     public class PreOperationmsdyn_workorderUpdateTests : UnitTestBase
     {
 
-        Guid _serviceAccountId;
-        Guid _workOrderId;
-
         public PreOperationmsdyn_workorderUpdateTests(XrmMockupFixture fixture) : base(fixture) { }
 
         [Fact]
