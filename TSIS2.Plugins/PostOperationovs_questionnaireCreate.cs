@@ -53,9 +53,6 @@ namespace TSIS2.Plugins
                         var questionnaireVersion = new ts_questionnaireversion();
                         questionnaireVersion.ts_name = "Version 1";
 
-                        // Assign the parent of this questionnaire version to be the new questionnaire
-                        //questionnaireVersion.ts_ovs_questionnaire = new EntityReference(ovs_Questionnaire.EntityLogicalName, questionnaire.Id);
-
                         // Create the new questionnaire version
                         Guid newQuestionnaireVersionId = service.Create(questionnaireVersion);
 
