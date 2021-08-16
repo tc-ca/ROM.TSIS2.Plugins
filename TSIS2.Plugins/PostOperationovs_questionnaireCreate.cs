@@ -59,6 +59,7 @@ namespace TSIS2.Plugins
                         // Create the new questionnaire version
                         Guid newQuestionnaireVersionId = service.Create(questionnaireVersion);
 
+                        // Associate the newly created questionnaire version to the target questionnaire
                         service.Associate(
                             ovs_Questionnaire.EntityLogicalName,
                             questionnaire.Id,
