@@ -18,7 +18,6 @@ namespace ROMTS_GSRST.Plugins.Tests
         {
             using (var context = new Xrm(orgAdminUIService))
             {
-
                 // ACT
                 var questionnaire = new ovs_Questionnaire();
                 questionnaire.Id = orgAdminService.Create(new ovs_Questionnaire()
