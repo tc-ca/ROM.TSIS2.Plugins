@@ -4,6 +4,7 @@ namespace DG.Tools.XrmMockup {
 	public struct SecurityRoles {
 		public static Guid ActivityFeeds = new Guid("cb269f84-e19d-e011-b66c-00155db528b6");
 		public static Guid AIBRoles = new Guid("e57bff35-58b4-4725-aee2-40fb18f4c8bd");
+		public static Guid AIBSMLRoles = new Guid("3f199ebd-977e-43e5-abe5-fe865a1f2904");
 		public static Guid AppProfileManagerAdministrator = new Guid("4758a2be-ccd8-ea11-a813-000d3a579805");
 		public static Guid AppProfileUser = new Guid("61649654-ced8-ea11-a813-000d3a579805");
 		public static Guid Attach2DynamicsAdministrator = new Guid("755701c6-5dca-e811-80d1-00155d060713");
@@ -17,12 +18,15 @@ namespace DG.Tools.XrmMockup {
 		public static Guid BusinessApplicationPlatformRole = new Guid("02123b67-66ae-4a69-8cdc-6473b94ad1a9");
 		public static Guid CCIadmin = new Guid("a1801436-efd6-e811-a96e-000d3a3ab886");
 		public static Guid CEOBusinessManager = new Guid("a5b6bf71-a21c-424c-82b8-bd2a2147a168");
+		public static Guid Click2CloneAdministrator = new Guid("9bd753ee-41a9-e511-9414-00155d068906");
+		public static Guid Click2CloneUser = new Guid("c65a1216-42a9-e511-9414-00155d068906");
 		public static Guid CSRManager = new Guid("a0c28c41-5e86-4d45-a0d1-70a9cde49e33");
 		public static Guid Customerserviceappaccess = new Guid("3dac4d9e-568c-e611-80d4-00155d42a122");
 		public static Guid CustomerServiceRepresentative = new Guid("50cb5773-2966-4bd1-999f-45dd6be8c9e5");
 		public static Guid CustomerServiceScheduleAdministrator = new Guid("245b20ea-dd8d-464d-ba3a-8ed3ea015198");
 		public static Guid CustomerServiceScheduler = new Guid("0df07e88-3880-4109-bfa5-06e97c80eb46");
 		public static Guid CustomerVoiceAddon = new Guid("90bb098b-d3b6-ea11-a812-000d3a31eec8");
+		public static Guid DataSyncServiceRole = new Guid("fc3e65d9-450a-4301-933b-f9bcaee20521");
 		public static Guid DataLakeWorkspaceAppAccess = new Guid("edfcbfd2-358f-ea11-a81f-000d3a6eafd3");
 		public static Guid Delegate = new Guid("10472c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid DesktopFlowsMachineApplicationUser = new Guid("9f572d55-6090-493b-904a-3956bdc55343");
@@ -40,6 +44,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid FieldServiceResource = new Guid("dc08bfde-da92-e111-9d8c-000c2959f9b8");
 		public static Guid FieldServiceSalesperson = new Guid("0ad45767-036b-e811-8152-000d3a0158bb");
 		public static Guid FileStoreServiceAppAccess = new Guid("d110d819-9b72-430f-894a-94dc87e04519");
+		public static Guid FlowCDSNativeConnectorRole = new Guid("8be3e3ca-a304-451f-9dc1-2478d224ea0e");
 		public static Guid FlowRPRole = new Guid("f75f4034-068a-463c-ba85-0ae80ad5aecd");
 		public static Guid ForecastAppUser = new Guid("7bc42107-2fba-4a47-9d1d-51877a3be378");
 		public static Guid Forecastmanager = new Guid("e739f82a-9519-e911-817c-000d3a0718d1");
@@ -57,16 +62,17 @@ namespace DG.Tools.XrmMockup {
 		public static Guid PPPAnalyst = new Guid("70abdd18-59b6-ea11-a812-000d3a0c8127");
 		public static Guid PPPBasicRole = new Guid("54631c5d-3edb-ea11-a813-000d3a0c8127");
 		public static Guid PPPManager = new Guid("ebcb2437-59b6-ea11-a812-000d3a0c8127");
-		public static Guid ProcessMiningApplicationUser = new Guid("737c8c79-7411-4eef-8f7d-e2abe7e7faec");
+		public static Guid ProcessAdvisorApplication = new Guid("737c8c79-7411-4eef-8f7d-e2abe7e7faec");
+		public static Guid ProcessAdvisorUser = new Guid("474523e6-dff7-46f1-9072-ff30802d3eb3");
 		public static Guid Productivitytoolsadministrator = new Guid("6beb51c1-0eda-e911-a81c-000d3af75d63");
 		public static Guid Productivitytoolsuser = new Guid("c49aae0a-0fda-e911-a81c-000d3af75d63");
 		public static Guid ProjectOwner = new Guid("f9a5a958-d07f-44cd-886d-eb6343309c2a");
 		public static Guid RelationshipInsightsAdmin = new Guid("016fd16e-7be7-e611-80d6-00155d204901");
-		public static Guid ROMAnalyst = new Guid("204f15bc-c534-eb11-a813-000d3af3fc19");
 		public static Guid ROMBase = new Guid("158781c7-f92c-eb11-a813-000d3af3a7a7");
 		public static Guid ROMBusinessAdmin = new Guid("779105f0-8d3a-eb11-a813-000d3af3fc19");
 		public static Guid ROMInspector = new Guid("ed37675e-f72c-eb11-a813-000d3af3a7a7");
-		public static Guid ROMPlanner = new Guid("be301e14-c534-eb11-a813-000d3af3fc19");
+		public static Guid ROMManager = new Guid("85e36d25-29f5-eb11-94ef-000d3af36036");
+		public static Guid ROMPlanner = new Guid("9f03e814-29f5-eb11-94ef-000d3af36036");
 		public static Guid SalesManager = new Guid("a9547c3b-1c7f-4820-821f-9fb4fc383d2b");
 		public static Guid Salessystemaccess = new Guid("b5b6cb27-47e9-49f7-84bb-f6823fc8461c");
 		public static Guid Salessystemaccessextension = new Guid("f6f7455f-bcea-44dc-abbd-7fd51b1cc880");
@@ -83,8 +89,9 @@ namespace DG.Tools.XrmMockup {
 		public static Guid SurveyServicesAdministratorDeprecated = new Guid("abce3b01-5697-4973-9d7d-fca48ca84445");
 		public static Guid SystemAdministrator = new Guid("ca432c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid SystemCustomizer = new Guid("1b482c33-29a1-eb11-b1ac-000d3ae8bbe0");
-		public static Guid TeamsMember = new Guid("35357bc4-fdaf-ea11-a81d-000d3ac64876");
 		public static Guid TimeEntryUser = new Guid("feae608b-0633-ea11-a81c-000d3ac406c6");
+		public static Guid TourAuthor = new Guid("2d8b17d9-643c-40b1-9f7d-a6ba95063906");
+		public static Guid TourConsumer = new Guid("30db5b2f-b1c6-4892-ba03-5e532ab8534e");
 		public static Guid VicePresidentofMarketing = new Guid("c484fc40-a84a-4ad7-9ac5-c62d0421d90b");
 		public static Guid VicePresidentofSales = new Guid("52453e37-163d-4797-a1a2-be1be26ad269");
 	}

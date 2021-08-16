@@ -117,7 +117,7 @@
     <Compile Include="PostOperationts_workordercreationwizardCreate.cs" />
     <Compile Include="PostOperationmsdyn_workorderservicetaskCreate.cs" />
     <Compile Include="PreOperationincidentCreate.cs" />
-    <Compile Include="PreOperationovs_questionnaireCreate.cs" />
+    <Compile Include="PostOperationovs_questionnaireCreate.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskUpdate.cs" />
     <Compile Include="PreOperationmsdyn_workorderCreate.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskCreate.cs" />
