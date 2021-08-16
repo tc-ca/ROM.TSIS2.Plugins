@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 
 namespace TSIS2.Plugins
@@ -65,6 +66,27 @@ namespace TSIS2.Plugins
                                 new EntityReference(ts_questionnaireversion.EntityLogicalName, newQuestionnaireVersionId)
                             }
                         );
+
+                        // Refresh the rollup field to make sure the number of versions is correct
+                        // NOT SUPPORTED BY XRMMOCKUP TO TEST
+                        CalculateRollupFieldRequest calculateRollupFieldRequest = new CalculateRollupFieldRequest
+                        {
+                            Target = questionnaire.ToEntityReference(),
+                            FieldName = "ts_numberofversions"
+                        };
+                        CalculateRollupFieldResponse calculateRollupFieldResponse = (CalculateRollupFieldResponse)service.Execute(calculateRollupFieldRequest);
+                    }
+                }
+                catch (NotImplementedException ex)
+                {
+                    // If exceptions from mocking library, just continue. If not from there, we should still throw the error.
+                    if (ex.Source == "XrmMockup365" && ex.Message == "No implementation for expression operator 'Count'")
+                    {
+                        // continue
+                    } else
+                    {
+                        tracingService.Trace("PostOperationovs_questionnaireCreate Plugin: {0}", ex.ToString());
+                        throw;
                     }
                 }
                 catch (Exception ex)

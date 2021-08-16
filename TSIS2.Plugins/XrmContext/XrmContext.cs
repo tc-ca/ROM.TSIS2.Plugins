@@ -35575,6 +35575,17 @@ public partial class ProcessSession : ExtendedEntity<ProcessSessionState, Proces
     }
     
     [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_facility_ProcessSession")]
+    public ovs_Facility ovs_facility_ProcessSession {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ovs_facility_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntity("ovs_facility_ProcessSession", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("ovs_finding_ProcessSession")]
     public ovs_Finding ovs_finding_ProcessSession {
         get {
@@ -46540,6 +46551,17 @@ public partial class SyncError : ExtendedEntity<SyncErrorState, SyncError_Status
     }
     
     [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("ovs_facility_SyncErrors")]
+    public ovs_Facility ovs_facility_SyncErrors {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ovs_facility_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("ovs_facility_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("ovs_finding_SyncErrors")]
     public ovs_Finding ovs_finding_SyncErrors {
         get {
@@ -50841,6 +50863,46 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("lk_ovs_facility_createdby")]
+    public IEnumerable<ovs_Facility> lk_ovs_facility_createdby {
+        get {
+            return GetRelatedEntities<ovs_Facility>("lk_ovs_facility_createdby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ovs_facility_createdby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ovs_facility_createdonbehalfby")]
+    public IEnumerable<ovs_Facility> lk_ovs_facility_createdonbehalfby {
+        get {
+            return GetRelatedEntities<ovs_Facility>("lk_ovs_facility_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ovs_facility_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ovs_facility_modifiedby")]
+    public IEnumerable<ovs_Facility> lk_ovs_facility_modifiedby {
+        get {
+            return GetRelatedEntities<ovs_Facility>("lk_ovs_facility_modifiedby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ovs_facility_modifiedby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_ovs_facility_modifiedonbehalfby")]
+    public IEnumerable<ovs_Facility> lk_ovs_facility_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<ovs_Facility>("lk_ovs_facility_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_ovs_facility_modifiedonbehalfby", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("lk_ovs_finding_createdby")]
     public IEnumerable<ovs_Finding> lk_ovs_finding_createdby {
         get {
@@ -53040,6 +53102,16 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("user_ovs_aircarrier", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("user_ovs_facility")]
+    public IEnumerable<ovs_Facility> user_ovs_facility {
+        get {
+            return GetRelatedEntities<ovs_Facility>("user_ovs_facility", null);
+        }
+        set {
+            SetRelatedEntities("user_ovs_facility", null, value);
         }
     }
     
@@ -80854,6 +80926,706 @@ public partial class ovs_AirCarrier : ExtendedEntity<ovs_AirCarrierState, ovs_Ai
 }
 
 /// <summary>
+/// <para>Any area of land or water (including the frozen surface thereof) used for for the arrival, departure, movement or servicing of aircraft.</para>
+/// <para>Display Name: Aerodrome</para>
+/// </summary>
+[EntityLogicalName("ovs_facility")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ovs_Facility : ExtendedEntity<ovs_FacilityState, ovs_Facility_statuscode> {
+    
+    public const string EntityLogicalName = "ovs_facility";
+    
+    public const int EntityTypeCode = 10419;
+    
+    public ovs_Facility() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ovs_Facility(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("ovs_name");
+        }
+    }
+    
+    [AttributeLogicalName("ovs_facilityid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ovs_facilityid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for entity instances</para>
+    /// <para>Display Name: Aerodrome</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_facilityid")]
+    [DisplayName("Aerodrome")]
+    public Guid? ovs_FacilityId {
+        get {
+            return GetAttributeValue<Guid?>("ovs_facilityid");
+        }
+        set {
+            SetId("ovs_facilityid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who created the record.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was created.</para>
+    /// <para>Display Name: Created On</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Created On")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who created the record.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Sequence number of the import that created this record.</para>
+    /// <para>Display Name: Import Sequence Number</para>
+    /// </summary>
+    [AttributeLogicalName("importsequencenumber")]
+    [DisplayName("Import Sequence Number")]
+    [Range(-2147483648, 2147483647)]
+    public int? ImportSequenceNumber {
+        get {
+            return GetAttributeValue<int?>("importsequencenumber");
+        }
+        set {
+            SetAttributeValue("importsequencenumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who modified the record.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time when the record was modified.</para>
+    /// <para>Display Name: Modified On</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Modified On")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the delegate user who modified the record.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time that the record was migrated.</para>
+    /// <para>Display Name: Record Created On</para>
+    /// </summary>
+    [AttributeLogicalName("overriddencreatedon")]
+    [DisplayName("Record Created On")]
+    public DateTime? OverriddenCreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("overriddencreatedon");
+        }
+        set {
+            SetAttributeValue("overriddencreatedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Owner Id</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the business unit that owns the record</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the team that owns the record.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the user that owns the record.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Time Zone Rule Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("timezoneruleversionnumber")]
+    [DisplayName("Time Zone Rule Version Number")]
+    [Range(-1, 2147483647)]
+    public int? TimeZoneRuleVersionNumber {
+        get {
+            return GetAttributeValue<int?>("timezoneruleversionnumber");
+        }
+        set {
+            SetAttributeValue("timezoneruleversionnumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Time zone code that was in use when the record was created.</para>
+    /// <para>Display Name: UTC Conversion Time Zone Code</para>
+    /// </summary>
+    [AttributeLogicalName("utcconversiontimezonecode")]
+    [DisplayName("UTC Conversion Time Zone Code")]
+    [Range(-1, 2147483647)]
+    public int? UTCConversionTimeZoneCode {
+        get {
+            return GetAttributeValue<int?>("utcconversiontimezonecode");
+        }
+        set {
+            SetAttributeValue("utcconversiontimezonecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Version Number</para>
+    /// <para>Display Name: Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("versionnumber")]
+    [DisplayName("Version Number")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    /// <summary>
+    /// <para>The city where the aerodrome is located.</para>
+    /// <para>Display Name: City</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1city")]
+    [DisplayName("City")]
+    [MaxLength(100)]
+    public string ovs_Address1City {
+        get {
+            return GetAttributeValue<string>("ovs_address1city");
+        }
+        set {
+            SetAttributeValue("ovs_address1city", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The latitude associated with the aerodrome.</para>
+    /// <para>Display Name: Latitude</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1latitude")]
+    [DisplayName("Latitude")]
+    public double? ovs_Address1Latitude {
+        get {
+            return GetAttributeValue<double?>("ovs_address1latitude");
+        }
+        set {
+            SetAttributeValue("ovs_address1latitude", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The longitude associated with the aerodrome.</para>
+    /// <para>Display Name: Longitude</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1longitude")]
+    [DisplayName("Longitude")]
+    public double? ovs_Address1Longitude {
+        get {
+            return GetAttributeValue<double?>("ovs_address1longitude");
+        }
+        set {
+            SetAttributeValue("ovs_address1longitude", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The postal code associated with the aerodrome.</para>
+    /// <para>Display Name: Postal Code</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1postalcode")]
+    [DisplayName("Postal Code")]
+    [MaxLength(100)]
+    public string ovs_Address1PostalCode {
+        get {
+            return GetAttributeValue<string>("ovs_address1postalcode");
+        }
+        set {
+            SetAttributeValue("ovs_address1postalcode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The state or province where the aerodrome is located.</para>
+    /// <para>Display Name: Region</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1stateprovince")]
+    [DisplayName("Region")]
+    [MaxLength(100)]
+    public string ovs_Address1StateProvince {
+        get {
+            return GetAttributeValue<string>("ovs_address1stateprovince");
+        }
+        set {
+            SetAttributeValue("ovs_address1stateprovince", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The street address associated with the aerodrome.</para>
+    /// <para>Display Name: Address1: Street1</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_address1street1")]
+    [DisplayName("Address1: Street1")]
+    [MaxLength(100)]
+    public string ovs_Address1Street1 {
+        get {
+            return GetAttributeValue<string>("ovs_address1street1");
+        }
+        set {
+            SetAttributeValue("ovs_address1street1", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The class of aerodrome as designated by ICAO.</para>
+    /// <para>Display Name: Class</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_class")]
+    [DisplayName("Class")]
+    [Range(-2147483648, 2147483647)]
+    public int? ovs_Class {
+        get {
+            return GetAttributeValue<int?>("ovs_class");
+        }
+        set {
+            SetAttributeValue("ovs_class", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The country where the aerodrome is located.</para>
+    /// <para>Display Name: Country</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_countryid")]
+    [DisplayName("Country")]
+    public EntityReference ovs_Countryid {
+        get {
+            return GetAttributeValue<EntityReference>("ovs_countryid");
+        }
+        set {
+            SetAttributeValue("ovs_countryid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The elevation above sea level of the aerodrome.</para>
+    /// <para>Display Name: Elevation</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_elevation")]
+    [DisplayName("Elevation")]
+    [Range(-2147483648, 2147483647)]
+    public int? ovs_Elevation {
+        get {
+            return GetAttributeValue<int?>("ovs_elevation");
+        }
+        set {
+            SetAttributeValue("ovs_elevation", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The legal English name of the aerodrome.</para>
+    /// <para>Display Name: Aerodrome Name (English)</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_facilitynameenglish")]
+    [DisplayName("Aerodrome Name (English)")]
+    [MaxLength(250)]
+    public string ovs_FacilityNameEnglish {
+        get {
+            return GetAttributeValue<string>("ovs_facilitynameenglish");
+        }
+        set {
+            SetAttributeValue("ovs_facilitynameenglish", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The legal French name of the aerodrome.</para>
+    /// <para>Display Name: Aerodrome Name (French)</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_facilitynamefrench")]
+    [DisplayName("Aerodrome Name (French)")]
+    [MaxLength(250)]
+    public string ovs_FacilityNameFrench {
+        get {
+            return GetAttributeValue<string>("ovs_facilitynamefrench");
+        }
+        set {
+            SetAttributeValue("ovs_facilitynamefrench", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The category of facility associated with the location. </para>
+    /// <para>Display Name: Facility Type</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_facilitytype")]
+    [DisplayName("Facility Type")]
+    public ovs_facilitytype? ovs_FacilityType {
+        get {
+            return GetOptionSetValue<ovs_facilitytype>("ovs_facilitytype");
+        }
+        set {
+            SetOptionSetValue("ovs_facilitytype", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The unique airport code that designates each airport around the world.</para>
+    /// <para>Display Name: ICAO Code</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_icaocode")]
+    [DisplayName("ICAO Code")]
+    [MaxLength(100)]
+    public string ovs_ICAOCode {
+        get {
+            return GetAttributeValue<string>("ovs_icaocode");
+        }
+        set {
+            SetAttributeValue("ovs_icaocode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>The name of the aerodrome.</para>
+    /// <para>Display Name: Aerodrome Name</para>
+    /// </summary>
+    [AttributeLogicalName("ovs_name")]
+    [DisplayName("Aerodrome Name")]
+    [MaxLength(500)]
+    public string ovs_Name {
+        get {
+            return GetAttributeValue<string>("ovs_name");
+        }
+        set {
+            SetAttributeValue("ovs_name", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Status of the aerodrome</para>
+    /// <para>Display Name: Status</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("Status")]
+    public ovs_FacilityState? statecode {
+        get {
+            return GetOptionSetValue<ovs_FacilityState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for the status of the aerodrome</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public ovs_Facility_statuscode? statuscode {
+        get {
+            return GetOptionSetValue<ovs_Facility_statuscode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("lk_ovs_facility_createdby")]
+    public SystemUser lk_ovs_facility_createdby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ovs_facility_createdby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ovs_facility_createdby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("lk_ovs_facility_createdonbehalfby")]
+    public SystemUser lk_ovs_facility_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ovs_facility_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ovs_facility_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("lk_ovs_facility_modifiedby")]
+    public SystemUser lk_ovs_facility_modifiedby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ovs_facility_modifiedby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ovs_facility_modifiedby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("lk_ovs_facility_modifiedonbehalfby")]
+    public SystemUser lk_ovs_facility_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_ovs_facility_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_ovs_facility_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_facility_ProcessSession")]
+    public IEnumerable<ProcessSession> ovs_facility_ProcessSession {
+        get {
+            return GetRelatedEntities<ProcessSession>("ovs_facility_ProcessSession", null);
+        }
+        set {
+            SetRelatedEntities("ovs_facility_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_facility_SyncErrors")]
+    public IEnumerable<SyncError> ovs_facility_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("ovs_facility_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("ovs_facility_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection1")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection1 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection1", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection10")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection10 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection10", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection10", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection2")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection2 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection2", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection2", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection3")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection3 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection3", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection3", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection4")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection4 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection4", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection4", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection5")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection5 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection5", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection5", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection6")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection6 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection6", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection6", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection7")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection7 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection7", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection7", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection8")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection8 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection8", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection8", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection9")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightConnection9 {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightConnection9", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightConnection9", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightDestination_ovs_Facili")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightDestination_ovs_Facili {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightDestination_ovs_Facili", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightDestination_ovs_Facili", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ppp_Traveller_FlightOrigin_ovs_Facility")]
+    public IEnumerable<ppp_Traveller> ppp_Traveller_FlightOrigin_ovs_Facility {
+        get {
+            return GetRelatedEntities<ppp_Traveller>("ppp_Traveller_FlightOrigin_ovs_Facility", null);
+        }
+        set {
+            SetRelatedEntities("ppp_Traveller_FlightOrigin_ovs_Facility", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("owninguser")]
+    [RelationshipSchemaName("user_ovs_facility")]
+    public SystemUser user_ovs_facility {
+        get {
+            return GetRelatedEntity<SystemUser>("user_ovs_facility", null);
+        }
+        set {
+            SetRelatedEntity("user_ovs_facility", null, value);
+        }
+    }
+    
+    public static ovs_Facility Retrieve(IOrganizationService service, Guid id, params Expression<Func<ovs_Facility,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
 /// <para>TSIS 2.0 Finding against a Provision in an Inspection Questionnaire</para>
 /// <para>Display Name: Finding</para>
 /// </summary>
@@ -81898,6 +82670,47 @@ public partial class ovs_Questionnaire : ExtendedEntity<ovs_QuestionnaireState, 
         }
         set {
             SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Count the versions of this Questionnaire</para>
+    /// <para>Display Name: Number of Versions</para>
+    /// </summary>
+    [AttributeLogicalName("ts_numberofversions")]
+    [DisplayName("Number of Versions")]
+    [Range(-2147483648, 2147483647)]
+    public int? ts_numberofversions {
+        get {
+            return GetAttributeValue<int?>("ts_numberofversions");
+        }
+        set {
+            SetAttributeValue("ts_numberofversions", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Last Updated time of rollup field Number of Versions.</para>
+    /// <para>Display Name: Number of Versions (Last Updated On)</para>
+    /// </summary>
+    [AttributeLogicalName("ts_numberofversions_date")]
+    [DisplayName("Number of Versions (Last Updated On)")]
+    public DateTime? ts_numberofversions_Date {
+        get {
+            return GetAttributeValue<DateTime?>("ts_numberofversions_date");
+        }
+    }
+    
+    /// <summary>
+    /// <para>State of rollup field Number of Versions.</para>
+    /// <para>Display Name: Number of Versions (State)</para>
+    /// </summary>
+    [AttributeLogicalName("ts_numberofversions_state")]
+    [DisplayName("Number of Versions (State)")]
+    [Range(-2147483648, 2147483647)]
+    public int? ts_numberofversions_State {
+        get {
+            return GetAttributeValue<int?>("ts_numberofversions_state");
         }
     }
     
@@ -86464,6 +87277,138 @@ public partial class ppp_Traveller : ExtendedEntity<ppp_TravellerState, ppp_Trav
         }
         set {
             SetRelatedEntity("ppp_Traveller_AirCarrier_ovs_AirCarrier", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection1")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection1")]
+    public ovs_Facility ppp_Traveller_FlightConnection1 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection1", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection10")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection10")]
+    public ovs_Facility ppp_Traveller_FlightConnection10 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection10", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection10", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection2")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection2")]
+    public ovs_Facility ppp_Traveller_FlightConnection2 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection2", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection3")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection3")]
+    public ovs_Facility ppp_Traveller_FlightConnection3 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection3", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection3", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection4")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection4")]
+    public ovs_Facility ppp_Traveller_FlightConnection4 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection4", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection4", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection5")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection5")]
+    public ovs_Facility ppp_Traveller_FlightConnection5 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection5", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection5", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection6")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection6")]
+    public ovs_Facility ppp_Traveller_FlightConnection6 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection6", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection6", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection7")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection7")]
+    public ovs_Facility ppp_Traveller_FlightConnection7 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection7", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection7", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection8")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection8")]
+    public ovs_Facility ppp_Traveller_FlightConnection8 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection8", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection8", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightconnection9")]
+    [RelationshipSchemaName("ppp_Traveller_FlightConnection9")]
+    public ovs_Facility ppp_Traveller_FlightConnection9 {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightConnection9", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightConnection9", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightdestination")]
+    [RelationshipSchemaName("ppp_Traveller_FlightDestination_ovs_Facili")]
+    public ovs_Facility ppp_Traveller_FlightDestination_ovs_Facili {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightDestination_ovs_Facili", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightDestination_ovs_Facili", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ppp_flightorigin")]
+    [RelationshipSchemaName("ppp_Traveller_FlightOrigin_ovs_Facility")]
+    public ovs_Facility ppp_Traveller_FlightOrigin_ovs_Facility {
+        get {
+            return GetRelatedEntity<ovs_Facility>("ppp_Traveller_FlightOrigin_ovs_Facility", null);
+        }
+        set {
+            SetRelatedEntity("ppp_Traveller_FlightOrigin_ovs_Facility", null, value);
         }
     }
     
@@ -94732,6 +95677,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
         }
     }
     
+    public IQueryable<ovs_Facility> ovs_FacilitySet {
+        get {
+            return CreateQuery<ovs_Facility>();
+        }
+    }
+    
     public IQueryable<ovs_Finding> ovs_FindingSet {
         get {
             return CreateQuery<ovs_Finding>();
@@ -99861,6 +100812,30 @@ public enum ovs_AirCarrier_statuscode {
 }
 
 [DataContract()]
+public enum ovs_FacilityState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 1,
+}
+
+[DataContract()]
+public enum ovs_Facility_statuscode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 2,
+}
+
+[DataContract()]
 public enum ovs_FindingState {
     
     [EnumMember()]
@@ -101446,6 +102421,22 @@ public enum msdyn_inspectionresult {
     [EnumMember()]
     [OptionSetMetadata("NA", Index=3, Color="#0000ff")]
     NA = 192350003,
+}
+
+[DataContract()]
+public enum ovs_facilitytype {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Aerodrome", Index=0)]
+    Aerodrome = 918640000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Air Cargo Standalone Facility", Index=1)]
+    AirCargoStandaloneFacility = 918640001,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Rail Yard", Index=2)]
+    RailYard = 918640002,
 }
 
 [DataContract()]
