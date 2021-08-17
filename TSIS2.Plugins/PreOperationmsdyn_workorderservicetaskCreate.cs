@@ -103,12 +103,15 @@ namespace TSIS2.Plugins
                                         questionnaireVersionsQuery.Criteria.AddCondition("ts_ovs_questionnaire", ConditionOperator.Equal, servicetasktype.ovs_Questionnaire.Id);
 
                                         var questionnaireVersions = service.RetrieveMultiple(questionnaireVersionsQuery);
-                                        //For now just use the most recently modified version. Will replace with Effective Date logic later.
-                                        var latestQuestionnaireVersion = questionnaireVersions[0];
 
-                                        //Set questionnaire definition to latest questionnaire versions' definition
-                                        target.Attributes["ovs_questionnairedefinition"] = latestQuestionnaireVersion.Attributes["ts_questionnairedefinition"].ToString();
+                                        if (questionnaireVersions[0] != null)
+                                        {
+                                            //For now just use the most recently modified version. Will replace with Effective Date logic later.
+                                            var latestQuestionnaireVersion = questionnaireVersions[0];
 
+                                            //Set questionnaire definition to latest questionnaire versions' definition
+                                            target.Attributes["ovs_questionnairedefinition"] = latestQuestionnaireVersion.Attributes["ts_questionnairedefinition"].ToString();
+                                        }
                                     }
                                 }
                             }
