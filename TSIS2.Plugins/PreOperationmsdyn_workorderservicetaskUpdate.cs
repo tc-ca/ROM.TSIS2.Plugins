@@ -206,6 +206,14 @@ namespace TSIS2.Plugins
                                                     // reference current operation (Customer Asset Entity) (Lookup logical name: ovs_asset)
                                                     newFinding.ts_operationid = operationReference;
 
+                                                    // reference the Provision Category of the Provision
+                                                    JsonObject provisionData = finding.ContainsKey("provisionData") ? (JsonObject)finding["provisionData"] : new JsonObject();
+                                                    var provisionCategoryId = provisionData.ContainsKey("provisioncategoryid") ? provisionData["provisioncategoryid"] : null;
+                                                    if (provisionCategoryId != null)
+                                                    {
+                                                        newFinding.ts_ProvisionCategory = new EntityReference(ts_ProvisionCategory.EntityLogicalName, new Guid(provisionData["provisioncategoryid"]));
+                                                    }
+
                                                     // Create new ovs_finding
                                                     Guid newFindingId = service.Create(newFinding);
 
