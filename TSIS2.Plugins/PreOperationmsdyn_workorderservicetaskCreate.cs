@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
@@ -89,9 +90,25 @@ namespace TSIS2.Plugins
                                     target.Attributes["ovs_questionnaire"] = servicetasktype.ovs_Questionnaire;
                                     if (servicetasktype.ovs_Questionnaire != null && servicetasktype.ovs_Questionnaire.Id != null)
                                     {
-                                        Entity q = service.Retrieve("ovs_questionnaire", servicetasktype.ovs_Questionnaire.Id,
-                                            new Microsoft.Xrm.Sdk.Query.ColumnSet("ovs_questionnairedefinition"));
-                                        target.Attributes["ovs_questionnairedefinition"] = q.Attributes["ovs_questionnairedefinition"].ToString();
+                                        //Retrieve Questionnaire Versions
+
+                                        // Instantiate QueryExpression query
+                                        var questionnaireVersionsQuery = new QueryExpression("ts_questionnaireversion");
+
+                                        // Add columns to query.ColumnSet
+                                        questionnaireVersionsQuery.ColumnSet.AddColumns("ts_questionnairedefinition");
+                                        questionnaireVersionsQuery.AddOrder("modifiedon", OrderType.Descending);
+
+                                        // Define filter query.Criteria
+                                        questionnaireVersionsQuery.Criteria.AddCondition("ts_ovs_questionnaire", ConditionOperator.Equal, servicetasktype.ovs_Questionnaire.Id);
+
+                                        var questionnaireVersions = service.RetrieveMultiple(questionnaireVersionsQuery);
+                                        //For now just use the most recently modified version. Will replace with Effective Date logic later.
+                                        var latestQuestionnaireVersion = questionnaireVersions[0];
+
+                                        //Set questionnaire definition to latest questionnaire versions' definition
+                                        target.Attributes["ovs_questionnairedefinition"] = latestQuestionnaireVersion.Attributes["ts_questionnairedefinition"].ToString();
+
                                     }
                                 }
                             }
