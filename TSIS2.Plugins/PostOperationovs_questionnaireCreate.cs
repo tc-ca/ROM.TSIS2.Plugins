@@ -52,7 +52,7 @@ namespace TSIS2.Plugins
 
                         // Setup a new questionnaire version
                         var questionnaireVersion = new ts_questionnaireversion();
-                        questionnaireVersion.ts_name = "Version 1";
+                        questionnaireVersion.ts_name = questionnaire.ovs_Name + " - Version 1";
 
                         // Create the new questionnaire version
                         Guid newQuestionnaireVersionId = service.Create(questionnaireVersion);
