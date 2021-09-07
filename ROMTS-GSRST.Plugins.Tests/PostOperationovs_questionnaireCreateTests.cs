@@ -32,7 +32,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 // Expect one questionnaire version with name "Version 1"
                 Assert.Single(versions);
                 var questionnaireVersion = versions.First();
-                Assert.Equal("Version 1", questionnaireVersion.ts_name);
+                Assert.Equal("New Test Questionnaire - Version 1", questionnaireVersion.ts_name);
             }
         }
     }
