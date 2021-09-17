@@ -2869,6 +2869,26 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
     }
     
+    [RelationshipSchemaName("account_connections1")]
+    public IEnumerable<Connection> account_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("account_connections1", null);
+        }
+        set {
+            SetRelatedEntities("account_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("account_connections2")]
+    public IEnumerable<Connection> account_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("account_connections2", null);
+        }
+        set {
+            SetRelatedEntities("account_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("account_entitlement_Account")]
     public IEnumerable<Entitlement> account_entitlement_Account {
         get {
@@ -3317,16 +3337,6 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
         set {
             SetRelatedEntity("territory_accounts", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("ts_Incident_Stakeholder_Account")]
-    public IEnumerable<Incident> ts_Incident_Stakeholder_Account {
-        get {
-            return GetRelatedEntities<Incident>("ts_Incident_Stakeholder_Account", null);
-        }
-        set {
-            SetRelatedEntities("ts_Incident_Stakeholder_Account", null, value);
         }
     }
     
@@ -5210,6 +5220,26 @@ public partial class ActivityPointer : ExtendedEntity<ActivityPointerState, Acti
         }
     }
     
+    [RelationshipSchemaName("activitypointer_connections1")]
+    public IEnumerable<Connection> activitypointer_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("activitypointer_connections1", null);
+        }
+        set {
+            SetRelatedEntities("activitypointer_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("activitypointer_connections2")]
+    public IEnumerable<Connection> activitypointer_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("activitypointer_connections2", null);
+        }
+        set {
+            SetRelatedEntities("activitypointer_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("bookableresourcebooking_ActivityPointers")]
     public BookableResourceBooking bookableresourcebooking_ActivityPointers {
@@ -6604,6 +6634,26 @@ public partial class Appointment : ExtendedEntity<AppointmentState, Appointment_
         }
         set {
             SetRelatedEntities("appointment_campaignresponse", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("appointment_connections1")]
+    public IEnumerable<Connection> appointment_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("appointment_connections1", null);
+        }
+        set {
+            SetRelatedEntities("appointment_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("appointment_connections2")]
+    public IEnumerable<Connection> appointment_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("appointment_connections2", null);
+        }
+        set {
+            SetRelatedEntities("appointment_connections2", null, value);
         }
     }
     
@@ -10753,6 +10803,26 @@ public partial class Campaign : ExtendedEntity<CampaignState, Campaign_StatusCod
         }
     }
     
+    [RelationshipSchemaName("campaign_connections1")]
+    public IEnumerable<Connection> campaign_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("campaign_connections1", null);
+        }
+        set {
+            SetRelatedEntities("campaign_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("campaign_connections2")]
+    public IEnumerable<Connection> campaign_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("campaign_connections2", null);
+        }
+        set {
+            SetRelatedEntities("campaign_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("campaign_leads")]
     public IEnumerable<Lead> campaign_leads {
         get {
@@ -12212,6 +12282,26 @@ public partial class CampaignActivity : ExtendedEntity<CampaignActivityState, Ca
         }
         set {
             SetRelatedEntities("campaignactivity_activityparties", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("campaignactivity_connections1")]
+    public IEnumerable<Connection> campaignactivity_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("campaignactivity_connections1", null);
+        }
+        set {
+            SetRelatedEntities("campaignactivity_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("campaignactivity_connections2")]
+    public IEnumerable<Connection> campaignactivity_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("campaignactivity_connections2", null);
+        }
+        set {
+            SetRelatedEntities("campaignactivity_connections2", null, value);
         }
     }
     
@@ -14264,6 +14354,1495 @@ public partial class CampaignResponse : ExtendedEntity<CampaignResponseState, Ca
     }
     
     public static CampaignResponse Retrieve(IOrganizationService service, Guid id, params Expression<Func<CampaignResponse,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+/// <summary>
+/// <para>Relationship between two entities.</para>
+/// <para>Display Name: Connection</para>
+/// </summary>
+[EntityLogicalName("connection")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class Connection : ExtendedEntity<ConnectionState, Connection_StatusCode> {
+    
+    public const string EntityLogicalName = "connection";
+    
+    public const int EntityTypeCode = 3234;
+    
+    public Connection() : 
+            base(EntityLogicalName) {
+    }
+    
+    public Connection(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay("name");
+        }
+    }
+    
+    [AttributeLogicalName("connectionid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("connectionid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the connection.</para>
+    /// <para>Display Name: Connection</para>
+    /// </summary>
+    [AttributeLogicalName("connectionid")]
+    [DisplayName("Connection")]
+    public Guid? ConnectionId {
+        get {
+            return GetAttributeValue<Guid?>("connectionid");
+        }
+        set {
+            SetId("connectionid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows who created the record.</para>
+    /// <para>Display Name: Created By</para>
+    /// </summary>
+    [AttributeLogicalName("createdby")]
+    [DisplayName("Created By")]
+    public EntityReference CreatedBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the date and time when the record was created. The date and time are displayed in the time zone selected in Microsoft Dynamics 365 options.</para>
+    /// <para>Display Name: Created On</para>
+    /// </summary>
+    [AttributeLogicalName("createdon")]
+    [DisplayName("Created On")]
+    public DateTime? CreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("createdon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows who created the record on behalf of another user.</para>
+    /// <para>Display Name: Created By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("createdonbehalfby")]
+    [DisplayName("Created By (Delegate)")]
+    public EntityReference CreatedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("createdonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Type additional information to describe the connection, such as the length or quality of the relationship.</para>
+    /// <para>Display Name: Description</para>
+    /// </summary>
+    [AttributeLogicalName("description")]
+    [DisplayName("Description")]
+    public string Description {
+        get {
+            return GetAttributeValue<string>("description");
+        }
+        set {
+            SetAttributeValue("description", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the end date of the connection.</para>
+    /// <para>Display Name: Ending</para>
+    /// </summary>
+    [AttributeLogicalName("effectiveend")]
+    [DisplayName("Ending")]
+    public DateTime? EffectiveEnd {
+        get {
+            return GetAttributeValue<DateTime?>("effectiveend");
+        }
+        set {
+            SetAttributeValue("effectiveend", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the start date of the connection.</para>
+    /// <para>Display Name: Starting</para>
+    /// </summary>
+    [AttributeLogicalName("effectivestart")]
+    [DisplayName("Starting")]
+    public DateTime? EffectiveStart {
+        get {
+            return GetAttributeValue<DateTime?>("effectivestart");
+        }
+        set {
+            SetAttributeValue("effectivestart", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>For internal use only.</para>
+    /// <para>Display Name: Entity Image Id</para>
+    /// </summary>
+    [AttributeLogicalName("entityimageid")]
+    [DisplayName("Entity Image Id")]
+    public Guid? EntityImageId {
+        get {
+            return GetAttributeValue<Guid?>("entityimageid");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the conversion rate of the record's currency. The exchange rate is used to convert all money fields in the record from the local currency to the system's default currency.</para>
+    /// <para>Display Name: Exchange Rate</para>
+    /// </summary>
+    [AttributeLogicalName("exchangerate")]
+    [DisplayName("Exchange Rate")]
+    public decimal? ExchangeRate {
+        get {
+            return GetAttributeValue<decimal?>("exchangerate");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the data import or data migration that created this record.</para>
+    /// <para>Display Name: Import Sequence Number</para>
+    /// </summary>
+    [AttributeLogicalName("importsequencenumber")]
+    [DisplayName("Import Sequence Number")]
+    [Range(-2147483648, 2147483647)]
+    public int? ImportSequenceNumber {
+        get {
+            return GetAttributeValue<int?>("importsequencenumber");
+        }
+        set {
+            SetAttributeValue("importsequencenumber", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Indicates that this is the master record.</para>
+    /// <para>Display Name: Is Master</para>
+    /// </summary>
+    [AttributeLogicalName("ismaster")]
+    [DisplayName("Is Master")]
+    public bool? IsMaster {
+        get {
+            return GetAttributeValue<bool?>("ismaster");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows who last updated the record.</para>
+    /// <para>Display Name: Modified By</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedby")]
+    [DisplayName("Modified By")]
+    public EntityReference ModifiedBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the date and time when the record was last updated. The date and time are displayed in the time zone selected in Microsoft Dynamics 365 options.</para>
+    /// <para>Display Name: Modified On</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedon")]
+    [DisplayName("Modified On")]
+    public DateTime? ModifiedOn {
+        get {
+            return GetAttributeValue<DateTime?>("modifiedon");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows who last updated the record on behalf of another user.</para>
+    /// <para>Display Name: Modified By (Delegate)</para>
+    /// </summary>
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [DisplayName("Modified By (Delegate)")]
+    public EntityReference ModifiedOnBehalfBy {
+        get {
+            return GetAttributeValue<EntityReference>("modifiedonbehalfby");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Name of the connection.</para>
+    /// <para>Display Name: Connection Name</para>
+    /// </summary>
+    [AttributeLogicalName("name")]
+    [DisplayName("Connection Name")]
+    [MaxLength(500)]
+    public string Name {
+        get {
+            return GetAttributeValue<string>("name");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Date and time that the record was migrated.</para>
+    /// <para>Display Name: Record Created On</para>
+    /// </summary>
+    [AttributeLogicalName("overriddencreatedon")]
+    [DisplayName("Record Created On")]
+    public DateTime? OverriddenCreatedOn {
+        get {
+            return GetAttributeValue<DateTime?>("overriddencreatedon");
+        }
+        set {
+            SetAttributeValue("overriddencreatedon", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Enter the user or team who is assigned to manage the record. This field is updated every time the record is assigned to a different user.</para>
+    /// <para>Display Name: Owner</para>
+    /// </summary>
+    [AttributeLogicalName("ownerid")]
+    [DisplayName("Owner")]
+    public EntityReference OwnerId {
+        get {
+            return GetAttributeValue<EntityReference>("ownerid");
+        }
+        set {
+            SetAttributeValue("ownerid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the business unit that the record owner belongs to.</para>
+    /// <para>Display Name: Owning Business Unit</para>
+    /// </summary>
+    [AttributeLogicalName("owningbusinessunit")]
+    [DisplayName("Owning Business Unit")]
+    public EntityReference OwningBusinessUnit {
+        get {
+            return GetAttributeValue<EntityReference>("owningbusinessunit");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the team who owns the connection.</para>
+    /// <para>Display Name: Owning Team</para>
+    /// </summary>
+    [AttributeLogicalName("owningteam")]
+    [DisplayName("Owning Team")]
+    public EntityReference OwningTeam {
+        get {
+            return GetAttributeValue<EntityReference>("owningteam");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the user who owns the connection.</para>
+    /// <para>Display Name: Owning User</para>
+    /// </summary>
+    [AttributeLogicalName("owninguser")]
+    [DisplayName("Owning User")]
+    public EntityReference OwningUser {
+        get {
+            return GetAttributeValue<EntityReference>("owninguser");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the source record.</para>
+    /// <para>Display Name: Connected From</para>
+    /// </summary>
+    [AttributeLogicalName("record1id")]
+    [DisplayName("Connected From")]
+    public EntityReference Record1Id {
+        get {
+            return GetAttributeValue<EntityReference>("record1id");
+        }
+        set {
+            SetAttributeValue("record1id", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the record type of the source record.</para>
+    /// <para>Display Name: Type (From)</para>
+    /// </summary>
+    [AttributeLogicalName("record1objecttypecode")]
+    [DisplayName("Type (From)")]
+    public Connection_Record1ObjectTypeCode? Record1ObjectTypeCode {
+        get {
+            return GetOptionSetValue<Connection_Record1ObjectTypeCode>("record1objecttypecode");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Choose the primary party's role or relationship with the second party.</para>
+    /// <para>Display Name: Role (From)</para>
+    /// </summary>
+    [AttributeLogicalName("record1roleid")]
+    [DisplayName("Role (From)")]
+    public EntityReference Record1RoleId {
+        get {
+            return GetAttributeValue<EntityReference>("record1roleid");
+        }
+        set {
+            SetAttributeValue("record1roleid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier of the target record.</para>
+    /// <para>Display Name: Connected To</para>
+    /// </summary>
+    [AttributeLogicalName("record2id")]
+    [DisplayName("Connected To")]
+    public EntityReference Record2Id {
+        get {
+            return GetAttributeValue<EntityReference>("record2id");
+        }
+        set {
+            SetAttributeValue("record2id", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows the record type of the target record.</para>
+    /// <para>Display Name: Type (To)</para>
+    /// </summary>
+    [AttributeLogicalName("record2objecttypecode")]
+    [DisplayName("Type (To)")]
+    public Connection_Record2ObjectTypeCode? Record2ObjectTypeCode {
+        get {
+            return GetOptionSetValue<Connection_Record2ObjectTypeCode>("record2objecttypecode");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Choose the secondary party's role or relationship with the primary party.</para>
+    /// <para>Display Name: Role (To)</para>
+    /// </summary>
+    [AttributeLogicalName("record2roleid")]
+    [DisplayName("Role (To)")]
+    public EntityReference Record2RoleId {
+        get {
+            return GetAttributeValue<EntityReference>("record2roleid");
+        }
+        set {
+            SetAttributeValue("record2roleid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Unique identifier for the reciprocal connection record.</para>
+    /// <para>Display Name: Reciprocal Connection</para>
+    /// </summary>
+    [AttributeLogicalName("relatedconnectionid")]
+    [DisplayName("Reciprocal Connection")]
+    public EntityReference RelatedConnectionId {
+        get {
+            return GetAttributeValue<EntityReference>("relatedconnectionid");
+        }
+    }
+    
+    /// <summary>
+    /// <para>Shows whether the connection is active or inactive. Inactive connections are read-only and can't be edited unless they are reactivated.</para>
+    /// <para>Display Name: Status</para>
+    /// </summary>
+    [AttributeLogicalName("statecode")]
+    [DisplayName("Status")]
+    public ConnectionState? StateCode {
+        get {
+            return GetOptionSetValue<ConnectionState>("statecode");
+        }
+        set {
+            SetOptionSetValue("statecode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Reason for the status of the connection.</para>
+    /// <para>Display Name: Status Reason</para>
+    /// </summary>
+    [AttributeLogicalName("statuscode")]
+    [DisplayName("Status Reason")]
+    public Connection_StatusCode? StatusCode {
+        get {
+            return GetOptionSetValue<Connection_StatusCode>("statuscode");
+        }
+        set {
+            SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Choose the local currency for the record to make sure budgets are reported in the correct currency.</para>
+    /// <para>Display Name: Currency</para>
+    /// </summary>
+    [AttributeLogicalName("transactioncurrencyid")]
+    [DisplayName("Currency")]
+    public EntityReference TransactionCurrencyId {
+        get {
+            return GetAttributeValue<EntityReference>("transactioncurrencyid");
+        }
+        set {
+            SetAttributeValue("transactioncurrencyid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Version number of the connection.</para>
+    /// <para>Display Name: Version Number</para>
+    /// </summary>
+    [AttributeLogicalName("versionnumber")]
+    [DisplayName("Version Number")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [RelationshipSchemaName("Connection_ProcessSessions")]
+    public IEnumerable<ProcessSession> Connection_ProcessSessions {
+        get {
+            return GetRelatedEntities<ProcessSession>("Connection_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntities("Connection_ProcessSessions", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("Connection_SyncErrors")]
+    public IEnumerable<SyncError> Connection_SyncErrors {
+        get {
+            return GetRelatedEntities<SyncError>("Connection_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntities("Connection_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("connection_related_connection", EntityRole.Referenced)]
+    public IEnumerable<Connection> Referencedconnection_related_connection {
+        get {
+            return GetRelatedEntities<Connection>("connection_related_connection", EntityRole.Referenced);
+        }
+        set {
+            SetRelatedEntities("connection_related_connection", EntityRole.Referenced, value);
+        }
+    }
+    
+    [AttributeLogicalName("relatedconnectionid")]
+    [RelationshipSchemaName("connection_related_connection", EntityRole.Referencing)]
+    public Connection Referencingconnection_related_connection {
+        get {
+            return GetRelatedEntity<Connection>("connection_related_connection", EntityRole.Referencing);
+        }
+        set {
+            SetRelatedEntity("connection_related_connection", EntityRole.Referencing, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("account_connections1")]
+    public Account account_connections1 {
+        get {
+            return GetRelatedEntity<Account>("account_connections1", null);
+        }
+        set {
+            SetRelatedEntity("account_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("account_connections2")]
+    public Account account_connections2 {
+        get {
+            return GetRelatedEntity<Account>("account_connections2", null);
+        }
+        set {
+            SetRelatedEntity("account_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("activitypointer_connections1")]
+    public ActivityPointer activitypointer_connections1 {
+        get {
+            return GetRelatedEntity<ActivityPointer>("activitypointer_connections1", null);
+        }
+        set {
+            SetRelatedEntity("activitypointer_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("activitypointer_connections2")]
+    public ActivityPointer activitypointer_connections2 {
+        get {
+            return GetRelatedEntity<ActivityPointer>("activitypointer_connections2", null);
+        }
+        set {
+            SetRelatedEntity("activitypointer_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("appointment_connections1")]
+    public Appointment appointment_connections1 {
+        get {
+            return GetRelatedEntity<Appointment>("appointment_connections1", null);
+        }
+        set {
+            SetRelatedEntity("appointment_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("appointment_connections2")]
+    public Appointment appointment_connections2 {
+        get {
+            return GetRelatedEntity<Appointment>("appointment_connections2", null);
+        }
+        set {
+            SetRelatedEntity("appointment_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("campaign_connections1")]
+    public Campaign campaign_connections1 {
+        get {
+            return GetRelatedEntity<Campaign>("campaign_connections1", null);
+        }
+        set {
+            SetRelatedEntity("campaign_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("campaign_connections2")]
+    public Campaign campaign_connections2 {
+        get {
+            return GetRelatedEntity<Campaign>("campaign_connections2", null);
+        }
+        set {
+            SetRelatedEntity("campaign_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("campaignactivity_connections1")]
+    public CampaignActivity campaignactivity_connections1 {
+        get {
+            return GetRelatedEntity<CampaignActivity>("campaignactivity_connections1", null);
+        }
+        set {
+            SetRelatedEntity("campaignactivity_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("campaignactivity_connections2")]
+    public CampaignActivity campaignactivity_connections2 {
+        get {
+            return GetRelatedEntity<CampaignActivity>("campaignactivity_connections2", null);
+        }
+        set {
+            SetRelatedEntity("campaignactivity_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("contact_connections1")]
+    public Contact contact_connections1 {
+        get {
+            return GetRelatedEntity<Contact>("contact_connections1", null);
+        }
+        set {
+            SetRelatedEntity("contact_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("contact_connections2")]
+    public Contact contact_connections2 {
+        get {
+            return GetRelatedEntity<Contact>("contact_connections2", null);
+        }
+        set {
+            SetRelatedEntity("contact_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("contract_connections1")]
+    public Contract contract_connections1 {
+        get {
+            return GetRelatedEntity<Contract>("contract_connections1", null);
+        }
+        set {
+            SetRelatedEntity("contract_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("contract_connections2")]
+    public Contract contract_connections2 {
+        get {
+            return GetRelatedEntity<Contract>("contract_connections2", null);
+        }
+        set {
+            SetRelatedEntity("contract_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdby")]
+    [RelationshipSchemaName("createdby_connection")]
+    public SystemUser createdby_connection {
+        get {
+            return GetRelatedEntity<SystemUser>("createdby_connection", null);
+        }
+        set {
+            SetRelatedEntity("createdby_connection", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("email_connections1")]
+    public Email email_connections1 {
+        get {
+            return GetRelatedEntity<Email>("email_connections1", null);
+        }
+        set {
+            SetRelatedEntity("email_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("email_connections2")]
+    public Email email_connections2 {
+        get {
+            return GetRelatedEntity<Email>("email_connections2", null);
+        }
+        set {
+            SetRelatedEntity("email_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("entitlement_connections1")]
+    public Entitlement entitlement_connections1 {
+        get {
+            return GetRelatedEntity<Entitlement>("entitlement_connections1", null);
+        }
+        set {
+            SetRelatedEntity("entitlement_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("entitlement_connections2")]
+    public Entitlement entitlement_connections2 {
+        get {
+            return GetRelatedEntity<Entitlement>("entitlement_connections2", null);
+        }
+        set {
+            SetRelatedEntity("entitlement_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("incident_connections1")]
+    public Incident incident_connections1 {
+        get {
+            return GetRelatedEntity<Incident>("incident_connections1", null);
+        }
+        set {
+            SetRelatedEntity("incident_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("incident_connections2")]
+    public Incident incident_connections2 {
+        get {
+            return GetRelatedEntity<Incident>("incident_connections2", null);
+        }
+        set {
+            SetRelatedEntity("incident_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("invoice_connections1")]
+    public Invoice invoice_connections1 {
+        get {
+            return GetRelatedEntity<Invoice>("invoice_connections1", null);
+        }
+        set {
+            SetRelatedEntity("invoice_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("invoice_connections2")]
+    public Invoice invoice_connections2 {
+        get {
+            return GetRelatedEntity<Invoice>("invoice_connections2", null);
+        }
+        set {
+            SetRelatedEntity("invoice_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("lead_connections1")]
+    public Lead lead_connections1 {
+        get {
+            return GetRelatedEntity<Lead>("lead_connections1", null);
+        }
+        set {
+            SetRelatedEntity("lead_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("lead_connections2")]
+    public Lead lead_connections2 {
+        get {
+            return GetRelatedEntity<Lead>("lead_connections2", null);
+        }
+        set {
+            SetRelatedEntity("lead_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("createdonbehalfby")]
+    [RelationshipSchemaName("lk_connectionbase_createdonbehalfby")]
+    public SystemUser lk_connectionbase_createdonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_connectionbase_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_connectionbase_createdonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedonbehalfby")]
+    [RelationshipSchemaName("lk_connectionbase_modifiedonbehalfby")]
+    public SystemUser lk_connectionbase_modifiedonbehalfby {
+        get {
+            return GetRelatedEntity<SystemUser>("lk_connectionbase_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntity("lk_connectionbase_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("modifiedby")]
+    [RelationshipSchemaName("modifiedby_connection")]
+    public SystemUser modifiedby_connection {
+        get {
+            return GetRelatedEntity<SystemUser>("modifiedby_connection", null);
+        }
+        set {
+            SetRelatedEntity("modifiedby_connection", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_agreement_connections1")]
+    public msdyn_agreement msdyn_agreement_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_agreement>("msdyn_agreement_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreement_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_agreement_connections2")]
+    public msdyn_agreement msdyn_agreement_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_agreement>("msdyn_agreement_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreement_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_connections1")]
+    public msdyn_agreementbookingproduct msdyn_agreementbookingproduct_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingproduct>("msdyn_agreementbookingproduct_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingproduct_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_connections2")]
+    public msdyn_agreementbookingproduct msdyn_agreementbookingproduct_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingproduct>("msdyn_agreementbookingproduct_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingproduct_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_agreementbookingservice_connections1")]
+    public msdyn_agreementbookingservice msdyn_agreementbookingservice_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingservice>("msdyn_agreementbookingservice_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingservice_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_agreementbookingservice_connections2")]
+    public msdyn_agreementbookingservice msdyn_agreementbookingservice_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_agreementbookingservice>("msdyn_agreementbookingservice_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementbookingservice_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_connections1")]
+    public msdyn_agreementinvoiceproduct msdyn_agreementinvoiceproduct_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_agreementinvoiceproduct>("msdyn_agreementinvoiceproduct_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementinvoiceproduct_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_connections2")]
+    public msdyn_agreementinvoiceproduct msdyn_agreementinvoiceproduct_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_agreementinvoiceproduct>("msdyn_agreementinvoiceproduct_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_agreementinvoiceproduct_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_bookingalert_connections1")]
+    public msdyn_bookingalert msdyn_bookingalert_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_bookingalert>("msdyn_bookingalert_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingalert_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_bookingalert_connections2")]
+    public msdyn_bookingalert msdyn_bookingalert_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_bookingalert>("msdyn_bookingalert_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_bookingalert_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_customerasset_connections1")]
+    public msdyn_customerasset msdyn_customerasset_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_customerasset>("msdyn_customerasset_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_customerasset_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_customerasset_connections2")]
+    public msdyn_customerasset msdyn_customerasset_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_customerasset>("msdyn_customerasset_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_customerasset_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_functionallocation_connections1")]
+    public msdyn_FunctionalLocation msdyn_functionallocation_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_FunctionalLocation>("msdyn_functionallocation_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_functionallocation_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_functionallocation_connections2")]
+    public msdyn_FunctionalLocation msdyn_functionallocation_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_FunctionalLocation>("msdyn_functionallocation_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_functionallocation_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_connections1")]
+    public msdyn_incidenttypeproduct msdyn_incidenttypeproduct_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeproduct>("msdyn_incidenttypeproduct_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeproduct_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_connections2")]
+    public msdyn_incidenttypeproduct msdyn_incidenttypeproduct_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeproduct>("msdyn_incidenttypeproduct_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeproduct_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_incidenttypeservice_connections1")]
+    public msdyn_incidenttypeservice msdyn_incidenttypeservice_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeservice>("msdyn_incidenttypeservice_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeservice_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_incidenttypeservice_connections2")]
+    public msdyn_incidenttypeservice msdyn_incidenttypeservice_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_incidenttypeservice>("msdyn_incidenttypeservice_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_incidenttypeservice_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_purchaseorder_connections1")]
+    public msdyn_purchaseorder msdyn_purchaseorder_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorder>("msdyn_purchaseorder_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorder_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_purchaseorder_connections2")]
+    public msdyn_purchaseorder msdyn_purchaseorder_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorder>("msdyn_purchaseorder_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorder_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_connections1")]
+    public msdyn_purchaseorderproduct msdyn_purchaseorderproduct_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorderproduct>("msdyn_purchaseorderproduct_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorderproduct_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_connections2")]
+    public msdyn_purchaseorderproduct msdyn_purchaseorderproduct_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_purchaseorderproduct>("msdyn_purchaseorderproduct_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_purchaseorderproduct_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_rma_connections1")]
+    public msdyn_rma msdyn_rma_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_rma>("msdyn_rma_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_rma_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_rma_connections2")]
+    public msdyn_rma msdyn_rma_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_rma>("msdyn_rma_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_rma_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_timeoffrequest_connections1")]
+    public msdyn_timeoffrequest msdyn_timeoffrequest_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_timeoffrequest>("msdyn_timeoffrequest_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_timeoffrequest_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_timeoffrequest_connections2")]
+    public msdyn_timeoffrequest msdyn_timeoffrequest_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_timeoffrequest>("msdyn_timeoffrequest_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_timeoffrequest_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_workorder_connections1")]
+    public msdyn_workorder msdyn_workorder_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_workorder>("msdyn_workorder_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorder_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_workorder_connections2")]
+    public msdyn_workorder msdyn_workorder_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_workorder>("msdyn_workorder_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorder_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_workorderincident_connections1")]
+    public msdyn_workorderincident msdyn_workorderincident_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_workorderincident>("msdyn_workorderincident_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderincident_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_workorderincident_connections2")]
+    public msdyn_workorderincident msdyn_workorderincident_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_workorderincident>("msdyn_workorderincident_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderincident_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_workorderproduct_connections1")]
+    public msdyn_workorderproduct msdyn_workorderproduct_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_workorderproduct>("msdyn_workorderproduct_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderproduct_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_workorderproduct_connections2")]
+    public msdyn_workorderproduct msdyn_workorderproduct_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_workorderproduct>("msdyn_workorderproduct_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderproduct_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_workorderservice_connections1")]
+    public msdyn_workorderservice msdyn_workorderservice_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_workorderservice>("msdyn_workorderservice_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservice_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_workorderservice_connections2")]
+    public msdyn_workorderservice msdyn_workorderservice_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_workorderservice>("msdyn_workorderservice_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservice_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msdyn_workorderservicetask_connections1")]
+    public msdyn_workorderservicetask msdyn_workorderservicetask_connections1 {
+        get {
+            return GetRelatedEntity<msdyn_workorderservicetask>("msdyn_workorderservicetask_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservicetask_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msdyn_workorderservicetask_connections2")]
+    public msdyn_workorderservicetask msdyn_workorderservicetask_connections2 {
+        get {
+            return GetRelatedEntity<msdyn_workorderservicetask>("msdyn_workorderservicetask_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservicetask_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("msfp_alert_connections1")]
+    public msfp_alert msfp_alert_connections1 {
+        get {
+            return GetRelatedEntity<msfp_alert>("msfp_alert_connections1", null);
+        }
+        set {
+            SetRelatedEntity("msfp_alert_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("msfp_alert_connections2")]
+    public msfp_alert msfp_alert_connections2 {
+        get {
+            return GetRelatedEntity<msfp_alert>("msfp_alert_connections2", null);
+        }
+        set {
+            SetRelatedEntity("msfp_alert_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("opportunity_connections1")]
+    public Opportunity opportunity_connections1 {
+        get {
+            return GetRelatedEntity<Opportunity>("opportunity_connections1", null);
+        }
+        set {
+            SetRelatedEntity("opportunity_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("opportunity_connections2")]
+    public Opportunity opportunity_connections2 {
+        get {
+            return GetRelatedEntity<Opportunity>("opportunity_connections2", null);
+        }
+        set {
+            SetRelatedEntity("opportunity_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("ovs_operation_connections1")]
+    public ovs_operation ovs_operation_connections1 {
+        get {
+            return GetRelatedEntity<ovs_operation>("ovs_operation_connections1", null);
+        }
+        set {
+            SetRelatedEntity("ovs_operation_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("ovs_operation_connections2")]
+    public ovs_operation ovs_operation_connections2 {
+        get {
+            return GetRelatedEntity<ovs_operation>("ovs_operation_connections2", null);
+        }
+        set {
+            SetRelatedEntity("ovs_operation_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("phonecall_connections1")]
+    public PhoneCall phonecall_connections1 {
+        get {
+            return GetRelatedEntity<PhoneCall>("phonecall_connections1", null);
+        }
+        set {
+            SetRelatedEntity("phonecall_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("phonecall_connections2")]
+    public PhoneCall phonecall_connections2 {
+        get {
+            return GetRelatedEntity<PhoneCall>("phonecall_connections2", null);
+        }
+        set {
+            SetRelatedEntity("phonecall_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("processsession_connections1")]
+    public ProcessSession processsession_connections1 {
+        get {
+            return GetRelatedEntity<ProcessSession>("processsession_connections1", null);
+        }
+        set {
+            SetRelatedEntity("processsession_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("processsession_connections2")]
+    public ProcessSession processsession_connections2 {
+        get {
+            return GetRelatedEntity<ProcessSession>("processsession_connections2", null);
+        }
+        set {
+            SetRelatedEntity("processsession_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("product_connections1")]
+    public Product product_connections1 {
+        get {
+            return GetRelatedEntity<Product>("product_connections1", null);
+        }
+        set {
+            SetRelatedEntity("product_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("product_connections2")]
+    public Product product_connections2 {
+        get {
+            return GetRelatedEntity<Product>("product_connections2", null);
+        }
+        set {
+            SetRelatedEntity("product_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("quote_connections1")]
+    public Quote quote_connections1 {
+        get {
+            return GetRelatedEntity<Quote>("quote_connections1", null);
+        }
+        set {
+            SetRelatedEntity("quote_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("quote_connections2")]
+    public Quote quote_connections2 {
+        get {
+            return GetRelatedEntity<Quote>("quote_connections2", null);
+        }
+        set {
+            SetRelatedEntity("quote_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("recurringappointmentmaster_connections1")]
+    public RecurringAppointmentMaster recurringappointmentmaster_connections1 {
+        get {
+            return GetRelatedEntity<RecurringAppointmentMaster>("recurringappointmentmaster_connections1", null);
+        }
+        set {
+            SetRelatedEntity("recurringappointmentmaster_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("recurringappointmentmaster_connections2")]
+    public RecurringAppointmentMaster recurringappointmentmaster_connections2 {
+        get {
+            return GetRelatedEntity<RecurringAppointmentMaster>("recurringappointmentmaster_connections2", null);
+        }
+        set {
+            SetRelatedEntity("recurringappointmentmaster_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("salesorder_connections1")]
+    public SalesOrder salesorder_connections1 {
+        get {
+            return GetRelatedEntity<SalesOrder>("salesorder_connections1", null);
+        }
+        set {
+            SetRelatedEntity("salesorder_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("salesorder_connections2")]
+    public SalesOrder salesorder_connections2 {
+        get {
+            return GetRelatedEntity<SalesOrder>("salesorder_connections2", null);
+        }
+        set {
+            SetRelatedEntity("salesorder_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("serviceappointment_connections1")]
+    public ServiceAppointment serviceappointment_connections1 {
+        get {
+            return GetRelatedEntity<ServiceAppointment>("serviceappointment_connections1", null);
+        }
+        set {
+            SetRelatedEntity("serviceappointment_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("serviceappointment_connections2")]
+    public ServiceAppointment serviceappointment_connections2 {
+        get {
+            return GetRelatedEntity<ServiceAppointment>("serviceappointment_connections2", null);
+        }
+        set {
+            SetRelatedEntity("serviceappointment_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("systemuser_connections1")]
+    public SystemUser systemuser_connections1 {
+        get {
+            return GetRelatedEntity<SystemUser>("systemuser_connections1", null);
+        }
+        set {
+            SetRelatedEntity("systemuser_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("systemuser_connections2")]
+    public SystemUser systemuser_connections2 {
+        get {
+            return GetRelatedEntity<SystemUser>("systemuser_connections2", null);
+        }
+        set {
+            SetRelatedEntity("systemuser_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("task_connections1")]
+    public Task task_connections1 {
+        get {
+            return GetRelatedEntity<Task>("task_connections1", null);
+        }
+        set {
+            SetRelatedEntity("task_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("task_connections2")]
+    public Task task_connections2 {
+        get {
+            return GetRelatedEntity<Task>("task_connections2", null);
+        }
+        set {
+            SetRelatedEntity("task_connections2", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record1id")]
+    [RelationshipSchemaName("territory_connections1")]
+    public Territory territory_connections1 {
+        get {
+            return GetRelatedEntity<Territory>("territory_connections1", null);
+        }
+        set {
+            SetRelatedEntity("territory_connections1", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("record2id")]
+    [RelationshipSchemaName("territory_connections2")]
+    public Territory territory_connections2 {
+        get {
+            return GetRelatedEntity<Territory>("territory_connections2", null);
+        }
+        set {
+            SetRelatedEntity("territory_connections2", null, value);
+        }
+    }
+    
+    public static Connection Retrieve(IOrganizationService service, Guid id, params Expression<Func<Connection,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
 }
@@ -17487,6 +19066,26 @@ public partial class Contact : ExtendedEntity<ContactState, Contact_StatusCode> 
         }
     }
     
+    [RelationshipSchemaName("contact_connections1")]
+    public IEnumerable<Connection> contact_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("contact_connections1", null);
+        }
+        set {
+            SetRelatedEntities("contact_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("contact_connections2")]
+    public IEnumerable<Connection> contact_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("contact_connections2", null);
+        }
+        set {
+            SetRelatedEntities("contact_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("parentcustomerid")]
     [RelationshipSchemaName("contact_customer_accounts")]
     public Account contact_customer_accounts {
@@ -19367,6 +20966,26 @@ public partial class Contract : ExtendedEntity<ContractState, Contract_StatusCod
         }
         set {
             SetRelatedEntities("contract_cases", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("contract_connections1")]
+    public IEnumerable<Connection> contract_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("contract_connections1", null);
+        }
+        set {
+            SetRelatedEntities("contract_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("contract_connections2")]
+    public IEnumerable<Connection> contract_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("contract_connections2", null);
+        }
+        set {
+            SetRelatedEntities("contract_connections2", null, value);
         }
     }
     
@@ -21776,6 +23395,22 @@ public partial class Email : ExtendedEntity<EmailState, Email_StatusCode> {
         }
     }
     
+    /// <summary>
+    /// <para>Individual email will be sent to each recipient.</para>
+    /// <para>Display Name: Recipient List</para>
+    /// </summary>
+    [AttributeLogicalName("msdyn_recipientlist")]
+    [DisplayName("Recipient List")]
+    [MaxLength(8000)]
+    public string msdyn_RecipientList {
+        get {
+            return GetAttributeValue<string>("msdyn_recipientlist");
+        }
+        set {
+            SetAttributeValue("msdyn_recipientlist", value);
+        }
+    }
+    
     [AttributeLogicalName("emailsender")]
     [RelationshipSchemaName("Account_Email_EmailSender")]
     public Account Account_Email_EmailSender {
@@ -22086,6 +23721,26 @@ public partial class Email : ExtendedEntity<EmailState, Email_StatusCode> {
         }
         set {
             SetRelatedEntities("email_campaignresponse", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("email_connections1")]
+    public IEnumerable<Connection> email_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("email_connections1", null);
+        }
+        set {
+            SetRelatedEntities("email_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("email_connections2")]
+    public IEnumerable<Connection> email_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("email_connections2", null);
+        }
+        set {
+            SetRelatedEntities("email_connections2", null, value);
         }
     }
     
@@ -23200,6 +24855,26 @@ public partial class Entitlement : ExtendedEntity<EntitlementState, Entitlement_
         }
         set {
             SetRelatedEntities("entitlement_cases", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("entitlement_connections1")]
+    public IEnumerable<Connection> entitlement_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("entitlement_connections1", null);
+        }
+        set {
+            SetRelatedEntities("entitlement_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("entitlement_connections2")]
+    public IEnumerable<Connection> entitlement_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("entitlement_connections2", null);
+        }
+        set {
+            SetRelatedEntities("entitlement_connections2", null, value);
         }
     }
     
@@ -24687,10 +26362,10 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
     
     /// <summary>
     /// <para>Select the customer account or contact to provide a quick link to additional customer details, such as account information, activities, and opportunities.</para>
-    /// <para>Display Name: Contravenor</para>
+    /// <para>Display Name: Stakeholder</para>
     /// </summary>
     [AttributeLogicalName("customerid")]
-    [DisplayName("Contravenor")]
+    [DisplayName("Stakeholder")]
     public EntityReference CustomerId {
         get {
             return GetAttributeValue<EntityReference>("customerid");
@@ -25694,16 +27369,42 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
     }
     
     /// <summary>
-    /// <para>Display Name: Stakeholder</para>
+    /// <para>Display Name: Number of Findings</para>
     /// </summary>
-    [AttributeLogicalName("ts_stakeholder")]
-    [DisplayName("Stakeholder")]
-    public EntityReference ts_Stakeholder {
+    [AttributeLogicalName("ts_numberoffindings")]
+    [DisplayName("Number of Findings")]
+    [Range(-2147483648, 2147483647)]
+    public int? ts_numberoffindings {
         get {
-            return GetAttributeValue<EntityReference>("ts_stakeholder");
+            return GetAttributeValue<int?>("ts_numberoffindings");
         }
         set {
-            SetAttributeValue("ts_stakeholder", value);
+            SetAttributeValue("ts_numberoffindings", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Last Updated time of rollup field Number of Findings.</para>
+    /// <para>Display Name: Number of Findings (Last Updated On)</para>
+    /// </summary>
+    [AttributeLogicalName("ts_numberoffindings_date")]
+    [DisplayName("Number of Findings (Last Updated On)")]
+    public DateTime? ts_numberoffindings_Date {
+        get {
+            return GetAttributeValue<DateTime?>("ts_numberoffindings_date");
+        }
+    }
+    
+    /// <summary>
+    /// <para>State of rollup field Number of Findings.</para>
+    /// <para>Display Name: Number of Findings (State)</para>
+    /// </summary>
+    [AttributeLogicalName("ts_numberoffindings_state")]
+    [DisplayName("Number of Findings (State)")]
+    [Range(-2147483648, 2147483647)]
+    public int? ts_numberoffindings_State {
+        get {
+            return GetAttributeValue<int?>("ts_numberoffindings_state");
         }
     }
     
@@ -25935,6 +27636,26 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
     }
     
+    [RelationshipSchemaName("incident_connections1")]
+    public IEnumerable<Connection> incident_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("incident_connections1", null);
+        }
+        set {
+            SetRelatedEntities("incident_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("incident_connections2")]
+    public IEnumerable<Connection> incident_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("incident_connections2", null);
+        }
+        set {
+            SetRelatedEntities("incident_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("customerid")]
     [RelationshipSchemaName("incident_customer_accounts")]
     public Account incident_customer_accounts {
@@ -26124,17 +27845,6 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
         set {
             SetRelatedEntity("system_user_incidents", null, value);
-        }
-    }
-    
-    [AttributeLogicalName("ts_stakeholder")]
-    [RelationshipSchemaName("ts_Incident_Stakeholder_Account")]
-    public Account ts_Incident_Stakeholder_Account {
-        get {
-            return GetRelatedEntity<Account>("ts_Incident_Stakeholder_Account", null);
-        }
-        set {
-            SetRelatedEntity("ts_Incident_Stakeholder_Account", null, value);
         }
     }
     
@@ -27619,6 +29329,26 @@ public partial class Invoice : ExtendedEntity<InvoiceState, Invoice_StatusCode> 
         }
         set {
             SetRelatedEntities("invoice_activity_parties", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("invoice_connections1")]
+    public IEnumerable<Connection> invoice_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("invoice_connections1", null);
+        }
+        set {
+            SetRelatedEntities("invoice_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("invoice_connections2")]
+    public IEnumerable<Connection> invoice_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("invoice_connections2", null);
+        }
+        set {
+            SetRelatedEntities("invoice_connections2", null, value);
         }
     }
     
@@ -30733,6 +32463,26 @@ public partial class Lead : ExtendedEntity<LeadState, Lead_StatusCode> {
         }
     }
     
+    [RelationshipSchemaName("lead_connections1")]
+    public IEnumerable<Connection> lead_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("lead_connections1", null);
+        }
+        set {
+            SetRelatedEntities("lead_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lead_connections2")]
+    public IEnumerable<Connection> lead_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("lead_connections2", null);
+        }
+        set {
+            SetRelatedEntities("lead_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("customerid")]
     [RelationshipSchemaName("lead_customer_accounts")]
     public Account lead_customer_accounts {
@@ -32875,6 +34625,26 @@ public partial class Opportunity : ExtendedEntity<OpportunityState, Opportunity_
         }
     }
     
+    [RelationshipSchemaName("opportunity_connections1")]
+    public IEnumerable<Connection> opportunity_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("opportunity_connections1", null);
+        }
+        set {
+            SetRelatedEntities("opportunity_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("opportunity_connections2")]
+    public IEnumerable<Connection> opportunity_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("opportunity_connections2", null);
+        }
+        set {
+            SetRelatedEntities("opportunity_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("customerid")]
     [RelationshipSchemaName("opportunity_customer_accounts")]
     public Account opportunity_customer_accounts {
@@ -34201,6 +35971,26 @@ public partial class PhoneCall : ExtendedEntity<PhoneCallState, PhoneCall_Status
         }
     }
     
+    [RelationshipSchemaName("phonecall_connections1")]
+    public IEnumerable<Connection> phonecall_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("phonecall_connections1", null);
+        }
+        set {
+            SetRelatedEntities("phonecall_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("phonecall_connections2")]
+    public IEnumerable<Connection> phonecall_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("phonecall_connections2", null);
+        }
+        set {
+            SetRelatedEntities("phonecall_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("ppp_traveller_PhoneCalls")]
     public ppp_Traveller ppp_traveller_PhoneCalls {
@@ -34805,6 +36595,17 @@ public partial class ProcessSession : ExtendedEntity<ProcessSessionState, Proces
         }
         set {
             SetRelatedEntity("Campaign_ProcessSessions", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Connection_ProcessSessions")]
+    public Connection Connection_ProcessSessions {
+        get {
+            return GetRelatedEntity<Connection>("Connection_ProcessSessions", null);
+        }
+        set {
+            SetRelatedEntity("Connection_ProcessSessions", null, value);
         }
     }
     
@@ -35681,6 +37482,26 @@ public partial class ProcessSession : ExtendedEntity<ProcessSessionState, Proces
         }
         set {
             SetRelatedEntity("ppp_traveller_ProcessSession", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("processsession_connections1")]
+    public IEnumerable<Connection> processsession_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("processsession_connections1", null);
+        }
+        set {
+            SetRelatedEntities("processsession_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("processsession_connections2")]
+    public IEnumerable<Connection> processsession_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("processsession_connections2", null);
+        }
+        set {
+            SetRelatedEntities("processsession_connections2", null, value);
         }
     }
     
@@ -37006,6 +38827,26 @@ public partial class Product : ExtendedEntity<ProductState, Product_StatusCode> 
         }
         set {
             SetRelatedEntities("msdyn_product_msdyn_workorderservice_Service", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("product_connections1")]
+    public IEnumerable<Connection> product_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("product_connections1", null);
+        }
+        set {
+            SetRelatedEntities("product_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("product_connections2")]
+    public IEnumerable<Connection> product_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("product_connections2", null);
+        }
+        set {
+            SetRelatedEntities("product_connections2", null, value);
         }
     }
     
@@ -39724,6 +41565,26 @@ public partial class Quote : ExtendedEntity<QuoteState, Quote_StatusCode> {
         }
     }
     
+    [RelationshipSchemaName("quote_connections1")]
+    public IEnumerable<Connection> quote_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("quote_connections1", null);
+        }
+        set {
+            SetRelatedEntities("quote_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("quote_connections2")]
+    public IEnumerable<Connection> quote_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("quote_connections2", null);
+        }
+        set {
+            SetRelatedEntities("quote_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("customerid")]
     [RelationshipSchemaName("quote_customer_accounts")]
     public Account quote_customer_accounts {
@@ -41336,6 +43197,26 @@ public partial class RecurringAppointmentMaster : ExtendedEntity<RecurringAppoin
         }
         set {
             SetRelatedEntities("recurringappointmentmaster_campaignresponse", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("recurringappointmentmaster_connections1")]
+    public IEnumerable<Connection> recurringappointmentmaster_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("recurringappointmentmaster_connections1", null);
+        }
+        set {
+            SetRelatedEntities("recurringappointmentmaster_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("recurringappointmentmaster_connections2")]
+    public IEnumerable<Connection> recurringappointmentmaster_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("recurringappointmentmaster_connections2", null);
+        }
+        set {
+            SetRelatedEntities("recurringappointmentmaster_connections2", null, value);
         }
     }
     
@@ -43633,6 +45514,26 @@ public partial class SalesOrder : ExtendedEntity<SalesOrderState, SalesOrder_Sta
         }
     }
     
+    [RelationshipSchemaName("salesorder_connections1")]
+    public IEnumerable<Connection> salesorder_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("salesorder_connections1", null);
+        }
+        set {
+            SetRelatedEntities("salesorder_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("salesorder_connections2")]
+    public IEnumerable<Connection> salesorder_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("salesorder_connections2", null);
+        }
+        set {
+            SetRelatedEntities("salesorder_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("salesorder_msdyn_bookingalerts")]
     public IEnumerable<msdyn_bookingalert> salesorder_msdyn_bookingalerts {
         get {
@@ -45197,6 +47098,26 @@ public partial class ServiceAppointment : ExtendedEntity<ServiceAppointmentState
         }
     }
     
+    [RelationshipSchemaName("serviceappointment_connections1")]
+    public IEnumerable<Connection> serviceappointment_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("serviceappointment_connections1", null);
+        }
+        set {
+            SetRelatedEntities("serviceappointment_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("serviceappointment_connections2")]
+    public IEnumerable<Connection> serviceappointment_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("serviceappointment_connections2", null);
+        }
+        set {
+            SetRelatedEntities("serviceappointment_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("system_user_service_appointments")]
     public SystemUser system_user_service_appointments {
@@ -45866,6 +47787,17 @@ public partial class SyncError : ExtendedEntity<SyncErrorState, SyncError_Status
         }
         set {
             SetRelatedEntity("Campaign_SyncErrors", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("regardingobjectid")]
+    [RelationshipSchemaName("Connection_SyncErrors")]
+    public Connection Connection_SyncErrors {
+        get {
+            return GetRelatedEntity<Connection>("Connection_SyncErrors", null);
+        }
+        set {
+            SetRelatedEntity("Connection_SyncErrors", null, value);
         }
     }
     
@@ -47742,6 +49674,16 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
     }
     
     /// <summary>
+    /// <para>User delete state</para>
+    /// </summary>
+    [AttributeLogicalName("deletedstate")]
+    public SystemUser_DeletedState? DeletedState {
+        get {
+            return GetOptionSetValue<SystemUser_DeletedState>("deletedstate");
+        }
+    }
+    
+    /// <summary>
     /// <para>Reason for disabling the user.</para>
     /// <para>Display Name: Disabled Reason</para>
     /// </summary>
@@ -48923,6 +50865,16 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("createdby_connection")]
+    public IEnumerable<Connection> createdby_connection {
+        get {
+            return GetRelatedEntities<Connection>("createdby_connection", null);
+        }
+        set {
+            SetRelatedEntities("createdby_connection", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("email_acceptingentity_systemuser")]
     public IEnumerable<Email> email_acceptingentity_systemuser {
         get {
@@ -49260,6 +51212,26 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("lk_campaignresponse_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_connectionbase_createdonbehalfby")]
+    public IEnumerable<Connection> lk_connectionbase_createdonbehalfby {
+        get {
+            return GetRelatedEntities<Connection>("lk_connectionbase_createdonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_connectionbase_createdonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("lk_connectionbase_modifiedonbehalfby")]
+    public IEnumerable<Connection> lk_connectionbase_modifiedonbehalfby {
+        get {
+            return GetRelatedEntities<Connection>("lk_connectionbase_modifiedonbehalfby", null);
+        }
+        set {
+            SetRelatedEntities("lk_connectionbase_modifiedonbehalfby", null, value);
         }
     }
     
@@ -52383,6 +54355,16 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
     }
     
+    [RelationshipSchemaName("modifiedby_connection")]
+    public IEnumerable<Connection> modifiedby_connection {
+        get {
+            return GetRelatedEntities<Connection>("modifiedby_connection", null);
+        }
+        set {
+            SetRelatedEntities("modifiedby_connection", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_bookingalert_systemuser_createdby")]
     public IEnumerable<msdyn_bookingalert> msdyn_bookingalert_systemuser_createdby {
         get {
@@ -52691,6 +54673,26 @@ public partial class SystemUser : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("systemuser_bookableresource_UserId", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("systemuser_connections1")]
+    public IEnumerable<Connection> systemuser_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("systemuser_connections1", null);
+        }
+        set {
+            SetRelatedEntities("systemuser_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("systemuser_connections2")]
+    public IEnumerable<Connection> systemuser_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("systemuser_connections2", null);
+        }
+        set {
+            SetRelatedEntities("systemuser_connections2", null, value);
         }
     }
     
@@ -54528,6 +56530,26 @@ public partial class Task : ExtendedEntity<TaskState, Task_StatusCode> {
         }
     }
     
+    [RelationshipSchemaName("task_connections1")]
+    public IEnumerable<Connection> task_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("task_connections1", null);
+        }
+        set {
+            SetRelatedEntities("task_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("task_connections2")]
+    public IEnumerable<Connection> task_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("task_connections2", null);
+        }
+        set {
+            SetRelatedEntities("task_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("regardingobjectid")]
     [RelationshipSchemaName("ts_request_Tasks")]
     public ts_request ts_request_Tasks {
@@ -55044,6 +57066,26 @@ public partial class Territory : ExtendedEntity<EmptyEnum, EmptyEnum> {
         }
         set {
             SetRelatedEntities("territory_accounts", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("territory_connections1")]
+    public IEnumerable<Connection> territory_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("territory_connections1", null);
+        }
+        set {
+            SetRelatedEntities("territory_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("territory_connections2")]
+    public IEnumerable<Connection> territory_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("territory_connections2", null);
+        }
+        set {
+            SetRelatedEntities("territory_connections2", null, value);
         }
     }
     
@@ -55788,6 +57830,26 @@ public partial class msdyn_FunctionalLocation : ExtendedEntity<msdyn_FunctionalL
         }
         set {
             SetRelatedEntities("msdyn_functionallocation_SyncErrors", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_functionallocation_connections1")]
+    public IEnumerable<Connection> msdyn_functionallocation_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_functionallocation_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_functionallocation_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_functionallocation_connections2")]
+    public IEnumerable<Connection> msdyn_functionallocation_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_functionallocation_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_functionallocation_connections2", null, value);
         }
     }
     
@@ -56745,6 +58807,26 @@ public partial class msdyn_agreement : ExtendedEntity<msdyn_agreementState, msdy
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreement_connections1")]
+    public IEnumerable<Connection> msdyn_agreement_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_agreement_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreement_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreement_connections2")]
+    public IEnumerable<Connection> msdyn_agreement_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_agreement_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreement_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_agreement_msdyn_bookingalerts")]
     public IEnumerable<msdyn_bookingalert> msdyn_agreement_msdyn_bookingalerts {
         get {
@@ -57507,6 +59589,26 @@ public partial class msdyn_agreementbookingproduct : ExtendedEntity<msdyn_agreem
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_connections1")]
+    public IEnumerable<Connection> msdyn_agreementbookingproduct_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_agreementbookingproduct_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingproduct_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreementbookingproduct_connections2")]
+    public IEnumerable<Connection> msdyn_agreementbookingproduct_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_agreementbookingproduct_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingproduct_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_agreementbookingproduct_msdyn_bookingalerts")]
     public IEnumerable<msdyn_bookingalert> msdyn_agreementbookingproduct_msdyn_bookingalerts {
         get {
@@ -58266,6 +60368,26 @@ public partial class msdyn_agreementbookingservice : ExtendedEntity<msdyn_agreem
         }
     }
     
+    [RelationshipSchemaName("msdyn_agreementbookingservice_connections1")]
+    public IEnumerable<Connection> msdyn_agreementbookingservice_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_agreementbookingservice_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingservice_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreementbookingservice_connections2")]
+    public IEnumerable<Connection> msdyn_agreementbookingservice_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_agreementbookingservice_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementbookingservice_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_agreementbookingservice_msdyn_bookingalerts")]
     public IEnumerable<msdyn_bookingalert> msdyn_agreementbookingservice_msdyn_bookingalerts {
         get {
@@ -58935,6 +61057,26 @@ public partial class msdyn_agreementinvoiceproduct : ExtendedEntity<msdyn_agreem
         }
         set {
             SetRelatedEntities("msdyn_agreementinvoiceproduct_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_connections1")]
+    public IEnumerable<Connection> msdyn_agreementinvoiceproduct_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_agreementinvoiceproduct_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementinvoiceproduct_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_agreementinvoiceproduct_connections2")]
+    public IEnumerable<Connection> msdyn_agreementinvoiceproduct_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_agreementinvoiceproduct_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_agreementinvoiceproduct_connections2", null, value);
         }
     }
     
@@ -60183,6 +62325,26 @@ public partial class msdyn_bookingalert : ExtendedEntity<msdyn_bookingalertState
         }
         set {
             SetRelatedEntities("msdyn_bookingalert_activity_parties", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingalert_connections1")]
+    public IEnumerable<Connection> msdyn_bookingalert_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_bookingalert_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingalert_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_bookingalert_connections2")]
+    public IEnumerable<Connection> msdyn_bookingalert_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_bookingalert_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_bookingalert_connections2", null, value);
         }
     }
     
@@ -61834,6 +63996,26 @@ public partial class msdyn_customerasset : ExtendedEntity<msdyn_customerassetSta
         }
         set {
             SetRelatedEntities("msdyn_customerasset_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_customerasset_connections1")]
+    public IEnumerable<Connection> msdyn_customerasset_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_customerasset_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_customerasset_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_customerasset_connections2")]
+    public IEnumerable<Connection> msdyn_customerasset_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_customerasset_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_customerasset_connections2", null, value);
         }
     }
     
@@ -63733,6 +65915,26 @@ public partial class msdyn_incidenttypeproduct : ExtendedEntity<msdyn_incidentty
         }
     }
     
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_connections1")]
+    public IEnumerable<Connection> msdyn_incidenttypeproduct_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_incidenttypeproduct_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeproduct_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttypeproduct_connections2")]
+    public IEnumerable<Connection> msdyn_incidenttypeproduct_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_incidenttypeproduct_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeproduct_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_incidenttypeproduct_msdyn_bookingalerts")]
     public IEnumerable<msdyn_bookingalert> msdyn_incidenttypeproduct_msdyn_bookingalerts {
         get {
@@ -64339,6 +66541,26 @@ public partial class msdyn_incidenttypeservice : ExtendedEntity<msdyn_incidentty
         }
         set {
             SetRelatedEntities("msdyn_incidenttypeservice_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttypeservice_connections1")]
+    public IEnumerable<Connection> msdyn_incidenttypeservice_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_incidenttypeservice_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeservice_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_incidenttypeservice_connections2")]
+    public IEnumerable<Connection> msdyn_incidenttypeservice_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_incidenttypeservice_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_incidenttypeservice_connections2", null, value);
         }
     }
     
@@ -67589,6 +69811,26 @@ public partial class msdyn_purchaseorder : ExtendedEntity<msdyn_purchaseorderSta
         }
     }
     
+    [RelationshipSchemaName("msdyn_purchaseorder_connections1")]
+    public IEnumerable<Connection> msdyn_purchaseorder_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_purchaseorder_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorder_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_purchaseorder_connections2")]
+    public IEnumerable<Connection> msdyn_purchaseorder_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_purchaseorder_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorder_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_purchaseorder_msdyn_bookingalerts")]
     public IEnumerable<msdyn_bookingalert> msdyn_purchaseorder_msdyn_bookingalerts {
         get {
@@ -68423,6 +70665,26 @@ public partial class msdyn_purchaseorderproduct : ExtendedEntity<msdyn_purchaseo
         }
         set {
             SetRelatedEntities("msdyn_purchaseorderproduct_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_connections1")]
+    public IEnumerable<Connection> msdyn_purchaseorderproduct_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_purchaseorderproduct_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorderproduct_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_purchaseorderproduct_connections2")]
+    public IEnumerable<Connection> msdyn_purchaseorderproduct_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_purchaseorderproduct_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_purchaseorderproduct_connections2", null, value);
         }
     }
     
@@ -69834,6 +72096,26 @@ public partial class msdyn_rma : ExtendedEntity<msdyn_rmaState, msdyn_rma_status
         }
     }
     
+    [RelationshipSchemaName("msdyn_rma_connections1")]
+    public IEnumerable<Connection> msdyn_rma_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_rma_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_rma_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_rma_connections2")]
+    public IEnumerable<Connection> msdyn_rma_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_rma_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_rma_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_rma_msdyn_bookingalerts")]
     public IEnumerable<msdyn_bookingalert> msdyn_rma_msdyn_bookingalerts {
         get {
@@ -70305,6 +72587,20 @@ public partial class msdyn_servicetasktype : ExtendedEntity<msdyn_servicetasktyp
         }
         set {
             SetOptionSetValue("statuscode", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Has Custom Questionnaire</para>
+    /// </summary>
+    [AttributeLogicalName("ts_hascustomquestionnaire")]
+    [DisplayName("Has Custom Questionnaire")]
+    public bool? ts_hascustomquestionnaire {
+        get {
+            return GetAttributeValue<bool?>("ts_hascustomquestionnaire");
+        }
+        set {
+            SetAttributeValue("ts_hascustomquestionnaire", value);
         }
     }
     
@@ -70968,6 +73264,26 @@ public partial class msdyn_timeoffrequest : ExtendedEntity<msdyn_timeoffrequestS
         }
         set {
             SetRelatedEntities("msdyn_timeoffrequest_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_timeoffrequest_connections1")]
+    public IEnumerable<Connection> msdyn_timeoffrequest_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_timeoffrequest_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_timeoffrequest_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_timeoffrequest_connections2")]
+    public IEnumerable<Connection> msdyn_timeoffrequest_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_timeoffrequest_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_timeoffrequest_connections2", null, value);
         }
     }
     
@@ -72732,6 +75048,46 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     }
     
     /// <summary>
+    /// <para>Display Name: Number of Findings</para>
+    /// </summary>
+    [AttributeLogicalName("ts_numberoffindings")]
+    [DisplayName("Number of Findings")]
+    [Range(-2147483648, 2147483647)]
+    public int? ts_numberoffindings {
+        get {
+            return GetAttributeValue<int?>("ts_numberoffindings");
+        }
+        set {
+            SetAttributeValue("ts_numberoffindings", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Last Updated time of rollup field Number of Findings.</para>
+    /// <para>Display Name: Number of Findings (Last Updated On)</para>
+    /// </summary>
+    [AttributeLogicalName("ts_numberoffindings_date")]
+    [DisplayName("Number of Findings (Last Updated On)")]
+    public DateTime? ts_numberoffindings_Date {
+        get {
+            return GetAttributeValue<DateTime?>("ts_numberoffindings_date");
+        }
+    }
+    
+    /// <summary>
+    /// <para>State of rollup field Nombre de constatations.</para>
+    /// <para>Display Name: Number of Findings (State)</para>
+    /// </summary>
+    [AttributeLogicalName("ts_numberoffindings_state")]
+    [DisplayName("Number of Findings (State)")]
+    [Range(-2147483648, 2147483647)]
+    public int? ts_numberoffindings_State {
+        get {
+            return GetAttributeValue<int?>("ts_numberoffindings_state");
+        }
+    }
+    
+    /// <summary>
     /// <para>Display Name: Trade Name</para>
     /// </summary>
     [AttributeLogicalName("ts_tradenameid")]
@@ -73192,6 +75548,26 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
         set {
             SetRelatedEntities("msdyn_workorder_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorder_connections1")]
+    public IEnumerable<Connection> msdyn_workorder_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_workorder_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorder_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorder_connections2")]
+    public IEnumerable<Connection> msdyn_workorder_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_workorder_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorder_connections2", null, value);
         }
     }
     
@@ -73976,6 +76352,21 @@ public partial class msdyn_workorderincident : ExtendedEntity<msdyn_workorderinc
         }
     }
     
+    /// <summary>
+    /// <para>Unique identifier for Work Order Service Task associated with Work Order Incident.</para>
+    /// <para>Display Name: Work Order Incident</para>
+    /// </summary>
+    [AttributeLogicalName("ts_workorderincidentid")]
+    [DisplayName("Work Order Incident")]
+    public EntityReference ts_WorkOrderIncidentId {
+        get {
+            return GetAttributeValue<EntityReference>("ts_workorderincidentid");
+        }
+        set {
+            SetAttributeValue("ts_workorderincidentid", value);
+        }
+    }
+    
     [AttributeLogicalName("createdby")]
     [RelationshipSchemaName("lk_msdyn_workorderincident_createdby")]
     public SystemUser lk_msdyn_workorderincident_createdby {
@@ -74184,6 +76575,26 @@ public partial class msdyn_workorderincident : ExtendedEntity<msdyn_workorderinc
         }
     }
     
+    [RelationshipSchemaName("msdyn_workorderincident_connections1")]
+    public IEnumerable<Connection> msdyn_workorderincident_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_workorderincident_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderincident_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderincident_connections2")]
+    public IEnumerable<Connection> msdyn_workorderincident_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_workorderincident_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderincident_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_workorderincident_msdyn_bookingalerts")]
     public IEnumerable<msdyn_bookingalert> msdyn_workorderincident_msdyn_bookingalerts {
         get {
@@ -74201,6 +76612,17 @@ public partial class msdyn_workorderincident : ExtendedEntity<msdyn_workorderinc
         }
         set {
             SetRelatedEntities("msdyn_workorderincident_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_workorderincidentid")]
+    [RelationshipSchemaName("ts_msdyn_workorderservicetask_msdyn_workorde")]
+    public msdyn_workorderservicetask ts_msdyn_workorderservicetask_msdyn_workorde {
+        get {
+            return GetRelatedEntity<msdyn_workorderservicetask>("ts_msdyn_workorderservicetask_msdyn_workorde", null);
+        }
+        set {
+            SetRelatedEntity("ts_msdyn_workorderservicetask_msdyn_workorde", null, value);
         }
     }
     
@@ -75501,6 +77923,26 @@ public partial class msdyn_workorderproduct : ExtendedEntity<msdyn_workorderprod
         }
         set {
             SetRelatedEntities("msdyn_workorderproduct_Tasks", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderproduct_connections1")]
+    public IEnumerable<Connection> msdyn_workorderproduct_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_workorderproduct_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderproduct_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderproduct_connections2")]
+    public IEnumerable<Connection> msdyn_workorderproduct_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_workorderproduct_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderproduct_connections2", null, value);
         }
     }
     
@@ -76868,6 +79310,26 @@ public partial class msdyn_workorderservice : ExtendedEntity<msdyn_workorderserv
         }
     }
     
+    [RelationshipSchemaName("msdyn_workorderservice_connections1")]
+    public IEnumerable<Connection> msdyn_workorderservice_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_workorderservice_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservice_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderservice_connections2")]
+    public IEnumerable<Connection> msdyn_workorderservice_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_workorderservice_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservice_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_workorderservice_msdyn_bookingalerts")]
     public IEnumerable<msdyn_bookingalert> msdyn_workorderservice_msdyn_bookingalerts {
         get {
@@ -77599,6 +80061,34 @@ public partial class msdyn_workorderservicetask : ExtendedEntity<msdyn_workorder
         }
     }
     
+    /// <summary>
+    /// <para>Display Name: Work Order Start Date</para>
+    /// </summary>
+    [AttributeLogicalName("ts_workorderstartdate")]
+    [DisplayName("Work Order Start Date")]
+    public DateTime? ts_WorkOrderStartDate {
+        get {
+            return GetAttributeValue<DateTime?>("ts_workorderstartdate");
+        }
+        set {
+            SetAttributeValue("ts_workorderstartdate", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Work Order End Date</para>
+    /// </summary>
+    [AttributeLogicalName("ts_workorderenddate")]
+    [DisplayName("Work Order End Date")]
+    public DateTime? ts_workorderenddate {
+        get {
+            return GetAttributeValue<DateTime?>("ts_workorderenddate");
+        }
+        set {
+            SetAttributeValue("ts_workorderenddate", value);
+        }
+    }
+    
     [AttributeLogicalName("createdby")]
     [RelationshipSchemaName("lk_msdyn_workorderservicetask_createdby")]
     public SystemUser lk_msdyn_workorderservicetask_createdby {
@@ -77788,6 +80278,26 @@ public partial class msdyn_workorderservicetask : ExtendedEntity<msdyn_workorder
         }
     }
     
+    [RelationshipSchemaName("msdyn_workorderservicetask_connections1")]
+    public IEnumerable<Connection> msdyn_workorderservicetask_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_workorderservicetask_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservicetask_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderservicetask_connections2")]
+    public IEnumerable<Connection> msdyn_workorderservicetask_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msdyn_workorderservicetask_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservicetask_connections2", null, value);
+        }
+    }
+    
     [RelationshipSchemaName("msdyn_workorderservicetask_msdyn_bookingalerts")]
     public IEnumerable<msdyn_bookingalert> msdyn_workorderservicetask_msdyn_bookingalerts {
         get {
@@ -77847,6 +80357,26 @@ public partial class msdyn_workorderservicetask : ExtendedEntity<msdyn_workorder
         }
         set {
             SetRelatedEntities("ovs_msdyn_workorderservicetask_ovs_workorders", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_msdyn_workorderservicetask_msdyn_workorde")]
+    public IEnumerable<msdyn_workorderincident> ts_msdyn_workorderservicetask_msdyn_workorde {
+        get {
+            return GetRelatedEntities<msdyn_workorderincident>("ts_msdyn_workorderservicetask_msdyn_workorde", null);
+        }
+        set {
+            SetRelatedEntities("ts_msdyn_workorderservicetask_msdyn_workorde", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_workorderservicetask_qm_rclegislation")]
+    public IEnumerable<qm_rclegislation> ts_workorderservicetask_qm_rclegislation {
+        get {
+            return GetRelatedEntities<qm_rclegislation>("ts_workorderservicetask_qm_rclegislation", null);
+        }
+        set {
+            SetRelatedEntities("ts_workorderservicetask_qm_rclegislation", null, value);
         }
     }
     
@@ -80352,6 +82882,26 @@ public partial class msfp_alert : ExtendedEntity<msfp_alertState, msfp_alert_Sta
         }
     }
     
+    [RelationshipSchemaName("msfp_alert_connections1")]
+    public IEnumerable<Connection> msfp_alert_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("msfp_alert_connections1", null);
+        }
+        set {
+            SetRelatedEntities("msfp_alert_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msfp_alert_connections2")]
+    public IEnumerable<Connection> msfp_alert_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("msfp_alert_connections2", null);
+        }
+        set {
+            SetRelatedEntities("msfp_alert_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("createdby")]
     [RelationshipSchemaName("msfp_alert_systemuser_createdby")]
     public SystemUser msfp_alert_systemuser_createdby {
@@ -82056,6 +84606,20 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
     }
     
     /// <summary>
+    /// <para>Display Name: Site</para>
+    /// </summary>
+    [AttributeLogicalName("ts_site")]
+    [DisplayName("Site")]
+    public EntityReference ts_Site {
+        get {
+            return GetAttributeValue<EntityReference>("ts_site");
+        }
+        set {
+            SetAttributeValue("ts_site", value);
+        }
+    }
+    
+    /// <summary>
     /// <para>Display Name: Work Order</para>
     /// </summary>
     [AttributeLogicalName("ts_workorder")]
@@ -82070,10 +84634,10 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
     }
     
     /// <summary>
-    /// <para>Display Name: Account</para>
+    /// <para>Display Name: Stakeholder</para>
     /// </summary>
     [AttributeLogicalName("ts_accountid")]
-    [DisplayName("Account")]
+    [DisplayName("Stakeholder")]
     public EntityReference ts_accountid {
         get {
             return GetAttributeValue<EntityReference>("ts_accountid");
@@ -82152,6 +84716,20 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
         set {
             SetAttributeValue("ts_operationid", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Operation Type</para>
+    /// </summary>
+    [AttributeLogicalName("ts_ovs_operationtype")]
+    [DisplayName("Operation Type")]
+    public EntityReference ts_ovs_operationtype {
+        get {
+            return GetAttributeValue<EntityReference>("ts_ovs_operationtype");
+        }
+        set {
+            SetAttributeValue("ts_ovs_operationtype", value);
         }
     }
     
@@ -82271,6 +84849,17 @@ public partial class ovs_Finding : ExtendedEntity<ovs_FindingState, ovs_Finding_
         }
         set {
             SetRelatedEntity("ts_ovs_Finding_operationid_ovs_operation", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_ovs_operationtype")]
+    [RelationshipSchemaName("ts_ovs_Finding_ovs_operationtype_ovs_operati")]
+    public ovs_operationtype ts_ovs_Finding_ovs_operationtype_ovs_operati {
+        get {
+            return GetRelatedEntity<ovs_operationtype>("ts_ovs_Finding_ovs_operationtype_ovs_operati", null);
+        }
+        set {
+            SetRelatedEntity("ts_ovs_Finding_ovs_operationtype_ovs_operati", null, value);
         }
     }
     
@@ -84644,6 +87233,26 @@ public partial class ovs_operation : ExtendedEntity<ovs_operationState, ovs_oper
         }
     }
     
+    [RelationshipSchemaName("ovs_operation_connections1")]
+    public IEnumerable<Connection> ovs_operation_connections1 {
+        get {
+            return GetRelatedEntities<Connection>("ovs_operation_connections1", null);
+        }
+        set {
+            SetRelatedEntities("ovs_operation_connections1", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ovs_operation_connections2")]
+    public IEnumerable<Connection> ovs_operation_connections2 {
+        get {
+            return GetRelatedEntities<Connection>("ovs_operation_connections2", null);
+        }
+        set {
+            SetRelatedEntities("ovs_operation_connections2", null, value);
+        }
+    }
+    
     [AttributeLogicalName("ovs_lobid")]
     [RelationshipSchemaName("ovs_ovs_lob_ovs_operation")]
     public ovs_lob ovs_ovs_lob_ovs_operation {
@@ -84703,6 +87312,16 @@ public partial class ovs_operation : ExtendedEntity<ovs_operationState, ovs_oper
         }
         set {
             SetRelatedEntities("ts_ovs_operation_ovs_operation_ovs_operation", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_operation_qm_rclegislation_qm_rclegis")]
+    public IEnumerable<qm_rclegislation> ts_ovs_operation_qm_rclegislation_qm_rclegis {
+        get {
+            return GetRelatedEntities<qm_rclegislation>("ts_ovs_operation_qm_rclegislation_qm_rclegis", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_operation_qm_rclegislation_qm_rclegis", null, value);
         }
     }
     
@@ -85190,6 +87809,16 @@ public partial class ovs_operationtype : ExtendedEntity<ovs_operationtypeState, 
         }
         set {
             SetRelatedEntities("ovs_ovs_operationtype_ovs_operation", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_Finding_ovs_operationtype_ovs_operati")]
+    public IEnumerable<ovs_Finding> ts_ovs_Finding_ovs_operationtype_ovs_operati {
+        get {
+            return GetRelatedEntities<ovs_Finding>("ts_ovs_Finding_ovs_operationtype_ovs_operati", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_Finding_ovs_operationtype_ovs_operati", null, value);
         }
     }
     
@@ -87981,7 +90610,7 @@ public partial class qm_rclegislation : ExtendedEntity<qm_rclegislationState, qm
     /// </summary>
     [AttributeLogicalName("qm_ordernbr")]
     [DisplayName("Order")]
-    [Range(0, 99999)]
+    [Range(0, 9999999)]
     public int? qm_OrderNbr {
         get {
             return GetAttributeValue<int?>("qm_ordernbr");
@@ -88134,6 +90763,20 @@ public partial class qm_rclegislation : ExtendedEntity<qm_rclegislationState, qm
         }
         set {
             SetAttributeValue("ts_provisioncategory", value);
+        }
+    }
+    
+    /// <summary>
+    /// <para>Display Name: Requirement Characteristic</para>
+    /// </summary>
+    [AttributeLogicalName("ts_msdyn_requirementcharacteristic")]
+    [DisplayName("Requirement Characteristic")]
+    public EntityReference ts_msdyn_requirementcharacteristic {
+        get {
+            return GetAttributeValue<EntityReference>("ts_msdyn_requirementcharacteristic");
+        }
+        set {
+            SetAttributeValue("ts_msdyn_requirementcharacteristic", value);
         }
     }
     
@@ -88303,6 +90946,46 @@ public partial class qm_rclegislation : ExtendedEntity<qm_rclegislationState, qm
         }
         set {
             SetRelatedEntity("ts_ProvisionCategory_ts_ProvisionCategory", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_ovs_operation_qm_rclegislation_qm_rclegis")]
+    public IEnumerable<ovs_operation> ts_ovs_operation_qm_rclegislation_qm_rclegis {
+        get {
+            return GetRelatedEntities<ovs_operation>("ts_ovs_operation_qm_rclegislation_qm_rclegis", null);
+        }
+        set {
+            SetRelatedEntities("ts_ovs_operation_qm_rclegislation_qm_rclegis", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_related_causes")]
+    public IEnumerable<qm_rclegislation> ts_related_causes {
+        get {
+            return GetRelatedEntities<qm_rclegislation>("ts_related_causes", null);
+        }
+        set {
+            SetRelatedEntities("ts_related_causes", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_related_references")]
+    public IEnumerable<qm_rclegislation> ts_related_references {
+        get {
+            return GetRelatedEntities<qm_rclegislation>("ts_related_references", null);
+        }
+        set {
+            SetRelatedEntities("ts_related_references", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("ts_workorderservicetask_qm_rclegislation")]
+    public IEnumerable<msdyn_workorderservicetask> ts_workorderservicetask_qm_rclegislation {
+        get {
+            return GetRelatedEntities<msdyn_workorderservicetask>("ts_workorderservicetask_qm_rclegislation", null);
+        }
+        set {
+            SetRelatedEntities("ts_workorderservicetask_qm_rclegislation", null, value);
         }
     }
     
@@ -92679,6 +95362,75 @@ public partial class ts_ovs_operation_ovs_operation : ExtendedEntity<EmptyEnum, 
     }
 }
 
+[EntityLogicalName("ts_ovs_operation_qm_rclegislation")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ts_ovs_operation_qm_rclegislation : ExtendedEntity<EmptyEnum, EmptyEnum> {
+    
+    public const string EntityLogicalName = "ts_ovs_operation_qm_rclegislation";
+    
+    public const int EntityTypeCode = 10604;
+    
+    public ts_ovs_operation_qm_rclegislation() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ts_ovs_operation_qm_rclegislation(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay(null);
+        }
+    }
+    
+    [AttributeLogicalName("ts_ovs_operation_qm_rclegislationid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ts_ovs_operation_qm_rclegislationid", value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_ovs_operation_qm_rclegislationid")]
+    public Guid? ts_ovs_operation_qm_rclegislationId {
+        get {
+            return GetAttributeValue<Guid?>("ts_ovs_operation_qm_rclegislationid");
+        }
+        set {
+            SetId("ts_ovs_operation_qm_rclegislationid", value);
+        }
+    }
+    
+    [AttributeLogicalName("versionnumber")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [AttributeLogicalName("ovs_operationid")]
+    public Guid? ovs_operationid {
+        get {
+            return GetAttributeValue<Guid?>("ovs_operationid");
+        }
+    }
+    
+    [AttributeLogicalName("qm_rclegislationid")]
+    public Guid? qm_rclegislationid {
+        get {
+            return GetAttributeValue<Guid?>("qm_rclegislationid");
+        }
+    }
+    
+    public static ts_ovs_operation_qm_rclegislation Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_ovs_operation_qm_rclegislation,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
 [EntityLogicalName("ts_ovs_operationtypes_msdyn_incidenttypes")]
 [DebuggerDisplay("{DebuggerDisplay,nq}")]
 [DataContract()]
@@ -92744,6 +95496,144 @@ public partial class ts_ovs_operationtypes_msdyn_incidenttypes : ExtendedEntity<
     }
     
     public static ts_ovs_operationtypes_msdyn_incidenttypes Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_ovs_operationtypes_msdyn_incidenttypes,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+[EntityLogicalName("ts_qm_rclegislation_causes")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ts_qm_rclegislation_causes : ExtendedEntity<EmptyEnum, EmptyEnum> {
+    
+    public const string EntityLogicalName = "ts_qm_rclegislation_causes";
+    
+    public const int EntityTypeCode = 10612;
+    
+    public ts_qm_rclegislation_causes() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ts_qm_rclegislation_causes(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay(null);
+        }
+    }
+    
+    [AttributeLogicalName("ts_qm_rclegislation_causesid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ts_qm_rclegislation_causesid", value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_qm_rclegislation_causesid")]
+    public Guid? ts_qm_rclegislation_causesId {
+        get {
+            return GetAttributeValue<Guid?>("ts_qm_rclegislation_causesid");
+        }
+        set {
+            SetId("ts_qm_rclegislation_causesid", value);
+        }
+    }
+    
+    [AttributeLogicalName("versionnumber")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [AttributeLogicalName("qm_rclegislationidone")]
+    public Guid? qm_rclegislationidOne {
+        get {
+            return GetAttributeValue<Guid?>("qm_rclegislationidone");
+        }
+    }
+    
+    [AttributeLogicalName("qm_rclegislationidtwo")]
+    public Guid? qm_rclegislationidTwo {
+        get {
+            return GetAttributeValue<Guid?>("qm_rclegislationidtwo");
+        }
+    }
+    
+    public static ts_qm_rclegislation_causes Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_qm_rclegislation_causes,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
+[EntityLogicalName("ts_qm_rclegislation_references")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ts_qm_rclegislation_references : ExtendedEntity<EmptyEnum, EmptyEnum> {
+    
+    public const string EntityLogicalName = "ts_qm_rclegislation_references";
+    
+    public const int EntityTypeCode = 10611;
+    
+    public ts_qm_rclegislation_references() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ts_qm_rclegislation_references(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay(null);
+        }
+    }
+    
+    [AttributeLogicalName("ts_qm_rclegislation_referencesid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ts_qm_rclegislation_referencesid", value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_qm_rclegislation_referencesid")]
+    public Guid? ts_qm_rclegislation_referencesId {
+        get {
+            return GetAttributeValue<Guid?>("ts_qm_rclegislation_referencesid");
+        }
+        set {
+            SetId("ts_qm_rclegislation_referencesid", value);
+        }
+    }
+    
+    [AttributeLogicalName("versionnumber")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [AttributeLogicalName("qm_rclegislationidone")]
+    public Guid? qm_rclegislationidOne {
+        get {
+            return GetAttributeValue<Guid?>("qm_rclegislationidone");
+        }
+    }
+    
+    [AttributeLogicalName("qm_rclegislationidtwo")]
+    public Guid? qm_rclegislationidTwo {
+        get {
+            return GetAttributeValue<Guid?>("qm_rclegislationidtwo");
+        }
+    }
+    
+    public static ts_qm_rclegislation_references Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_qm_rclegislation_references,object>>[] attrs) {
         return service.Retrieve(id, attrs);
     }
 }
@@ -95185,6 +98075,75 @@ public partial class ts_workordercreationwizard : ExtendedEntity<ts_workordercre
     }
 }
 
+[EntityLogicalName("ts_workorderservicetask_qm_rclegislation")]
+[DebuggerDisplay("{DebuggerDisplay,nq}")]
+[DataContract()]
+public partial class ts_workorderservicetask_qm_rclegislation : ExtendedEntity<EmptyEnum, EmptyEnum> {
+    
+    public const string EntityLogicalName = "ts_workorderservicetask_qm_rclegislation";
+    
+    public const int EntityTypeCode = 10613;
+    
+    public ts_workorderservicetask_qm_rclegislation() : 
+            base(EntityLogicalName) {
+    }
+    
+    public ts_workorderservicetask_qm_rclegislation(Guid Id) : 
+            base(EntityLogicalName, Id) {
+    }
+    
+    private string DebuggerDisplay {
+        get {
+            return GetDebuggerDisplay(null);
+        }
+    }
+    
+    [AttributeLogicalName("ts_workorderservicetask_qm_rclegislationid")]
+    public override Guid Id {
+        get {
+            return base.Id;
+        }
+        set {
+            SetId("ts_workorderservicetask_qm_rclegislationid", value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_workorderservicetask_qm_rclegislationid")]
+    public Guid? ts_workorderservicetask_qm_rclegislationId {
+        get {
+            return GetAttributeValue<Guid?>("ts_workorderservicetask_qm_rclegislationid");
+        }
+        set {
+            SetId("ts_workorderservicetask_qm_rclegislationid", value);
+        }
+    }
+    
+    [AttributeLogicalName("versionnumber")]
+    public long? VersionNumber {
+        get {
+            return GetAttributeValue<long?>("versionnumber");
+        }
+    }
+    
+    [AttributeLogicalName("msdyn_workorderservicetaskid")]
+    public Guid? msdyn_workorderservicetaskid {
+        get {
+            return GetAttributeValue<Guid?>("msdyn_workorderservicetaskid");
+        }
+    }
+    
+    [AttributeLogicalName("qm_rclegislationid")]
+    public Guid? qm_rclegislationid {
+        get {
+            return GetAttributeValue<Guid?>("qm_rclegislationid");
+        }
+    }
+    
+    public static ts_workorderservicetask_qm_rclegislation Retrieve(IOrganizationService service, Guid id, params Expression<Func<ts_workorderservicetask_qm_rclegislation,object>>[] attrs) {
+        return service.Retrieve(id, attrs);
+    }
+}
+
 public partial class Xrm : ExtendedOrganizationServiceContext {
     
     public Xrm(IOrganizationService service) : 
@@ -95266,6 +98225,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
     public IQueryable<CampaignResponse> CampaignResponseSet {
         get {
             return CreateQuery<CampaignResponse>();
+        }
+    }
+    
+    public IQueryable<Connection> ConnectionSet {
+        get {
+            return CreateQuery<Connection>();
         }
     }
     
@@ -95845,9 +98810,27 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
         }
     }
     
+    public IQueryable<ts_ovs_operation_qm_rclegislation> ts_ovs_operation_qm_rclegislationSet {
+        get {
+            return CreateQuery<ts_ovs_operation_qm_rclegislation>();
+        }
+    }
+    
     public IQueryable<ts_ovs_operationtypes_msdyn_incidenttypes> ts_ovs_operationtypes_msdyn_incidenttypesSet {
         get {
             return CreateQuery<ts_ovs_operationtypes_msdyn_incidenttypes>();
+        }
+    }
+    
+    public IQueryable<ts_qm_rclegislation_causes> ts_qm_rclegislation_causesSet {
+        get {
+            return CreateQuery<ts_qm_rclegislation_causes>();
+        }
+    }
+    
+    public IQueryable<ts_qm_rclegislation_references> ts_qm_rclegislation_referencesSet {
+        get {
+            return CreateQuery<ts_qm_rclegislation_references>();
         }
     }
     
@@ -95878,6 +98861,12 @@ public partial class Xrm : ExtendedOrganizationServiceContext {
     public IQueryable<ts_workordercreationwizard> ts_workordercreationwizardSet {
         get {
             return CreateQuery<ts_workordercreationwizard>();
+        }
+    }
+    
+    public IQueryable<ts_workorderservicetask_qm_rclegislation> ts_workorderservicetask_qm_rclegislationSet {
+        get {
+            return CreateQuery<ts_workorderservicetask_qm_rclegislation>();
         }
     }
 }
@@ -97018,6 +100007,1038 @@ public enum CampaignResponse_StatusCode {
     [EnumMember()]
     [OptionSetMetadata("Canceled", Index=2)]
     Canceled = 3,
+}
+
+[DataContract()]
+public enum ConnectionState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 1,
+}
+
+[DataContract()]
+public enum Connection_Record1ObjectTypeCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Account", Index=43, Description="BusinessthatrepresentsacustomerorpotentialcustomerThecompanythatisbilledinbusines" +
+        "stransactions")]
+    Account = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Contact", Index=12, Description="Personwithwhomabusinessunithasarelationshipsuchascustomersupplierandcolleague")]
+    Contact = 2,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Opportunity", Index=29, Description="Potentialrevenuegeneratingeventorsaletoanaccountwhichneedstobetrackedthroughasale" +
+        "sprocesstocompletion")]
+    Opportunity = 3,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Lead", Index=61, Description="ProspectorpotentialsalesopportunityLeadsareconvertedintoaccountscontactsoropportu" +
+        "nitieswhentheyarequalifiedOtherwisetheyaredeletedorarchived")]
+    Lead = 4,
+    
+    [EnumMember()]
+    [OptionSetMetadata("User", Index=15, Description="PersonwithaccesstotheMicrosoftCRMsystemandwhoownsobjectsintheMicrosoftCRMdatabase" +
+        "")]
+    User = 8,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Team", Index=0, Description="CollectionofsystemusersthatroutinelycollaborateTeamscanbeusedtosimplifyrecordshar" +
+        "ingandprovideteammemberswithcommonaccesstoorganizationdatawhenteammembersbelongt" +
+        "odifferentBusinessUnits")]
+    Team = 9,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Position", Index=96, Description="Positionofauserinthehierarchy")]
+    Position = 50,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Social Profile", Index=34, Description="Thisentityisusedtostoresocialprofileinformationofitsassociatedaccountandcontactso" +
+        "ndifferentsocialchannels")]
+    SocialProfile = 99,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Case", Index=9, Description="Servicerequestcaseassociatedwithacontract")]
+    Case = 112,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Competitor", Index=45, Description="Businesscompetingforthesalerepresentedbyaleadoropportunity")]
+    Competitor = 123,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Contract", Index=30, Description="Agreementtoprovidecustomerserviceduringaspecifiedamountoftimeornumberofcases")]
+    Contract = 1010,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Price List", Index=26, Description="Entitythatdefinespricinglevels")]
+    PriceList = 1022,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Product", Index=90, Description="Informationaboutproductsandtheirpricinginformation")]
+    Product = 1024,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Quote", Index=13, Description="Formalofferforproductsandorservicesproposedatspecificpricesandrelatedpaymentterms" +
+        "whichissenttoaprospectivecustomer")]
+    Quote = 1084,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Order", Index=94, Description="Quotethathasbeenaccepted")]
+    Order = 1088,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Invoice", Index=57, Description="Orderthathasbeenbilled")]
+    Invoice = 1090,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Region", Index=82, Description="TerritoryrepresentssalesregionsWorkOrderForm")]
+    Region = 2013,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Facility/Equipment", Index=78, Description="Resourcethatcanbescheduled")]
+    FacilityEquipment = 4000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Scheduling Group", Index=73, Description="Resourcegrouporteamwhosememberscanbescheduledforaservice")]
+    SchedulingGroup = 4005,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Resource Group", Index=64, Description="Grouporcollectionofpeopleequipmentandorfacilitiesthatcanbescheduled")]
+    ResourceGroup = 4007,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Activity", Index=115, Description="TaskperformedortobeperformedbyauserAnactivityisanyactionforwhichanentrycanbemadeo" +
+        "nacalendar")]
+    Activity = 4200,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Appointment", Index=8, Description="Commitmentrepresentingatimeintervalwithstartendtimesandduration")]
+    Appointment = 4201,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Email", Index=69, Description="Activitythatisdeliveredusingemailprotocols")]
+    Email = 4202,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Fax", Index=85, Description="Activitythattrackscalloutcomeandnumberofpagesforafaxandoptionallystoresanelectron" +
+        "iccopyofthedocument")]
+    Fax = 4204,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Letter", Index=101, Description="ActivitythattracksthedeliveryofaletterTheactivitycancontaintheelectroniccopyofthe" +
+        "letter")]
+    Letter = 4207,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Phone Call", Index=62, Description="Activitytotrackatelephonecall")]
+    PhoneCall = 4210,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Task", Index=65, Description="Genericactivityrepresentingworkneededtobedone")]
+    Task = 4212,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Service Activity", Index=97, Description="ActivityofferedbytheorganizationtosatisfyitscustomersneedsEachserviceactivityincl" +
+        "udesdatetimedurationandrequiredresources")]
+    ServiceActivity = 4214,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Social Activity", Index=83, Description="Forinternaluseonly")]
+    SocialActivity = 4216,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Recurring Appointment", Index=66, Description="TheMasterappointmentofarecurringappointmentseries")]
+    RecurringAppointment = 4251,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Marketing List", Index=110, Description="Groupofexistingorpotentialcustomerscreatedforamarketingcampaignorothersalespurpos" +
+        "es")]
+    MarketingList = 4300,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Campaign", Index=105, Description="Containerforcampaignactivitiesandresponsessalesliteratureproductsandliststocreate" +
+        "planexecuteandtracktheresultsofaspecificmarketingcampaignthroughitslife")]
+    Campaign = 4400,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Campaign Activity", Index=19, Description="Taskperformedortobeperformedbyauserforplanningorrunningacampaign")]
+    CampaignActivity = 4402,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Process Session", Index=32, Description="InformationthatisgeneratedwhenadialogisrunEverytimethatyourunadialogadialogsessio" +
+        "niscreated")]
+    ProcessSession = 4710,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Channel Access Profile Rule", Index=47, Description="Definestherulesforautomaticallyassociatingchannelaccessprofilestoexternalpartyrec" +
+        "ordsForinternaluseonly")]
+    ChannelAccessProfileRule = 9400,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Goal", Index=7, Description="Targetobjectiveforauserorateamforaspecifiedtimeperiod")]
+    Goal = 9600,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Entitlement", Index=39, Description="Definestheamountandtypeofsupportacustomershouldreceive")]
+    Entitlement = 9700,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Entitlement Channel", Index=76, Description="Definestheamountandtypeofsupportforachannel")]
+    EntitlementChannel = 9701,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Entitlement Template Channel", Index=58, Description="Containspredefinedsupporttermsforachanneltocreateentitlementsforcustomers")]
+    EntitlementTemplateChannel = 9703,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Knowledge Base Record", Index=10, Description="MetadataofknowledgebaseKBarticlesassociatedwithMicrosoftDynamics365entities")]
+    KnowledgeBaseRecord = 9930,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Knowledge Article", Index=86, Description="Organizationalknowledgeforinternalandexternaluse")]
+    KnowledgeArticle = 9953,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Customer Asset", Index=23, Description="SpecifyCustomerAsset")]
+    CustomerAsset = 10114,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Functional Location", Index=56)]
+    FunctionalLocation = 10117,
+    
+    [EnumMember()]
+    [OptionSetMetadata("IoT Alert", Index=95)]
+    IoTAlert = 10124,
+    
+    [EnumMember()]
+    [OptionSetMetadata("IoT Device", Index=28, Description="RepresentsaconnecteddevicethatcanberegisteredwithanIoTprovider")]
+    IoTDevice = 10125,
+    
+    [EnumMember()]
+    [OptionSetMetadata("IoT Device Category", Index=107, Description="UsedtocategorizeIoTdevices")]
+    IoTDeviceCategory = 10126,
+    
+    [EnumMember()]
+    [OptionSetMetadata("IoT Device Command", Index=14, Description="RepresentsanoutgoingmessagetoadeviceconnectedtoanIoTprovider")]
+    IoTDeviceCommand = 10127,
+    
+    [EnumMember()]
+    [OptionSetMetadata("IoT Device Registration History", Index=98, Description="TracksregistrationactivitiesonanIoTdevice")]
+    IoTDeviceRegistrationHistory = 10131,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Profile Album", Index=52, Description="Containsuserprofileimagesthatarestoredasattachmentsanddisplayedinposts")]
+    ProfileAlbum = 10230,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Customer Voice alert", Index=106)]
+    CustomerVoicealert = 10235,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Customer Voice survey invite", Index=103, Description="Activitythattracksasurveyinvitationsenttoaperson")]
+    CustomerVoicesurveyinvite = 10245,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Customer Voice survey response", Index=92, Description="Responsetoasurvey")]
+    CustomerVoicesurveyresponse = 10247,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Booking Alert", Index=51, Description="Alertsthatnotifyscheduleboardusersofbookingissuesorinformation")]
+    BookingAlert = 10256,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Booking Alert Status", Index=112, Description="Thestatusofabookingalert")]
+    BookingAlertStatus = 10257,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Booking Rule", Index=6, Description="Specifycustomrulestobevalidatedbythesystembeforesavingabookingrecord")]
+    BookingRule = 10259,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Resource Territory", Index=48, Description="Allowstospecifyforwhichterritoryaresourcecouldprovideservicesfor")]
+    ResourceTerritory = 10275,
+    
+    [EnumMember()]
+    [OptionSetMetadata("System User Scheduler Setting", Index=67, Description="Storesuserspecificsettingsforthescheduleboard")]
+    SystemUserSchedulerSetting = 10278,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Fulfillment Preference", Index=114, Description="Specifytimegroupsconsistingofmultipletimewindowstobeusedforschedulingforexample")]
+    FulfillmentPreference = 10279,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Time Group Detail", Index=41, Description="Specifyindividualtimewindowsunderatimegroup")]
+    TimeGroupDetail = 10280,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement", Index=25, Description="Providesabilitytostoredetailsaboutserviceagreementsyouhavewithyourcustomers")]
+    Agreement = 10291,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Date", Index=35, Description="Specifythemaintenancebookingdatesfortheagreement")]
+    AgreementBookingDate = 10292,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Incident", Index=84, Description="Specifythebookingincidentfortheagreement")]
+    AgreementBookingIncident = 10293,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Product", Index=75, Description="Specifythebookingproductfortheagreement")]
+    AgreementBookingProduct = 10294,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Service", Index=91, Description="Specifythebookingservicefortheagreement")]
+    AgreementBookingService = 10295,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Service Task", Index=36, Description="Specifythebookingservicetaskfortheagreement")]
+    AgreementBookingServiceTask = 10296,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Setup", Index=81, Description="Specifythemaintenancebookingsfortheagreement")]
+    AgreementBookingSetup = 10297,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Invoice Date", Index=33, Description="Specifytheinvoicedatesfortheagreement")]
+    AgreementInvoiceDate = 10298,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Invoice Product", Index=104, Description="Specifythebookingproductinvoicefortheagreement")]
+    AgreementInvoiceProduct = 10299,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Invoice Setup", Index=21, Description="Specifytheinvoicesforthisagreement")]
+    AgreementInvoiceSetup = 10300,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Booking Timestamp", Index=4, Description="Tracksstatuschangesofbookingsandtimestampsthechangeofthestatus")]
+    BookingTimestamp = 10303,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Incident Type Characteristic", Index=109, Description="Specifycharacteristicinsidenttype")]
+    IncidentTypeCharacteristic = 10314,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Incident Type Product", Index=54, Description="Thisentitygivestheabilitytopreconfigureproductstobeaddedtoaworkorderwhentherelate" +
+        "dincidentisaddedtotheworkorder")]
+    IncidentTypeProduct = 10315,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Incident Type Service", Index=46, Description="Thisentitygivestheabilitytopreconfigureservicestobeaddedtoaworkorderwhentherelate" +
+        "dincidentisaddedtotheworkorder")]
+    IncidentTypeService = 10316,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inventory Adjustment", Index=1, Description="Recordsinventoryadjustments")]
+    InventoryAdjustment = 10320,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inventory Adjustment Product", Index=116, Description="Recordsproductaffectedbyaninventoryadjustmentorinventorytransfer")]
+    InventoryAdjustmentProduct = 10321,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inventory Journal", Index=74, Description="Inventorychangetracking")]
+    InventoryJournal = 10322,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inventory Transfer", Index=99, Description="Recordsinventoryadjustments")]
+    InventoryTransfer = 10323,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Payment", Index=50, Description="Specifypayment")]
+    Payment = 10328,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Payment Detail", Index=70, Description="Specifypaymentdetails")]
+    PaymentDetail = 10329,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Payment Method", Index=118, Description="Specifypaymentmethod")]
+    PaymentMethod = 10330,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Payment Term", Index=3, Description="Specifypaymenttermsusedforbilling")]
+    PaymentTerm = 10331,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Postal Code", Index=93, Description="Specifypostalcodesandtheirrelationshiptoterritories")]
+    PostalCode = 10332,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Product Inventory", Index=63, Description="InventoryRecord")]
+    ProductInventory = 10333,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order", Index=2, Description="RecordPurchaseOrderspertainingtoWorkOrdersorotherwise")]
+    PurchaseOrder = 10334,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order Bill", Index=40, Description="Specifypurchaseorderbill")]
+    PurchaseOrderBill = 10335,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order Product", Index=38, Description="Recordproductstobeorderedonpurchaseorder")]
+    PurchaseOrderProduct = 10336,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order Receipt", Index=88, Description="Specifypurchaseorderreceipt")]
+    PurchaseOrderReceipt = 10337,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order Receipt Product", Index=31, Description="Specifyproductforpurchaseorderreceipt")]
+    PurchaseOrderReceiptProduct = 10338,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order SubStatus", Index=72, Description="SpecifycustomPOSubstatuseswhichcanbeusedtospecifythecurrentPOstatusmoreprecisely")]
+    PurchaseOrderSubStatus = 10339,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Quote Booking Incident", Index=11, Description="StorestheIncidentsassociatedwithQuoteandQuoteBookingSetup")]
+    QuoteBookingIncident = 10340,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Quote Booking Product", Index=89, Description="ProvidesabilitytostoreinformationabouttheproductsthatareassociatedwithQuoteBookin" +
+        "gSetup")]
+    QuoteBookingProduct = 10341,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Quote Booking Service", Index=5, Description="StoresdetailsabouttheservicesassociatedwithQuoteBookingSetup")]
+    QuoteBookingService = 10342,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Quote Booking Service Task", Index=55)]
+    QuoteBookingServiceTask = 10343,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RMA", Index=108, Description="RecordsRMAsforproductstoberetunedfromcustomers")]
+    RMA = 10348,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RMA Product", Index=20, Description="RecordsproductstobereturnedonanRMA")]
+    RMAProduct = 10349,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RMA Receipt", Index=100, Description="SpecifyRMAreceipt")]
+    RMAReceipt = 10350,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RMA Receipt Product", Index=22, Description="SpecifyRMAreceiptproduct")]
+    RMAReceiptProduct = 10351,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RMA SubStatus", Index=111, Description="SpecifycustomRMAsubstatuseswhichcanbeusedtospecifythecurrentRMAstatusmoreprecisel" +
+        "y")]
+    RMASubStatus = 10352,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RTV", Index=42, Description="RecordsRTVsforproductstoberetunedtovendors")]
+    RTV = 10353,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RTV Product", Index=27, Description="RecordsproductstobereturnedonanRTV")]
+    RTVProduct = 10354,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RTV Substatus", Index=44, Description="SpecifycustomRTVsubstatuseswhichcanbeusedtospecifythecurrentRTVstatusmoreprecisel" +
+        "y")]
+    RTVSubstatus = 10355,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Ship Via", Index=68, Description="Specifythedifferentshippingmethodsused")]
+    ShipVia = 10357,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Tax Code", Index=113, Description="StoretaxrelatedinformationEachtaxcodecouldcontainmultiplechildtaxcodesandinthatca" +
+        "sethetaxratewillbedeterminedbythetotaltaxofallchildren")]
+    TaxCode = 10358,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Time Off Request", Index=71, Description="Specifytimeresourcetimeoffrequest")]
+    TimeOffRequest = 10360,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Warehouse", Index=53, Description="Warehouseswhereinventoryproductsarestoredandmanaged")]
+    Warehouse = 10362,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order", Index=17, Description="WorkordersstoreallinformationaboutthejobperformedforanaccountStoresincidentdetail" +
+        "sresourceexpensestaskscommunicationsbillingandmore")]
+    WorkOrder = 10363,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order Characteristic (Deprecated)", Index=49, Description="Thisentityisdeprecated")]
+    WorkOrderCharacteristicDeprecated = 10364,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order Incident", Index=18, Description="SpecifyworkorderincidentsreportedtoyoubytheclientThesearealsoreferredtoasproblemc" +
+        "odes")]
+    WorkOrderIncident = 10366,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order Product", Index=37, Description="Inthisentityyourecordalltheproductsproposedandusedforaworkorder")]
+    WorkOrderProduct = 10367,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Resource Restriction (Deprecated)", Index=79, Description="Thisentityisdeprecated")]
+    ResourceRestrictionDeprecated = 10368,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order Service", Index=102, Description="Recordallservicesproposedandperformedforworkorder")]
+    WorkOrderService = 10369,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order Service Task", Index=117, Description="Storeservicetasksthataretobeperformedforthisworkorder")]
+    WorkOrderServiceTask = 10370,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Security Template", Index=60, Description="SecurityTemplates")]
+    SecurityTemplate = 10404,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Bulk Migration Job", Index=59, Description="BulkMigrationJobtomigratehistoryNoteAttachmentsorEmailAttachments")]
+    BulkMigrationJob = 10405,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Bulk Migration Job Status", Index=87, Description="BulkMigrationJobStatustoshowthestatusoftherecordsprocessed")]
+    BulkMigrationJobStatus = 10406,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Connector", Index=16, Description="Configurationsettingsforonlinestorages")]
+    Connector = 10408,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Entity Configuration", Index=77, Description="EntityConfiguration")]
+    EntityConfiguration = 10409,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inogic License Details", Index=24, Description="Usedtostorethelicensedetails")]
+    InogicLicenseDetails = 10411,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Operation", Index=80, Description="RelationshipbetweenaRegulatedEntityandaSite")]
+    Operation = 10426,
+}
+
+[DataContract()]
+public enum Connection_Record2ObjectTypeCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Account", Index=63, Description="BusinessthatrepresentsacustomerorpotentialcustomerThecompanythatisbilledinbusines" +
+        "stransactions")]
+    Account = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Contact", Index=31, Description="Personwithwhomabusinessunithasarelationshipsuchascustomersupplierandcolleague")]
+    Contact = 2,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Opportunity", Index=69, Description="Potentialrevenuegeneratingeventorsaletoanaccountwhichneedstobetrackedthroughasale" +
+        "sprocesstocompletion")]
+    Opportunity = 3,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Lead", Index=103, Description="ProspectorpotentialsalesopportunityLeadsareconvertedintoaccountscontactsoropportu" +
+        "nitieswhentheyarequalifiedOtherwisetheyaredeletedorarchived")]
+    Lead = 4,
+    
+    [EnumMember()]
+    [OptionSetMetadata("User", Index=47, Description="PersonwithaccesstotheMicrosoftCRMsystemandwhoownsobjectsintheMicrosoftCRMdatabase" +
+        "")]
+    User = 8,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Team", Index=45, Description="CollectionofsystemusersthatroutinelycollaborateTeamscanbeusedtosimplifyrecordshar" +
+        "ingandprovideteammemberswithcommonaccesstoorganizationdatawhenteammembersbelongt" +
+        "odifferentBusinessUnits")]
+    Team = 9,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Position", Index=60, Description="Positionofauserinthehierarchy")]
+    Position = 50,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Social Profile", Index=18, Description="Thisentityisusedtostoresocialprofileinformationofitsassociatedaccountandcontactso" +
+        "ndifferentsocialchannels")]
+    SocialProfile = 99,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Case", Index=105, Description="Servicerequestcaseassociatedwithacontract")]
+    Case = 112,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Competitor", Index=22, Description="Businesscompetingforthesalerepresentedbyaleadoropportunity")]
+    Competitor = 123,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Contract", Index=25, Description="Agreementtoprovidecustomerserviceduringaspecifiedamountoftimeornumberofcases")]
+    Contract = 1010,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Price List", Index=59, Description="Entitythatdefinespricinglevels")]
+    PriceList = 1022,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Product", Index=19, Description="Informationaboutproductsandtheirpricinginformation")]
+    Product = 1024,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Quote", Index=86, Description="Formalofferforproductsandorservicesproposedatspecificpricesandrelatedpaymentterms" +
+        "whichissenttoaprospectivecustomer")]
+    Quote = 1084,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Order", Index=38, Description="Quotethathasbeenaccepted")]
+    Order = 1088,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Invoice", Index=81, Description="Orderthathasbeenbilled")]
+    Invoice = 1090,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Region", Index=42, Description="TerritoryrepresentssalesregionsWorkOrderForm")]
+    Region = 2013,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Facility/Equipment", Index=70, Description="Resourcethatcanbescheduled")]
+    FacilityEquipment = 4000,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Scheduling Group", Index=76, Description="Resourcegrouporteamwhosememberscanbescheduledforaservice")]
+    SchedulingGroup = 4005,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Resource Group", Index=16, Description="Grouporcollectionofpeopleequipmentandorfacilitiesthatcanbescheduled")]
+    ResourceGroup = 4007,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Activity", Index=54, Description="TaskperformedortobeperformedbyauserAnactivityisanyactionforwhichanentrycanbemadeo" +
+        "nacalendar")]
+    Activity = 4200,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Appointment", Index=23, Description="Commitmentrepresentingatimeintervalwithstartendtimesandduration")]
+    Appointment = 4201,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Email", Index=73, Description="Activitythatisdeliveredusingemailprotocols")]
+    Email = 4202,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Fax", Index=37, Description="Activitythattrackscalloutcomeandnumberofpagesforafaxandoptionallystoresanelectron" +
+        "iccopyofthedocument")]
+    Fax = 4204,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Letter", Index=92, Description="ActivitythattracksthedeliveryofaletterTheactivitycancontaintheelectroniccopyofthe" +
+        "letter")]
+    Letter = 4207,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Phone Call", Index=14, Description="Activitytotrackatelephonecall")]
+    PhoneCall = 4210,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Task", Index=12, Description="Genericactivityrepresentingworkneededtobedone")]
+    Task = 4212,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Service Activity", Index=99, Description="ActivityofferedbytheorganizationtosatisfyitscustomersneedsEachserviceactivityincl" +
+        "udesdatetimedurationandrequiredresources")]
+    ServiceActivity = 4214,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Social Activity", Index=80, Description="Forinternaluseonly")]
+    SocialActivity = 4216,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Recurring Appointment", Index=88, Description="TheMasterappointmentofarecurringappointmentseries")]
+    RecurringAppointment = 4251,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Marketing List", Index=28, Description="Groupofexistingorpotentialcustomerscreatedforamarketingcampaignorothersalespurpos" +
+        "es")]
+    MarketingList = 4300,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Campaign", Index=34, Description="Containerforcampaignactivitiesandresponsessalesliteratureproductsandliststocreate" +
+        "planexecuteandtracktheresultsofaspecificmarketingcampaignthroughitslife")]
+    Campaign = 4400,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Campaign Activity", Index=83, Description="Taskperformedortobeperformedbyauserforplanningorrunningacampaign")]
+    CampaignActivity = 4402,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Process Session", Index=58, Description="InformationthatisgeneratedwhenadialogisrunEverytimethatyourunadialogadialogsessio" +
+        "niscreated")]
+    ProcessSession = 4710,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Channel Access Profile Rule", Index=71, Description="Definestherulesforautomaticallyassociatingchannelaccessprofilestoexternalpartyrec" +
+        "ordsForinternaluseonly")]
+    ChannelAccessProfileRule = 9400,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Goal", Index=109, Description="Targetobjectiveforauserorateamforaspecifiedtimeperiod")]
+    Goal = 9600,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Entitlement", Index=6, Description="Definestheamountandtypeofsupportacustomershouldreceive")]
+    Entitlement = 9700,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Entitlement Channel", Index=84, Description="Definestheamountandtypeofsupportforachannel")]
+    EntitlementChannel = 9701,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Entitlement Template Channel", Index=96, Description="Containspredefinedsupporttermsforachanneltocreateentitlementsforcustomers")]
+    EntitlementTemplateChannel = 9703,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Knowledge Base Record", Index=104, Description="MetadataofknowledgebaseKBarticlesassociatedwithMicrosoftDynamics365entities")]
+    KnowledgeBaseRecord = 9930,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Knowledge Article", Index=5, Description="Organizationalknowledgeforinternalandexternaluse")]
+    KnowledgeArticle = 9953,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Customer Asset", Index=0, Description="SpecifyCustomerAsset")]
+    CustomerAsset = 10114,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Functional Location", Index=35)]
+    FunctionalLocation = 10117,
+    
+    [EnumMember()]
+    [OptionSetMetadata("IoT Alert", Index=51)]
+    IoTAlert = 10124,
+    
+    [EnumMember()]
+    [OptionSetMetadata("IoT Device", Index=64, Description="RepresentsaconnecteddevicethatcanberegisteredwithanIoTprovider")]
+    IoTDevice = 10125,
+    
+    [EnumMember()]
+    [OptionSetMetadata("IoT Device Category", Index=77, Description="UsedtocategorizeIoTdevices")]
+    IoTDeviceCategory = 10126,
+    
+    [EnumMember()]
+    [OptionSetMetadata("IoT Device Command", Index=117, Description="RepresentsanoutgoingmessagetoadeviceconnectedtoanIoTprovider")]
+    IoTDeviceCommand = 10127,
+    
+    [EnumMember()]
+    [OptionSetMetadata("IoT Device Registration History", Index=33, Description="TracksregistrationactivitiesonanIoTdevice")]
+    IoTDeviceRegistrationHistory = 10131,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Profile Album", Index=75, Description="Containsuserprofileimagesthatarestoredasattachmentsanddisplayedinposts")]
+    ProfileAlbum = 10230,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Customer Voice alert", Index=40)]
+    CustomerVoicealert = 10235,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Customer Voice survey invite", Index=3, Description="Activitythattracksasurveyinvitationsenttoaperson")]
+    CustomerVoicesurveyinvite = 10245,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Customer Voice survey response", Index=61, Description="Responsetoasurvey")]
+    CustomerVoicesurveyresponse = 10247,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Booking Alert", Index=85, Description="Alertsthatnotifyscheduleboardusersofbookingissuesorinformation")]
+    BookingAlert = 10256,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Booking Alert Status", Index=48, Description="Thestatusofabookingalert")]
+    BookingAlertStatus = 10257,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Booking Rule", Index=62, Description="Specifycustomrulestobevalidatedbythesystembeforesavingabookingrecord")]
+    BookingRule = 10259,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Resource Territory", Index=102, Description="Allowstospecifyforwhichterritoryaresourcecouldprovideservicesfor")]
+    ResourceTerritory = 10275,
+    
+    [EnumMember()]
+    [OptionSetMetadata("System User Scheduler Setting", Index=29, Description="Storesuserspecificsettingsforthescheduleboard")]
+    SystemUserSchedulerSetting = 10278,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Fulfillment Preference", Index=10, Description="Specifytimegroupsconsistingofmultipletimewindowstobeusedforschedulingforexample")]
+    FulfillmentPreference = 10279,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Time Group Detail", Index=17, Description="Specifyindividualtimewindowsunderatimegroup")]
+    TimeGroupDetail = 10280,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement", Index=97, Description="Providesabilitytostoredetailsaboutserviceagreementsyouhavewithyourcustomers")]
+    Agreement = 10291,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Date", Index=11, Description="Specifythemaintenancebookingdatesfortheagreement")]
+    AgreementBookingDate = 10292,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Incident", Index=27, Description="Specifythebookingincidentfortheagreement")]
+    AgreementBookingIncident = 10293,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Product", Index=36, Description="Specifythebookingproductfortheagreement")]
+    AgreementBookingProduct = 10294,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Service", Index=24, Description="Specifythebookingservicefortheagreement")]
+    AgreementBookingService = 10295,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Service Task", Index=112, Description="Specifythebookingservicetaskfortheagreement")]
+    AgreementBookingServiceTask = 10296,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Booking Setup", Index=90, Description="Specifythemaintenancebookingsfortheagreement")]
+    AgreementBookingSetup = 10297,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Invoice Date", Index=110, Description="Specifytheinvoicedatesfortheagreement")]
+    AgreementInvoiceDate = 10298,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Invoice Product", Index=116, Description="Specifythebookingproductinvoicefortheagreement")]
+    AgreementInvoiceProduct = 10299,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Agreement Invoice Setup", Index=7, Description="Specifytheinvoicesforthisagreement")]
+    AgreementInvoiceSetup = 10300,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Booking Timestamp", Index=87, Description="Tracksstatuschangesofbookingsandtimestampsthechangeofthestatus")]
+    BookingTimestamp = 10303,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Incident Type Characteristic", Index=39, Description="Specifycharacteristicinsidenttype")]
+    IncidentTypeCharacteristic = 10314,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Incident Type Product", Index=72, Description="Thisentitygivestheabilitytopreconfigureproductstobeaddedtoaworkorderwhentherelate" +
+        "dincidentisaddedtotheworkorder")]
+    IncidentTypeProduct = 10315,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Incident Type Service", Index=106, Description="Thisentitygivestheabilitytopreconfigureservicestobeaddedtoaworkorderwhentherelate" +
+        "dincidentisaddedtotheworkorder")]
+    IncidentTypeService = 10316,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inventory Adjustment", Index=100, Description="Recordsinventoryadjustments")]
+    InventoryAdjustment = 10320,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inventory Adjustment Product", Index=98, Description="Recordsproductaffectedbyaninventoryadjustmentorinventorytransfer")]
+    InventoryAdjustmentProduct = 10321,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inventory Journal", Index=52, Description="Inventorychangetracking")]
+    InventoryJournal = 10322,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inventory Transfer", Index=66, Description="Recordsinventoryadjustments")]
+    InventoryTransfer = 10323,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Payment", Index=53, Description="Specifypayment")]
+    Payment = 10328,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Payment Detail", Index=55, Description="Specifypaymentdetails")]
+    PaymentDetail = 10329,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Payment Method", Index=4, Description="Specifypaymentmethod")]
+    PaymentMethod = 10330,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Payment Term", Index=111, Description="Specifypaymenttermsusedforbilling")]
+    PaymentTerm = 10331,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Postal Code", Index=91, Description="Specifypostalcodesandtheirrelationshiptoterritories")]
+    PostalCode = 10332,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Product Inventory", Index=89, Description="InventoryRecord")]
+    ProductInventory = 10333,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order", Index=46, Description="RecordPurchaseOrderspertainingtoWorkOrdersorotherwise")]
+    PurchaseOrder = 10334,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order Bill", Index=30, Description="Specifypurchaseorderbill")]
+    PurchaseOrderBill = 10335,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order Product", Index=107, Description="Recordproductstobeorderedonpurchaseorder")]
+    PurchaseOrderProduct = 10336,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order Receipt", Index=41, Description="Specifypurchaseorderreceipt")]
+    PurchaseOrderReceipt = 10337,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order Receipt Product", Index=26, Description="Specifyproductforpurchaseorderreceipt")]
+    PurchaseOrderReceiptProduct = 10338,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Purchase Order SubStatus", Index=1, Description="SpecifycustomPOSubstatuseswhichcanbeusedtospecifythecurrentPOstatusmoreprecisely")]
+    PurchaseOrderSubStatus = 10339,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Quote Booking Incident", Index=78, Description="StorestheIncidentsassociatedwithQuoteandQuoteBookingSetup")]
+    QuoteBookingIncident = 10340,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Quote Booking Product", Index=13, Description="ProvidesabilitytostoreinformationabouttheproductsthatareassociatedwithQuoteBookin" +
+        "gSetup")]
+    QuoteBookingProduct = 10341,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Quote Booking Service", Index=44, Description="StoresdetailsabouttheservicesassociatedwithQuoteBookingSetup")]
+    QuoteBookingService = 10342,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Quote Booking Service Task", Index=21)]
+    QuoteBookingServiceTask = 10343,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RMA", Index=50, Description="RecordsRMAsforproductstoberetunedfromcustomers")]
+    RMA = 10348,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RMA Product", Index=9, Description="RecordsproductstobereturnedonanRMA")]
+    RMAProduct = 10349,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RMA Receipt", Index=56, Description="SpecifyRMAreceipt")]
+    RMAReceipt = 10350,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RMA Receipt Product", Index=2, Description="SpecifyRMAreceiptproduct")]
+    RMAReceiptProduct = 10351,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RMA SubStatus", Index=43, Description="SpecifycustomRMAsubstatuseswhichcanbeusedtospecifythecurrentRMAstatusmoreprecisel" +
+        "y")]
+    RMASubStatus = 10352,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RTV", Index=49, Description="RecordsRTVsforproductstoberetunedtovendors")]
+    RTV = 10353,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RTV Product", Index=114, Description="RecordsproductstobereturnedonanRTV")]
+    RTVProduct = 10354,
+    
+    [EnumMember()]
+    [OptionSetMetadata("RTV Substatus", Index=95, Description="SpecifycustomRTVsubstatuseswhichcanbeusedtospecifythecurrentRTVstatusmoreprecisel" +
+        "y")]
+    RTVSubstatus = 10355,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Ship Via", Index=32, Description="Specifythedifferentshippingmethodsused")]
+    ShipVia = 10357,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Tax Code", Index=8, Description="StoretaxrelatedinformationEachtaxcodecouldcontainmultiplechildtaxcodesandinthatca" +
+        "sethetaxratewillbedeterminedbythetotaltaxofallchildren")]
+    TaxCode = 10358,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Time Off Request", Index=20, Description="Specifytimeresourcetimeoffrequest")]
+    TimeOffRequest = 10360,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Warehouse", Index=108, Description="Warehouseswhereinventoryproductsarestoredandmanaged")]
+    Warehouse = 10362,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order", Index=74, Description="WorkordersstoreallinformationaboutthejobperformedforanaccountStoresincidentdetail" +
+        "sresourceexpensestaskscommunicationsbillingandmore")]
+    WorkOrder = 10363,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order Characteristic (Deprecated)", Index=68, Description="Thisentityisdeprecated")]
+    WorkOrderCharacteristicDeprecated = 10364,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order Incident", Index=93, Description="SpecifyworkorderincidentsreportedtoyoubytheclientThesearealsoreferredtoasproblemc" +
+        "odes")]
+    WorkOrderIncident = 10366,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order Product", Index=79, Description="Inthisentityyourecordalltheproductsproposedandusedforaworkorder")]
+    WorkOrderProduct = 10367,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Resource Restriction (Deprecated)", Index=94, Description="Thisentityisdeprecated")]
+    ResourceRestrictionDeprecated = 10368,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order Service", Index=118, Description="Recordallservicesproposedandperformedforworkorder")]
+    WorkOrderService = 10369,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Work Order Service Task", Index=115, Description="Storeservicetasksthataretobeperformedforthisworkorder")]
+    WorkOrderServiceTask = 10370,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Security Template", Index=15, Description="SecurityTemplates")]
+    SecurityTemplate = 10404,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Bulk Migration Job", Index=67, Description="BulkMigrationJobtomigratehistoryNoteAttachmentsorEmailAttachments")]
+    BulkMigrationJob = 10405,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Bulk Migration Job Status", Index=57, Description="BulkMigrationJobStatustoshowthestatusoftherecordsprocessed")]
+    BulkMigrationJobStatus = 10406,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Connector", Index=113, Description="Configurationsettingsforonlinestorages")]
+    Connector = 10408,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Entity Configuration", Index=82, Description="EntityConfiguration")]
+    EntityConfiguration = 10409,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inogic License Details", Index=65, Description="Usedtostorethelicensedetails")]
+    InogicLicenseDetails = 10411,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Operation", Index=101, Description="RelationshipbetweenaRegulatedEntityandaSite")]
+    Operation = 10426,
+}
+
+[DataContract()]
+public enum Connection_StatusCode {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Active", Index=0)]
+    Active = 1,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Inactive", Index=1)]
+    Inactive = 2,
 }
 
 [DataContract()]
@@ -99680,6 +103701,18 @@ public enum SystemUser_CALType {
     [EnumMember()]
     [OptionSetMetadata("Project Service", Index=12)]
     ProjectService = 12,
+}
+
+[DataContract()]
+public enum SystemUser_DeletedState {
+    
+    [EnumMember()]
+    [OptionSetMetadata("Not deleted", Index=0)]
+    Notdeleted = 0,
+    
+    [EnumMember()]
+    [OptionSetMetadata("Soft deleted", Index=1)]
+    Softdeleted = 1,
 }
 
 [DataContract()]
