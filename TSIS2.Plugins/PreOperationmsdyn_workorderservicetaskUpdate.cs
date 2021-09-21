@@ -88,6 +88,7 @@ namespace TSIS2.Plugins
                                     if (workOrder != null && workOrder.msdyn_ServiceRequest == null)
                                     {
                                         Incident newIncident = new Incident();
+                                        newIncident.ts_TradeNameId = workOrder.ts_tradenameId;
                                         newIncident.CustomerId = workOrder.msdyn_ServiceAccount;
                                         if (workOrder.ts_Site != null) newIncident.msdyn_FunctionalLocation = workOrder.ts_Site;
                                         if (workOrder.ts_Region != null) newIncident.ovs_Region = workOrder.ts_Region;
