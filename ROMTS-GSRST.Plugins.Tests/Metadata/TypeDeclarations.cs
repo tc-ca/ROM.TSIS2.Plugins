@@ -26,6 +26,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid CustomerServiceScheduleAdministrator = new Guid("245b20ea-dd8d-464d-ba3a-8ed3ea015198");
 		public static Guid CustomerServiceScheduler = new Guid("0df07e88-3880-4109-bfa5-06e97c80eb46");
 		public static Guid CustomerVoiceAddon = new Guid("90bb098b-d3b6-ea11-a812-000d3a31eec8");
+		public static Guid DataSyncFrameworkRole = new Guid("b21a7144-299d-4c21-a116-30f60e9c159a");
 		public static Guid DataSyncServiceRole = new Guid("fc3e65d9-450a-4301-933b-f9bcaee20521");
 		public static Guid DataLakeWorkspaceAppAccess = new Guid("edfcbfd2-358f-ea11-a81f-000d3a6eafd3");
 		public static Guid Delegate = new Guid("10472c33-29a1-eb11-b1ac-000d3ae8bbe0");

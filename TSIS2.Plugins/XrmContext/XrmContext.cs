@@ -3278,26 +3278,6 @@ public partial class Account : ExtendedEntity<AccountState, Account_StatusCode> 
         }
     }
     
-    [RelationshipSchemaName("ovs_msdyn_workorder_regulatedentity_account")]
-    public IEnumerable<msdyn_workorder> ovs_msdyn_workorder_regulatedentity_account {
-        get {
-            return GetRelatedEntities<msdyn_workorder>("ovs_msdyn_workorder_regulatedentity_account", null);
-        }
-        set {
-            SetRelatedEntities("ovs_msdyn_workorder_regulatedentity_account", null, value);
-        }
-    }
-    
-    [RelationshipSchemaName("ovs_workorder_SiteofViolation_Account")]
-    public IEnumerable<msdyn_workorder> ovs_workorder_SiteofViolation_Account {
-        get {
-            return GetRelatedEntities<msdyn_workorder>("ovs_workorder_SiteofViolation_Account", null);
-        }
-        set {
-            SetRelatedEntities("ovs_workorder_SiteofViolation_Account", null, value);
-        }
-    }
-    
     [RelationshipSchemaName("qm_account_tylegislationcharacteristic")]
     public IEnumerable<qm_tylegislationcharacteristic> qm_account_tylegislationcharacteristic {
         get {
@@ -27369,6 +27349,21 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
     }
     
     /// <summary>
+    /// <para>Unique identifier for Trade Name associated with Case.</para>
+    /// <para>Display Name: Trade Name</para>
+    /// </summary>
+    [AttributeLogicalName("ts_tradenameid")]
+    [DisplayName("Trade Name")]
+    public EntityReference ts_TradeNameId {
+        get {
+            return GetAttributeValue<EntityReference>("ts_tradenameid");
+        }
+        set {
+            SetAttributeValue("ts_tradenameid", value);
+        }
+    }
+    
+    /// <summary>
     /// <para>Display Name: Number of Findings</para>
     /// </summary>
     [AttributeLogicalName("ts_numberoffindings")]
@@ -27855,6 +27850,17 @@ public partial class Incident : ExtendedEntity<IncidentState, Incident_StatusCod
         }
         set {
             SetRelatedEntities("ts_incident_ts_workordercreationwizard", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_tradenameid")]
+    [RelationshipSchemaName("ts_ts_tradename_incident")]
+    public ts_tradename ts_ts_tradename_incident {
+        get {
+            return GetRelatedEntity<ts_tradename>("ts_ts_tradename_incident", null);
+        }
+        set {
+            SetRelatedEntity("ts_ts_tradename_incident", null, value);
         }
     }
     
@@ -72478,7 +72484,7 @@ public partial class msdyn_servicetasktype : ExtendedEntity<msdyn_servicetasktyp
     /// </summary>
     [AttributeLogicalName("msdyn_name")]
     [DisplayName("Name")]
-    [MaxLength(200)]
+    [MaxLength(500)]
     public string msdyn_name {
         get {
             return GetAttributeValue<string>("msdyn_name");
@@ -72550,7 +72556,7 @@ public partial class msdyn_servicetasktype : ExtendedEntity<msdyn_servicetasktyp
     /// </summary>
     [AttributeLogicalName("ovs_servicetasktypenamefrench")]
     [DisplayName("Service Task Type Name (French)")]
-    [MaxLength(100)]
+    [MaxLength(200)]
     public string ovs_servicetasktypenamefrench {
         get {
             return GetAttributeValue<string>("ovs_servicetasktypenamefrench");
@@ -74801,20 +74807,6 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
     }
     
     /// <summary>
-    /// <para>Display Name: Site of Violation (to delete)</para>
-    /// </summary>
-    [AttributeLogicalName("ovs_siteofviolation")]
-    [DisplayName("Site of Violation (to delete)")]
-    public EntityReference ovs_SiteofViolation {
-        get {
-            return GetAttributeValue<EntityReference>("ovs_siteofviolation");
-        }
-        set {
-            SetAttributeValue("ovs_siteofviolation", value);
-        }
-    }
-    
-    /// <summary>
     /// <para>Display Name: Rationale</para>
     /// </summary>
     [AttributeLogicalName("ovs_tyrational")]
@@ -74853,20 +74845,6 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
         set {
             SetAttributeValue("ovs_operationtypeid", value);
-        }
-    }
-    
-    /// <summary>
-    /// <para>Display Name: Regulated Entity (to delete)</para>
-    /// </summary>
-    [AttributeLogicalName("ovs_regulatedentity")]
-    [DisplayName("Regulated Entity (to delete)")]
-    public EntityReference ovs_regulatedentity {
-        get {
-            return GetAttributeValue<EntityReference>("ovs_regulatedentity");
-        }
-        set {
-            SetAttributeValue("ovs_regulatedentity", value);
         }
     }
     
@@ -75690,17 +75668,6 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
     }
     
-    [AttributeLogicalName("ovs_regulatedentity")]
-    [RelationshipSchemaName("ovs_msdyn_workorder_regulatedentity_account")]
-    public Account ovs_msdyn_workorder_regulatedentity_account {
-        get {
-            return GetRelatedEntity<Account>("ovs_msdyn_workorder_regulatedentity_account", null);
-        }
-        set {
-            SetRelatedEntity("ovs_msdyn_workorder_regulatedentity_account", null, value);
-        }
-    }
-    
     [AttributeLogicalName("ovs_operationid")]
     [RelationshipSchemaName("ovs_ovs_operation_msdyn_workorder")]
     public ovs_operation ovs_ovs_operation_msdyn_workorder {
@@ -75720,17 +75687,6 @@ public partial class msdyn_workorder : ExtendedEntity<msdyn_workorderState, msdy
         }
         set {
             SetRelatedEntity("ovs_tc_tcfiscalquarter_msdyn_workorder", null, value);
-        }
-    }
-    
-    [AttributeLogicalName("ovs_siteofviolation")]
-    [RelationshipSchemaName("ovs_workorder_SiteofViolation_Account")]
-    public Account ovs_workorder_SiteofViolation_Account {
-        get {
-            return GetRelatedEntity<Account>("ovs_workorder_SiteofViolation_Account", null);
-        }
-        set {
-            SetRelatedEntity("ovs_workorder_SiteofViolation_Account", null, value);
         }
     }
     
@@ -80076,16 +80032,16 @@ public partial class msdyn_workorderservicetask : ExtendedEntity<msdyn_workorder
     }
     
     /// <summary>
-    /// <para>Display Name: Work Order End Date</para>
+    /// <para>Display Name: Operation Type Filter</para>
     /// </summary>
-    [AttributeLogicalName("ts_workorderenddate")]
-    [DisplayName("Work Order End Date")]
-    public DateTime? ts_workorderenddate {
+    [AttributeLogicalName("ts_operationtypefilter")]
+    [DisplayName("Operation Type Filter")]
+    public EntityReference ts_operationtypefilter {
         get {
-            return GetAttributeValue<DateTime?>("ts_workorderenddate");
+            return GetAttributeValue<EntityReference>("ts_operationtypefilter");
         }
         set {
-            SetAttributeValue("ts_workorderenddate", value);
+            SetAttributeValue("ts_operationtypefilter", value);
         }
     }
     
@@ -80315,6 +80271,17 @@ public partial class msdyn_workorderservicetask : ExtendedEntity<msdyn_workorder
         }
         set {
             SetRelatedEntities("msdyn_workorderservicetask_msfp_alerts", null, value);
+        }
+    }
+    
+    [AttributeLogicalName("ts_operationtypefilter")]
+    [RelationshipSchemaName("msdyn_workorderservicetask_operationtypef")]
+    public ovs_operationtype msdyn_workorderservicetask_operationtypef {
+        get {
+            return GetRelatedEntity<ovs_operationtype>("msdyn_workorderservicetask_operationtypef", null);
+        }
+        set {
+            SetRelatedEntity("msdyn_workorderservicetask_operationtypef", null, value);
         }
     }
     
@@ -87769,6 +87736,16 @@ public partial class ovs_operationtype : ExtendedEntity<ovs_operationtypeState, 
         }
         set {
             SetRelatedEntity("lk_ovs_operationtype_modifiedonbehalfby", null, value);
+        }
+    }
+    
+    [RelationshipSchemaName("msdyn_workorderservicetask_operationtypef")]
+    public IEnumerable<msdyn_workorderservicetask> msdyn_workorderservicetask_operationtypef {
+        get {
+            return GetRelatedEntities<msdyn_workorderservicetask>("msdyn_workorderservicetask_operationtypef", null);
+        }
+        set {
+            SetRelatedEntities("msdyn_workorderservicetask_operationtypef", null, value);
         }
     }
     
@@ -97001,6 +96978,16 @@ public partial class ts_tradename : ExtendedEntity<ts_tradenameState, ts_tradena
         }
     }
     
+    [RelationshipSchemaName("ts_ts_tradename_incident")]
+    public IEnumerable<Incident> ts_ts_tradename_incident {
+        get {
+            return GetRelatedEntities<Incident>("ts_ts_tradename_incident", null);
+        }
+        set {
+            SetRelatedEntities("ts_ts_tradename_incident", null, value);
+        }
+    }
+    
     [AttributeLogicalName("owninguser")]
     [RelationshipSchemaName("user_ts_tradename")]
     public SystemUser user_ts_tradename {
@@ -100025,31 +100012,31 @@ public enum ConnectionState {
 public enum Connection_Record1ObjectTypeCode {
     
     [EnumMember()]
-    [OptionSetMetadata("Account", Index=43, Description="BusinessthatrepresentsacustomerorpotentialcustomerThecompanythatisbilledinbusines" +
+    [OptionSetMetadata("Account", Index=41, Description="BusinessthatrepresentsacustomerorpotentialcustomerThecompanythatisbilledinbusines" +
         "stransactions")]
     Account = 1,
     
     [EnumMember()]
-    [OptionSetMetadata("Contact", Index=12, Description="Personwithwhomabusinessunithasarelationshipsuchascustomersupplierandcolleague")]
+    [OptionSetMetadata("Contact", Index=78, Description="Personwithwhomabusinessunithasarelationshipsuchascustomersupplierandcolleague")]
     Contact = 2,
     
     [EnumMember()]
-    [OptionSetMetadata("Opportunity", Index=29, Description="Potentialrevenuegeneratingeventorsaletoanaccountwhichneedstobetrackedthroughasale" +
+    [OptionSetMetadata("Opportunity", Index=10, Description="Potentialrevenuegeneratingeventorsaletoanaccountwhichneedstobetrackedthroughasale" +
         "sprocesstocompletion")]
     Opportunity = 3,
     
     [EnumMember()]
-    [OptionSetMetadata("Lead", Index=61, Description="ProspectorpotentialsalesopportunityLeadsareconvertedintoaccountscontactsoropportu" +
+    [OptionSetMetadata("Lead", Index=60, Description="ProspectorpotentialsalesopportunityLeadsareconvertedintoaccountscontactsoropportu" +
         "nitieswhentheyarequalifiedOtherwisetheyaredeletedorarchived")]
     Lead = 4,
     
     [EnumMember()]
-    [OptionSetMetadata("User", Index=15, Description="PersonwithaccesstotheMicrosoftCRMsystemandwhoownsobjectsintheMicrosoftCRMdatabase" +
+    [OptionSetMetadata("User", Index=18, Description="PersonwithaccesstotheMicrosoftCRMsystemandwhoownsobjectsintheMicrosoftCRMdatabase" +
         "")]
     User = 8,
     
     [EnumMember()]
-    [OptionSetMetadata("Team", Index=0, Description="CollectionofsystemusersthatroutinelycollaborateTeamscanbeusedtosimplifyrecordshar" +
+    [OptionSetMetadata("Team", Index=3, Description="CollectionofsystemusersthatroutinelycollaborateTeamscanbeusedtosimplifyrecordshar" +
         "ingandprovideteammemberswithcommonaccesstoorganizationdatawhenteammembersbelongt" +
         "odifferentBusinessUnits")]
     Team = 9,
@@ -100059,41 +100046,41 @@ public enum Connection_Record1ObjectTypeCode {
     Position = 50,
     
     [EnumMember()]
-    [OptionSetMetadata("Social Profile", Index=34, Description="Thisentityisusedtostoresocialprofileinformationofitsassociatedaccountandcontactso" +
+    [OptionSetMetadata("Social Profile", Index=52, Description="Thisentityisusedtostoresocialprofileinformationofitsassociatedaccountandcontactso" +
         "ndifferentsocialchannels")]
     SocialProfile = 99,
     
     [EnumMember()]
-    [OptionSetMetadata("Case", Index=9, Description="Servicerequestcaseassociatedwithacontract")]
+    [OptionSetMetadata("Case", Index=13, Description="Servicerequestcaseassociatedwithacontract")]
     Case = 112,
     
     [EnumMember()]
-    [OptionSetMetadata("Competitor", Index=45, Description="Businesscompetingforthesalerepresentedbyaleadoropportunity")]
+    [OptionSetMetadata("Competitor", Index=29, Description="Businesscompetingforthesalerepresentedbyaleadoropportunity")]
     Competitor = 123,
     
     [EnumMember()]
-    [OptionSetMetadata("Contract", Index=30, Description="Agreementtoprovidecustomerserviceduringaspecifiedamountoftimeornumberofcases")]
+    [OptionSetMetadata("Contract", Index=34, Description="Agreementtoprovidecustomerserviceduringaspecifiedamountoftimeornumberofcases")]
     Contract = 1010,
     
     [EnumMember()]
-    [OptionSetMetadata("Price List", Index=26, Description="Entitythatdefinespricinglevels")]
+    [OptionSetMetadata("Price List", Index=17, Description="Entitythatdefinespricinglevels")]
     PriceList = 1022,
     
     [EnumMember()]
-    [OptionSetMetadata("Product", Index=90, Description="Informationaboutproductsandtheirpricinginformation")]
+    [OptionSetMetadata("Product", Index=91, Description="Informationaboutproductsandtheirpricinginformation")]
     Product = 1024,
     
     [EnumMember()]
-    [OptionSetMetadata("Quote", Index=13, Description="Formalofferforproductsandorservicesproposedatspecificpricesandrelatedpaymentterms" +
+    [OptionSetMetadata("Quote", Index=2, Description="Formalofferforproductsandorservicesproposedatspecificpricesandrelatedpaymentterms" +
         "whichissenttoaprospectivecustomer")]
     Quote = 1084,
     
     [EnumMember()]
-    [OptionSetMetadata("Order", Index=94, Description="Quotethathasbeenaccepted")]
+    [OptionSetMetadata("Order", Index=95, Description="Quotethathasbeenaccepted")]
     Order = 1088,
     
     [EnumMember()]
-    [OptionSetMetadata("Invoice", Index=57, Description="Orderthathasbeenbilled")]
+    [OptionSetMetadata("Invoice", Index=48, Description="Orderthathasbeenbilled")]
     Invoice = 1090,
     
     [EnumMember()]
@@ -100101,87 +100088,87 @@ public enum Connection_Record1ObjectTypeCode {
     Region = 2013,
     
     [EnumMember()]
-    [OptionSetMetadata("Facility/Equipment", Index=78, Description="Resourcethatcanbescheduled")]
+    [OptionSetMetadata("Facility/Equipment", Index=75, Description="Resourcethatcanbescheduled")]
     FacilityEquipment = 4000,
     
     [EnumMember()]
-    [OptionSetMetadata("Scheduling Group", Index=73, Description="Resourcegrouporteamwhosememberscanbescheduledforaservice")]
+    [OptionSetMetadata("Scheduling Group", Index=72, Description="Resourcegrouporteamwhosememberscanbescheduledforaservice")]
     SchedulingGroup = 4005,
     
     [EnumMember()]
-    [OptionSetMetadata("Resource Group", Index=64, Description="Grouporcollectionofpeopleequipmentandorfacilitiesthatcanbescheduled")]
+    [OptionSetMetadata("Resource Group", Index=65, Description="Grouporcollectionofpeopleequipmentandorfacilitiesthatcanbescheduled")]
     ResourceGroup = 4007,
     
     [EnumMember()]
-    [OptionSetMetadata("Activity", Index=115, Description="TaskperformedortobeperformedbyauserAnactivityisanyactionforwhichanentrycanbemadeo" +
+    [OptionSetMetadata("Activity", Index=112, Description="TaskperformedortobeperformedbyauserAnactivityisanyactionforwhichanentrycanbemadeo" +
         "nacalendar")]
     Activity = 4200,
     
     [EnumMember()]
-    [OptionSetMetadata("Appointment", Index=8, Description="Commitmentrepresentingatimeintervalwithstartendtimesandduration")]
+    [OptionSetMetadata("Appointment", Index=83, Description="Commitmentrepresentingatimeintervalwithstartendtimesandduration")]
     Appointment = 4201,
     
     [EnumMember()]
-    [OptionSetMetadata("Email", Index=69, Description="Activitythatisdeliveredusingemailprotocols")]
+    [OptionSetMetadata("Email", Index=111, Description="Activitythatisdeliveredusingemailprotocols")]
     Email = 4202,
     
     [EnumMember()]
-    [OptionSetMetadata("Fax", Index=85, Description="Activitythattrackscalloutcomeandnumberofpagesforafaxandoptionallystoresanelectron" +
+    [OptionSetMetadata("Fax", Index=118, Description="Activitythattrackscalloutcomeandnumberofpagesforafaxandoptionallystoresanelectron" +
         "iccopyofthedocument")]
     Fax = 4204,
     
     [EnumMember()]
-    [OptionSetMetadata("Letter", Index=101, Description="ActivitythattracksthedeliveryofaletterTheactivitycancontaintheelectroniccopyofthe" +
+    [OptionSetMetadata("Letter", Index=116, Description="ActivitythattracksthedeliveryofaletterTheactivitycancontaintheelectroniccopyofthe" +
         "letter")]
     Letter = 4207,
     
     [EnumMember()]
-    [OptionSetMetadata("Phone Call", Index=62, Description="Activitytotrackatelephonecall")]
+    [OptionSetMetadata("Phone Call", Index=61, Description="Activitytotrackatelephonecall")]
     PhoneCall = 4210,
     
     [EnumMember()]
-    [OptionSetMetadata("Task", Index=65, Description="Genericactivityrepresentingworkneededtobedone")]
+    [OptionSetMetadata("Task", Index=66, Description="Genericactivityrepresentingworkneededtobedone")]
     Task = 4212,
     
     [EnumMember()]
-    [OptionSetMetadata("Service Activity", Index=97, Description="ActivityofferedbytheorganizationtosatisfyitscustomersneedsEachserviceactivityincl" +
+    [OptionSetMetadata("Service Activity", Index=85, Description="ActivityofferedbytheorganizationtosatisfyitscustomersneedsEachserviceactivityincl" +
         "udesdatetimedurationandrequiredresources")]
     ServiceActivity = 4214,
     
     [EnumMember()]
-    [OptionSetMetadata("Social Activity", Index=83, Description="Forinternaluseonly")]
+    [OptionSetMetadata("Social Activity", Index=84, Description="Forinternaluseonly")]
     SocialActivity = 4216,
     
     [EnumMember()]
-    [OptionSetMetadata("Recurring Appointment", Index=66, Description="TheMasterappointmentofarecurringappointmentseries")]
+    [OptionSetMetadata("Recurring Appointment", Index=63, Description="TheMasterappointmentofarecurringappointmentseries")]
     RecurringAppointment = 4251,
     
     [EnumMember()]
-    [OptionSetMetadata("Marketing List", Index=110, Description="Groupofexistingorpotentialcustomerscreatedforamarketingcampaignorothersalespurpos" +
+    [OptionSetMetadata("Marketing List", Index=105, Description="Groupofexistingorpotentialcustomerscreatedforamarketingcampaignorothersalespurpos" +
         "es")]
     MarketingList = 4300,
     
     [EnumMember()]
-    [OptionSetMetadata("Campaign", Index=105, Description="Containerforcampaignactivitiesandresponsessalesliteratureproductsandliststocreate" +
+    [OptionSetMetadata("Campaign", Index=108, Description="Containerforcampaignactivitiesandresponsessalesliteratureproductsandliststocreate" +
         "planexecuteandtracktheresultsofaspecificmarketingcampaignthroughitslife")]
     Campaign = 4400,
     
     [EnumMember()]
-    [OptionSetMetadata("Campaign Activity", Index=19, Description="Taskperformedortobeperformedbyauserforplanningorrunningacampaign")]
+    [OptionSetMetadata("Campaign Activity", Index=59, Description="Taskperformedortobeperformedbyauserforplanningorrunningacampaign")]
     CampaignActivity = 4402,
     
     [EnumMember()]
-    [OptionSetMetadata("Process Session", Index=32, Description="InformationthatisgeneratedwhenadialogisrunEverytimethatyourunadialogadialogsessio" +
+    [OptionSetMetadata("Process Session", Index=30, Description="InformationthatisgeneratedwhenadialogisrunEverytimethatyourunadialogadialogsessio" +
         "niscreated")]
     ProcessSession = 4710,
     
     [EnumMember()]
-    [OptionSetMetadata("Channel Access Profile Rule", Index=47, Description="Definestherulesforautomaticallyassociatingchannelaccessprofilestoexternalpartyrec" +
+    [OptionSetMetadata("Channel Access Profile Rule", Index=50, Description="Definestherulesforautomaticallyassociatingchannelaccessprofilestoexternalpartyrec" +
         "ordsForinternaluseonly")]
     ChannelAccessProfileRule = 9400,
     
     [EnumMember()]
-    [OptionSetMetadata("Goal", Index=7, Description="Targetobjectiveforauserorateamforaspecifiedtimeperiod")]
+    [OptionSetMetadata("Goal", Index=12, Description="Targetobjectiveforauserorateamforaspecifiedtimeperiod")]
     Goal = 9600,
     
     [EnumMember()]
@@ -100189,15 +100176,15 @@ public enum Connection_Record1ObjectTypeCode {
     Entitlement = 9700,
     
     [EnumMember()]
-    [OptionSetMetadata("Entitlement Channel", Index=76, Description="Definestheamountandtypeofsupportforachannel")]
+    [OptionSetMetadata("Entitlement Channel", Index=110, Description="Definestheamountandtypeofsupportforachannel")]
     EntitlementChannel = 9701,
     
     [EnumMember()]
-    [OptionSetMetadata("Entitlement Template Channel", Index=58, Description="Containspredefinedsupporttermsforachanneltocreateentitlementsforcustomers")]
+    [OptionSetMetadata("Entitlement Template Channel", Index=46, Description="Containspredefinedsupporttermsforachanneltocreateentitlementsforcustomers")]
     EntitlementTemplateChannel = 9703,
     
     [EnumMember()]
-    [OptionSetMetadata("Knowledge Base Record", Index=10, Description="MetadataofknowledgebaseKBarticlesassociatedwithMicrosoftDynamics365entities")]
+    [OptionSetMetadata("Knowledge Base Record", Index=42, Description="MetadataofknowledgebaseKBarticlesassociatedwithMicrosoftDynamics365entities")]
     KnowledgeBaseRecord = 9930,
     
     [EnumMember()]
@@ -100205,19 +100192,19 @@ public enum Connection_Record1ObjectTypeCode {
     KnowledgeArticle = 9953,
     
     [EnumMember()]
-    [OptionSetMetadata("Customer Asset", Index=23, Description="SpecifyCustomerAsset")]
+    [OptionSetMetadata("Customer Asset", Index=25, Description="SpecifyCustomerAsset")]
     CustomerAsset = 10114,
     
     [EnumMember()]
-    [OptionSetMetadata("Functional Location", Index=56)]
+    [OptionSetMetadata("Functional Location", Index=51)]
     FunctionalLocation = 10117,
     
     [EnumMember()]
-    [OptionSetMetadata("IoT Alert", Index=95)]
+    [OptionSetMetadata("IoT Alert", Index=93)]
     IoTAlert = 10124,
     
     [EnumMember()]
-    [OptionSetMetadata("IoT Device", Index=28, Description="RepresentsaconnecteddevicethatcanberegisteredwithanIoTprovider")]
+    [OptionSetMetadata("IoT Device", Index=27, Description="RepresentsaconnecteddevicethatcanberegisteredwithanIoTprovider")]
     IoTDevice = 10125,
     
     [EnumMember()]
@@ -100225,15 +100212,15 @@ public enum Connection_Record1ObjectTypeCode {
     IoTDeviceCategory = 10126,
     
     [EnumMember()]
-    [OptionSetMetadata("IoT Device Command", Index=14, Description="RepresentsanoutgoingmessagetoadeviceconnectedtoanIoTprovider")]
+    [OptionSetMetadata("IoT Device Command", Index=24, Description="RepresentsanoutgoingmessagetoadeviceconnectedtoanIoTprovider")]
     IoTDeviceCommand = 10127,
     
     [EnumMember()]
-    [OptionSetMetadata("IoT Device Registration History", Index=98, Description="TracksregistrationactivitiesonanIoTdevice")]
+    [OptionSetMetadata("IoT Device Registration History", Index=97, Description="TracksregistrationactivitiesonanIoTdevice")]
     IoTDeviceRegistrationHistory = 10131,
     
     [EnumMember()]
-    [OptionSetMetadata("Profile Album", Index=52, Description="Containsuserprofileimagesthatarestoredasattachmentsanddisplayedinposts")]
+    [OptionSetMetadata("Profile Album", Index=56, Description="Containsuserprofileimagesthatarestoredasattachmentsanddisplayedinposts")]
     ProfileAlbum = 10230,
     
     [EnumMember()]
@@ -100245,59 +100232,59 @@ public enum Connection_Record1ObjectTypeCode {
     CustomerVoicesurveyinvite = 10245,
     
     [EnumMember()]
-    [OptionSetMetadata("Customer Voice survey response", Index=92, Description="Responsetoasurvey")]
+    [OptionSetMetadata("Customer Voice survey response", Index=101, Description="Responsetoasurvey")]
     CustomerVoicesurveyresponse = 10247,
     
     [EnumMember()]
-    [OptionSetMetadata("Booking Alert", Index=51, Description="Alertsthatnotifyscheduleboardusersofbookingissuesorinformation")]
+    [OptionSetMetadata("Booking Alert", Index=9, Description="Alertsthatnotifyscheduleboardusersofbookingissuesorinformation")]
     BookingAlert = 10256,
     
     [EnumMember()]
-    [OptionSetMetadata("Booking Alert Status", Index=112, Description="Thestatusofabookingalert")]
+    [OptionSetMetadata("Booking Alert Status", Index=113, Description="Thestatusofabookingalert")]
     BookingAlertStatus = 10257,
     
     [EnumMember()]
-    [OptionSetMetadata("Booking Rule", Index=6, Description="Specifycustomrulestobevalidatedbythesystembeforesavingabookingrecord")]
+    [OptionSetMetadata("Booking Rule", Index=5, Description="Specifycustomrulestobevalidatedbythesystembeforesavingabookingrecord")]
     BookingRule = 10259,
     
     [EnumMember()]
-    [OptionSetMetadata("Resource Territory", Index=48, Description="Allowstospecifyforwhichterritoryaresourcecouldprovideservicesfor")]
+    [OptionSetMetadata("Resource Territory", Index=36, Description="Allowstospecifyforwhichterritoryaresourcecouldprovideservicesfor")]
     ResourceTerritory = 10275,
     
     [EnumMember()]
-    [OptionSetMetadata("System User Scheduler Setting", Index=67, Description="Storesuserspecificsettingsforthescheduleboard")]
+    [OptionSetMetadata("System User Scheduler Setting", Index=43, Description="Storesuserspecificsettingsforthescheduleboard")]
     SystemUserSchedulerSetting = 10278,
     
     [EnumMember()]
-    [OptionSetMetadata("Fulfillment Preference", Index=114, Description="Specifytimegroupsconsistingofmultipletimewindowstobeusedforschedulingforexample")]
+    [OptionSetMetadata("Fulfillment Preference", Index=104, Description="Specifytimegroupsconsistingofmultipletimewindowstobeusedforschedulingforexample")]
     FulfillmentPreference = 10279,
     
     [EnumMember()]
-    [OptionSetMetadata("Time Group Detail", Index=41, Description="Specifyindividualtimewindowsunderatimegroup")]
+    [OptionSetMetadata("Time Group Detail", Index=31, Description="Specifyindividualtimewindowsunderatimegroup")]
     TimeGroupDetail = 10280,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement", Index=25, Description="Providesabilitytostoredetailsaboutserviceagreementsyouhavewithyourcustomers")]
+    [OptionSetMetadata("Agreement", Index=28, Description="Providesabilitytostoredetailsaboutserviceagreementsyouhavewithyourcustomers")]
     Agreement = 10291,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Booking Date", Index=35, Description="Specifythemaintenancebookingdatesfortheagreement")]
+    [OptionSetMetadata("Agreement Booking Date", Index=53, Description="Specifythemaintenancebookingdatesfortheagreement")]
     AgreementBookingDate = 10292,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Booking Incident", Index=84, Description="Specifythebookingincidentfortheagreement")]
+    [OptionSetMetadata("Agreement Booking Incident", Index=74, Description="Specifythebookingincidentfortheagreement")]
     AgreementBookingIncident = 10293,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Booking Product", Index=75, Description="Specifythebookingproductfortheagreement")]
+    [OptionSetMetadata("Agreement Booking Product", Index=76, Description="Specifythebookingproductfortheagreement")]
     AgreementBookingProduct = 10294,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Booking Service", Index=91, Description="Specifythebookingservicefortheagreement")]
+    [OptionSetMetadata("Agreement Booking Service", Index=92, Description="Specifythebookingservicefortheagreement")]
     AgreementBookingService = 10295,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Booking Service Task", Index=36, Description="Specifythebookingservicetaskfortheagreement")]
+    [OptionSetMetadata("Agreement Booking Service Task", Index=54, Description="Specifythebookingservicetaskfortheagreement")]
     AgreementBookingServiceTask = 10296,
     
     [EnumMember()]
@@ -100305,77 +100292,77 @@ public enum Connection_Record1ObjectTypeCode {
     AgreementBookingSetup = 10297,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Invoice Date", Index=33, Description="Specifytheinvoicedatesfortheagreement")]
+    [OptionSetMetadata("Agreement Invoice Date", Index=44, Description="Specifytheinvoicedatesfortheagreement")]
     AgreementInvoiceDate = 10298,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Invoice Product", Index=104, Description="Specifythebookingproductinvoicefortheagreement")]
+    [OptionSetMetadata("Agreement Invoice Product", Index=94, Description="Specifythebookingproductinvoicefortheagreement")]
     AgreementInvoiceProduct = 10299,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Invoice Setup", Index=21, Description="Specifytheinvoicesforthisagreement")]
+    [OptionSetMetadata("Agreement Invoice Setup", Index=20, Description="Specifytheinvoicesforthisagreement")]
     AgreementInvoiceSetup = 10300,
     
     [EnumMember()]
-    [OptionSetMetadata("Booking Timestamp", Index=4, Description="Tracksstatuschangesofbookingsandtimestampsthechangeofthestatus")]
+    [OptionSetMetadata("Booking Timestamp", Index=14, Description="Tracksstatuschangesofbookingsandtimestampsthechangeofthestatus")]
     BookingTimestamp = 10303,
     
     [EnumMember()]
-    [OptionSetMetadata("Incident Type Characteristic", Index=109, Description="Specifycharacteristicinsidenttype")]
+    [OptionSetMetadata("Incident Type Characteristic", Index=69, Description="Specifycharacteristicinsidenttype")]
     IncidentTypeCharacteristic = 10314,
     
     [EnumMember()]
-    [OptionSetMetadata("Incident Type Product", Index=54, Description="Thisentitygivestheabilitytopreconfigureproductstobeaddedtoaworkorderwhentherelate" +
+    [OptionSetMetadata("Incident Type Product", Index=58, Description="Thisentitygivestheabilitytopreconfigureproductstobeaddedtoaworkorderwhentherelate" +
         "dincidentisaddedtotheworkorder")]
     IncidentTypeProduct = 10315,
     
     [EnumMember()]
-    [OptionSetMetadata("Incident Type Service", Index=46, Description="Thisentitygivestheabilitytopreconfigureservicestobeaddedtoaworkorderwhentherelate" +
+    [OptionSetMetadata("Incident Type Service", Index=49, Description="Thisentitygivestheabilitytopreconfigureservicestobeaddedtoaworkorderwhentherelate" +
         "dincidentisaddedtotheworkorder")]
     IncidentTypeService = 10316,
     
     [EnumMember()]
-    [OptionSetMetadata("Inventory Adjustment", Index=1, Description="Recordsinventoryadjustments")]
+    [OptionSetMetadata("Inventory Adjustment", Index=0, Description="Recordsinventoryadjustments")]
     InventoryAdjustment = 10320,
     
     [EnumMember()]
-    [OptionSetMetadata("Inventory Adjustment Product", Index=116, Description="Recordsproductaffectedbyaninventoryadjustmentorinventorytransfer")]
+    [OptionSetMetadata("Inventory Adjustment Product", Index=45, Description="Recordsproductaffectedbyaninventoryadjustmentorinventorytransfer")]
     InventoryAdjustmentProduct = 10321,
     
     [EnumMember()]
-    [OptionSetMetadata("Inventory Journal", Index=74, Description="Inventorychangetracking")]
+    [OptionSetMetadata("Inventory Journal", Index=64, Description="Inventorychangetracking")]
     InventoryJournal = 10322,
     
     [EnumMember()]
-    [OptionSetMetadata("Inventory Transfer", Index=99, Description="Recordsinventoryadjustments")]
+    [OptionSetMetadata("Inventory Transfer", Index=98, Description="Recordsinventoryadjustments")]
     InventoryTransfer = 10323,
     
     [EnumMember()]
-    [OptionSetMetadata("Payment", Index=50, Description="Specifypayment")]
+    [OptionSetMetadata("Payment", Index=8, Description="Specifypayment")]
     Payment = 10328,
     
     [EnumMember()]
-    [OptionSetMetadata("Payment Detail", Index=70, Description="Specifypaymentdetails")]
+    [OptionSetMetadata("Payment Detail", Index=73, Description="Specifypaymentdetails")]
     PaymentDetail = 10329,
     
     [EnumMember()]
-    [OptionSetMetadata("Payment Method", Index=118, Description="Specifypaymentmethod")]
+    [OptionSetMetadata("Payment Method", Index=115, Description="Specifypaymentmethod")]
     PaymentMethod = 10330,
     
     [EnumMember()]
-    [OptionSetMetadata("Payment Term", Index=3, Description="Specifypaymenttermsusedforbilling")]
+    [OptionSetMetadata("Payment Term", Index=6, Description="Specifypaymenttermsusedforbilling")]
     PaymentTerm = 10331,
     
     [EnumMember()]
-    [OptionSetMetadata("Postal Code", Index=93, Description="Specifypostalcodesandtheirrelationshiptoterritories")]
+    [OptionSetMetadata("Postal Code", Index=90, Description="Specifypostalcodesandtheirrelationshiptoterritories")]
     PostalCode = 10332,
     
     [EnumMember()]
-    [OptionSetMetadata("Product Inventory", Index=63, Description="InventoryRecord")]
+    [OptionSetMetadata("Product Inventory", Index=11, Description="InventoryRecord")]
     ProductInventory = 10333,
     
     [EnumMember()]
-    [OptionSetMetadata("Purchase Order", Index=2, Description="RecordPurchaseOrderspertainingtoWorkOrdersorotherwise")]
+    [OptionSetMetadata("Purchase Order", Index=77, Description="RecordPurchaseOrderspertainingtoWorkOrdersorotherwise")]
     PurchaseOrder = 10334,
     
     [EnumMember()]
@@ -100391,36 +100378,36 @@ public enum Connection_Record1ObjectTypeCode {
     PurchaseOrderReceipt = 10337,
     
     [EnumMember()]
-    [OptionSetMetadata("Purchase Order Receipt Product", Index=31, Description="Specifyproductforpurchaseorderreceipt")]
+    [OptionSetMetadata("Purchase Order Receipt Product", Index=35, Description="Specifyproductforpurchaseorderreceipt")]
     PurchaseOrderReceiptProduct = 10338,
     
     [EnumMember()]
-    [OptionSetMetadata("Purchase Order SubStatus", Index=72, Description="SpecifycustomPOSubstatuseswhichcanbeusedtospecifythecurrentPOstatusmoreprecisely")]
+    [OptionSetMetadata("Purchase Order SubStatus", Index=71, Description="SpecifycustomPOSubstatuseswhichcanbeusedtospecifythecurrentPOstatusmoreprecisely")]
     PurchaseOrderSubStatus = 10339,
     
     [EnumMember()]
-    [OptionSetMetadata("Quote Booking Incident", Index=11, Description="StorestheIncidentsassociatedwithQuoteandQuoteBookingSetup")]
+    [OptionSetMetadata("Quote Booking Incident", Index=1, Description="StorestheIncidentsassociatedwithQuoteandQuoteBookingSetup")]
     QuoteBookingIncident = 10340,
     
     [EnumMember()]
-    [OptionSetMetadata("Quote Booking Product", Index=89, Description="ProvidesabilitytostoreinformationabouttheproductsthatareassociatedwithQuoteBookin" +
+    [OptionSetMetadata("Quote Booking Product", Index=68, Description="ProvidesabilitytostoreinformationabouttheproductsthatareassociatedwithQuoteBookin" +
         "gSetup")]
     QuoteBookingProduct = 10341,
     
     [EnumMember()]
-    [OptionSetMetadata("Quote Booking Service", Index=5, Description="StoresdetailsabouttheservicesassociatedwithQuoteBookingSetup")]
+    [OptionSetMetadata("Quote Booking Service", Index=4, Description="StoresdetailsabouttheservicesassociatedwithQuoteBookingSetup")]
     QuoteBookingService = 10342,
     
     [EnumMember()]
-    [OptionSetMetadata("Quote Booking Service Task", Index=55)]
+    [OptionSetMetadata("Quote Booking Service Task", Index=47)]
     QuoteBookingServiceTask = 10343,
     
     [EnumMember()]
-    [OptionSetMetadata("RMA", Index=108, Description="RecordsRMAsforproductstoberetunedfromcustomers")]
+    [OptionSetMetadata("RMA", Index=109, Description="RecordsRMAsforproductstoberetunedfromcustomers")]
     RMA = 10348,
     
     [EnumMember()]
-    [OptionSetMetadata("RMA Product", Index=20, Description="RecordsproductstobereturnedonanRMA")]
+    [OptionSetMetadata("RMA Product", Index=19, Description="RecordsproductstobereturnedonanRMA")]
     RMAProduct = 10349,
     
     [EnumMember()]
@@ -100432,51 +100419,51 @@ public enum Connection_Record1ObjectTypeCode {
     RMAReceiptProduct = 10351,
     
     [EnumMember()]
-    [OptionSetMetadata("RMA SubStatus", Index=111, Description="SpecifycustomRMAsubstatuseswhichcanbeusedtospecifythecurrentRMAstatusmoreprecisel" +
+    [OptionSetMetadata("RMA SubStatus", Index=89, Description="SpecifycustomRMAsubstatuseswhichcanbeusedtospecifythecurrentRMAstatusmoreprecisel" +
         "y")]
     RMASubStatus = 10352,
     
     [EnumMember()]
-    [OptionSetMetadata("RTV", Index=42, Description="RecordsRTVsforproductstoberetunedtovendors")]
+    [OptionSetMetadata("RTV", Index=32, Description="RecordsRTVsforproductstoberetunedtovendors")]
     RTV = 10353,
     
     [EnumMember()]
-    [OptionSetMetadata("RTV Product", Index=27, Description="RecordsproductstobereturnedonanRTV")]
+    [OptionSetMetadata("RTV Product", Index=26, Description="RecordsproductstobereturnedonanRTV")]
     RTVProduct = 10354,
     
     [EnumMember()]
-    [OptionSetMetadata("RTV Substatus", Index=44, Description="SpecifycustomRTVsubstatuseswhichcanbeusedtospecifythecurrentRTVstatusmoreprecisel" +
+    [OptionSetMetadata("RTV Substatus", Index=55, Description="SpecifycustomRTVsubstatuseswhichcanbeusedtospecifythecurrentRTVstatusmoreprecisel" +
         "y")]
     RTVSubstatus = 10355,
     
     [EnumMember()]
-    [OptionSetMetadata("Ship Via", Index=68, Description="Specifythedifferentshippingmethodsused")]
+    [OptionSetMetadata("Ship Via", Index=70, Description="Specifythedifferentshippingmethodsused")]
     ShipVia = 10357,
     
     [EnumMember()]
-    [OptionSetMetadata("Tax Code", Index=113, Description="StoretaxrelatedinformationEachtaxcodecouldcontainmultiplechildtaxcodesandinthatca" +
+    [OptionSetMetadata("Tax Code", Index=114, Description="StoretaxrelatedinformationEachtaxcodecouldcontainmultiplechildtaxcodesandinthatca" +
         "sethetaxratewillbedeterminedbythetotaltaxofallchildren")]
     TaxCode = 10358,
     
     [EnumMember()]
-    [OptionSetMetadata("Time Off Request", Index=71, Description="Specifytimeresourcetimeoffrequest")]
+    [OptionSetMetadata("Time Off Request", Index=62, Description="Specifytimeresourcetimeoffrequest")]
     TimeOffRequest = 10360,
     
     [EnumMember()]
-    [OptionSetMetadata("Warehouse", Index=53, Description="Warehouseswhereinventoryproductsarestoredandmanaged")]
+    [OptionSetMetadata("Warehouse", Index=57, Description="Warehouseswhereinventoryproductsarestoredandmanaged")]
     Warehouse = 10362,
     
     [EnumMember()]
-    [OptionSetMetadata("Work Order", Index=17, Description="WorkordersstoreallinformationaboutthejobperformedforanaccountStoresincidentdetail" +
+    [OptionSetMetadata("Work Order", Index=16, Description="WorkordersstoreallinformationaboutthejobperformedforanaccountStoresincidentdetail" +
         "sresourceexpensestaskscommunicationsbillingandmore")]
     WorkOrder = 10363,
     
     [EnumMember()]
-    [OptionSetMetadata("Work Order Characteristic (Deprecated)", Index=49, Description="Thisentityisdeprecated")]
+    [OptionSetMetadata("Work Order Characteristic (Deprecated)", Index=7, Description="Thisentityisdeprecated")]
     WorkOrderCharacteristicDeprecated = 10364,
     
     [EnumMember()]
-    [OptionSetMetadata("Work Order Incident", Index=18, Description="SpecifyworkorderincidentsreportedtoyoubytheclientThesearealsoreferredtoasproblemc" +
+    [OptionSetMetadata("Work Order Incident", Index=21, Description="SpecifyworkorderincidentsreportedtoyoubytheclientThesearealsoreferredtoasproblemc" +
         "odes")]
     WorkOrderIncident = 10366,
     
@@ -100489,7 +100476,7 @@ public enum Connection_Record1ObjectTypeCode {
     ResourceRestrictionDeprecated = 10368,
     
     [EnumMember()]
-    [OptionSetMetadata("Work Order Service", Index=102, Description="Recordallservicesproposedandperformedforworkorder")]
+    [OptionSetMetadata("Work Order Service", Index=67, Description="Recordallservicesproposedandperformedforworkorder")]
     WorkOrderService = 10369,
     
     [EnumMember()]
@@ -100497,11 +100484,11 @@ public enum Connection_Record1ObjectTypeCode {
     WorkOrderServiceTask = 10370,
     
     [EnumMember()]
-    [OptionSetMetadata("Security Template", Index=60, Description="SecurityTemplates")]
+    [OptionSetMetadata("Security Template", Index=33, Description="SecurityTemplates")]
     SecurityTemplate = 10404,
     
     [EnumMember()]
-    [OptionSetMetadata("Bulk Migration Job", Index=59, Description="BulkMigrationJobtomigratehistoryNoteAttachmentsorEmailAttachments")]
+    [OptionSetMetadata("Bulk Migration Job", Index=99, Description="BulkMigrationJobtomigratehistoryNoteAttachmentsorEmailAttachments")]
     BulkMigrationJob = 10405,
     
     [EnumMember()]
@@ -100509,15 +100496,15 @@ public enum Connection_Record1ObjectTypeCode {
     BulkMigrationJobStatus = 10406,
     
     [EnumMember()]
-    [OptionSetMetadata("Connector", Index=16, Description="Configurationsettingsforonlinestorages")]
+    [OptionSetMetadata("Connector", Index=15, Description="Configurationsettingsforonlinestorages")]
     Connector = 10408,
     
     [EnumMember()]
-    [OptionSetMetadata("Entity Configuration", Index=77, Description="EntityConfiguration")]
+    [OptionSetMetadata("Entity Configuration", Index=102, Description="EntityConfiguration")]
     EntityConfiguration = 10409,
     
     [EnumMember()]
-    [OptionSetMetadata("Inogic License Details", Index=24, Description="Usedtostorethelicensedetails")]
+    [OptionSetMetadata("Inogic License Details", Index=23, Description="Usedtostorethelicensedetails")]
     InogicLicenseDetails = 10411,
     
     [EnumMember()]
@@ -100529,37 +100516,37 @@ public enum Connection_Record1ObjectTypeCode {
 public enum Connection_Record2ObjectTypeCode {
     
     [EnumMember()]
-    [OptionSetMetadata("Account", Index=63, Description="BusinessthatrepresentsacustomerorpotentialcustomerThecompanythatisbilledinbusines" +
+    [OptionSetMetadata("Account", Index=60, Description="BusinessthatrepresentsacustomerorpotentialcustomerThecompanythatisbilledinbusines" +
         "stransactions")]
     Account = 1,
     
     [EnumMember()]
-    [OptionSetMetadata("Contact", Index=31, Description="Personwithwhomabusinessunithasarelationshipsuchascustomersupplierandcolleague")]
+    [OptionSetMetadata("Contact", Index=32, Description="Personwithwhomabusinessunithasarelationshipsuchascustomersupplierandcolleague")]
     Contact = 2,
     
     [EnumMember()]
-    [OptionSetMetadata("Opportunity", Index=69, Description="Potentialrevenuegeneratingeventorsaletoanaccountwhichneedstobetrackedthroughasale" +
+    [OptionSetMetadata("Opportunity", Index=109, Description="Potentialrevenuegeneratingeventorsaletoanaccountwhichneedstobetrackedthroughasale" +
         "sprocesstocompletion")]
     Opportunity = 3,
     
     [EnumMember()]
-    [OptionSetMetadata("Lead", Index=103, Description="ProspectorpotentialsalesopportunityLeadsareconvertedintoaccountscontactsoropportu" +
+    [OptionSetMetadata("Lead", Index=37, Description="ProspectorpotentialsalesopportunityLeadsareconvertedintoaccountscontactsoropportu" +
         "nitieswhentheyarequalifiedOtherwisetheyaredeletedorarchived")]
     Lead = 4,
     
     [EnumMember()]
-    [OptionSetMetadata("User", Index=47, Description="PersonwithaccesstotheMicrosoftCRMsystemandwhoownsobjectsintheMicrosoftCRMdatabase" +
+    [OptionSetMetadata("User", Index=89, Description="PersonwithaccesstotheMicrosoftCRMsystemandwhoownsobjectsintheMicrosoftCRMdatabase" +
         "")]
     User = 8,
     
     [EnumMember()]
-    [OptionSetMetadata("Team", Index=45, Description="CollectionofsystemusersthatroutinelycollaborateTeamscanbeusedtosimplifyrecordshar" +
+    [OptionSetMetadata("Team", Index=46, Description="CollectionofsystemusersthatroutinelycollaborateTeamscanbeusedtosimplifyrecordshar" +
         "ingandprovideteammemberswithcommonaccesstoorganizationdatawhenteammembersbelongt" +
         "odifferentBusinessUnits")]
     Team = 9,
     
     [EnumMember()]
-    [OptionSetMetadata("Position", Index=60, Description="Positionofauserinthehierarchy")]
+    [OptionSetMetadata("Position", Index=61, Description="Positionofauserinthehierarchy")]
     Position = 50,
     
     [EnumMember()]
@@ -100568,7 +100555,7 @@ public enum Connection_Record2ObjectTypeCode {
     SocialProfile = 99,
     
     [EnumMember()]
-    [OptionSetMetadata("Case", Index=105, Description="Servicerequestcaseassociatedwithacontract")]
+    [OptionSetMetadata("Case", Index=107, Description="Servicerequestcaseassociatedwithacontract")]
     Case = 112,
     
     [EnumMember()]
@@ -100576,19 +100563,19 @@ public enum Connection_Record2ObjectTypeCode {
     Competitor = 123,
     
     [EnumMember()]
-    [OptionSetMetadata("Contract", Index=25, Description="Agreementtoprovidecustomerserviceduringaspecifiedamountoftimeornumberofcases")]
+    [OptionSetMetadata("Contract", Index=100, Description="Agreementtoprovidecustomerserviceduringaspecifiedamountoftimeornumberofcases")]
     Contract = 1010,
     
     [EnumMember()]
-    [OptionSetMetadata("Price List", Index=59, Description="Entitythatdefinespricinglevels")]
+    [OptionSetMetadata("Price List", Index=19, Description="Entitythatdefinespricinglevels")]
     PriceList = 1022,
     
     [EnumMember()]
-    [OptionSetMetadata("Product", Index=19, Description="Informationaboutproductsandtheirpricinginformation")]
+    [OptionSetMetadata("Product", Index=20, Description="Informationaboutproductsandtheirpricinginformation")]
     Product = 1024,
     
     [EnumMember()]
-    [OptionSetMetadata("Quote", Index=86, Description="Formalofferforproductsandorservicesproposedatspecificpricesandrelatedpaymentterms" +
+    [OptionSetMetadata("Quote", Index=77, Description="Formalofferforproductsandorservicesproposedatspecificpricesandrelatedpaymentterms" +
         "whichissenttoaprospectivecustomer")]
     Quote = 1084,
     
@@ -100601,11 +100588,11 @@ public enum Connection_Record2ObjectTypeCode {
     Invoice = 1090,
     
     [EnumMember()]
-    [OptionSetMetadata("Region", Index=42, Description="TerritoryrepresentssalesregionsWorkOrderForm")]
+    [OptionSetMetadata("Region", Index=54, Description="TerritoryrepresentssalesregionsWorkOrderForm")]
     Region = 2013,
     
     [EnumMember()]
-    [OptionSetMetadata("Facility/Equipment", Index=70, Description="Resourcethatcanbescheduled")]
+    [OptionSetMetadata("Facility/Equipment", Index=68, Description="Resourcethatcanbescheduled")]
     FacilityEquipment = 4000,
     
     [EnumMember()]
@@ -100613,11 +100600,11 @@ public enum Connection_Record2ObjectTypeCode {
     SchedulingGroup = 4005,
     
     [EnumMember()]
-    [OptionSetMetadata("Resource Group", Index=16, Description="Grouporcollectionofpeopleequipmentandorfacilitiesthatcanbescheduled")]
+    [OptionSetMetadata("Resource Group", Index=17, Description="Grouporcollectionofpeopleequipmentandorfacilitiesthatcanbescheduled")]
     ResourceGroup = 4007,
     
     [EnumMember()]
-    [OptionSetMetadata("Activity", Index=54, Description="TaskperformedortobeperformedbyauserAnactivityisanyactionforwhichanentrycanbemadeo" +
+    [OptionSetMetadata("Activity", Index=70, Description="TaskperformedortobeperformedbyauserAnactivityisanyactionforwhichanentrycanbemadeo" +
         "nacalendar")]
     Activity = 4200,
     
@@ -100626,29 +100613,29 @@ public enum Connection_Record2ObjectTypeCode {
     Appointment = 4201,
     
     [EnumMember()]
-    [OptionSetMetadata("Email", Index=73, Description="Activitythatisdeliveredusingemailprotocols")]
+    [OptionSetMetadata("Email", Index=67, Description="Activitythatisdeliveredusingemailprotocols")]
     Email = 4202,
     
     [EnumMember()]
-    [OptionSetMetadata("Fax", Index=37, Description="Activitythattrackscalloutcomeandnumberofpagesforafaxandoptionallystoresanelectron" +
+    [OptionSetMetadata("Fax", Index=36, Description="Activitythattrackscalloutcomeandnumberofpagesforafaxandoptionallystoresanelectron" +
         "iccopyofthedocument")]
     Fax = 4204,
     
     [EnumMember()]
-    [OptionSetMetadata("Letter", Index=92, Description="ActivitythattracksthedeliveryofaletterTheactivitycancontaintheelectroniccopyofthe" +
+    [OptionSetMetadata("Letter", Index=101, Description="ActivitythattracksthedeliveryofaletterTheactivitycancontaintheelectroniccopyofthe" +
         "letter")]
     Letter = 4207,
     
     [EnumMember()]
-    [OptionSetMetadata("Phone Call", Index=14, Description="Activitytotrackatelephonecall")]
+    [OptionSetMetadata("Phone Call", Index=74, Description="Activitytotrackatelephonecall")]
     PhoneCall = 4210,
     
     [EnumMember()]
-    [OptionSetMetadata("Task", Index=12, Description="Genericactivityrepresentingworkneededtobedone")]
+    [OptionSetMetadata("Task", Index=13, Description="Genericactivityrepresentingworkneededtobedone")]
     Task = 4212,
     
     [EnumMember()]
-    [OptionSetMetadata("Service Activity", Index=99, Description="ActivityofferedbytheorganizationtosatisfyitscustomersneedsEachserviceactivityincl" +
+    [OptionSetMetadata("Service Activity", Index=59, Description="ActivityofferedbytheorganizationtosatisfyitscustomersneedsEachserviceactivityincl" +
         "udesdatetimedurationandrequiredresources")]
     ServiceActivity = 4214,
     
@@ -100657,11 +100644,11 @@ public enum Connection_Record2ObjectTypeCode {
     SocialActivity = 4216,
     
     [EnumMember()]
-    [OptionSetMetadata("Recurring Appointment", Index=88, Description="TheMasterappointmentofarecurringappointmentseries")]
+    [OptionSetMetadata("Recurring Appointment", Index=87, Description="TheMasterappointmentofarecurringappointmentseries")]
     RecurringAppointment = 4251,
     
     [EnumMember()]
-    [OptionSetMetadata("Marketing List", Index=28, Description="Groupofexistingorpotentialcustomerscreatedforamarketingcampaignorothersalespurpos" +
+    [OptionSetMetadata("Marketing List", Index=25, Description="Groupofexistingorpotentialcustomerscreatedforamarketingcampaignorothersalespurpos" +
         "es")]
     MarketingList = 4300,
     
@@ -100675,21 +100662,21 @@ public enum Connection_Record2ObjectTypeCode {
     CampaignActivity = 4402,
     
     [EnumMember()]
-    [OptionSetMetadata("Process Session", Index=58, Description="InformationthatisgeneratedwhenadialogisrunEverytimethatyourunadialogadialogsessio" +
+    [OptionSetMetadata("Process Session", Index=52, Description="InformationthatisgeneratedwhenadialogisrunEverytimethatyourunadialogadialogsessio" +
         "niscreated")]
     ProcessSession = 4710,
     
     [EnumMember()]
-    [OptionSetMetadata("Channel Access Profile Rule", Index=71, Description="Definestherulesforautomaticallyassociatingchannelaccessprofilestoexternalpartyrec" +
+    [OptionSetMetadata("Channel Access Profile Rule", Index=72, Description="Definestherulesforautomaticallyassociatingchannelaccessprofilestoexternalpartyrec" +
         "ordsForinternaluseonly")]
     ChannelAccessProfileRule = 9400,
     
     [EnumMember()]
-    [OptionSetMetadata("Goal", Index=109, Description="Targetobjectiveforauserorateamforaspecifiedtimeperiod")]
+    [OptionSetMetadata("Goal", Index=111, Description="Targetobjectiveforauserorateamforaspecifiedtimeperiod")]
     Goal = 9600,
     
     [EnumMember()]
-    [OptionSetMetadata("Entitlement", Index=6, Description="Definestheamountandtypeofsupportacustomershouldreceive")]
+    [OptionSetMetadata("Entitlement", Index=3, Description="Definestheamountandtypeofsupportacustomershouldreceive")]
     Entitlement = 9700,
     
     [EnumMember()]
@@ -100701,15 +100688,15 @@ public enum Connection_Record2ObjectTypeCode {
     EntitlementTemplateChannel = 9703,
     
     [EnumMember()]
-    [OptionSetMetadata("Knowledge Base Record", Index=104, Description="MetadataofknowledgebaseKBarticlesassociatedwithMicrosoftDynamics365entities")]
+    [OptionSetMetadata("Knowledge Base Record", Index=88, Description="MetadataofknowledgebaseKBarticlesassociatedwithMicrosoftDynamics365entities")]
     KnowledgeBaseRecord = 9930,
     
     [EnumMember()]
-    [OptionSetMetadata("Knowledge Article", Index=5, Description="Organizationalknowledgeforinternalandexternaluse")]
+    [OptionSetMetadata("Knowledge Article", Index=6, Description="Organizationalknowledgeforinternalandexternaluse")]
     KnowledgeArticle = 9953,
     
     [EnumMember()]
-    [OptionSetMetadata("Customer Asset", Index=0, Description="SpecifyCustomerAsset")]
+    [OptionSetMetadata("Customer Asset", Index=1, Description="SpecifyCustomerAsset")]
     CustomerAsset = 10114,
     
     [EnumMember()]
@@ -100717,7 +100704,7 @@ public enum Connection_Record2ObjectTypeCode {
     FunctionalLocation = 10117,
     
     [EnumMember()]
-    [OptionSetMetadata("IoT Alert", Index=51)]
+    [OptionSetMetadata("IoT Alert", Index=48)]
     IoTAlert = 10124,
     
     [EnumMember()]
@@ -100725,19 +100712,19 @@ public enum Connection_Record2ObjectTypeCode {
     IoTDevice = 10125,
     
     [EnumMember()]
-    [OptionSetMetadata("IoT Device Category", Index=77, Description="UsedtocategorizeIoTdevices")]
+    [OptionSetMetadata("IoT Device Category", Index=57, Description="UsedtocategorizeIoTdevices")]
     IoTDeviceCategory = 10126,
     
     [EnumMember()]
-    [OptionSetMetadata("IoT Device Command", Index=117, Description="RepresentsanoutgoingmessagetoadeviceconnectedtoanIoTprovider")]
+    [OptionSetMetadata("IoT Device Command", Index=115, Description="RepresentsanoutgoingmessagetoadeviceconnectedtoanIoTprovider")]
     IoTDeviceCommand = 10127,
     
     [EnumMember()]
-    [OptionSetMetadata("IoT Device Registration History", Index=33, Description="TracksregistrationactivitiesonanIoTdevice")]
+    [OptionSetMetadata("IoT Device Registration History", Index=31, Description="TracksregistrationactivitiesonanIoTdevice")]
     IoTDeviceRegistrationHistory = 10131,
     
     [EnumMember()]
-    [OptionSetMetadata("Profile Album", Index=75, Description="Containsuserprofileimagesthatarestoredasattachmentsanddisplayedinposts")]
+    [OptionSetMetadata("Profile Album", Index=16, Description="Containsuserprofileimagesthatarestoredasattachmentsanddisplayedinposts")]
     ProfileAlbum = 10230,
     
     [EnumMember()]
@@ -100745,11 +100732,11 @@ public enum Connection_Record2ObjectTypeCode {
     CustomerVoicealert = 10235,
     
     [EnumMember()]
-    [OptionSetMetadata("Customer Voice survey invite", Index=3, Description="Activitythattracksasurveyinvitationsenttoaperson")]
+    [OptionSetMetadata("Customer Voice survey invite", Index=0, Description="Activitythattracksasurveyinvitationsenttoaperson")]
     CustomerVoicesurveyinvite = 10245,
     
     [EnumMember()]
-    [OptionSetMetadata("Customer Voice survey response", Index=61, Description="Responsetoasurvey")]
+    [OptionSetMetadata("Customer Voice survey response", Index=62, Description="Responsetoasurvey")]
     CustomerVoicesurveyresponse = 10247,
     
     [EnumMember()]
@@ -100757,43 +100744,43 @@ public enum Connection_Record2ObjectTypeCode {
     BookingAlert = 10256,
     
     [EnumMember()]
-    [OptionSetMetadata("Booking Alert Status", Index=48, Description="Thestatusofabookingalert")]
+    [OptionSetMetadata("Booking Alert Status", Index=45, Description="Thestatusofabookingalert")]
     BookingAlertStatus = 10257,
     
     [EnumMember()]
-    [OptionSetMetadata("Booking Rule", Index=62, Description="Specifycustomrulestobevalidatedbythesystembeforesavingabookingrecord")]
+    [OptionSetMetadata("Booking Rule", Index=71, Description="Specifycustomrulestobevalidatedbythesystembeforesavingabookingrecord")]
     BookingRule = 10259,
     
     [EnumMember()]
-    [OptionSetMetadata("Resource Territory", Index=102, Description="Allowstospecifyforwhichterritoryaresourcecouldprovideservicesfor")]
+    [OptionSetMetadata("Resource Territory", Index=103, Description="Allowstospecifyforwhichterritoryaresourcecouldprovideservicesfor")]
     ResourceTerritory = 10275,
     
     [EnumMember()]
-    [OptionSetMetadata("System User Scheduler Setting", Index=29, Description="Storesuserspecificsettingsforthescheduleboard")]
+    [OptionSetMetadata("System User Scheduler Setting", Index=49, Description="Storesuserspecificsettingsforthescheduleboard")]
     SystemUserSchedulerSetting = 10278,
     
     [EnumMember()]
-    [OptionSetMetadata("Fulfillment Preference", Index=10, Description="Specifytimegroupsconsistingofmultipletimewindowstobeusedforschedulingforexample")]
+    [OptionSetMetadata("Fulfillment Preference", Index=7, Description="Specifytimegroupsconsistingofmultipletimewindowstobeusedforschedulingforexample")]
     FulfillmentPreference = 10279,
     
     [EnumMember()]
-    [OptionSetMetadata("Time Group Detail", Index=17, Description="Specifyindividualtimewindowsunderatimegroup")]
+    [OptionSetMetadata("Time Group Detail", Index=26, Description="Specifyindividualtimewindowsunderatimegroup")]
     TimeGroupDetail = 10280,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement", Index=97, Description="Providesabilitytostoredetailsaboutserviceagreementsyouhavewithyourcustomers")]
+    [OptionSetMetadata("Agreement", Index=98, Description="Providesabilitytostoredetailsaboutserviceagreementsyouhavewithyourcustomers")]
     Agreement = 10291,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Booking Date", Index=11, Description="Specifythemaintenancebookingdatesfortheagreement")]
+    [OptionSetMetadata("Agreement Booking Date", Index=12, Description="Specifythemaintenancebookingdatesfortheagreement")]
     AgreementBookingDate = 10292,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Booking Incident", Index=27, Description="Specifythebookingincidentfortheagreement")]
+    [OptionSetMetadata("Agreement Booking Incident", Index=28, Description="Specifythebookingincidentfortheagreement")]
     AgreementBookingIncident = 10293,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Booking Product", Index=36, Description="Specifythebookingproductfortheagreement")]
+    [OptionSetMetadata("Agreement Booking Product", Index=33, Description="Specifythebookingproductfortheagreement")]
     AgreementBookingProduct = 10294,
     
     [EnumMember()]
@@ -100801,27 +100788,27 @@ public enum Connection_Record2ObjectTypeCode {
     AgreementBookingService = 10295,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Booking Service Task", Index=112, Description="Specifythebookingservicetaskfortheagreement")]
+    [OptionSetMetadata("Agreement Booking Service Task", Index=113, Description="Specifythebookingservicetaskfortheagreement")]
     AgreementBookingServiceTask = 10296,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Booking Setup", Index=90, Description="Specifythemaintenancebookingsfortheagreement")]
+    [OptionSetMetadata("Agreement Booking Setup", Index=91, Description="Specifythemaintenancebookingsfortheagreement")]
     AgreementBookingSetup = 10297,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Invoice Date", Index=110, Description="Specifytheinvoicedatesfortheagreement")]
+    [OptionSetMetadata("Agreement Invoice Date", Index=108, Description="Specifytheinvoicedatesfortheagreement")]
     AgreementInvoiceDate = 10298,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Invoice Product", Index=116, Description="Specifythebookingproductinvoicefortheagreement")]
+    [OptionSetMetadata("Agreement Invoice Product", Index=118, Description="Specifythebookingproductinvoicefortheagreement")]
     AgreementInvoiceProduct = 10299,
     
     [EnumMember()]
-    [OptionSetMetadata("Agreement Invoice Setup", Index=7, Description="Specifytheinvoicesforthisagreement")]
+    [OptionSetMetadata("Agreement Invoice Setup", Index=8, Description="Specifytheinvoicesforthisagreement")]
     AgreementInvoiceSetup = 10300,
     
     [EnumMember()]
-    [OptionSetMetadata("Booking Timestamp", Index=87, Description="Tracksstatuschangesofbookingsandtimestampsthechangeofthestatus")]
+    [OptionSetMetadata("Booking Timestamp", Index=86, Description="Tracksstatuschangesofbookingsandtimestampsthechangeofthestatus")]
     BookingTimestamp = 10303,
     
     [EnumMember()]
@@ -100829,25 +100816,25 @@ public enum Connection_Record2ObjectTypeCode {
     IncidentTypeCharacteristic = 10314,
     
     [EnumMember()]
-    [OptionSetMetadata("Incident Type Product", Index=72, Description="Thisentitygivestheabilitytopreconfigureproductstobeaddedtoaworkorderwhentherelate" +
+    [OptionSetMetadata("Incident Type Product", Index=73, Description="Thisentitygivestheabilitytopreconfigureproductstobeaddedtoaworkorderwhentherelate" +
         "dincidentisaddedtotheworkorder")]
     IncidentTypeProduct = 10315,
     
     [EnumMember()]
-    [OptionSetMetadata("Incident Type Service", Index=106, Description="Thisentitygivestheabilitytopreconfigureservicestobeaddedtoaworkorderwhentherelate" +
+    [OptionSetMetadata("Incident Type Service", Index=116, Description="Thisentitygivestheabilitytopreconfigureservicestobeaddedtoaworkorderwhentherelate" +
         "dincidentisaddedtotheworkorder")]
     IncidentTypeService = 10316,
     
     [EnumMember()]
-    [OptionSetMetadata("Inventory Adjustment", Index=100, Description="Recordsinventoryadjustments")]
+    [OptionSetMetadata("Inventory Adjustment", Index=97, Description="Recordsinventoryadjustments")]
     InventoryAdjustment = 10320,
     
     [EnumMember()]
-    [OptionSetMetadata("Inventory Adjustment Product", Index=98, Description="Recordsproductaffectedbyaninventoryadjustmentorinventorytransfer")]
+    [OptionSetMetadata("Inventory Adjustment Product", Index=99, Description="Recordsproductaffectedbyaninventoryadjustmentorinventorytransfer")]
     InventoryAdjustmentProduct = 10321,
     
     [EnumMember()]
-    [OptionSetMetadata("Inventory Journal", Index=52, Description="Inventorychangetracking")]
+    [OptionSetMetadata("Inventory Journal", Index=104, Description="Inventorychangetracking")]
     InventoryJournal = 10322,
     
     [EnumMember()]
@@ -100855,51 +100842,51 @@ public enum Connection_Record2ObjectTypeCode {
     InventoryTransfer = 10323,
     
     [EnumMember()]
-    [OptionSetMetadata("Payment", Index=53, Description="Specifypayment")]
+    [OptionSetMetadata("Payment", Index=44, Description="Specifypayment")]
     Payment = 10328,
     
     [EnumMember()]
-    [OptionSetMetadata("Payment Detail", Index=55, Description="Specifypaymentdetails")]
+    [OptionSetMetadata("Payment Detail", Index=53, Description="Specifypaymentdetails")]
     PaymentDetail = 10329,
     
     [EnumMember()]
-    [OptionSetMetadata("Payment Method", Index=4, Description="Specifypaymentmethod")]
+    [OptionSetMetadata("Payment Method", Index=5, Description="Specifypaymentmethod")]
     PaymentMethod = 10330,
     
     [EnumMember()]
-    [OptionSetMetadata("Payment Term", Index=111, Description="Specifypaymenttermsusedforbilling")]
+    [OptionSetMetadata("Payment Term", Index=105, Description="Specifypaymenttermsusedforbilling")]
     PaymentTerm = 10331,
     
     [EnumMember()]
-    [OptionSetMetadata("Postal Code", Index=91, Description="Specifypostalcodesandtheirrelationshiptoterritories")]
+    [OptionSetMetadata("Postal Code", Index=92, Description="Specifypostalcodesandtheirrelationshiptoterritories")]
     PostalCode = 10332,
     
     [EnumMember()]
-    [OptionSetMetadata("Product Inventory", Index=89, Description="InventoryRecord")]
+    [OptionSetMetadata("Product Inventory", Index=110, Description="InventoryRecord")]
     ProductInventory = 10333,
     
     [EnumMember()]
-    [OptionSetMetadata("Purchase Order", Index=46, Description="RecordPurchaseOrderspertainingtoWorkOrdersorotherwise")]
+    [OptionSetMetadata("Purchase Order", Index=47, Description="RecordPurchaseOrderspertainingtoWorkOrdersorotherwise")]
     PurchaseOrder = 10334,
     
     [EnumMember()]
-    [OptionSetMetadata("Purchase Order Bill", Index=30, Description="Specifypurchaseorderbill")]
+    [OptionSetMetadata("Purchase Order Bill", Index=75, Description="Specifypurchaseorderbill")]
     PurchaseOrderBill = 10335,
     
     [EnumMember()]
-    [OptionSetMetadata("Purchase Order Product", Index=107, Description="Recordproductstobeorderedonpurchaseorder")]
+    [OptionSetMetadata("Purchase Order Product", Index=117, Description="Recordproductstobeorderedonpurchaseorder")]
     PurchaseOrderProduct = 10336,
     
     [EnumMember()]
-    [OptionSetMetadata("Purchase Order Receipt", Index=41, Description="Specifypurchaseorderreceipt")]
+    [OptionSetMetadata("Purchase Order Receipt", Index=93, Description="Specifypurchaseorderreceipt")]
     PurchaseOrderReceipt = 10337,
     
     [EnumMember()]
-    [OptionSetMetadata("Purchase Order Receipt Product", Index=26, Description="Specifyproductforpurchaseorderreceipt")]
+    [OptionSetMetadata("Purchase Order Receipt Product", Index=27, Description="Specifyproductforpurchaseorderreceipt")]
     PurchaseOrderReceiptProduct = 10338,
     
     [EnumMember()]
-    [OptionSetMetadata("Purchase Order SubStatus", Index=1, Description="SpecifycustomPOSubstatuseswhichcanbeusedtospecifythecurrentPOstatusmoreprecisely")]
+    [OptionSetMetadata("Purchase Order SubStatus", Index=2, Description="SpecifycustomPOSubstatuseswhichcanbeusedtospecifythecurrentPOstatusmoreprecisely")]
     PurchaseOrderSubStatus = 10339,
     
     [EnumMember()]
@@ -100907,32 +100894,32 @@ public enum Connection_Record2ObjectTypeCode {
     QuoteBookingIncident = 10340,
     
     [EnumMember()]
-    [OptionSetMetadata("Quote Booking Product", Index=13, Description="ProvidesabilitytostoreinformationabouttheproductsthatareassociatedwithQuoteBookin" +
+    [OptionSetMetadata("Quote Booking Product", Index=10, Description="ProvidesabilitytostoreinformationabouttheproductsthatareassociatedwithQuoteBookin" +
         "gSetup")]
     QuoteBookingProduct = 10341,
     
     [EnumMember()]
-    [OptionSetMetadata("Quote Booking Service", Index=44, Description="StoresdetailsabouttheservicesassociatedwithQuoteBookingSetup")]
+    [OptionSetMetadata("Quote Booking Service", Index=14, Description="StoresdetailsabouttheservicesassociatedwithQuoteBookingSetup")]
     QuoteBookingService = 10342,
     
     [EnumMember()]
-    [OptionSetMetadata("Quote Booking Service Task", Index=21)]
+    [OptionSetMetadata("Quote Booking Service Task", Index=63)]
     QuoteBookingServiceTask = 10343,
     
     [EnumMember()]
-    [OptionSetMetadata("RMA", Index=50, Description="RecordsRMAsforproductstoberetunedfromcustomers")]
+    [OptionSetMetadata("RMA", Index=51, Description="RecordsRMAsforproductstoberetunedfromcustomers")]
     RMA = 10348,
     
     [EnumMember()]
-    [OptionSetMetadata("RMA Product", Index=9, Description="RecordsproductstobereturnedonanRMA")]
+    [OptionSetMetadata("RMA Product", Index=29, Description="RecordsproductstobereturnedonanRMA")]
     RMAProduct = 10349,
     
     [EnumMember()]
-    [OptionSetMetadata("RMA Receipt", Index=56, Description="SpecifyRMAreceipt")]
+    [OptionSetMetadata("RMA Receipt", Index=58, Description="SpecifyRMAreceipt")]
     RMAReceipt = 10350,
     
     [EnumMember()]
-    [OptionSetMetadata("RMA Receipt Product", Index=2, Description="SpecifyRMAreceiptproduct")]
+    [OptionSetMetadata("RMA Receipt Product", Index=11, Description="SpecifyRMAreceiptproduct")]
     RMAReceiptProduct = 10351,
     
     [EnumMember()]
@@ -100941,11 +100928,11 @@ public enum Connection_Record2ObjectTypeCode {
     RMASubStatus = 10352,
     
     [EnumMember()]
-    [OptionSetMetadata("RTV", Index=49, Description="RecordsRTVsforproductstoberetunedtovendors")]
+    [OptionSetMetadata("RTV", Index=50, Description="RecordsRTVsforproductstoberetunedtovendors")]
     RTV = 10353,
     
     [EnumMember()]
-    [OptionSetMetadata("RTV Product", Index=114, Description="RecordsproductstobereturnedonanRTV")]
+    [OptionSetMetadata("RTV Product", Index=42, Description="RecordsproductstobereturnedonanRTV")]
     RTVProduct = 10354,
     
     [EnumMember()]
@@ -100954,33 +100941,33 @@ public enum Connection_Record2ObjectTypeCode {
     RTVSubstatus = 10355,
     
     [EnumMember()]
-    [OptionSetMetadata("Ship Via", Index=32, Description="Specifythedifferentshippingmethodsused")]
+    [OptionSetMetadata("Ship Via", Index=41, Description="Specifythedifferentshippingmethodsused")]
     ShipVia = 10357,
     
     [EnumMember()]
-    [OptionSetMetadata("Tax Code", Index=8, Description="StoretaxrelatedinformationEachtaxcodecouldcontainmultiplechildtaxcodesandinthatca" +
+    [OptionSetMetadata("Tax Code", Index=9, Description="StoretaxrelatedinformationEachtaxcodecouldcontainmultiplechildtaxcodesandinthatca" +
         "sethetaxratewillbedeterminedbythetotaltaxofallchildren")]
     TaxCode = 10358,
     
     [EnumMember()]
-    [OptionSetMetadata("Time Off Request", Index=20, Description="Specifytimeresourcetimeoffrequest")]
+    [OptionSetMetadata("Time Off Request", Index=21, Description="Specifytimeresourcetimeoffrequest")]
     TimeOffRequest = 10360,
     
     [EnumMember()]
-    [OptionSetMetadata("Warehouse", Index=108, Description="Warehouseswhereinventoryproductsarestoredandmanaged")]
+    [OptionSetMetadata("Warehouse", Index=106, Description="Warehouseswhereinventoryproductsarestoredandmanaged")]
     Warehouse = 10362,
     
     [EnumMember()]
-    [OptionSetMetadata("Work Order", Index=74, Description="WorkordersstoreallinformationaboutthejobperformedforanaccountStoresincidentdetail" +
+    [OptionSetMetadata("Work Order", Index=4, Description="WorkordersstoreallinformationaboutthejobperformedforanaccountStoresincidentdetail" +
         "sresourceexpensestaskscommunicationsbillingandmore")]
     WorkOrder = 10363,
     
     [EnumMember()]
-    [OptionSetMetadata("Work Order Characteristic (Deprecated)", Index=68, Description="Thisentityisdeprecated")]
+    [OptionSetMetadata("Work Order Characteristic (Deprecated)", Index=69, Description="Thisentityisdeprecated")]
     WorkOrderCharacteristicDeprecated = 10364,
     
     [EnumMember()]
-    [OptionSetMetadata("Work Order Incident", Index=93, Description="SpecifyworkorderincidentsreportedtoyoubytheclientThesearealsoreferredtoasproblemc" +
+    [OptionSetMetadata("Work Order Incident", Index=90, Description="SpecifyworkorderincidentsreportedtoyoubytheclientThesearealsoreferredtoasproblemc" +
         "odes")]
     WorkOrderIncident = 10366,
     
@@ -100993,11 +100980,11 @@ public enum Connection_Record2ObjectTypeCode {
     ResourceRestrictionDeprecated = 10368,
     
     [EnumMember()]
-    [OptionSetMetadata("Work Order Service", Index=118, Description="Recordallservicesproposedandperformedforworkorder")]
+    [OptionSetMetadata("Work Order Service", Index=112, Description="Recordallservicesproposedandperformedforworkorder")]
     WorkOrderService = 10369,
     
     [EnumMember()]
-    [OptionSetMetadata("Work Order Service Task", Index=115, Description="Storeservicetasksthataretobeperformedforthisworkorder")]
+    [OptionSetMetadata("Work Order Service Task", Index=30, Description="Storeservicetasksthataretobeperformedforthisworkorder")]
     WorkOrderServiceTask = 10370,
     
     [EnumMember()]
@@ -101005,15 +100992,15 @@ public enum Connection_Record2ObjectTypeCode {
     SecurityTemplate = 10404,
     
     [EnumMember()]
-    [OptionSetMetadata("Bulk Migration Job", Index=67, Description="BulkMigrationJobtomigratehistoryNoteAttachmentsorEmailAttachments")]
+    [OptionSetMetadata("Bulk Migration Job", Index=56, Description="BulkMigrationJobtomigratehistoryNoteAttachmentsorEmailAttachments")]
     BulkMigrationJob = 10405,
     
     [EnumMember()]
-    [OptionSetMetadata("Bulk Migration Job Status", Index=57, Description="BulkMigrationJobStatustoshowthestatusoftherecordsprocessed")]
+    [OptionSetMetadata("Bulk Migration Job Status", Index=55, Description="BulkMigrationJobStatustoshowthestatusoftherecordsprocessed")]
     BulkMigrationJobStatus = 10406,
     
     [EnumMember()]
-    [OptionSetMetadata("Connector", Index=113, Description="Configurationsettingsforonlinestorages")]
+    [OptionSetMetadata("Connector", Index=114, Description="Configurationsettingsforonlinestorages")]
     Connector = 10408,
     
     [EnumMember()]
@@ -101025,7 +101012,7 @@ public enum Connection_Record2ObjectTypeCode {
     InogicLicenseDetails = 10411,
     
     [EnumMember()]
-    [OptionSetMetadata("Operation", Index=101, Description="RelationshipbetweenaRegulatedEntityandaSite")]
+    [OptionSetMetadata("Operation", Index=102, Description="RelationshipbetweenaRegulatedEntityandaSite")]
     Operation = 10426,
 }
 
