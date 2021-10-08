@@ -113,7 +113,7 @@ namespace TSIS2.Plugins
                                 }
                                 else
                                 {
-                                    //Change the reference to Case in each Work Order Service Task to the Work Order's new case
+                                    //Change the reference to Case in each Work Order Service Task to null
                                     foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
                                         workOrderServiceTask.ovs_CaseId = null;
