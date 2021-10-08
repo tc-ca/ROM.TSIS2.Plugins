@@ -92,7 +92,7 @@ namespace TSIS2.Plugins
                                 //Retrieve all findings associated to the current work order
                                 var workOrderFindings = serviceContext.ovs_FindingSet.Where(f => f.ts_WorkOrder.Id == workOrder.Id).ToList();
 
-                                if (workOrder.msdyn_ServiceRequest.Id != null)
+                                if (workOrder.msdyn_ServiceRequest != null)
                                 {
                                     //Change the reference to Case in each finding to the Work Order's new case
                                     foreach (ovs_Finding finding in workOrderFindings)
