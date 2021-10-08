@@ -72,6 +72,8 @@ namespace TSIS2.Plugins
             }
 
             IPluginExecutionContext context = localContext.PluginExecutionContext;
+            IOrganizationService service = localContext.OrganizationService;
+
             Entity target = (Entity)context.InputParameters["Target"];
             //Entity postImageEntity = (context.PostEntityImages != null && context.PostEntityImages.Contains(this.postImageAlias)) ? context.PostEntityImages[this.postImageAlias] : null;
             Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains(this.preImageAlias)) ? context.PreEntityImages[this.preImageAlias] : null;
@@ -100,12 +102,47 @@ namespace TSIS2.Plugins
                             }
                         }
                     }
+                    //If Case "msdyn_servicerequest" is Updated
+                    if (target.Attributes.Contains("msdyn_servicerequest"))
+                    {
+                        using (var serviceContext = new Xrm(service))
+                        {
+                            // Cast the target to the expected entity
+                            msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
+
+                            //Retrieve all findings associated to the current work order
+                            var workOrderFindings = serviceContext.ovs_FindingSet.Where(f => f.ts_WorkOrder.Id == workOrder.Id);
+
+                            if (target.Attributes["msdyn_servicerequest"] != null)
+                            {
+                                //Change the reference to Case in each finding to the Work Order's new case
+                                foreach (ovs_Finding finding in workOrderFindings)
+                                {
+                                    finding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrder.msdyn_ServiceRequest.Id);
+                                    serviceContext.UpdateObject(finding);
+                                }
+                            } else
+                            {
+                                //Change the reference to Case in each finding to null
+                                foreach (ovs_Finding finding in workOrderFindings)
+                                {
+                                    finding.ovs_CaseId = null;
+                                    serviceContext.UpdateObject(finding);
+                                }
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception e)
             {
                 throw new InvalidPluginExecutionException(e.Message);
             }
+        }
+
+        public new void Execute(IServiceProvider serviceProvider)
+        {
+            var test = "test";
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Xunit;
@@ -38,6 +39,34 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ASSERT
             var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_systemstatus")).ToEntity<msdyn_workorder>();
             Assert.Equal(msdyn_wosystemstatus.ClosedPosted, workOrder.msdyn_SystemStatus);
+        }
+        [Fact]
+        public void When_case_of_work_order_updated_to_new_case_existing_findings_of_old_case_associate_to_new_case()
+        {
+            //ARRANGE
+            var case1Id = orgAdminUIService.Create(new Incident { });
+            var case2Id = orgAdminUIService.Create(new Incident { });
+
+            var finding1 = orgAdminService.Create(new ovs_Finding { ovs_CaseId = new EntityReference(Incident.EntityLogicalName, case1Id) });
+            var finding2 = orgAdminService.Create(new ovs_Finding { ovs_CaseId = new EntityReference(Incident.EntityLogicalName, case1Id) });
+            var finding3 = orgAdminService.Create(new ovs_Finding { ovs_CaseId = new EntityReference(Incident.EntityLogicalName, case1Id) });
+
+            var workOrderId = orgAdminService.Create(new msdyn_workorder { msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, case1Id) });
+
+            //ACT
+            orgAdminService.Update(new msdyn_workorder { Id = workOrderId, msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, case2Id) });
+
+            //ASSERT
+            var query = new QueryExpression(ovs_Finding.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet("ovs_caseid")
+            };
+            var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().ToList();
+
+            //Expect all findings to be associated to Case2
+            Assert.Equal(case2Id, findings[0].ovs_CaseId.Id);
+            Assert.Equal(case2Id, findings[0].ovs_CaseId.Id);
+            Assert.Equal(case2Id, findings[0].ovs_CaseId.Id);
         }
 
     }
