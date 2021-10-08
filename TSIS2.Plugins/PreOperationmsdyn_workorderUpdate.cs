@@ -92,8 +92,18 @@ namespace TSIS2.Plugins
                                 //Retrieve all findings associated to the current work order
                                 var workOrderFindings = serviceContext.ovs_FindingSet.Where(f => f.ts_WorkOrder.Id == workOrder.Id).ToList();
 
+                                //Retrieve all Work Order Service Tasks associated to the current work order
+                                var workOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(f => f.msdyn_WorkOrder.Id == workOrder.Id).ToList();
+
                                 if (workOrder.msdyn_ServiceRequest != null)
                                 {
+                                    //Change the reference to Case in each Work Order Service Task to the Work Order's new case
+                                    foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
+                                    {
+                                        workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrder.msdyn_ServiceRequest.Id);
+                                        serviceContext.UpdateObject(workOrderServiceTask);
+                                    }
+
                                     //Change the reference to Case in each finding to the Work Order's new case
                                     foreach (ovs_Finding finding in workOrderFindings)
                                     {
@@ -103,6 +113,12 @@ namespace TSIS2.Plugins
                                 }
                                 else
                                 {
+                                    //Change the reference to Case in each Work Order Service Task to the Work Order's new case
+                                    foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
+                                    {
+                                        workOrderServiceTask.ovs_CaseId = null;
+                                        serviceContext.UpdateObject(workOrderServiceTask);
+                                    }
                                     //Change the reference to Case in each finding to null
                                     foreach (ovs_Finding finding in workOrderFindings)
                                     {

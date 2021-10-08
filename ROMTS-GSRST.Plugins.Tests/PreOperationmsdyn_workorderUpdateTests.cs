@@ -92,7 +92,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             };
             var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().ToList();
 
-            //Expect all findings to be associated to Case2
+            //Expect all findings to have no case
             Assert.Null(findings[0].ovs_CaseId);
             Assert.Null(findings[1].ovs_CaseId);
             Assert.Null(findings[2].ovs_CaseId);
@@ -141,6 +141,64 @@ namespace ROMTS_GSRST.Plugins.Tests
 
             //Expect 3 findings to be related to case 3
             Assert.Equal(3, case3findings.Count);
+        }
+
+        [Fact]
+        public void When_case_of_work_order_is_changed_expect_all_work_order_service_tasks_related_to_work_order_to_be_related_to_new_case()
+        {
+            //ARRANGE
+            var case1Id = orgAdminUIService.Create(new Incident { });
+            var case2Id = orgAdminUIService.Create(new Incident { });
+
+            var workOrderId = orgAdminService.Create(new msdyn_workorder { msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, case1Id) });
+
+            var wost1 = orgAdminService.Create(new msdyn_workorderservicetask { ovs_CaseId = new EntityReference(Incident.EntityLogicalName, case1Id), msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId) });
+            var wost2 = orgAdminService.Create(new msdyn_workorderservicetask { ovs_CaseId = new EntityReference(Incident.EntityLogicalName, case1Id), msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId) });
+            var wost3 = orgAdminService.Create(new msdyn_workorderservicetask { ovs_CaseId = new EntityReference(Incident.EntityLogicalName, case1Id), msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId) });
+
+            //ACT
+            orgAdminService.Update(new msdyn_workorder { Id = workOrderId, msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, case2Id) });
+
+            //ASSERT
+            var query = new QueryExpression(msdyn_workorderservicetask.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet("ovs_caseid")
+            };
+            var wosts = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<msdyn_workorderservicetask>().ToList();
+
+            //Expect all wosts to be associated to Case2
+            Assert.Equal(case2Id, wosts[0].ovs_CaseId.Id);
+            Assert.Equal(case2Id, wosts[1].ovs_CaseId.Id);
+            Assert.Equal(case2Id, wosts[2].ovs_CaseId.Id);
+        }
+
+        [Fact]
+        public void When_case_of_work_order_is_changed_to_null_expect_all_work_order_service_tasks_related_to_work_order_to_have_no_case()
+        {
+            //ARRANGE
+            var case1Id = orgAdminUIService.Create(new Incident { });
+            var case2Id = orgAdminUIService.Create(new Incident { });
+
+            var workOrderId = orgAdminService.Create(new msdyn_workorder { msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, case1Id) });
+
+            var wost1 = orgAdminService.Create(new msdyn_workorderservicetask { ovs_CaseId = new EntityReference(Incident.EntityLogicalName, case1Id), msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId) });
+            var wost2 = orgAdminService.Create(new msdyn_workorderservicetask { ovs_CaseId = new EntityReference(Incident.EntityLogicalName, case1Id), msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId) });
+            var wost3 = orgAdminService.Create(new msdyn_workorderservicetask { ovs_CaseId = new EntityReference(Incident.EntityLogicalName, case1Id), msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId) });
+
+            //ACT
+            orgAdminService.Update(new msdyn_workorder { Id = workOrderId, msdyn_ServiceRequest = null });
+
+            //ASSERT
+            var query = new QueryExpression(msdyn_workorderservicetask.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet("ovs_caseid")
+            };
+            var wosts = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<msdyn_workorderservicetask>().ToList();
+
+            //Expect all wosts to have no case
+            Assert.Null(wosts[0].ovs_CaseId);
+            Assert.Null(wosts[1].ovs_CaseId);
+            Assert.Null(wosts[2].ovs_CaseId);
         }
     }
 }
