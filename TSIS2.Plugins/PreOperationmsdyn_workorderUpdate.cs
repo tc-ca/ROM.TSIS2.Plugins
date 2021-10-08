@@ -29,82 +29,97 @@ namespace TSIS2.Plugins
     /// <summary>
     /// PreOperationmsdyn_workorderUpdate Plugin.
     /// </summary>    
-    public class PreOperationmsdyn_workorderUpdate : PluginBase
+    public class PreOperationmsdyn_workorderUpdate : IPlugin
     {
-        private readonly string preImageAlias = "PreImage";
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="PreOperationmsdyn_workorderUpdate"/> class.
-        /// </summary>
-        /// <param name="unsecure">Contains public (unsecured) configuration information.</param>
-        /// <param name="secure">Contains non-public (secured) configuration information. 
-        /// When using Microsoft Dynamics 365 for Outlook with Offline Access, 
-        /// the secure string is not passed to a plug-in that executes while the client is offline.</param>
-        public PreOperationmsdyn_workorderUpdate(string unsecure, string secure)
-            : base(typeof(PreOperationmsdyn_workorderUpdate))
+        public void Execute(IServiceProvider serviceProvider)
         {
-            //if (secure != null &&!secure.Equals(string.Empty))
-            //{
+            // Obtain the tracing service
+            ITracingService tracingService =
+            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
 
-            //}
-        }
+            // Obtain the execution context from the service provider.
+            IPluginExecutionContext context = (IPluginExecutionContext)
+                serviceProvider.GetService(typeof(IPluginExecutionContext));
 
-        /// <summary>
-        /// Main entry point for he business logic that the plug-in is to execute.
-        /// </summary>
-        /// <param name="localContext">The <see cref="LocalPluginContext"/> which contains the
-        /// <see cref="IPluginExecutionContext"/>,
-        /// <see cref="IOrganizationService"/>
-        /// and <see cref="ITracingService"/>
-        /// </param>
-        /// <remarks>
-        /// For improved performance, Microsoft Dynamics 365 caches plug-in instances.
-        /// The plug-in's Execute method should be written to be stateless as the constructor
-        /// is not called for every invocation of the plug-in. Also, multiple system threads
-        /// could execute the plug-in at the same time. All per invocation state information
-        /// is stored in the context. This means that you should not use global variables in plug-ins.
-        /// </remarks>
-        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
-        {
-            if (localContext == null)
+            // The InputParameters collection contains all the data passed in the message request.
+            if (context.InputParameters.Contains("Target") &&
+                context.InputParameters["Target"] is Entity)
             {
-                throw new InvalidPluginExecutionException("localContext");
-            }
+                // Obtain the target entity from the input parameters.
+                Entity target = (Entity)context.InputParameters["Target"];
 
-            IPluginExecutionContext context = localContext.PluginExecutionContext;
-            Entity target = (Entity)context.InputParameters["Target"];
-            //Entity postImageEntity = (context.PostEntityImages != null && context.PostEntityImages.Contains(this.postImageAlias)) ? context.PostEntityImages[this.postImageAlias] : null;
-            Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains(this.preImageAlias)) ? context.PreEntityImages[this.preImageAlias] : null;
+                // Obtain the preimage entity
+                Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
 
-            try
-            {
-                if (target.LogicalName.Equals(msdyn_workorder.EntityLogicalName))
+                // Obtain the organization service reference which you will need for
+                // web service calls.
+                IOrganizationServiceFactory serviceFactory =
+                    (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
+                IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
+
+                try
                 {
-                    if (target.Attributes.Contains("ovs_operationid") && target.Attributes["ovs_operationid"] != null)
+                    if (target.LogicalName.Equals(msdyn_workorder.EntityLogicalName))
                     {
-                        EntityReference operation = (EntityReference)target.Attributes["ovs_operationid"];
-                        using (var servicecontext = new Xrm(localContext.OrganizationService))
+                        if (target.Attributes.Contains("ovs_operationid") && target.Attributes["ovs_operationid"] != null)
                         {
-                            var regulatedentity = (from tt in servicecontext.ovs_operationSet
-                                                   where tt.Id == operation.Id
-                                                   select new
-                                                   {
-                                                       tt.ts_stakeholder
-                                                   }).FirstOrDefault();
-                            if (regulatedentity != null)
+                            EntityReference operation = (EntityReference)target.Attributes["ovs_operationid"];
+                            using (var servicecontext = new Xrm(service))
                             {
-                                if (regulatedentity.ts_stakeholder != null && regulatedentity.ts_stakeholder.Id != null)
+                                var regulatedentity = (from tt in servicecontext.ovs_operationSet
+                                                       where tt.Id == operation.Id
+                                                       select new
+                                                       {
+                                                           tt.ts_stakeholder
+                                                       }).FirstOrDefault();
+                                if (regulatedentity != null)
                                 {
-                                    target.Attributes["msdyn_billingaccount"] = regulatedentity.ts_stakeholder;
+                                    if (regulatedentity.ts_stakeholder != null && regulatedentity.ts_stakeholder.Id != null)
+                                    {
+                                        target.Attributes["msdyn_billingaccount"] = regulatedentity.ts_stakeholder;
+                                    }
                                 }
+                            }
+                        }
+                        //If Case "msdyn_servicerequest" is Updated
+                        if (target.Attributes.Contains("msdyn_servicerequest"))
+                        {
+                            using (var serviceContext = new Xrm(service))
+                            {
+                                // Cast the target to the expected entity
+                                msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
+
+                                //Retrieve all findings associated to the current work order
+                                var workOrderFindings = serviceContext.ovs_FindingSet.Where(f => f.ts_WorkOrder.Id == workOrder.Id).ToList();
+
+                                if (workOrder.msdyn_ServiceRequest != null)
+                                {
+                                    //Change the reference to Case in each finding to the Work Order's new case
+                                    foreach (ovs_Finding finding in workOrderFindings)
+                                    {
+                                        finding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrder.msdyn_ServiceRequest.Id);
+                                        serviceContext.UpdateObject(finding);
+                                    }
+                                }
+                                else
+                                {
+                                    //Change the reference to Case in each finding to null
+                                    foreach (ovs_Finding finding in workOrderFindings)
+                                    {
+                                        finding.ovs_CaseId = null;
+                                        serviceContext.UpdateObject(finding);
+                                    }
+                                }
+                                serviceContext.SaveChanges();
                             }
                         }
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                throw new InvalidPluginExecutionException(e.Message);
+                catch (Exception e)
+                {
+                    throw new InvalidPluginExecutionException(e.Message);
+                }
+
             }
         }
     }
