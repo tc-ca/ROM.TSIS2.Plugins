@@ -100,15 +100,21 @@ namespace TSIS2.Plugins
                                     //Change the reference to Case in each Work Order Service Task to the Work Order's new case
                                     foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
-                                        workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrder.msdyn_ServiceRequest.Id);
-                                        serviceContext.UpdateObject(workOrderServiceTask);
+                                        service.Update(new msdyn_workorderservicetask
+                                        {
+                                            Id = workOrderServiceTask.Id,
+                                            ovs_CaseId = workOrder.msdyn_ServiceRequest
+                                        });
                                     }
 
                                     //Change the reference to Case in each finding to the Work Order's new case
                                     foreach (ovs_Finding finding in workOrderFindings)
                                     {
-                                        finding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrder.msdyn_ServiceRequest.Id);
-                                        serviceContext.UpdateObject(finding);
+                                        service.Update(new ovs_Finding
+                                        {
+                                            Id = finding.Id,
+                                            ovs_CaseId = workOrder.msdyn_ServiceRequest
+                                        });
                                     }
                                 }
                                 else
@@ -116,17 +122,22 @@ namespace TSIS2.Plugins
                                     //Change the reference to Case in each Work Order Service Task to null
                                     foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
-                                        workOrderServiceTask.ovs_CaseId = null;
-                                        serviceContext.UpdateObject(workOrderServiceTask);
+                                        service.Update(new msdyn_workorderservicetask
+                                        {
+                                            Id = workOrderServiceTask.Id,
+                                            ovs_CaseId = null
+                                        });
                                     }
                                     //Change the reference to Case in each finding to null
                                     foreach (ovs_Finding finding in workOrderFindings)
                                     {
-                                        finding.ovs_CaseId = null;
-                                        serviceContext.UpdateObject(finding);
+                                        service.Update(new ovs_Finding
+                                        {
+                                            Id = finding.Id,
+                                            ovs_CaseId = null
+                                        });
                                     }
                                 }
-                                serviceContext.SaveChanges();
                             }
                         }
                     }

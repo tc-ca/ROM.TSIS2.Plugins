@@ -31,6 +31,10 @@ namespace TSIS2.Plugins
             IPluginExecutionContext context = (IPluginExecutionContext)
                 serviceProvider.GetService(typeof(IPluginExecutionContext));
 
+            //Return if triggered by another plugin. Prevents infinite loop.
+            if (context.Depth > 1)
+                return;
+
             // The InputParameters collection contains all the data passed in the message request.
             if (context.InputParameters.Contains("Target") &&
                 context.InputParameters["Target"] is Entity)
