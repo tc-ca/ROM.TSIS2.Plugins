@@ -1052,7 +1052,7 @@ namespace ROMTS_GSRST.Plugins.Tests
         }
 
         [Fact]
-        public void When_ovs_questionnaireresponse_contains_finding_expect_msdyn_inspectiontaskresult_fail()
+        public void When_ovs_questionnaireresponse_contains_non_compliance_finding_expect_msdyn_inspectiontaskresult_fail()
         {
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
@@ -1070,12 +1070,26 @@ namespace ROMTS_GSRST.Plugins.Tests
                 msdyn_PercentComplete = 0.00,
             });
             var account = orgAdminUIService.Create(new Account());
-            var accountReference = new EntityReference(Account.EntityLogicalName, account);
-            var operation = orgAdminUIService.Create(new ovs_operation()
+            var accountReference1 = new EntityReference(Account.EntityLogicalName, account);
+            var accountReference2 = new EntityReference(Account.EntityLogicalName, account);
+            var accountReference3 = new EntityReference(Account.EntityLogicalName, account);           
+
+            var operation1 = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                ts_stakeholder = accountReference
+                ts_stakeholder = accountReference1
             });
+            var operation2 = orgAdminUIService.Create(new ovs_operation()
+            {
+                Id = new Guid("7d085d54-c2a9-eb11-9442-000d3a8410dc"),
+                ts_stakeholder = accountReference2
+            });
+            var operation3 = orgAdminUIService.Create(new ovs_operation()
+            {
+                Id = new Guid("22364b7e-e1ce-eb11-bacc-0022483c068d"),
+                ts_stakeholder = accountReference3
+            });           
+
             // ACT
             orgAdminUIService.Update(new msdyn_workorderservicetask
             {
@@ -1088,7 +1102,98 @@ namespace ROMTS_GSRST.Plugins.Tests
                         ""provisionTextEn"": ""<strong>Verification of Identity</strong></br><strong><mark><mark>SATR 4</mark></mark></strong>: An air carrier must, at the boarding gate for an international flight, verify the identity of each passenger who appears to be 18 years of age or older using</br><ul style='list-style-type:none;'><li><strong>(a)</strong> one of the following pieces of photo identification issued by a government authority that shows the passenger’s surname, first name and any middle names, their date of birth and gender and that is valid:</li><ul style='list-style-type:none;'><li><strong>(i)</strong> a passport issued by the country of which the passenger is a citizen or a national,</li><li><strong>(ii)</strong> a NEXUS card,</li><li><strong>(iii)</strong> any document referred to in subsection 50(1) or 52(1) of the Immigration and Refugee Protection Regulations; or</li></ul><li><strong>(b)</strong> a valid restricted area identity card, as defined in section 3 of the Canadian Aviation Security Regulations, 2012.</li></ul>"",
                         ""provisionTextFr"": ""<strong>Verification of Identity</strong></br><strong><mark><mark><mark>SATR 4</mark></mark></mark></strong>: Tout transporteur aérien vérifie, à la porte d’embarquement pour un vol international, l’identité de chaque passager qui semble âgé de 18 ans ou plus au moyen :</br><ul style='list-style-type:none;'><li><strong>(a)</strong> soit de l’une des pièces d’identité avec photo ci-après qui est délivrée par une autorité gouvernementale, qui indique les nom et prénoms, date de naissance et genre du passager et qui est valide :</li><ul style='list-style-type:none;'><li><strong>(i)</strong> un passeport délivré au passager par le pays dont il est citoyen ou ressortissant,</li><li><strong>(ii)</strong> une carte NEXUS,</li><li><strong>(iii)</strong> un document visé au paragraphe 50(1) ou 52(1) du Règlement sur l’immigration et la protection des réfugiés;</li></ul><li><strong>(b)</strong> soit d’une carte d’identité de zone réglementée au sens de l’article 3 du Règlement canadien de 2012 sur la sûreté aérienne qui est valide.</li></ul>"",
                         ""comments"": ""new comments"",
-                        ""operations"": [{""operationID"": ""9de3a6e3-c4ad-eb11-8236-000d3ae8b866"",""findingType"": ""717750001""}]
+                        ""operations"": [{""operationID"": ""9de3a6e3-c4ad-eb11-8236-000d3ae8b866"",""findingType"": ""717750001""},
+                                         {""operationID"": ""7d085d54-c2a9-eb11-9442-000d3a8410dc"",""findingType"": ""717750001""}
+                        ]                                      
+                    },
+                    ""finding-sq_155"": {
+                        ""provisionReference"": ""SATR 5"",
+                        ""provisionTextEn"": ""<strong>Verification of Identity</strong></br><strong><mark><mark>SATR 4</mark></mark></strong>: An air carrier must, at the boarding gate for an international flight, verify the identity of each passenger who appears to be 18 years of age or older using</br><ul style='list-style-type:none;'><li><strong>(a)</strong> one of the following pieces of photo identification issued by a government authority that shows the passenger’s surname, first name and any middle names, their date of birth and gender and that is valid:</li><ul style='list-style-type:none;'><li><strong>(i)</strong> a passport issued by the country of which the passenger is a citizen or a national,</li><li><strong>(ii)</strong> a NEXUS card,</li><li><strong>(iii)</strong> any document referred to in subsection 50(1) or 52(1) of the Immigration and Refugee Protection Regulations; or</li></ul><li><strong>(b)</strong> a valid restricted area identity card, as defined in section 3 of the Canadian Aviation Security Regulations, 2012.</li></ul>"",
+                        ""provisionTextFr"": ""<strong>Verification of Identity</strong></br><strong><mark><mark><mark>SATR 4</mark></mark></mark></strong>: Tout transporteur aérien vérifie, à la porte d’embarquement pour un vol international, l’identité de chaque passager qui semble âgé de 18 ans ou plus au moyen :</br><ul style='list-style-type:none;'><li><strong>(a)</strong> soit de l’une des pièces d’identité avec photo ci-après qui est délivrée par une autorité gouvernementale, qui indique les nom et prénoms, date de naissance et genre du passager et qui est valide :</li><ul style='list-style-type:none;'><li><strong>(i)</strong> un passeport délivré au passager par le pays dont il est citoyen ou ressortissant,</li><li><strong>(ii)</strong> une carte NEXUS,</li><li><strong>(iii)</strong> un document visé au paragraphe 50(1) ou 52(1) du Règlement sur l’immigration et la protection des réfugiés;</li></ul><li><strong>(b)</strong> soit d’une carte d’identité de zone réglementée au sens de l’article 3 du Règlement canadien de 2012 sur la sûreté aérienne qui est valide.</li></ul>"",
+                        ""comments"": ""new comment 2"",
+                        ""operations"": [	                       
+	                        {""operationID"": ""22364b7e-e1ce-eb11-bacc-0022483c068d"",""findingType"": ""717750002""}
+                        ]
+                    }
+                }
+                "
+            });
+
+            // ASSERT
+            var query = new QueryExpression(msdyn_workorderservicetask.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet("msdyn_inspectiontaskresult")
+            };
+            var workOrderServiceTasks = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<msdyn_workorderservicetask>().ToList();
+
+            // Expect exactly one finding
+            Assert.Single(workOrderServiceTasks);            
+            Assert.Equal(msdyn_inspectionresult.Fail, workOrderServiceTasks.Single().msdyn_inspectiontaskresult);
+        }
+
+        [Fact]
+        public void When_ovs_questionnaireresponse_contains_observations_only_finding_expect_msdyn_inspectiontaskresult_observation()
+        {
+            // ARRANGE
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
+            {
+                msdyn_name = "300-345678",
+                msdyn_ServiceRequest = null,
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
+
+            });
+            var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
+            {
+                msdyn_name = "200-345678-1",
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 0.00,
+            });
+            var account = orgAdminUIService.Create(new Account());
+            var accountReference1 = new EntityReference(Account.EntityLogicalName, account);
+            var accountReference2 = new EntityReference(Account.EntityLogicalName, account);
+            var accountReference3 = new EntityReference(Account.EntityLogicalName, account);
+
+            var operation1 = orgAdminUIService.Create(new ovs_operation()
+            {
+                Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
+                ts_stakeholder = accountReference1
+            });
+            var operation2 = orgAdminUIService.Create(new ovs_operation()
+            {
+                Id = new Guid("7d085d54-c2a9-eb11-9442-000d3a8410dc"),
+                ts_stakeholder = accountReference2
+            });
+            var operation3 = orgAdminUIService.Create(new ovs_operation()
+            {
+                Id = new Guid("22364b7e-e1ce-eb11-bacc-0022483c068d"),
+                ts_stakeholder = accountReference3
+            });
+
+            // ACT
+            orgAdminUIService.Update(new msdyn_workorderservicetask
+            {
+                Id = workOrderServiceTaskId,
+                msdyn_PercentComplete = 100.00,
+                ovs_QuestionnaireResponse = @"
+                {
+                    ""finding-sq_142"": {
+                        ""provisionReference"": ""SATR 4"",
+                        ""provisionTextEn"": ""<strong>Verification of Identity</strong></br><strong><mark><mark>SATR 4</mark></mark></strong>: An air carrier must, at the boarding gate for an international flight, verify the identity of each passenger who appears to be 18 years of age or older using</br><ul style='list-style-type:none;'><li><strong>(a)</strong> one of the following pieces of photo identification issued by a government authority that shows the passenger’s surname, first name and any middle names, their date of birth and gender and that is valid:</li><ul style='list-style-type:none;'><li><strong>(i)</strong> a passport issued by the country of which the passenger is a citizen or a national,</li><li><strong>(ii)</strong> a NEXUS card,</li><li><strong>(iii)</strong> any document referred to in subsection 50(1) or 52(1) of the Immigration and Refugee Protection Regulations; or</li></ul><li><strong>(b)</strong> a valid restricted area identity card, as defined in section 3 of the Canadian Aviation Security Regulations, 2012.</li></ul>"",
+                        ""provisionTextFr"": ""<strong>Verification of Identity</strong></br><strong><mark><mark><mark>SATR 4</mark></mark></mark></strong>: Tout transporteur aérien vérifie, à la porte d’embarquement pour un vol international, l’identité de chaque passager qui semble âgé de 18 ans ou plus au moyen :</br><ul style='list-style-type:none;'><li><strong>(a)</strong> soit de l’une des pièces d’identité avec photo ci-après qui est délivrée par une autorité gouvernementale, qui indique les nom et prénoms, date de naissance et genre du passager et qui est valide :</li><ul style='list-style-type:none;'><li><strong>(i)</strong> un passeport délivré au passager par le pays dont il est citoyen ou ressortissant,</li><li><strong>(ii)</strong> une carte NEXUS,</li><li><strong>(iii)</strong> un document visé au paragraphe 50(1) ou 52(1) du Règlement sur l’immigration et la protection des réfugiés;</li></ul><li><strong>(b)</strong> soit d’une carte d’identité de zone réglementée au sens de l’article 3 du Règlement canadien de 2012 sur la sûreté aérienne qui est valide.</li></ul>"",
+                        ""comments"": ""new comments"",
+                        ""operations"": [{""operationID"": ""9de3a6e3-c4ad-eb11-8236-000d3ae8b866"",""findingType"": ""717750001""},
+                                         {""operationID"": ""7d085d54-c2a9-eb11-9442-000d3a8410dc"",""findingType"": ""717750001""}
+                        ]                                      
+                    },
+                    ""finding-sq_155"": {
+                        ""provisionReference"": ""SATR 5"",
+                        ""provisionTextEn"": ""<strong>Verification of Identity</strong></br><strong><mark><mark>SATR 4</mark></mark></strong>: An air carrier must, at the boarding gate for an international flight, verify the identity of each passenger who appears to be 18 years of age or older using</br><ul style='list-style-type:none;'><li><strong>(a)</strong> one of the following pieces of photo identification issued by a government authority that shows the passenger’s surname, first name and any middle names, their date of birth and gender and that is valid:</li><ul style='list-style-type:none;'><li><strong>(i)</strong> a passport issued by the country of which the passenger is a citizen or a national,</li><li><strong>(ii)</strong> a NEXUS card,</li><li><strong>(iii)</strong> any document referred to in subsection 50(1) or 52(1) of the Immigration and Refugee Protection Regulations; or</li></ul><li><strong>(b)</strong> a valid restricted area identity card, as defined in section 3 of the Canadian Aviation Security Regulations, 2012.</li></ul>"",
+                        ""provisionTextFr"": ""<strong>Verification of Identity</strong></br><strong><mark><mark><mark>SATR 4</mark></mark></mark></strong>: Tout transporteur aérien vérifie, à la porte d’embarquement pour un vol international, l’identité de chaque passager qui semble âgé de 18 ans ou plus au moyen :</br><ul style='list-style-type:none;'><li><strong>(a)</strong> soit de l’une des pièces d’identité avec photo ci-après qui est délivrée par une autorité gouvernementale, qui indique les nom et prénoms, date de naissance et genre du passager et qui est valide :</li><ul style='list-style-type:none;'><li><strong>(i)</strong> un passeport délivré au passager par le pays dont il est citoyen ou ressortissant,</li><li><strong>(ii)</strong> une carte NEXUS,</li><li><strong>(iii)</strong> un document visé au paragraphe 50(1) ou 52(1) du Règlement sur l’immigration et la protection des réfugiés;</li></ul><li><strong>(b)</strong> soit d’une carte d’identité de zone réglementée au sens de l’article 3 du Règlement canadien de 2012 sur la sûreté aérienne qui est valide.</li></ul>"",
+                        ""comments"": ""new comment 2"",
+                        ""operations"": [	                       
+	                        {""operationID"": ""22364b7e-e1ce-eb11-bacc-0022483c068d"",""findingType"": ""717750001""}
+                        ]
                     }
                 }
                 "
@@ -1103,7 +1208,7 @@ namespace ROMTS_GSRST.Plugins.Tests
 
             // Expect exactly one finding
             Assert.Single(workOrderServiceTasks);
-            Assert.Equal(msdyn_inspectionresult.Fail, workOrderServiceTasks.Single().msdyn_inspectiontaskresult);
+            Assert.Equal(msdyn_inspectionresult.Observations, workOrderServiceTasks.Single().msdyn_inspectiontaskresult);
         }
 
         [Fact]

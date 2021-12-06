@@ -9,7 +9,6 @@ namespace DG.Tools.XrmMockup {
 		public static Guid AppProfileUser = new Guid("61649654-ced8-ea11-a813-000d3a579805");
 		public static Guid Attach2DynamicsAdministrator = new Guid("755701c6-5dca-e811-80d1-00155d060713");
 		public static Guid Attach2DynamicsUser = new Guid("1c5c29f9-5dca-e811-80d1-00155d060713");
-		public static Guid AvSecInspector = new Guid("d1c7e00c-4757-eb11-a812-000d3aff12c2");
 		public static Guid BasicUser = new Guid("1a482c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid BizQAApp = new Guid("88b87c37-1472-4798-ac48-d56509eb6e1d");
 		public static Guid BotAuthor = new Guid("e0d2794e-82f3-e811-a951-000d3a1bcf17");
@@ -58,6 +57,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid KnowledgeManager = new Guid("58306a42-48ec-4293-83be-a0b68ff87f5f");
 		public static Guid MarketingManager = new Guid("b701b110-4a7c-44cf-8cc1-c673b35decbe");
 		public static Guid MarketingProfessional = new Guid("34e0e805-c3e7-48f5-aaee-b758b4ef82c7");
+		public static Guid OfficeCollaborator = new Guid("e8fb3146-7717-ec11-b1b7-000d3af68e17");
 		public static Guid PlaybookManager = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2732");
 		public static Guid PlaybookUser = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2731");
 		public static Guid PPPAnalyst = new Guid("70abdd18-59b6-ea11-a812-000d3a0c8127");
@@ -69,11 +69,13 @@ namespace DG.Tools.XrmMockup {
 		public static Guid Productivitytoolsuser = new Guid("c49aae0a-0fda-e911-a81c-000d3af75d63");
 		public static Guid ProjectOwner = new Guid("f9a5a958-d07f-44cd-886d-eb6343309c2a");
 		public static Guid RelationshipInsightsAdmin = new Guid("016fd16e-7be7-e611-80d6-00155d204901");
+		public static Guid RescoMobileCRMAdministrator = new Guid("30173fd1-8866-e511-8cbe-00155d0b0a0c");
 		public static Guid ROMBase = new Guid("158781c7-f92c-eb11-a813-000d3af3a7a7");
 		public static Guid ROMBusinessAdmin = new Guid("779105f0-8d3a-eb11-a813-000d3af3fc19");
 		public static Guid ROMInspector = new Guid("ed37675e-f72c-eb11-a813-000d3af3a7a7");
 		public static Guid ROMManager = new Guid("85e36d25-29f5-eb11-94ef-000d3af36036");
 		public static Guid ROMPlanner = new Guid("9f03e814-29f5-eb11-94ef-000d3af36036");
+		public static Guid ROMQuestionnaireAdmin = new Guid("e4c394e4-a048-ec11-8c62-000d3ae89a77");
 		public static Guid SalesManager = new Guid("a9547c3b-1c7f-4820-821f-9fb4fc383d2b");
 		public static Guid Salessystemaccess = new Guid("b5b6cb27-47e9-49f7-84bb-f6823fc8461c");
 		public static Guid Salessystemaccessextension = new Guid("f6f7455f-bcea-44dc-abbd-7fd51b1cc880");
@@ -83,11 +85,13 @@ namespace DG.Tools.XrmMockup {
 		public static Guid Salesperson = new Guid("3bf365ba-6d27-42e7-8d08-d18dd51407d7");
 		public static Guid ScheduleManager = new Guid("9d264e42-8b56-44bc-9950-9011ecefafb4");
 		public static Guid Scheduler = new Guid("2a657885-7129-4dec-9350-1b612ab3171f");
+		public static Guid SequenceManager = new Guid("9f447a9a-4e2d-ea11-a81c-000d3afd580d");
 		public static Guid ServiceReader = new Guid("494d392f-d3f4-42ba-af49-30c6f41e6093");
 		public static Guid ServiceWriter = new Guid("68f2d372-e1a5-4298-9a93-4b39757caf93");
 		public static Guid SolutionChecker = new Guid("e05075eb-9d74-e811-a95c-000d3a1c53e4");
 		public static Guid SupportUser = new Guid("54472c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid SurveyServicesAdministratorDeprecated = new Guid("abce3b01-5697-4973-9d7d-fca48ca84445");
+		public static Guid SyncSkills = new Guid("cab938ec-7717-eb11-a81b-000d3ac38fe6");
 		public static Guid SystemAdministrator = new Guid("ca432c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid SystemCustomizer = new Guid("1b482c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid TimeEntryUser = new Guid("feae608b-0633-ea11-a81c-000d3ac406c6");

@@ -80,6 +80,8 @@ namespace TSIS2.Plugins
                                 // Retrieve all the findings belonging to this work order service task
                                 var findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
 
+                                //List of findingType
+                                var findingTypeList = new List<string>();
                                 // Start a list of all the used mapping keys
                                 var findingMappingKeys = new List<string>();
 
@@ -115,7 +117,7 @@ namespace TSIS2.Plugins
                                     }
 
                                     // Mark the inspection result to fail
-                                    workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Fail;
+                                    //   workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Fail;
 
                                     // loop through each root property in the json object
                                     foreach (var rootProperty in jsonObject)
@@ -136,10 +138,13 @@ namespace TSIS2.Plugins
                                                 if (operation.ContainsKey("operationID"))
                                                 {
                                                     operationid = operation["operationID"];
-                                                } else
+                                                    findingTypeList.Add(operation["findingType"]);
+                                                }
+                                                else
                                                 {
                                                     continue;
                                                 }
+
                                                 var findingMappingKey = workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString() + "-" + operationid;
                                                 findingMappingKeys.Add(findingMappingKey);
                                                 var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ts_findingmappingkey == findingMappingKey);
@@ -160,8 +165,9 @@ namespace TSIS2.Plugins
                                                     //Find all the findings that share the same root property key and add to findingCopies list
                                                     //The count of copies is needed to determine the suffix for the next finding record created
                                                     var findingCopies = new List<ovs_Finding>();
-                                                    foreach (var f in findings) {
-                                                        if (f.ts_findingmappingkey.StartsWith(workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString())) findingCopies.Add(f);                                                       
+                                                    foreach (var f in findings)
+                                                    {
+                                                        if (f.ts_findingmappingkey.StartsWith(workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString())) findingCopies.Add(f);
                                                     }
 
                                                     // Determine the current highest infix of all the findings for the service task
@@ -234,6 +240,11 @@ namespace TSIS2.Plugins
                                             }
                                         }
                                     }
+                                    //Mark the inspection result to Fail if there are non-compliance or Undecided found
+                                    if (findingTypeList.Contains("717750002") || findingTypeList.Contains("717750000"))
+                                        workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Fail;
+                                    else
+                                        workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Observations;
 
                                 }
                                 else
@@ -265,7 +276,7 @@ namespace TSIS2.Plugins
 
                             // If the work order is not already "complete" or "closed" and all other work order service tasks are already completed as well, mark the parent work order system status to Open - Completed
                             var otherWorkOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(wost => wost.msdyn_WorkOrder == workOrderReference && wost.Id != workOrderServiceTask.Id).ToList<msdyn_workorderservicetask>();
-                            if(workOrder.msdyn_SystemStatus != msdyn_wosystemstatus.ClosedPosted && workOrder.msdyn_SystemStatus != msdyn_wosystemstatus.OpenCompleted)
+                            if (workOrder.msdyn_SystemStatus != msdyn_wosystemstatus.ClosedPosted && workOrder.msdyn_SystemStatus != msdyn_wosystemstatus.OpenCompleted)
                             {
                                 if (otherWorkOrderServiceTasks.All(x => x.statuscode == msdyn_workorderservicetask_statuscode.Complete))
                                 {
