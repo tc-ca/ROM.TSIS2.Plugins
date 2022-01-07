@@ -8,7 +8,7 @@
       */
       "profile": "default,debug",
       "assemblypath": "bin\\Debug",
-      "solution": "TC_Plugins"
+      "solution": "romts_gsrst"
       /*
       Optional - defines the regex to use to detect a plugin or workflow activity when using a custom base class
       */
