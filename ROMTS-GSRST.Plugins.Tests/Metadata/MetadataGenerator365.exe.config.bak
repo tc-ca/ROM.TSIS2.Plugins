@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<appSettings>
+		<add key="url" value="https://romts-gsrst-dev-tcd365.crm3.dynamics.com/XRMServices/2011/Organization.svc" />
+		<add key="method" value="ClientSecret" />
+		<add key="mfaAppId" value="e9c7dbf4-ba9f-454f-a774-c6344d466958" />
+		<add key="mfaClientSecret" value="4~0RDN.C_9kF1pJ8XHdf-0tEO.yn23Ee._" />
+		<add key="solutions" value="romts_gsrst" />
+		<add key="entities" value="account,incident,msdyn_incidenttypeservicetask,msdyn_servicetasktype,msdyn_workorder,msdyn_workorderservicetask,ovs_aircarrier,ovs_facility,ovs_finding,ovs_lob,ovs_msdyn_servicetasktype_qm_rclegislation,ovs_operation,ovs_operationtype,ovs_questionnaire,ovs_sitetype,ovs_tyrational,ovs_workorderservicetaskprovision,qm_rclegislation,ts_workordercreationwizard,ts_workorderactivitytype" />
+		<add key="servicecontextname" value="Xrm" />
+		<add key="fetchFromAssemblies" value="false" />
+	</appSettings>
+	<startup>
+		<supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.6.2" />
+	</startup>
+</configuration>
