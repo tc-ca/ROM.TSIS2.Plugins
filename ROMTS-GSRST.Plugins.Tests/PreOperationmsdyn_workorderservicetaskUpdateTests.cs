@@ -1,7 +1,8 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace ROMTS_GSRST.Plugins.Tests
@@ -1499,6 +1500,109 @@ namespace ROMTS_GSRST.Plugins.Tests
             // Expect newly created tenth ovs_finding to have the proper name
             var tenth = findings[9];
             Assert.Equal("100-345678-1-3-3", tenth.ovs_Finding_1);
+        }
+        [Fact]
+        public void When_work_order_service_task_is_failed_and_case_exists_expect_all_evidences_related_to_work_order_to_be_related_to_new_case_and_parent_work_order()
+        {
+            // ARRANGE
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
+            var incidentId = orgAdminUIService.Create(new Incident { });
+          
+            var parentWorkOrderId = orgAdminUIService.Create(new msdyn_workorder()
+            {
+                msdyn_name = "300-345679",
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
+
+            });
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
+            {
+                msdyn_name = "300-345678",
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+                msdyn_ParentWorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, parentWorkOrderId),
+               
+                Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866")
+
+            });
+            var evidence1Id = orgAdminUIService.Create(new ts_File()
+            {
+                ts_FileContext = ts_filecontext.TC2030INDIVIDUALINSPECTIONS,
+                ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId),
+                ts_FileSubContext = ts_filesubcontext.Evidence
+            });
+
+            var evidence2Id = orgAdminUIService.Create(new ts_File()
+            {
+                ts_FileContext = ts_filecontext.TC2030INDIVIDUALINSPECTIONS,
+                ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId),
+                ts_FileSubContext = ts_filesubcontext.Evidence         
+
+            });
+            //var fileWO1 = orgAdminUIService.Create(new ts_Files_msdyn_workorders()
+            //{
+            //    ts_Files_msdyn_workordersId = evidence1Id
+            //});
+            //var fileWO2 = orgAdminUIService.Create(new ts_Files_msdyn_workorders()
+            //{
+            //    ts_Files_msdyn_workordersId = evidence2Id
+            //});
+            var accountReference = new EntityReference(Account.EntityLogicalName, serviceAccountId);
+            var operation = orgAdminUIService.Create(new ovs_operation()
+            {
+                Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
+                ts_stakeholder = accountReference
+            });
+            
+            var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
+            {
+                msdyn_name = "200-345678-1",
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 0.00,
+                ovs_QuestionnaireResponse = @"
+                {
+                    ""finding-sq_142"": {
+                        ""provisionReference"": ""SATR 4"",
+                        ""provisionTextEn"": ""<strong>Verification of Identity</strong></br><strong><mark><mark>SATR 4</mark></mark></strong>: An air carrier must, at the boarding gate for an international flight, verify the identity of each passenger who appears to be 18 years of age or older using</br><ul style='list-style-type:none;'><li><strong>(a)</strong> one of the following pieces of photo identification issued by a government authority that shows the passenger’s surname, first name and any middle names, their date of birth and gender and that is valid:</li><ul style='list-style-type:none;'><li><strong>(i)</strong> a passport issued by the country of which the passenger is a citizen or a national,</li><li><strong>(ii)</strong> a NEXUS card,</li><li><strong>(iii)</strong> any document referred to in subsection 50(1) or 52(1) of the Immigration and Refugee Protection Regulations; or</li></ul><li><strong>(b)</strong> a valid restricted area identity card, as defined in section 3 of the Canadian Aviation Security Regulations, 2012.</li></ul>"",
+                        ""provisionTextFr"": ""<strong>Verification of Identity</strong></br><strong><mark><mark><mark>SATR 4</mark></mark></mark></strong>: Tout transporteur aérien vérifie, à la porte d’embarquement pour un vol international, l’identité de chaque passager qui semble âgé de 18 ans ou plus au moyen :</br><ul style='list-style-type:none;'><li><strong>(a)</strong> soit de l’une des pièces d’identité avec photo ci-après qui est délivrée par une autorité gouvernementale, qui indique les nom et prénoms, date de naissance et genre du passager et qui est valide :</li><ul style='list-style-type:none;'><li><strong>(i)</strong> un passeport délivré au passager par le pays dont il est citoyen ou ressortissant,</li><li><strong>(ii)</strong> une carte NEXUS,</li><li><strong>(iii)</strong> un document visé au paragraphe 50(1) ou 52(1) du Règlement sur l’immigration et la protection des réfugiés;</li></ul><li><strong>(b)</strong> soit d’une carte d’identité de zone réglementée au sens de l’article 3 du Règlement canadien de 2012 sur la sûreté aérienne qui est valide.</li></ul>"",
+                        ""comments"": ""new comments"",
+                        ""operations"": [{""operationID"": ""9de3a6e3-c4ad-eb11-8236-000d3ae8b866"",""findingType"": ""717750002""}]
+                    }
+                }
+                "
+            });
+
+            //ACT
+            orgAdminUIService.Update(new msdyn_workorderservicetask
+            {
+                Id = workOrderServiceTaskId,
+                msdyn_PercentComplete = 100.00,
+                msdyn_InspectionResult = (msdyn_workorderservicetask_msdyn_InspectionResult?)msdyn_inspectionresult.Fail
+            });
+
+            orgAdminUIService.Update(new ts_File
+            {
+                Id = evidence1Id,
+                ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, parentWorkOrderId),
+                ts_Incident = new EntityReference(Incident.EntityLogicalName, incidentId)
+            });
+            orgAdminUIService.Update(new ts_File
+            {
+                Id = evidence2Id,
+                ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, parentWorkOrderId),
+                ts_Incident = new EntityReference(Incident.EntityLogicalName, incidentId)
+            });
+
+            //ASSERT
+            var query = new QueryExpression(ts_File.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet("ts_msdyn_workorder", "ts_incident")
+            };
+            var evidences = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ts_File>().ToList();
+
+            //Evidences related to WO should be related to Case and Parent Work Order
+            Assert.Equal(parentWorkOrderId, evidences[0].ts_msdyn_workorder.Id);
+            Assert.Equal(incidentId, evidences[0].ts_Incident.Id);
+            Assert.Equal(parentWorkOrderId, evidences[1].ts_msdyn_workorder.Id);
+            Assert.Equal(incidentId, evidences[1].ts_Incident.Id);
         }
     }
 }

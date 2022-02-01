@@ -4,6 +4,7 @@ using System.Json;
 using System.Linq;
 using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
@@ -68,6 +69,7 @@ namespace TSIS2.Plugins
 
                             // Lookup the referenced work order
                             msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrderReference.Id).FirstOrDefault();
+                            // msdyn_workorder parentWorkOrder = serviceContext.msdyn_workorderSet.Where(pwo => pwo.Id == workOrder.msdyn_ParentWorkOrder.Id).FirstOrDefault();
 
                             // Determine if we use the questionnaire response from this update or from the pre-image since it is not always passed in the update
                             var questionnaireResponse = !String.IsNullOrEmpty(workOrderServiceTask.ovs_QuestionnaireResponse) ? workOrderServiceTask.ovs_QuestionnaireResponse : workOrderServiceTaskPreImage.ovs_QuestionnaireResponse;
@@ -84,6 +86,33 @@ namespace TSIS2.Plugins
                                 var findingTypeList = new List<string>();
                                 // Start a list of all the used mapping keys
                                 var findingMappingKeys = new List<string>();
+
+                                var workOrderEvidences = new List<ts_File>();
+                                var parentWorkOrderEvidences = new List<ts_File>();
+                                bool newCase = false;
+
+                                //retrieve all evidence related to work order
+                                string fetchqueryWorkOrderEvidence =
+                                    @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                                                  <entity name='ts_file'>
+                                                    <attribute name='ts_fileid' />
+                                                    <attribute name='ts_file' />
+                                                    <attribute name='createdon' />
+                                                    <order attribute='ts_file' descending='false' />
+                                                    <filter type='and'>
+                                                        <condition attribute='ts_filecontext' operator='eq' value='447390003' />
+                                                        <condition attribute='ts_filesubcontext' operator='eq' value='717750000' />
+                                                    </filter>
+                                                    <link-entity name='ts_files_msdyn_workorders' from='ts_fileid' to='ts_fileid' visible='false' intersect='true'>
+                                                      <link-entity name='msdyn_workorder' from='msdyn_workorderid' to='msdyn_workorderid' alias='ab'>
+                                                        <filter type='and'>
+                                                          <condition attribute='msdyn_workorderid' operator='eq' value='" + workOrder.Id + "'/></filter></link-entity></link-entity></entity></fetch>";
+
+                                EntityCollection evidences = service.RetrieveMultiple(new FetchExpression(fetchqueryWorkOrderEvidence));
+                                foreach (var c in evidences.Entities)
+                                {
+                                    workOrderEvidences.Add((ts_File)c);
+                                }
 
                                 // If there was at least one finding found
                                 // - Create a case (if work order service task doesn't already belong to a case)
@@ -109,15 +138,40 @@ namespace TSIS2.Plugins
                                             msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, newIncidentId)
                                         });
                                         workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, newIncidentId);
+                                        newCase = true;                                       
                                     }
                                     // Already part of a case, just assign the work order case to the work order service task case
                                     else
                                     {
                                         workOrderServiceTask.ovs_CaseId = workOrder.msdyn_ServiceRequest;
-                                    }
 
-                                    // Mark the inspection result to fail
-                                    //   workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Fail;
+                                        //if parent work order is not null retrieve all evidence related to it
+                                        if (workOrder.msdyn_ParentWorkOrder != null)
+                                        {
+                                            string fetchqueryParentWorkOrderEvidence =
+                                            @"<fetch version='1.0' output-format='xml-platform' mapping='logical' distinct='true'>
+                                                  <entity name='ts_file'>
+                                                    <attribute name='ts_fileid' />
+                                                    <attribute name='ts_file' />
+                                                    <attribute name='createdon' />
+                                                    <order attribute='ts_file' descending='false' />
+                                                    <filter type='and'>
+                                                        <condition attribute='ts_filecontext' operator='eq' value='447390003' />
+                                                        <condition attribute='ts_filesubcontext' operator='eq' value='717750000' />
+                                                    </filter>
+                                                    <link-entity name='ts_files_msdyn_workorders' from='ts_fileid' to='ts_fileid' visible='false' intersect='true'>
+                                                      <link-entity name='msdyn_workorder' from='msdyn_workorderid' to='msdyn_workorderid' alias='ab'>
+                                                        <filter type='and'>
+                                                          <condition attribute='msdyn_workorderid' operator='eq' value='" + workOrder.msdyn_ParentWorkOrder.Id + "'/></filter></link-entity></link-entity></entity></fetch>";
+                                            evidences = service.RetrieveMultiple(new FetchExpression(fetchqueryParentWorkOrderEvidence));
+                                            foreach (var c in evidences.Entities)
+                                            {
+                                                parentWorkOrderEvidences.Add((ts_File)c);
+                                            }
+                                        }
+
+
+                                    }
 
                                     // loop through each root property in the json object
                                     foreach (var rootProperty in jsonObject)
@@ -241,8 +295,52 @@ namespace TSIS2.Plugins
                                         }
                                     }
                                     //Mark the inspection result to Fail if there are non-compliance or Undecided found
+                                    //update documents for parent work order and case
                                     if (findingTypeList.Contains("717750002") || findingTypeList.Contains("717750000"))
+                                    {
                                         workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Fail;
+
+                                        if (newCase)
+                                        {
+                                            if (workOrderEvidences.Any())
+                                            {
+                                                //if parent work order exists update documents
+                                                if (workOrder.msdyn_ParentWorkOrder != null)
+                                                {
+                                                    service.Update(new msdyn_workorder
+                                                    {
+                                                        Id = workOrder.msdyn_ParentWorkOrder.Id,
+                                                        ts_Files_msdyn_workorders = workOrderEvidences
+
+                                                    });
+                                                }
+                                                //update documents for new case
+                                                service.Update(new Incident
+                                                {
+                                                    Id = workOrderServiceTask.ovs_CaseId.Id,
+                                                    ts_Files_Incidents = workOrderEvidences
+
+                                                });
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (workOrderEvidences.Any() || parentWorkOrderEvidences.Any())
+                                            {
+                                                //update documents for related case
+                                                service.Update(new Incident
+                                                {
+                                                    Id = workOrderServiceTask.ovs_CaseId.Id,
+                                                    ts_Files_Incidents = workOrderEvidences.Union(parentWorkOrderEvidences)
+
+                                                });
+                                            }
+                                        }
+
+                                        
+
+                                    }
+
                                     else
                                         workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Observations;
 
