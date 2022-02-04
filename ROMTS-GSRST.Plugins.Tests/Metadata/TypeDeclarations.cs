@@ -86,6 +86,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ScheduleManager = new Guid("9d264e42-8b56-44bc-9950-9011ecefafb4");
 		public static Guid Scheduler = new Guid("2a657885-7129-4dec-9350-1b612ab3171f");
 		public static Guid SequenceManager = new Guid("9f447a9a-4e2d-ea11-a81c-000d3afd580d");
+		public static Guid ServiceDeleter = new Guid("3b305bc7-5cf5-464b-985e-d6237f6496f1");
 		public static Guid ServiceReader = new Guid("494d392f-d3f4-42ba-af49-30c6f41e6093");
 		public static Guid ServiceWriter = new Guid("68f2d372-e1a5-4298-9a93-4b39757caf93");
 		public static Guid SolutionChecker = new Guid("e05075eb-9d74-e811-a95c-000d3a1c53e4");
