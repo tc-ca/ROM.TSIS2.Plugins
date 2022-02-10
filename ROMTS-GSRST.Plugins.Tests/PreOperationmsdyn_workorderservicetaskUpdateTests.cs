@@ -1537,14 +1537,6 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ts_FileSubContext = ts_filesubcontext.Evidence         
 
             });
-            //var fileWO1 = orgAdminUIService.Create(new ts_Files_msdyn_workorders()
-            //{
-            //    ts_Files_msdyn_workordersId = evidence1Id
-            //});
-            //var fileWO2 = orgAdminUIService.Create(new ts_Files_msdyn_workorders()
-            //{
-            //    ts_Files_msdyn_workordersId = evidence2Id
-            //});
             var accountReference = new EntityReference(Account.EntityLogicalName, serviceAccountId);
             var operation = orgAdminUIService.Create(new ovs_operation()
             {
@@ -1603,6 +1595,61 @@ namespace ROMTS_GSRST.Plugins.Tests
             Assert.Equal(incidentId, evidences[0].ts_Incident.Id);
             Assert.Equal(parentWorkOrderId, evidences[1].ts_msdyn_workorder.Id);
             Assert.Equal(incidentId, evidences[1].ts_Incident.Id);
+        }
+
+        [Fact]
+        public void When_ovs_questionnaireresponse_contains_finding_expect_update_number_of_findings()
+        {
+            // ARRANGE
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
+            {
+                msdyn_name = "300-345678",
+                msdyn_ServiceRequest = null,
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+                ts_numberoffindings = 2
+            });
+            var incidentId = orgAdminUIService.Create(new Incident()
+            {
+                ts_numberoffindings = 2
+            });
+            var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
+            {
+                msdyn_name = "200-345678-1",
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 0.00,
+                msdyn_WorkOrderIncident = new EntityReference(Incident.EntityLogicalName, incidentId)
+            });
+           
+            var findingId1 = orgAdminUIService.Create(new ovs_Finding
+            {
+                ovs_Finding_1 = "100-345678-1-1-1",               
+                ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId), // this finding belongs to a work order service task               
+            });
+            var findingId2 = orgAdminUIService.Create(new ovs_Finding
+            {
+                ovs_Finding_1 = "100-345678-1-1-2",
+                ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId), // this finding belongs to a work order service task               
+            });
+
+            // ACT
+            orgAdminUIService.Update(new msdyn_workorderservicetask
+            {
+                Id = workOrderServiceTaskId,
+                msdyn_PercentComplete = 100.00
+            });
+           
+            // ASSERT
+            var query = new QueryExpression(ovs_Finding.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet("ovs_workorderservicetaskid")
+            };
+            //Retrieve findings related to Work Order Service Task
+            var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().ToList();
+            //Expect Work Order has the same number of findings that Work Order service Task related 
+            Assert.Equal(2, findings.Count());
+            //Expect Case has the same number of findings that Work Order service Task related 
+            Assert.Equal(2, findings.Count());
         }
     }
 }

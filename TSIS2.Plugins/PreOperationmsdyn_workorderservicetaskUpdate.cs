@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Json;
 using System.Linq;
 using System.ServiceModel;
+using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 
@@ -335,14 +336,30 @@ namespace TSIS2.Plugins
 
                                                 });
                                             }
-                                        }
-
-                                        
+                                        }                                       
 
                                     }
 
                                     else
                                         workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Observations;
+                                   
+                                    CalculateRollupFieldRequest request;
+                                    CalculateRollupFieldResponse response;
+                                    //Update Rollup field Number Of Findings for Work Order
+                                    request = new CalculateRollupFieldRequest
+                                    {
+                                        Target = new EntityReference("msdyn_workorder", workOrder.Id),
+                                        FieldName = "ts_numberoffindings" // Rollup Field Name
+                                    };
+
+                                    response = (CalculateRollupFieldResponse)service.Execute(request);
+                                    //Update Rollup field Number Of Findings for Case
+                                    request = new CalculateRollupFieldRequest
+                                    {
+                                        Target = new EntityReference("incident", workOrderServiceTask.ovs_CaseId.Id),
+                                        FieldName = "ts_numberoffindings" // Rollup Field Name
+                                    };
+                                    response = (CalculateRollupFieldResponse)service.Execute(request);
 
                                 }
                                 else
