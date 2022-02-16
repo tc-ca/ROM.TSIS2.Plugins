@@ -49,6 +49,52 @@ namespace TSIS2.Plugins
                     if (target.LogicalName.Equals(ts_File.EntityLogicalName))
                     {
                         ts_File myFile = target.ToEntity<ts_File>();
+                        
+                        /*  
+                         *  Check if the new file record is related to a Work Order Service Task
+                         *  If it is, then get the Work Order that is related to the Work Order Service Task
+                         *  Then record the Work Order to the File record 
+                         *  Then check if the Work Order is related to a Case
+                         *  If it is, then record the Case to the File record
+                        **/
+                        {
+                            if (!String.IsNullOrWhiteSpace(myFile.ts_formintegrationid) && 
+                                myFile.ts_formintegrationid.StartsWith("WOST"))
+                            {
+                                // Get the Work Order ID                                
+                                using (var serviceContext = new Xrm(service))
+                                {
+                                    string myWorkOrderServiceTaskID = myFile.ts_formintegrationid.Replace("WOST ", "");
+
+                                    msdyn_workorderservicetask myWorkOrderServiceTask = serviceContext.msdyn_workorderservicetaskSet.Where(wost => wost.msdyn_name == myWorkOrderServiceTaskID).FirstOrDefault();
+
+                                    if (myWorkOrderServiceTask != null)
+                                    {
+                                        msdyn_workorder myWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == myWorkOrderServiceTask.msdyn_WorkOrder.Id).FirstOrDefault();
+
+                                        if (myWorkOrder != null)
+                                        {
+                                            // Update the Work Order for the File Record
+                                            myFile.ts_msdyn_workorder = myWorkOrder.ToEntityReference();
+
+                                            // Check if the Work Order is part of a Case
+                                            if (myWorkOrder.msdyn_ServiceRequest != null)
+                                            {
+                                                Incident myCase = serviceContext.IncidentSet.Where(x => x.Id == myWorkOrder.msdyn_ServiceRequest.Id).FirstOrDefault();
+
+                                                if (myCase != null)
+                                                {
+                                                    // Update the Case for the File Record
+                                                    myFile.ts_Incident = myCase.ToEntityReference();
+                                                }
+                                            }
+
+                                            service.Update(myFile);
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
                         // if the uploaded file is visible to other programs
                         if (myFile.ts_VisibletoOtherPrograms == true)
@@ -88,7 +134,7 @@ namespace TSIS2.Plugins
 
                                 Relationship relationship = new Relationship("ts_File_Team_Team");
 
-                                service.Associate(fileRef.LogicalName,fileRef.Id,relationship,relatedEntities);
+                                service.Associate(fileRef.LogicalName, fileRef.Id, relationship, relatedEntities);
 
                                 // give the team access to the uploaded file
                                 service.Execute(grantAccess);
