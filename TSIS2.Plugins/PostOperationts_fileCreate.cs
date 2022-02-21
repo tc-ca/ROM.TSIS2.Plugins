@@ -96,6 +96,42 @@ namespace TSIS2.Plugins
                             }
                         }
 
+                        /*  
+                         *  Check if the new file record is related to a Work Order
+                         *  If it is, then check if the Work Order is related to a Case
+                         *  If it is, then record the Case to the File record
+                        **/
+                        {
+                            if (!String.IsNullOrWhiteSpace(myFile.ts_formintegrationid) &&
+                                myFile.ts_formintegrationid.StartsWith("WO "))
+                            {
+                                // Get the Work Order ID                                
+                                using (var serviceContext = new Xrm(service))
+                                {
+                                    string myWorkOrderID = myFile.ts_formintegrationid.Replace("WO ", "");
+
+                                    msdyn_workorder myWorkOrderFile = serviceContext.msdyn_workorderSet.Where(wo => wo.msdyn_name == myWorkOrderID).FirstOrDefault();
+
+                                    if (myWorkOrderFile != null)
+                                    {
+                                        // Check if the Work Order is part of a Case
+                                        if (myWorkOrderFile.msdyn_ServiceRequest != null)
+                                        {
+                                            Incident myCaseFile = serviceContext.IncidentSet.Where(x => x.Id == myWorkOrderFile.msdyn_ServiceRequest.Id).FirstOrDefault();
+
+                                            if (myCaseFile != null)
+                                            {
+                                                // Update the Case for the File Record
+                                                myFile.ts_Incident = myCaseFile.ToEntityReference();
+                                            }
+                                        }
+
+                                        service.Update(myFile);
+                                    }
+                                }
+                            }
+                        }
+
                         // if the uploaded file is visible to other programs
                         if (myFile.ts_VisibletoOtherPrograms == true)
                         {
