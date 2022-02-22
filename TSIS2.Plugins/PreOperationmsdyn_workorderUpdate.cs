@@ -140,6 +140,31 @@ namespace TSIS2.Plugins
                                 }
                             }
                         }
+                        if (target.Attributes.Contains("msdyn_primaryincidenttype")) {
+                            using (var serviceContext = new Xrm(service))
+                            {
+                                // Cast the target to the expected entity
+                                msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
+
+                                if (workOrder.msdyn_PrimaryIncidentType != null)
+                                {
+                                    //Retrieve all Work Order Service Tasks associated to the current work order
+                                    var workOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(f => (f.msdyn_WorkOrder.Id == workOrder.Id)).ToList();
+
+                                    var incidentTypeServiceTask = serviceContext.msdyn_incidenttypeservicetaskSet.Where(f => f.msdyn_IncidentType.Id == workOrder.msdyn_PrimaryIncidentType.Id).ToList();
+                                    //Change the reference to Task Type in each New Work Order Service Task to the Work Order's Task Type
+                                    foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
+                                    {
+                                        if (workOrderServiceTask.statuscode == msdyn_workorderservicetask_statuscode.New)
+                                            service.Update(new msdyn_workorderservicetask
+                                            {
+                                                Id = workOrderServiceTask.Id,
+                                                msdyn_TaskType = incidentTypeServiceTask.First().msdyn_TaskType
+                                            });
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 catch (Exception e)
