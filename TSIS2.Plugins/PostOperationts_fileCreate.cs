@@ -75,7 +75,10 @@ namespace TSIS2.Plugins
                                         if (myWorkOrder != null)
                                         {
                                             // Update the Work Order for the File Record
-                                            myFile.ts_msdyn_workorder = myWorkOrder.ToEntityReference();
+                                            service.Update(new ts_File{ 
+                                                Id = myFile.Id,
+                                                ts_msdyn_workorder = myWorkOrder.ToEntityReference()
+                                            });
 
                                             // Check if the Work Order is part of a Case
                                             if (myWorkOrder.msdyn_ServiceRequest != null)
@@ -85,11 +88,13 @@ namespace TSIS2.Plugins
                                                 if (myCase != null)
                                                 {
                                                     // Update the Case for the File Record
-                                                    myFile.ts_Incident = myCase.ToEntityReference();
+                                                    service.Update(new ts_File
+                                                    {
+                                                        Id = myFile.Id,
+                                                        ts_Incident = myCase.ToEntityReference()
+                                                    });
                                                 }
                                             }
-
-                                            service.Update(myFile);
                                         }
                                     }
                                 }
@@ -122,11 +127,14 @@ namespace TSIS2.Plugins
                                             if (myCaseFile != null)
                                             {
                                                 // Update the Case for the File Record
-                                                myFile.ts_Incident = myCaseFile.ToEntityReference();
+                                                service.Update(new ts_File
+                                                {
+                                                    Id = myFile.Id,
+                                                    ts_Incident = myCaseFile.ToEntityReference()
+                                                });
                                             }
                                         }
 
-                                        service.Update(myFile);
                                     }
                                 }
                             }
