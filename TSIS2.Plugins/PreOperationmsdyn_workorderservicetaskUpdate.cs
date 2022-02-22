@@ -384,7 +384,8 @@ namespace TSIS2.Plugins
                             // Save all the changes in the context as well.
                             serviceContext.SaveChanges();
 
-                            if (context.ParentContext.OrganizationName != "MockupOrganization")
+                            //Avoid updating the rollup field when in the mockup environment
+                            if (context.ParentContext == null || (context.ParentContext != null && context.ParentContext.OrganizationName != "MockupOrganization"))
                             {
                                 //Update Rollup Fields Number Of Findings for Work Order and Case
                                 CalculateRollupFieldRequest request;
