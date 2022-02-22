@@ -121,6 +121,124 @@ namespace ROMTS_GSRST.Plugins.Tests
         }
 
         [Fact]
+        public void When_activity_type_of_work_order_updated_to_new_activity_type_expect_related_work_order_service_tasks_with_status_not_new_to_not_change()
+        {
+            //ARRANGE
+            var serviceTaskType1 = orgAdminService.Create(new msdyn_servicetasktype { });
+            var serviceTaskType1Reference = new EntityReference(msdyn_servicetasktype.EntityLogicalName, serviceTaskType1);
+
+            var incidentType1 = orgAdminService.Create(new msdyn_incidenttype { });
+            var incidentType1Reference = new EntityReference(msdyn_incidenttype.EntityLogicalName, incidentType1);
+
+            var incidentTypeServiceTask1 = orgAdminService.Create(new msdyn_incidenttypeservicetask
+            {
+                msdyn_TaskType = serviceTaskType1Reference,
+                msdyn_IncidentType = incidentType1Reference
+            });
+
+            var serviceTaskType2 = orgAdminService.Create(new msdyn_servicetasktype { });
+            var serviceTaskType2Reference = new EntityReference(msdyn_servicetasktype.EntityLogicalName, serviceTaskType2);
+
+            var incidentType2 = orgAdminService.Create(new msdyn_incidenttype { });
+            var incidentType2Reference = new EntityReference(msdyn_incidenttype.EntityLogicalName, incidentType2);
+
+            var incidentTypeServiceTask2 = orgAdminService.Create(new msdyn_incidenttypeservicetask
+            {
+                msdyn_TaskType = serviceTaskType2Reference,
+                msdyn_IncidentType = incidentType2Reference
+            });
+
+            var workOrderId = orgAdminService.Create(new msdyn_workorder
+            {
+                msdyn_PrimaryIncidentType = incidentType1Reference
+            });
+
+            var wost = orgAdminService.Create(new msdyn_workorderservicetask
+            {
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId),
+                msdyn_TaskType = serviceTaskType1Reference,
+                statuscode = msdyn_workorderservicetask_statuscode.InProgress
+            });
+
+            //ACT
+            orgAdminService.Update(new msdyn_workorder { Id = workOrderId, msdyn_PrimaryIncidentType = incidentType2Reference });
+
+            //ASSERT
+            var query = new QueryExpression(msdyn_workorderservicetask.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet("msdyn_tasktype")
+            };
+            var wosts = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<msdyn_workorderservicetask>().ToList();
+
+            //Expect the Task Type of the Work Order Service Task to remain the first Task Type Reference
+            Assert.Equal(serviceTaskType1Reference.Id, wosts[0].msdyn_TaskType.Id);
+        }
+
+        [Fact]
+        public void When_activity_type_of_work_order_updated_to_new_activity_type_expect_only_related_work_order_service_tasks_with_status_new_to_change()
+        {
+            //ARRANGE
+            var serviceTaskType1 = orgAdminService.Create(new msdyn_servicetasktype { });
+            var serviceTaskType1Reference = new EntityReference(msdyn_servicetasktype.EntityLogicalName, serviceTaskType1);
+
+            var incidentType1 = orgAdminService.Create(new msdyn_incidenttype { });
+            var incidentType1Reference = new EntityReference(msdyn_incidenttype.EntityLogicalName, incidentType1);
+
+            var incidentTypeServiceTask1 = orgAdminService.Create(new msdyn_incidenttypeservicetask
+            {
+                msdyn_TaskType = serviceTaskType1Reference,
+                msdyn_IncidentType = incidentType1Reference
+            });
+
+            var serviceTaskType2 = orgAdminService.Create(new msdyn_servicetasktype { });
+            var serviceTaskType2Reference = new EntityReference(msdyn_servicetasktype.EntityLogicalName, serviceTaskType2);
+
+            var incidentType2 = orgAdminService.Create(new msdyn_incidenttype { });
+            var incidentType2Reference = new EntityReference(msdyn_incidenttype.EntityLogicalName, incidentType2);
+
+            var incidentTypeServiceTask2 = orgAdminService.Create(new msdyn_incidenttypeservicetask
+            {
+                msdyn_TaskType = serviceTaskType2Reference,
+                msdyn_IncidentType = incidentType2Reference
+            });
+
+            var workOrderId = orgAdminService.Create(new msdyn_workorder
+            {
+                msdyn_PrimaryIncidentType = incidentType1Reference
+            });
+
+            var wost1 = orgAdminService.Create(new msdyn_workorderservicetask
+            {
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId),
+                msdyn_TaskType = serviceTaskType1Reference,
+                statuscode = msdyn_workorderservicetask_statuscode.New
+            });
+
+            var wost2 = orgAdminService.Create(new msdyn_workorderservicetask
+            {
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId),
+                msdyn_TaskType = serviceTaskType1Reference,
+                statuscode = msdyn_workorderservicetask_statuscode.InProgress
+            });
+
+            //ACT
+            orgAdminService.Update(new msdyn_workorder { Id = workOrderId, msdyn_PrimaryIncidentType = incidentType2Reference });
+
+            //ASSERT
+            var query = new QueryExpression(msdyn_workorderservicetask.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet("msdyn_tasktype")
+            };
+            var wosts = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<msdyn_workorderservicetask>().ToList();
+
+            //Expect the Task Type of the first Work Order Service Task (New) to be changed to the second Task Type reference
+            Assert.Equal(serviceTaskType2Reference.Id, wosts[0].msdyn_TaskType.Id);
+
+            //Expect the Task Type of the second Work Order Service Task (In-Progress) to remain the first Task Type reference
+            Assert.Equal(serviceTaskType1Reference.Id, wosts[1].msdyn_TaskType.Id);
+        }
+
+        [Fact]
         public void When_case_of_work_order_is_set_to_null_expect_case_of_all_findings_to_also_be_set_to_null()
         {
             //ARRANGE
