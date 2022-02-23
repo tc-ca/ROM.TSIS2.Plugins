@@ -426,5 +426,46 @@ namespace ROMTS_GSRST.Plugins.Tests
             Assert.Null(wosts[1].ovs_CaseId);
             Assert.Null(wosts[2].ovs_CaseId);
         }
+
+        [Fact]
+        public void When_case_of_work_order_is_changed_expect_all_associated_files_to_be_related_to_new_case()
+        {
+            //ARRANGE
+            var file = new ts_File();
+
+            var caseId = orgAdminService.Create(new Incident()
+            {
+                Title = "My test case"
+            });
+
+            var case2Id = orgAdminService.Create(new Incident()
+            {
+                Title = "My second test case"
+            });
+
+            var workOrderId = orgAdminService.Create(new msdyn_workorder()
+            {
+                msdyn_name = "1234",
+                msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, caseId)
+            });
+
+            //ACT
+            file.Id = orgAdminService.Create(new ts_File()
+            {
+                ts_File_1 = "File test.txt",
+                ts_FileContext = ts_filecontext.TC2020PROMOTINGCOMPLIANCE,
+                ts_formintegrationid = "WO 1234",
+                ts_VisibletoOtherPrograms = false,
+            });
+
+            orgAdminService.Update(new msdyn_workorder { Id = workOrderId, msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, case2Id) });
+
+            //ASSERT
+            var result = orgAdminService.Retrieve(ts_File.EntityLogicalName, file.Id, new ColumnSet(true)).ToEntity<ts_File>();
+
+            //Expect the file to be associated to My second test case
+            Assert.Equal("My second test case", result.ts_Incident.Name);
+        }
+
     }
 }
