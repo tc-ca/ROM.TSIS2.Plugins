@@ -10,6 +10,7 @@
 // </auto-generated>
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xrm.Sdk;
 
@@ -136,6 +137,44 @@ namespace TSIS2.Plugins
                                             Id = finding.Id,
                                             ovs_CaseId = null
                                         });
+                                    }
+                                }
+                            }
+                        }
+                        if (target.Attributes.Contains("msdyn_primaryincidenttype")) {
+                            using (var serviceContext = new Xrm(service))
+                            {
+                                // Cast the target to the expected entity
+                                msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
+
+                                if (workOrder.msdyn_PrimaryIncidentType != null)
+                                {
+                                    //Retrieve all Work Order Service Tasks associated to the current work order
+                                    var workOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(f => (f.msdyn_WorkOrder.Id == workOrder.Id)).ToList();
+
+                                    var incidentTypeServiceTask = serviceContext.msdyn_incidenttypeservicetaskSet.Where(f => f.msdyn_IncidentType.Id == workOrder.msdyn_PrimaryIncidentType.Id).ToList();
+                                    if (incidentTypeServiceTask.First() != null)
+                                    {
+                                        var workOrderServiceTasksToDelete = new List<Guid>();
+                                        //Change the reference to Task Type in each New Work Order Service Task to the Work Order's Task Type
+                                        foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
+                                        {
+                                            if (workOrderServiceTask.statuscode == msdyn_workorderservicetask_statuscode.New)
+                                            {
+                                                service.Create(new msdyn_workorderservicetask
+                                                {
+                                                    msdyn_name = workOrderServiceTask.msdyn_name,
+                                                    msdyn_TaskType = incidentTypeServiceTask.First().msdyn_TaskType,
+                                                    msdyn_WorkOrder = workOrderServiceTask.msdyn_WorkOrder
+                                                });
+                                                workOrderServiceTasksToDelete.Add(workOrderServiceTask.Id);
+                                            }
+                                        }
+                                        foreach (Guid workOrderServiceTaskId in workOrderServiceTasksToDelete)
+                                        {
+                                            service.Delete(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId);
+                                        }
+                                        serviceContext.SaveChanges();
                                     }
                                 }
                             }
