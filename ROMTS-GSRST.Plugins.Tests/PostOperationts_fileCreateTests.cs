@@ -124,6 +124,9 @@ namespace ROMTS_GSRST.Plugins.Tests
 
                 // Expect the file to be associated with Case 'My test case'
                 Assert.Equal("My test case", result.ts_Incident.Name);
+
+                // Expect the document type to be 'Work Order Service Task'
+                Assert.Equal(ts_documenttype.WorkOrderServiceTask, result.ts_DocumentType);
             }
         }
 
@@ -163,6 +166,9 @@ namespace ROMTS_GSRST.Plugins.Tests
 
                 // Expect the file to not be associated with a Case
                 Assert.Null(result.ts_Incident);
+
+                // Expect the document type to be 'Work Order Service Task'
+                Assert.Equal(ts_documenttype.WorkOrderServiceTask, result.ts_DocumentType);
             }
         }
 
@@ -203,6 +209,9 @@ namespace ROMTS_GSRST.Plugins.Tests
 
                 // Expect the file to be associated with Case 'My test case'
                 Assert.Equal("My test case", result.ts_Incident.Name);
+
+                // Expect the document type to be 'Work Order'
+                Assert.Equal(ts_documenttype.WorkOrder, result.ts_DocumentType);
             }
         }
 
@@ -238,6 +247,9 @@ namespace ROMTS_GSRST.Plugins.Tests
 
                 // Expect the file to not be associated with a Case
                 Assert.Null(result.ts_Incident);
+
+                // Expect the document type to be 'Work Order'
+                Assert.Equal(ts_documenttype.WorkOrder, result.ts_DocumentType);
             }
         }
     }

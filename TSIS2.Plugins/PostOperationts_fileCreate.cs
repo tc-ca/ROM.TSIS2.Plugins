@@ -77,7 +77,8 @@ namespace TSIS2.Plugins
                                             // Update the Work Order for the File Record
                                             service.Update(new ts_File{ 
                                                 Id = myFile.Id,
-                                                ts_msdyn_workorder = myWorkOrder.ToEntityReference()
+                                                ts_msdyn_workorder = myWorkOrder.ToEntityReference(),
+                                                ts_DocumentType = ts_documenttype.WorkOrderServiceTask
                                             });
 
                                             // Check if the Work Order is part of a Case
@@ -130,7 +131,17 @@ namespace TSIS2.Plugins
                                                 service.Update(new ts_File
                                                 {
                                                     Id = myFile.Id,
-                                                    ts_Incident = myCaseFile.ToEntityReference()
+                                                    ts_Incident = myCaseFile.ToEntityReference(),
+                                                    ts_DocumentType = ts_documenttype.WorkOrder
+                                                });
+                                            }
+                                            else
+                                            {
+                                                // Update only the document type for the file
+                                                service.Update(new ts_File
+                                                {
+                                                    Id = myFile.Id,
+                                                    ts_DocumentType = ts_documenttype.WorkOrder
                                                 });
                                             }
                                         }
