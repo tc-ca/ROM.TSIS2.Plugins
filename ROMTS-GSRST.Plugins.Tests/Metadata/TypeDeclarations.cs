@@ -28,6 +28,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid DataSyncFrameworkRole = new Guid("b21a7144-299d-4c21-a116-30f60e9c159a");
 		public static Guid DataSyncServiceRole = new Guid("fc3e65d9-450a-4301-933b-f9bcaee20521");
 		public static Guid DataLakeWorkspaceAppAccess = new Guid("edfcbfd2-358f-ea11-a81f-000d3a6eafd3");
+		public static Guid DataProcessingConfigTableAppAccess = new Guid("896a28e5-678d-4fa8-ad59-c606d1aa98ce");
 		public static Guid Delegate = new Guid("10472c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid DesktopFlowsMachineApplicationUser = new Guid("9f572d55-6090-493b-904a-3956bdc55343");
 		public static Guid DesktopFlowsMachineOwner = new Guid("313995f9-4a4a-4d4a-afd1-c892da78e13e");
@@ -58,6 +59,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid MarketingManager = new Guid("b701b110-4a7c-44cf-8cc1-c673b35decbe");
 		public static Guid MarketingProfessional = new Guid("34e0e805-c3e7-48f5-aaee-b758b4ef82c7");
 		public static Guid OfficeCollaborator = new Guid("e8fb3146-7717-ec11-b1b7-000d3af68e17");
+		public static Guid OmnichannelAdministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
 		public static Guid PlaybookManager = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2732");
 		public static Guid PlaybookUser = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2731");
 		public static Guid PPPAnalyst = new Guid("70abdd18-59b6-ea11-a812-000d3a0c8127");
@@ -92,6 +94,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid SolutionChecker = new Guid("e05075eb-9d74-e811-a95c-000d3a1c53e4");
 		public static Guid SupportUser = new Guid("54472c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid SurveyServicesAdministratorDeprecated = new Guid("abce3b01-5697-4973-9d7d-fca48ca84445");
+		public static Guid SynapseLinkServiceAccess = new Guid("eaeff5e8-8e5b-ec11-b1b6-0022487b9f36");
 		public static Guid SyncSkills = new Guid("cab938ec-7717-eb11-a81b-000d3ac38fe6");
 		public static Guid SystemAdministrator = new Guid("ca432c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid SystemCustomizer = new Guid("1b482c33-29a1-eb11-b1ac-000d3ae8bbe0");

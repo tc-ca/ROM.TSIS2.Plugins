@@ -98,6 +98,27 @@ namespace TSIS2.Plugins
 
                                 if (workOrder.msdyn_ServiceRequest != null)
                                 {
+                                    //Retrieve all files associated with the work order and update the associated case
+                                    var allFiles = serviceContext.ts_FileSet.ToList();
+                                    {
+                                        var myWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
+
+                                        if (myWorkOrder != null)
+                                        {
+                                            var workOrderFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WO ", "").Trim() == myWorkOrder.msdyn_name).ToList();
+
+                                            // update the case for each associated file
+                                            foreach (var workOrderFile in workOrderFiles)
+                                            {
+                                                service.Update(new ts_File
+                                                {
+                                                    Id = workOrderFile.Id,
+                                                    ts_Incident = workOrder.msdyn_ServiceRequest
+                                                });
+                                            }
+                                        }
+                                    }
+
                                     //Change the reference to Case in each Work Order Service Task to the Work Order's new case
                                     foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
@@ -106,6 +127,21 @@ namespace TSIS2.Plugins
                                             Id = workOrderServiceTask.Id,
                                             ovs_CaseId = workOrder.msdyn_ServiceRequest
                                         });
+
+                                        //Retrieve all files associated with the work order service task and update the associated Case
+                                        {
+                                            var workOrderServiceTasksFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WOST ", "").Trim() == workOrderServiceTask.msdyn_name).ToList();
+
+                                            // update the case for each associated file
+                                            foreach (var workOrderServiceTasksFile in workOrderServiceTasksFiles)
+                                            {
+                                                service.Update(new ts_File
+                                                {
+                                                    Id = workOrderServiceTasksFile.Id,
+                                                    ts_Incident = workOrder.msdyn_ServiceRequest
+                                                });
+                                            }
+                                        }
                                     }
 
                                     //Change the reference to Case in each finding to the Work Order's new case
