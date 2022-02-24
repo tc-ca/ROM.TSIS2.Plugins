@@ -120,6 +120,13 @@ namespace TSIS2.Plugins
 
                                     if (myWorkOrderFile != null)
                                     {
+                                        // Update only the document type for the file
+                                        service.Update(new ts_File
+                                        {
+                                            Id = myFile.Id,
+                                            ts_DocumentType = ts_documenttype.WorkOrder
+                                        });
+
                                         // Check if the Work Order is part of a Case
                                         if (myWorkOrderFile.msdyn_ServiceRequest != null)
                                         {
@@ -132,15 +139,6 @@ namespace TSIS2.Plugins
                                                 {
                                                     Id = myFile.Id,
                                                     ts_Incident = myCaseFile.ToEntityReference(),
-                                                    ts_DocumentType = ts_documenttype.WorkOrder
-                                                });
-                                            }
-                                            else
-                                            {
-                                                // Update only the document type for the file
-                                                service.Update(new ts_File
-                                                {
-                                                    Id = myFile.Id,
                                                     ts_DocumentType = ts_documenttype.WorkOrder
                                                 });
                                             }
