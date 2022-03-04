@@ -117,7 +117,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             var wosts = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<msdyn_workorderservicetask>().ToList();
 
             //Expect the Task Type of the new Work Order Service Task to be the second Service Task Type
-            Assert.Equal(serviceTaskType2Reference.Id, wosts[0].msdyn_TaskType.Id);
+            Assert.Equal(serviceTaskType2Reference.Id, wosts[1].msdyn_TaskType.Id);
         }
 
         [Fact]
@@ -232,14 +232,14 @@ namespace ROMTS_GSRST.Plugins.Tests
             var wosts = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<msdyn_workorderservicetask>().ToList();
 
             //Expect the Task Type of the second Work Order Service Task (In-Progress) to remain the first Task Type reference
-            Assert.Equal(serviceTaskType1Reference.Id, wosts[0].msdyn_TaskType.Id);
+            Assert.Equal(serviceTaskType1Reference.Id, wosts[1].msdyn_TaskType.Id);
 
             //Expect the Task Type of the new Work Order Service Task (New) to be changed
-            Assert.Equal(serviceTaskType2Reference.Id, wosts[1].msdyn_TaskType.Id);
+            Assert.Equal(serviceTaskType2Reference.Id, wosts[2].msdyn_TaskType.Id);
         }
 
         [Fact]
-        public void When_activity_type_of_work_order_updated_to_new_activity_type_expect_old_related_work_order_service_tasks_with_status_new_to_be_deleted()
+        public void When_activity_type_of_work_order_updated_to_new_activity_type_expect_old_related_work_order_service_tasks_with_status_new_to_be_inactive()
         {
             //ARRANGE
             var serviceTaskType1 = orgAdminService.Create(new msdyn_servicetasktype { });
@@ -284,15 +284,15 @@ namespace ROMTS_GSRST.Plugins.Tests
             //ASSERT
             var query = new QueryExpression(msdyn_workorderservicetask.EntityLogicalName)
             {
-                ColumnSet = new ColumnSet("msdyn_tasktype")
+                ColumnSet = new ColumnSet("statuscode")
             };
             var wosts = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<msdyn_workorderservicetask>().ToList();
 
-            //Expect there can be only one work order service task
-            Assert.Single(wosts);
+            //Expect the first WOST to now be inactive
+            Assert.Equal(msdyn_workorderservicetask_statuscode.Inactive.ToString(), wosts[0].statuscode.ToString());
 
             //Expect the Task Type of the new Work Order Service Task (New) to be changed
-            Assert.NotEqual(wost, wosts[0].Id);
+            Assert.NotEqual(wost, wosts[1].Id);
         }
 
         [Fact]

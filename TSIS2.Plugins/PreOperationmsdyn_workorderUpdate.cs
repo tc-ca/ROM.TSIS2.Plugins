@@ -208,7 +208,12 @@ namespace TSIS2.Plugins
                                         }
                                         foreach (Guid workOrderServiceTaskId in workOrderServiceTasksToDelete)
                                         {
-                                            service.Delete(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId);
+                                            service.Update(new msdyn_workorderservicetask
+                                            {
+                                                Id = workOrderServiceTaskId,
+                                                statecode = msdyn_workorderservicetaskState.Inactive,
+                                                statuscode = msdyn_workorderservicetask_statuscode.Inactive,
+                                            });
                                         }
                                         serviceContext.SaveChanges();
                                     }

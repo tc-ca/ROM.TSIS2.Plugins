@@ -387,24 +387,27 @@ namespace TSIS2.Plugins
                             //Avoid updating the rollup field when in the mockup environment
                             if (context.ParentContext == null || (context.ParentContext != null && context.ParentContext.OrganizationName != "MockupOrganization"))
                             {
-                                //Update Rollup Fields Number Of Findings for Work Order and Case
-                                CalculateRollupFieldRequest request;
-                                CalculateRollupFieldResponse response;
-                                //Update Rollup field Number Of Findings for Work Order
-                                request = new CalculateRollupFieldRequest
+                                if (workOrder.msdyn_ServiceRequest != null)
                                 {
-                                    Target = new EntityReference("msdyn_workorder", workOrder.Id),
-                                    FieldName = "ts_numberoffindings" // Rollup Field Name
-                                };
+                                    //Update Rollup Fields Number Of Findings for Work Order and Case
+                                    CalculateRollupFieldRequest request;
+                                    CalculateRollupFieldResponse response;
+                                    //Update Rollup field Number Of Findings for Work Order
+                                    request = new CalculateRollupFieldRequest
+                                    {
+                                        Target = new EntityReference("msdyn_workorder", workOrder.Id),
+                                        FieldName = "ts_numberoffindings" // Rollup Field Name
+                                    };
 
-                                response = (CalculateRollupFieldResponse)service.Execute(request);
-                                //Update Rollup field Number Of Findings for Case
-                                request = new CalculateRollupFieldRequest
-                                {
-                                    Target = new EntityReference("incident", workOrder.msdyn_ServiceRequest.Id),
-                                    FieldName = "ts_numberoffindings" // Rollup Field Name
-                                };
-                                response = (CalculateRollupFieldResponse)service.Execute(request);
+                                    response = (CalculateRollupFieldResponse)service.Execute(request);
+                                    //Update Rollup field Number Of Findings for Case
+                                    request = new CalculateRollupFieldRequest
+                                    {
+                                        Target = new EntityReference("incident", workOrder.msdyn_ServiceRequest.Id),
+                                        FieldName = "ts_numberoffindings" // Rollup Field Name
+                                    };
+                                    response = (CalculateRollupFieldResponse)service.Execute(request);
+                                }
                             }
                         }
                     }
