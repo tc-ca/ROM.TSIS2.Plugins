@@ -211,6 +211,7 @@ namespace TSIS2.Plugins
                                                     newFinding.ts_findingProvisionTextEn = finding.ContainsKey("provisionTextEn") ? (string)finding["provisionTextEn"] : "";
                                                     newFinding.ts_findingProvisionTextFr = finding.ContainsKey("provisionTextFr") ? (string)finding["provisionTextFr"] : "";
                                                     newFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
+                                                    newFinding.ts_NotetoStakeholder = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
                                                     OptionSetValue findingType = operation.ContainsKey("findingType") ? new OptionSetValue(operation["findingType"]) : new OptionSetValue(717750000); //717750000 is Undecided
                                                     newFinding.Attributes.Add("ts_findingtype", findingType);
 
