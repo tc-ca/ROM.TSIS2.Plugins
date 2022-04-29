@@ -132,7 +132,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
                 ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
                 ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, existingWorkOrderServiceTaskId), // this finding already belongs to a work order service task
-                statuscode = ovs_Finding_statuscode.Active, // finding is also already active
+                statuscode = ovs_Finding_statuscode.New, // finding is also already active
                 statecode = ovs_FindingState.Active, // finding is also already active
             });
 
@@ -304,6 +304,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
+           // var siteId = orgAdminUIService.Create(new msdyn_FunctionalLocation());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
@@ -311,10 +312,30 @@ namespace ROMTS_GSRST.Plugins.Tests
                 msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
             });
 
+            var testSite1Id = orgAdminUIService.Create(new msdyn_FunctionalLocation());
+            var testSite2Id = orgAdminUIService.Create(new msdyn_FunctionalLocation());
+            var testSite3Id = orgAdminUIService.Create(new msdyn_FunctionalLocation());
+            var testSite4Id = orgAdminUIService.Create(new msdyn_FunctionalLocation());
+
+            var testOperationType1Id = orgAdminUIService.Create(new ovs_operationtype());
+            var testOperationType2Id = orgAdminUIService.Create(new ovs_operationtype());
+            var testOperationType3Id = orgAdminUIService.Create(new ovs_operationtype());
+            var testOperationType4Id = orgAdminUIService.Create(new ovs_operationtype());
+
             var testAccount1Id = orgAdminUIService.Create(new Account());
             var testAccount2Id = orgAdminUIService.Create(new Account());
             var testAccount3Id = orgAdminUIService.Create(new Account());
             var testAccount4Id = orgAdminUIService.Create(new Account());
+
+            var testSiteReference1 = new EntityReference(msdyn_FunctionalLocation.EntityLogicalName, testSite1Id);
+            var testSiteReference2 = new EntityReference(msdyn_FunctionalLocation.EntityLogicalName, testSite2Id);
+            var testSiteReference3 = new EntityReference(msdyn_FunctionalLocation.EntityLogicalName, testSite3Id);
+            var testSiteReference4 = new EntityReference(msdyn_FunctionalLocation.EntityLogicalName, testSite4Id);
+
+            var testOperationTypeReference1 = new EntityReference(ovs_operationtype.EntityLogicalName, testOperationType1Id);
+            var testOperationTypeReference2 = new EntityReference(ovs_operationtype.EntityLogicalName, testOperationType2Id);
+            var testOperationTypeReference3 = new EntityReference(ovs_operationtype.EntityLogicalName, testOperationType3Id);
+            var testOperationTypeReference4 = new EntityReference(ovs_operationtype.EntityLogicalName, testOperationType4Id);
 
             var testAccountReference1 = new EntityReference(Account.EntityLogicalName, testAccount1Id);
             var testAccountReference2 = new EntityReference(Account.EntityLogicalName, testAccount2Id);
@@ -324,22 +345,30 @@ namespace ROMTS_GSRST.Plugins.Tests
             var testOperation1Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                ts_stakeholder = testAccountReference1
+                ts_stakeholder = testAccountReference1,
+                ts_site = testSiteReference1,
+                ovs_OperationTypeId = testOperationTypeReference1
             });
             var testOperation2Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("6b796de3-b3a4-eb11-9442-000d3a8410dc"),
-                ts_stakeholder = testAccountReference2
+                ts_stakeholder = testAccountReference2,
+                ts_site = testSiteReference2,
+                ovs_OperationTypeId = testOperationTypeReference2
             });
             var testOperation3Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("7d085d54-c2a9-eb11-9442-000d3a8410dc"),
-                ts_stakeholder = testAccountReference3
+                ts_stakeholder = testAccountReference3,
+                ts_site = testSiteReference3,
+                ovs_OperationTypeId = testOperationTypeReference3
             });
             var testOperation4Id = orgAdminUIService.Create(new ovs_operation()
             {
                 Id = new Guid("22364b7e-e1ce-eb11-bacc-0022483c068d"),
-                ts_stakeholder = testAccountReference4
+                ts_stakeholder = testAccountReference4,
+                ts_site = testSiteReference4,
+                ovs_OperationTypeId = testOperationTypeReference4
             });
 
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -373,33 +402,42 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ASSERT
             var query = new QueryExpression(ovs_Finding.EntityLogicalName)
             {
-                ColumnSet = new ColumnSet("ovs_finding", "ts_accountid", "ts_operationid")
+                ColumnSet = new ColumnSet("ovs_finding", "ts_accountid", "ts_operationid","ts_site", "ts_ovs_operationtype")
             };
             var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().OrderBy(f => f.ovs_Finding_1.Split('-')[4]).ToList();
 
             // Expect 4 findings to be created
             Assert.Equal(4, findings.Count);
 
+
+
             // Expect first ovs_finding to have the correct account and asset references
             var first = findings[0];
             Assert.Equal(testAccount1Id, first.ts_accountid.Id);
             Assert.Equal(testOperation1Id, first.ts_operationid.Id);
+            Assert.Equal(testSite1Id, first.ts_site.Id);
+            Assert.Equal(testOperationType1Id, first.ts_ovs_operationtype.Id);
 
             // Expect second ovs_finding to have the correct account and asset references
             var second = findings[1];
             Assert.Equal(testAccount2Id, second.ts_accountid.Id);
             Assert.Equal(testOperation2Id, second.ts_operationid.Id);
+            Assert.Equal(testSite2Id, second.ts_site.Id);
+            Assert.Equal(testOperationType2Id, second.ts_ovs_operationtype.Id);
 
             // Expect third ovs_finding to have the correct account and asset references
             var third = findings[2];
             Assert.Equal(testAccount3Id, third.ts_accountid.Id);
             Assert.Equal(testOperation3Id, third.ts_operationid.Id);
+            Assert.Equal(testSite3Id, third.ts_site.Id);
+            Assert.Equal(testOperationType3Id, third.ts_ovs_operationtype.Id);
 
             // Expect fourth ovs_finding to have the correct account and asset references
             var fourth = findings[3];
             Assert.Equal(testAccount4Id, fourth.ts_accountid.Id);
             Assert.Equal(testOperation4Id, fourth.ts_operationid.Id);
-
+            Assert.Equal(testSite4Id, fourth.ts_site.Id);
+            Assert.Equal(testOperationType4Id, fourth.ts_ovs_operationtype.Id);
         }
 
         [Fact]
@@ -598,7 +636,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
                 ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
                 ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId), // this finding already belongs to a work order service task
-                statuscode = ovs_Finding_statuscode.Active, // finding is also already active
+                statuscode = ovs_Finding_statuscode.New, // finding is also already active
                 statecode = ovs_FindingState.Active, // finding is also already active
             });
 
@@ -763,7 +801,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             // Expect first ovs_finding to have updated comments
             var first = findings[0];
             Assert.Equal(ovs_FindingState.Active, first.statecode);
-            Assert.Equal(ovs_Finding_statuscode.Active, first.statuscode);
+            Assert.Equal(ovs_Finding_statuscode.New, first.statuscode);
         }
 
         [Fact]
@@ -795,7 +833,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
                 ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
                 ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId), // this finding already belongs to a work order service task
-                statuscode = ovs_Finding_statuscode.Active, // finding is also already active
+                statuscode = ovs_Finding_statuscode.New, // finding is also already active
                 statecode = ovs_FindingState.Active, // finding is also already active
             });
 
@@ -860,7 +898,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
                 ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
                 ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId), // this finding already belongs to a work order service task
-                statuscode = ovs_Finding_statuscode.Active, // finding is also already active
+                statuscode = ovs_Finding_statuscode.New, // finding is also already active
                 statecode = ovs_FindingState.Active, // finding is also already active
             });
             var findingId2 = orgAdminUIService.Create(new ovs_Finding
@@ -872,7 +910,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
                 ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
                 ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId), // this finding already belongs to a work order service task
-                statuscode = ovs_Finding_statuscode.Active, // finding is also already active
+                statuscode = ovs_Finding_statuscode.New, // finding is also already active
                 statecode = ovs_FindingState.Active, // finding is also already active
             });
             var findingId3 = orgAdminUIService.Create(new ovs_Finding
@@ -884,7 +922,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
                 ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
                 ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId), // this finding already belongs to a work order service task
-                statuscode = ovs_Finding_statuscode.Active, // finding is also already active
+                statuscode = ovs_Finding_statuscode.New, // finding is also already active
                 statecode = ovs_FindingState.Active, // finding is also already active
             });
             // ACT
@@ -964,7 +1002,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ovs_FindingComments = "original comments",
                 ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
                 ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTaskId), // this finding already belongs to a work order service task
-                statuscode = ovs_Finding_statuscode.Active, // finding is also already active
+                statuscode = ovs_Finding_statuscode.New, // finding is also already active
                 statecode = ovs_FindingState.Active, // finding is also already active
                 ts_findingtype = ts_findingtype.Undecided
             });
@@ -1433,7 +1471,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
                 ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
                 ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, existingWorkOrderServiceTaskId), // this finding already belongs to a work order service task
-                statuscode = ovs_Finding_statuscode.Active, // finding is also already active
+                statuscode = ovs_Finding_statuscode.New, // finding is also already active
                 statecode = ovs_FindingState.Active, // finding is also already active
             });
             var findingId2 = orgAdminUIService.Create(new ovs_Finding
@@ -1445,7 +1483,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
                 ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
                 ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, existingWorkOrderServiceTaskId), // this finding already belongs to a work order service task
-                statuscode = ovs_Finding_statuscode.Active, // finding is also already active
+                statuscode = ovs_Finding_statuscode.New, // finding is also already active
                 statecode = ovs_FindingState.Active, // finding is also already active
             });
             var findingId3 = orgAdminUIService.Create(new ovs_Finding
@@ -1457,7 +1495,7 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ovs_FindingFile = "C:\\fakepath\\originalfile.png",
                 ovs_CaseId = new EntityReference(Incident.EntityLogicalName, incidentId), // this finding already belongs to the case
                 ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, existingWorkOrderServiceTaskId), // this finding already belongs to a work order service task
-                statuscode = ovs_Finding_statuscode.Active, // finding is also already active
+                statuscode = ovs_Finding_statuscode.New, // finding is also already active
                 statecode = ovs_FindingState.Active, // finding is also already active
             });
 
@@ -1557,100 +1595,100 @@ namespace ROMTS_GSRST.Plugins.Tests
             var tenth = findings[9];
             Assert.Equal("100-345678-1-3-3", tenth.ovs_Finding_1);
         }
-        [Fact]
-        public void When_work_order_service_task_is_failed_and_case_exists_expect_all_evidences_related_to_work_order_to_be_related_to_new_case_and_parent_work_order()
-        {
-            // ARRANGE
-            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
-            var incidentId = orgAdminUIService.Create(new Incident { });
+        //[Fact]
+        //public void When_work_order_service_task_is_failed_and_case_exists_expect_all_evidences_related_to_work_order_to_be_related_to_new_case_and_parent_work_order()
+        //{
+        //    // ARRANGE
+        //    var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
+        //    var incidentId = orgAdminUIService.Create(new Incident { });
           
-            var parentWorkOrderId = orgAdminUIService.Create(new msdyn_workorder()
-            {
-                msdyn_name = "300-345679",
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
+        //    var parentWorkOrderId = orgAdminUIService.Create(new msdyn_workorder()
+        //    {
+        //        msdyn_name = "300-345679",
+        //        msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
 
-            });
-            var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
-            {
-                msdyn_name = "300-345678",
-                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
-                msdyn_ParentWorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, parentWorkOrderId),
+        //    });
+        //    var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
+        //    {
+        //        msdyn_name = "300-345678",
+        //        msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
+        //        msdyn_ParentWorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, parentWorkOrderId),
                
-                Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866")
+        //        Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866")
 
-            });
-            var evidence1Id = orgAdminUIService.Create(new ts_File()
-            {
-                ts_FileContext = ts_filecontext.TC2030INDIVIDUALINSPECTIONS,
-                ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId),
-                ts_FileSubContext = ts_filesubcontext.Evidence
-            });
+        //    });
+        //    var evidence1Id = orgAdminUIService.Create(new ts_File()
+        //    {
+        //        ts_FileContext = ts_filecontext.TC2030INDIVIDUALINSPECTIONS,
+        //        ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId),
+        //        ts_FileSubContext = ts_filesubcontext.Evidence
+        //    });
 
-            var evidence2Id = orgAdminUIService.Create(new ts_File()
-            {
-                ts_FileContext = ts_filecontext.TC2030INDIVIDUALINSPECTIONS,
-                ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId),
-                ts_FileSubContext = ts_filesubcontext.Evidence         
+        //    var evidence2Id = orgAdminUIService.Create(new ts_File()
+        //    {
+        //        ts_FileContext = ts_filecontext.TC2030INDIVIDUALINSPECTIONS,
+        //        ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId),
+        //        ts_FileSubContext = ts_filesubcontext.Evidence         
 
-            });
-            var accountReference = new EntityReference(Account.EntityLogicalName, serviceAccountId);
-            var operation = orgAdminUIService.Create(new ovs_operation()
-            {
-                Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
-                ts_stakeholder = accountReference
-            });
+        //    });
+        //    var accountReference = new EntityReference(Account.EntityLogicalName, serviceAccountId);
+        //    var operation = orgAdminUIService.Create(new ovs_operation()
+        //    {
+        //        Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
+        //        ts_stakeholder = accountReference
+        //    });
             
-            var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
-            {
-                msdyn_name = "200-345678-1",
-                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
-                msdyn_PercentComplete = 0.00,
-                ovs_QuestionnaireResponse = @"
-                {
-                    ""finding-sq_142"": {
-                        ""provisionReference"": ""SATR 4"",
-                        ""provisionTextEn"": ""<strong>Verification of Identity</strong></br><strong><mark><mark>SATR 4</mark></mark></strong>: An air carrier must, at the boarding gate for an international flight, verify the identity of each passenger who appears to be 18 years of age or older using</br><ul style='list-style-type:none;'><li><strong>(a)</strong> one of the following pieces of photo identification issued by a government authority that shows the passenger’s surname, first name and any middle names, their date of birth and gender and that is valid:</li><ul style='list-style-type:none;'><li><strong>(i)</strong> a passport issued by the country of which the passenger is a citizen or a national,</li><li><strong>(ii)</strong> a NEXUS card,</li><li><strong>(iii)</strong> any document referred to in subsection 50(1) or 52(1) of the Immigration and Refugee Protection Regulations; or</li></ul><li><strong>(b)</strong> a valid restricted area identity card, as defined in section 3 of the Canadian Aviation Security Regulations, 2012.</li></ul>"",
-                        ""provisionTextFr"": ""<strong>Verification of Identity</strong></br><strong><mark><mark><mark>SATR 4</mark></mark></mark></strong>: Tout transporteur aérien vérifie, à la porte d’embarquement pour un vol international, l’identité de chaque passager qui semble âgé de 18 ans ou plus au moyen :</br><ul style='list-style-type:none;'><li><strong>(a)</strong> soit de l’une des pièces d’identité avec photo ci-après qui est délivrée par une autorité gouvernementale, qui indique les nom et prénoms, date de naissance et genre du passager et qui est valide :</li><ul style='list-style-type:none;'><li><strong>(i)</strong> un passeport délivré au passager par le pays dont il est citoyen ou ressortissant,</li><li><strong>(ii)</strong> une carte NEXUS,</li><li><strong>(iii)</strong> un document visé au paragraphe 50(1) ou 52(1) du Règlement sur l’immigration et la protection des réfugiés;</li></ul><li><strong>(b)</strong> soit d’une carte d’identité de zone réglementée au sens de l’article 3 du Règlement canadien de 2012 sur la sûreté aérienne qui est valide.</li></ul>"",
-                        ""comments"": ""new comments"",
-                        ""operations"": [{""operationID"": ""9de3a6e3-c4ad-eb11-8236-000d3ae8b866"",""findingType"": ""717750002""}]
-                    }
-                }
-                "
-            });
+        //    var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
+        //    {
+        //        msdyn_name = "200-345678-1",
+        //        msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+        //        msdyn_PercentComplete = 0.00,
+        //        ovs_QuestionnaireResponse = @"
+        //        {
+        //            ""finding-sq_142"": {
+        //                ""provisionReference"": ""SATR 4"",
+        //                ""provisionTextEn"": ""<strong>Verification of Identity</strong></br><strong><mark><mark>SATR 4</mark></mark></strong>: An air carrier must, at the boarding gate for an international flight, verify the identity of each passenger who appears to be 18 years of age or older using</br><ul style='list-style-type:none;'><li><strong>(a)</strong> one of the following pieces of photo identification issued by a government authority that shows the passenger’s surname, first name and any middle names, their date of birth and gender and that is valid:</li><ul style='list-style-type:none;'><li><strong>(i)</strong> a passport issued by the country of which the passenger is a citizen or a national,</li><li><strong>(ii)</strong> a NEXUS card,</li><li><strong>(iii)</strong> any document referred to in subsection 50(1) or 52(1) of the Immigration and Refugee Protection Regulations; or</li></ul><li><strong>(b)</strong> a valid restricted area identity card, as defined in section 3 of the Canadian Aviation Security Regulations, 2012.</li></ul>"",
+        //                ""provisionTextFr"": ""<strong>Verification of Identity</strong></br><strong><mark><mark><mark>SATR 4</mark></mark></mark></strong>: Tout transporteur aérien vérifie, à la porte d’embarquement pour un vol international, l’identité de chaque passager qui semble âgé de 18 ans ou plus au moyen :</br><ul style='list-style-type:none;'><li><strong>(a)</strong> soit de l’une des pièces d’identité avec photo ci-après qui est délivrée par une autorité gouvernementale, qui indique les nom et prénoms, date de naissance et genre du passager et qui est valide :</li><ul style='list-style-type:none;'><li><strong>(i)</strong> un passeport délivré au passager par le pays dont il est citoyen ou ressortissant,</li><li><strong>(ii)</strong> une carte NEXUS,</li><li><strong>(iii)</strong> un document visé au paragraphe 50(1) ou 52(1) du Règlement sur l’immigration et la protection des réfugiés;</li></ul><li><strong>(b)</strong> soit d’une carte d’identité de zone réglementée au sens de l’article 3 du Règlement canadien de 2012 sur la sûreté aérienne qui est valide.</li></ul>"",
+        //                ""comments"": ""new comments"",
+        //                ""operations"": [{""operationID"": ""9de3a6e3-c4ad-eb11-8236-000d3ae8b866"",""findingType"": ""717750002""}]
+        //            }
+        //        }
+        //        "
+        //    });
 
-            //ACT
-            orgAdminUIService.Update(new msdyn_workorderservicetask
-            {
-                Id = workOrderServiceTaskId,
-                msdyn_PercentComplete = 100.00,
-                msdyn_InspectionResult = (msdyn_workorderservicetask_msdyn_InspectionResult?)msdyn_inspectionresult.Fail
-            });
+        //    //ACT
+        //    orgAdminUIService.Update(new msdyn_workorderservicetask
+        //    {
+        //        Id = workOrderServiceTaskId,
+        //        msdyn_PercentComplete = 100.00,
+        //        msdyn_InspectionResult = (msdyn_workorderservicetask_msdyn_InspectionResult?)msdyn_inspectionresult.Fail
+        //    });
 
-            orgAdminUIService.Update(new ts_File
-            {
-                Id = evidence1Id,
-                ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, parentWorkOrderId),
-                ts_Incident = new EntityReference(Incident.EntityLogicalName, incidentId)
-            });
-            orgAdminUIService.Update(new ts_File
-            {
-                Id = evidence2Id,
-                ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, parentWorkOrderId),
-                ts_Incident = new EntityReference(Incident.EntityLogicalName, incidentId)
-            });
+        //    orgAdminUIService.Update(new ts_File
+        //    {
+        //        Id = evidence1Id,
+        //        ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, parentWorkOrderId),
+        //        ts_Incident = new EntityReference(Incident.EntityLogicalName, incidentId)
+        //    });
+        //    orgAdminUIService.Update(new ts_File
+        //    {
+        //        Id = evidence2Id,
+        //        ts_msdyn_workorder = new EntityReference(msdyn_workorder.EntityLogicalName, parentWorkOrderId),
+        //        ts_Incident = new EntityReference(Incident.EntityLogicalName, incidentId)
+        //    });
 
-            //ASSERT
-            var query = new QueryExpression(ts_File.EntityLogicalName)
-            {
-                ColumnSet = new ColumnSet("ts_msdyn_workorder", "ts_incident")
-            };
-            var evidences = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ts_File>().ToList();
+        //    //ASSERT
+        //    var query = new QueryExpression(ts_File.EntityLogicalName)
+        //    {
+        //        ColumnSet = new ColumnSet("ts_msdyn_workorder", "ts_incident")
+        //    };
+        //    var evidences = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ts_File>().ToList();
 
-            //Evidences related to WO should be related to Case and Parent Work Order
-            Assert.Equal(parentWorkOrderId, evidences[0].ts_msdyn_workorder.Id);
-            Assert.Equal(incidentId, evidences[0].ts_Incident.Id);
-            Assert.Equal(parentWorkOrderId, evidences[1].ts_msdyn_workorder.Id);
-            Assert.Equal(incidentId, evidences[1].ts_Incident.Id);
-        } 
+        //    //Evidences related to WO should be related to Case and Parent Work Order
+        //    Assert.Equal(parentWorkOrderId, evidences[0].ts_msdyn_workorder.Id);
+        //    Assert.Equal(incidentId, evidences[0].ts_Incident.Id);
+        //    Assert.Equal(parentWorkOrderId, evidences[1].ts_msdyn_workorder.Id);
+        //    Assert.Equal(incidentId, evidences[1].ts_Incident.Id);
+        //} 
     }
 }
