@@ -221,7 +221,7 @@ namespace TSIS2.Plugins
                                                     newFinding.ts_ovs_operationtype = operationEntity.ovs_OperationTypeId;
 
                                                     //reference site (functional location)
-                                                    newFinding.ts_site = operationEntity.ts_site;
+                                                    newFinding.ts_functionallocation = operationEntity.ts_site;
 
                                                     // reference the Provision Category of the Provision
                                                     JsonObject provisionData = finding.ContainsKey("provisionData") ? (JsonObject)finding["provisionData"] : new JsonObject();
