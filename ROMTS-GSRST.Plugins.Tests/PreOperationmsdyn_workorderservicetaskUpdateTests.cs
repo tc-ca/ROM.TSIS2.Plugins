@@ -402,7 +402,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ASSERT
             var query = new QueryExpression(ovs_Finding.EntityLogicalName)
             {
-                ColumnSet = new ColumnSet("ovs_finding", "ts_accountid", "ts_operationid","ts_site", "ts_ovs_operationtype")
+                ColumnSet = new ColumnSet("ovs_finding", "ts_accountid", "ts_operationid", "ts_functionallocation", "ts_ovs_operationtype")
             };
             var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().OrderBy(f => f.ovs_Finding_1.Split('-')[4]).ToList();
 
