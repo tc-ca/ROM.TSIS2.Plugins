@@ -112,12 +112,11 @@ namespace TSIS2.Plugins
                                             msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, newIncidentId)
                                         });
                                         workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, newIncidentId);
-                                     }
+                                    }
                                     // Already part of a case, just assign the work order case to the work order service task case
                                     else
                                     {
-                                        workOrderServiceTask.ovs_CaseId = workOrder.msdyn_ServiceRequest;                                        
-
+                                        workOrderServiceTask.ovs_CaseId = workOrder.msdyn_ServiceRequest;
                                     }
 
                                     // loop through each root property in the json object
@@ -243,7 +242,6 @@ namespace TSIS2.Plugins
                                                     OptionSetValue findingType = operation.ContainsKey("findingType") ? new OptionSetValue(operation["findingType"]) : new OptionSetValue(717750000); //717750000 is Undecided
                                                     existingFinding["ts_findingtype"] = findingType;
                                                     serviceContext.UpdateObject(existingFinding);
-
                                                 }
                                             }
                                         }
@@ -252,7 +250,7 @@ namespace TSIS2.Plugins
                                     //update documents for parent work order and case
                                     if (findingTypeList.Contains("717750002") || findingTypeList.Contains("717750000"))
                                     {
-                                        workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Fail;                                        
+                                        workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Fail;
                                     }
                                     else
                                         workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Observations;
@@ -262,7 +260,7 @@ namespace TSIS2.Plugins
                                     // Mark the inspection result to Pass if there are no findings found
                                     workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Pass;
                                 }
-                                
+
                                 // Need to deactivate any old referenced findings in the work order service task and case
                                 // that no longer exist in the questionnaire response.
 
@@ -282,7 +280,7 @@ namespace TSIS2.Plugins
                                     }
                                     serviceContext.UpdateObject(finding);
                                 }
-                            }                           
+                            }
 
                             // If the work order is not already "complete" or "closed" and all other work order service tasks are already completed as well, mark the parent work order system status to Open - Completed
                             var otherWorkOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(wost => wost.msdyn_WorkOrder == workOrderReference && wost.Id != workOrderServiceTask.Id).ToList<msdyn_workorderservicetask>();
@@ -303,31 +301,29 @@ namespace TSIS2.Plugins
                             //Avoid updating the rollup field when in the mockup environment
                             if (context.ParentContext == null || (context.ParentContext != null && context.ParentContext.OrganizationName != "MockupOrganization"))
                             {
-                                if (workOrder.msdyn_ServiceRequest != null)
+                                //Update Rollup Fields Number Of Findings for Work Order and Case
+                                CalculateRollupFieldRequest request;
+                                CalculateRollupFieldResponse response;
+                                //Update Rollup field Number Of Findings for Work Order
+                                request = new CalculateRollupFieldRequest
                                 {
-                                    //Update Rollup Fields Number Of Findings for Work Order and Case
-                                    CalculateRollupFieldRequest request;
-                                    CalculateRollupFieldResponse response;
-                                    //Update Rollup field Number Of Findings for Work Order
-                                    request = new CalculateRollupFieldRequest
-                                    {
-                                        Target = new EntityReference("msdyn_workorder", workOrder.Id),
-                                        FieldName = "ts_numberoffindings" // Rollup Field Name
-                                    };
+                                    Target = new EntityReference("msdyn_workorder", workOrder.Id),
+                                    FieldName = "ts_numberoffindings" // Rollup Field Name
+                                };
 
-                                    response = (CalculateRollupFieldResponse)service.Execute(request);
-                                    //Update Rollup field Number Of Findings for Case
-                                    request = new CalculateRollupFieldRequest
-                                    {
-                                        Target = new EntityReference("incident", workOrder.msdyn_ServiceRequest.Id),
-                                        FieldName = "ts_numberoffindings" // Rollup Field Name
-                                    };
-                                    response = (CalculateRollupFieldResponse)service.Execute(request);
-                                }
+                                response = (CalculateRollupFieldResponse)service.Execute(request);
+
+                                //Update Rollup field Number Of Findings for Case
+                                request = new CalculateRollupFieldRequest
+                                {
+                                    Target = new EntityReference("incident", workOrderServiceTask.ovs_CaseId.Id),
+                                    FieldName = "ts_numberoffindings" // Rollup Field Name
+                                };
+                                response = (CalculateRollupFieldResponse)service.Execute(request);
                             }
                         }
                     }
-                }   
+                }
 
                 // Seems to be a bug if exception variables have the same name.
                 // Make sure the name of each exception variable is different.
