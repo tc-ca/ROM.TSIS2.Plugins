@@ -20,7 +20,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder
             {
                 msdyn_name = "300-345678",
-                msdyn_SystemStatus = msdyn_wosystemstatus.OpenCompleted,
+                msdyn_SystemStatus = msdyn_wosystemstatus.Completed,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
                 msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
             });
@@ -34,11 +34,11 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
 
             // ACT
-            orgAdminUIService.Update(new msdyn_workorder { Id = workOrderId, msdyn_SystemStatus = msdyn_wosystemstatus.ClosedPosted });
+            orgAdminUIService.Update(new msdyn_workorder { Id = workOrderId, msdyn_SystemStatus = msdyn_wosystemstatus.Closed });
 
             // ASSERT
             var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_systemstatus")).ToEntity<msdyn_workorder>();
-            Assert.Equal(msdyn_wosystemstatus.ClosedPosted, workOrder.msdyn_SystemStatus);
+            Assert.Equal(msdyn_wosystemstatus.Closed, workOrder.msdyn_SystemStatus);
         }
         [Fact]
         public void When_case_of_work_order_updated_to_new_case_expect_existing_findings_of_old_case_to_be_associated_to_new_case()

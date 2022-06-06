@@ -125,6 +125,7 @@
     <Compile Include="PreOperationmsdyn_workorderservicetaskCreate.cs" />
     <Compile Include="PreOperationmsdyn_workorderUpdate.cs" />
     <Compile Include="CrmPluginRegistrationAttribute.cs" />
+    <Compile Include="PreOperationts_questionnaireversionUpdate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="XrmContext\XrmContext.cs" />
     <Compile Include="XrmContext\XrmExtensions.cs" />
