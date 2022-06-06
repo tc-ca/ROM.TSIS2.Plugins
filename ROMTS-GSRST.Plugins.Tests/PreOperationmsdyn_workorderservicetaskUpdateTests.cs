@@ -20,7 +20,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder
             {
                 msdyn_name = "300-345678",
-                msdyn_SystemStatus = msdyn_wosystemstatus.OpenUnscheduled,
+                msdyn_SystemStatus = msdyn_wosystemstatus.Unscheduled,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
                 msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
             });
@@ -46,7 +46,7 @@ namespace ROMTS_GSRST.Plugins.Tests
 
             // ASSERT
             var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_systemstatus")).ToEntity<msdyn_workorder>();
-            Assert.Equal(msdyn_wosystemstatus.OpenUnscheduled, workOrder.msdyn_SystemStatus);
+            Assert.Equal(msdyn_wosystemstatus.Unscheduled, workOrder.msdyn_SystemStatus);
         }
 
         [Fact]
@@ -58,7 +58,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder
             {
                 msdyn_name = "300-345678",
-                msdyn_SystemStatus = msdyn_wosystemstatus.OpenUnscheduled,
+                msdyn_SystemStatus = msdyn_wosystemstatus.Unscheduled,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
                 msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
             });
@@ -84,7 +84,7 @@ namespace ROMTS_GSRST.Plugins.Tests
 
             // ASSERT
             var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_systemstatus")).ToEntity<msdyn_workorder>();
-            Assert.Equal(msdyn_wosystemstatus.OpenCompleted, workOrder.msdyn_SystemStatus);
+            Assert.Equal(msdyn_wosystemstatus.Completed, workOrder.msdyn_SystemStatus);
         }
 
         [Fact]
