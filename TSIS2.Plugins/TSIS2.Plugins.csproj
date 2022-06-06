@@ -123,6 +123,7 @@
     <Compile Include="PreOperationmsdyn_workorderservicetaskUpdate.cs" />
     <Compile Include="PreOperationmsdyn_workorderCreate.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskCreate.cs" />
+    <Compile Include="PreOperationincidentUpdate.cs" />
     <Compile Include="PreOperationmsdyn_workorderUpdate.cs" />
     <Compile Include="CrmPluginRegistrationAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
