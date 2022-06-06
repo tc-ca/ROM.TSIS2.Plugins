@@ -34,6 +34,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid DataSyncServiceRole = new Guid("fc3e65d9-450a-4301-933b-f9bcaee20521");
 		public static Guid DataLakeWorkspaceAppAccess = new Guid("edfcbfd2-358f-ea11-a81f-000d3a6eafd3");
 		public static Guid DataProcessingConfigTableAppAccess = new Guid("896a28e5-678d-4fa8-ad59-c606d1aa98ce");
+		public static Guid DataverseSearchRole = new Guid("a0a59a4a-b5a8-4e6f-a094-a866573c17d4");
 		public static Guid Delegate = new Guid("10472c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid DesktopFlowMachineImageAdmin = new Guid("6b860c71-0e4e-ec11-b1b5-000d3a6ed5b3");
 		public static Guid DesktopFlowsMachineApplicationUser = new Guid("9f572d55-6090-493b-904a-3956bdc55343");
@@ -61,6 +62,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid GlobalDiscoveryServiceRole = new Guid("a855e539-7253-43d3-9ee5-43ea042b7823");
 		public static Guid HelpPageAuthor = new Guid("0e72f536-3a3a-4e74-96e9-3cab5effe10c");
 		public static Guid HelpPageConsumer = new Guid("f3d2098f-9eb0-45b3-9c7d-96526af614c4");
+		public static Guid InsightsAppsPlatformRole = new Guid("b8299fc3-f7a2-4655-a2d9-48ca2dec0346");
 		public static Guid IoTAdministrator = new Guid("5e4a9faa-b260-e611-8106-00155db8820b");
 		public static Guid IoTEndpointUser = new Guid("05f9a03f-5534-4b26-9bba-0726d33c6351");
 		public static Guid KnowledgeManager = new Guid("58306a42-48ec-4293-83be-a0b68ff87f5f");
@@ -70,6 +72,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid OmnichannelAdministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
 		public static Guid PlaybookManager = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2732");
 		public static Guid PlaybookUser = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2731");
+		public static Guid PowerBIEmbeddedAppAccess = new Guid("8278be3d-dd12-4187-aac6-69a0543ebd85");
 		public static Guid PowerAppsRPRole = new Guid("527c7b12-e5ac-4408-9f46-ecc762397544");
 		public static Guid PPPAnalyst = new Guid("70abdd18-59b6-ea11-a812-000d3a0c8127");
 		public static Guid PPPBasicRole = new Guid("54631c5d-3edb-ea11-a813-000d3a0c8127");
