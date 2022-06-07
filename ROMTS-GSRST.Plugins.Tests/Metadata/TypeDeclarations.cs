@@ -6,6 +6,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid AIBRoles = new Guid("e57bff35-58b4-4725-aee2-40fb18f4c8bd");
 		public static Guid AIBSMLRoles = new Guid("3f199ebd-977e-43e5-abe5-fe865a1f2904");
 		public static Guid AnalyticsReportAuthor = new Guid("5d654478-ef8d-ec11-b3fe-000d3a5cee94");
+		public static Guid AppDeploymentOrchestrationRole = new Guid("1bb44f6d-15a5-48aa-a2f2-8d2cb0095d2d");
 		public static Guid AppProfileManagerAdministrator = new Guid("4758a2be-ccd8-ea11-a813-000d3a579805");
 		public static Guid AppProfileUser = new Guid("61649654-ced8-ea11-a813-000d3a579805");
 		public static Guid ApprovalsAdministrator = new Guid("854af338-f3c5-e711-8122-000d3aa01c52");
