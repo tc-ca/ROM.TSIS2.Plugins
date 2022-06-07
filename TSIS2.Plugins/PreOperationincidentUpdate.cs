@@ -52,25 +52,24 @@ namespace TSIS2.Plugins
                 {
                     if (target.LogicalName.Equals(Incident.EntityLogicalName))
                     {
-                        if (target.Attributes.Contains("statecode") && (int) target.Attributes["statecode"] == 1)
+                        if (target.Attributes.Contains("statecode") && (int)(target.GetAttributeValue<OptionSetValue>("statecode").Value) == 1)
                         {
                             using (var servicecontext = new Xrm(service))
                             {
                                 int UserLanguage = RetrieveUserUILanguageCode(service, context.InitiatingUserId);
+                                string ResourceFile = "ovs_/resx/Incident.1033.resx";
+                                if (UserLanguage == 1036) //French
+                                {
+                                    ResourceFile = "ovs_/resx/Incident.1036.resx";
+                                }
+                               
                                 var findingEntities = servicecontext.ovs_FindingSet.Where(f => f.ovs_CaseId.Id == target.Id && f.ts_findingtype == ts_findingtype.Noncompliance && f.statuscode != ovs_Finding_statuscode.Complete).ToList();
                                 if (findingEntities != null && findingEntities.Count>0)
                                 {
-                                    string ErrorMessage = "Can not close case.";
-                                    if (UserLanguage == 1036) //French
-                                    {
-                                        ErrorMessage = "fr-Can not close case.";
-                                    }
-
-                                    throw new InvalidPluginExecutionException(ErrorMessage);
-                                }
-                                else
-                                {
-                                    throw new InvalidPluginExecutionException("Can not close case.");
+                                    tracingService.Trace("Non-Completed Findings count {0}", findingEntities.Count);
+                                    XmlDocument messages = RetrieveXmlWebResourceByName(service, tracingService, ResourceFile);
+                                    String message = RetrieveLocalizedStringFromWebResource(tracingService, messages, "ClosingCaseErrorMsg");
+                                    throw new InvalidPluginExecutionException(message);
                                 }
                             }
                         }
