@@ -82,7 +82,7 @@ namespace TSIS2.Plugins
                                 //Update End Date of previous version 
                                 for (var i = 0; i < questionnaireVersionList.Count; i++)
                                 {
-                                    if (questionnaireVersionList[i].ts_effectiveenddate == null && questionnaireVersionList[i].ts_effectivestartdate!=null && questionnaireVersionList[i].Id != selectedQuestionnaireVersion.Id)
+                                    if (questionnaireVersionList[i].ts_effectiveenddate == null && questionnaireVersionList[i].ts_effectivestartdate != null && questionnaireVersionList[i].Id != selectedQuestionnaireVersion.Id && selectedQuestionnaireVersion.ts_effectiveenddate == null)
                                     {
                                         service.Update(new ts_questionnaireversion
                                         {
