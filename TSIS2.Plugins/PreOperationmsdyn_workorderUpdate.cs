@@ -177,7 +177,8 @@ namespace TSIS2.Plugins
                                 }
                             }
                         }
-                        if (target.Attributes.Contains("msdyn_primaryincidenttype")) {
+                        if (target.Attributes.Contains("msdyn_primaryincidenttype"))
+                        {
                             using (var serviceContext = new Xrm(service))
                             {
                                 // Cast the target to the expected entity
@@ -218,6 +219,41 @@ namespace TSIS2.Plugins
                                         serviceContext.SaveChanges();
                                     }
                                 }
+                            }
+                        }
+
+                        int UserLanguage = LocalizationHelper.RetrieveUserUILanguageCode(service, context.InitiatingUserId);
+                        string ResourceFile = "ovs_/resx/WorkOrder.1033.resx";
+                        if (UserLanguage == 1036) //French
+                        {
+                            ResourceFile = "ovs_/resx/WorkOrder.1036.resx";
+                        }
+                        if (target.Attributes.Contains("ownerid") && target.GetAttributeValue<EntityReference>("ownerid").Id != context.InitiatingUserId)
+                        {
+                            tracingService.Trace("Ownerid is changing to {0} by {1} ", target.GetAttributeValue<EntityReference>("ownerid").Id, context.InitiatingUserId);
+                            using (var servicecontext = new Xrm(service))
+                            {
+                                var currentUser = servicecontext.SystemUserSet.Where(u => u.Id == context.InitiatingUserId).FirstOrDefault();
+                                var updatedOwnerUser = servicecontext.SystemUserSet.Where(u => u.Id == target.GetAttributeValue<EntityReference>("ownerid").Id).FirstOrDefault();
+
+                                if (updatedOwnerUser != null)
+                                {
+                                    if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Id != updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id &&
+                                    !currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.Equals("Transport Canada", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
+                                    }
+                                }
+                                else
+                                {
+                                    var updatedOwnerTeam = servicecontext.TeamSet.Where(u => u.Id == target.GetAttributeValue<EntityReference>("ownerid").Id).FirstOrDefault();
+                                    if (updatedOwnerTeam != null && currentUser.GetAttributeValue<EntityReference>("businessunitid").Id != updatedOwnerTeam.GetAttributeValue<EntityReference>("businessunitid").Id &&
+                                    !currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.Equals("Transport Canada", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
+                                    }
+                                }
+
                             }
                         }
                     }
