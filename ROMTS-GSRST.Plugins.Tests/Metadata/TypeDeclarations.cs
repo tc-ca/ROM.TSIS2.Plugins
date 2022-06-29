@@ -84,9 +84,11 @@ namespace DG.Tools.XrmMockup {
 		public static Guid Productivitytoolsuser = new Guid("c49aae0a-0fda-e911-a81c-000d3af75d63");
 		public static Guid ProjectOwner = new Guid("f9a5a958-d07f-44cd-886d-eb6343309c2a");
 		public static Guid RelationshipInsightsAdmin = new Guid("016fd16e-7be7-e611-80d6-00155d204901");
+		public static Guid ROMAvSecPlanner = new Guid("5a6ed00f-94e6-ec11-bb3c-0022483d8865");
 		public static Guid ROMBase = new Guid("158781c7-f92c-eb11-a813-000d3af3a7a7");
 		public static Guid ROMBusinessAdmin = new Guid("779105f0-8d3a-eb11-a813-000d3af3fc19");
 		public static Guid ROMInspector = new Guid("ed37675e-f72c-eb11-a813-000d3af3a7a7");
+		public static Guid ROMISSOPlanner = new Guid("54539bf1-92e6-ec11-bb3c-0022483d8865");
 		public static Guid ROMManager = new Guid("85e36d25-29f5-eb11-94ef-000d3af36036");
 		public static Guid ROMPlanner = new Guid("9f03e814-29f5-eb11-94ef-000d3af36036");
 		public static Guid ROMQuestionnaireAdmin = new Guid("e4c394e4-a048-ec11-8c62-000d3ae89a77");
