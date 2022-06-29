@@ -299,7 +299,7 @@ namespace TSIS2.Plugins
                             serviceContext.SaveChanges();
 
                             //Avoid updating the rollup field when in the mockup environment
-                            if (context.ParentContext == null || (context.ParentContext != null && context.ParentContext.OrganizationName != "MockupOrganization"))
+                            if (context.ParentContext == null || (context.ParentContext != null && context.ParentContext.OrganizationName != "MockupOrganization") && (workOrderServiceTask.msdyn_inspectiontaskresult == msdyn_inspectionresult.Fail || workOrderServiceTask.msdyn_inspectiontaskresult == msdyn_inspectionresult.Observations))
                             {
                                 //Update Rollup Fields Number Of Findings for Work Order and Case
                                 CalculateRollupFieldRequest request;
