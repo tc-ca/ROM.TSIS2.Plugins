@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
@@ -255,6 +256,27 @@ namespace TSIS2.Plugins
                                 }
 
                             }
+                        }
+                        msdyn_workorder workOrderPreImage = preImageEntity.ToEntity<msdyn_workorder>();
+
+                        if (target.Attributes.Contains("ovs_fiscalquarter") && workOrderPreImage.Attributes.Contains("ovs_fiscalquarter")  && target.GetAttributeValue<EntityReference>("ovs_fiscalquarter").Id != workOrderPreImage.GetAttributeValue<EntityReference>("ovs_fiscalquarter").Id)
+                        {
+                            using (var servicecontext = new Xrm(service))
+                            {
+                                var tripInspectionQuery = new QueryExpression("ts_tripinspection");
+                                tripInspectionQuery.ColumnSet.AddColumns("ts_trip");
+                                tripInspectionQuery.Criteria.AddCondition("ts_inspection", ConditionOperator.Equal, workOrderPreImage.Id);
+                                var tripInspections = service.RetrieveMultiple(tripInspectionQuery);
+                                if (tripInspections != null && tripInspections.Entities.Count > 0)
+                                {
+                                    Entity trip = service.Retrieve(tripInspections.Entities[0].GetAttributeValue<EntityReference>("ts_trip").LogicalName, tripInspections.Entities[0].GetAttributeValue<EntityReference>("ts_trip").Id, new ColumnSet("ts_plannedfiscalquarter"));  
+                                    if (target.GetAttributeValue<EntityReference>("ovs_fiscalquarter").Id != trip.GetAttributeValue<EntityReference>("ts_plannedfiscalquarter").Id)
+                                    {
+                                        throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "InvalidFiscalQuarterErrorMsg"));
+                                    }
+                                }
+                            }
+                            
                         }
                     }
                 }
