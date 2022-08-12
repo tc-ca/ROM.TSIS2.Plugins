@@ -36,6 +36,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid DataLakeWorkspaceAppAccess = new Guid("edfcbfd2-358f-ea11-a81f-000d3a6eafd3");
 		public static Guid DataProcessingConfigTableAppAccess = new Guid("896a28e5-678d-4fa8-ad59-c606d1aa98ce");
 		public static Guid DataverseSearchRole = new Guid("a0a59a4a-b5a8-4e6f-a094-a866573c17d4");
+		public static Guid DeflectionServiceRole = new Guid("c95980b3-97dc-4762-a037-c15fe02dae8c");
 		public static Guid Delegate = new Guid("10472c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid DesktopFlowMachineImageAdmin = new Guid("6b860c71-0e4e-ec11-b1b5-000d3a6ed5b3");
 		public static Guid DesktopFlowsMachineApplicationUser = new Guid("9f572d55-6090-493b-904a-3956bdc55343");
@@ -87,6 +88,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ROMAvSecPlanner = new Guid("5a6ed00f-94e6-ec11-bb3c-0022483d8865");
 		public static Guid ROMBase = new Guid("158781c7-f92c-eb11-a813-000d3af3a7a7");
 		public static Guid ROMBusinessAdmin = new Guid("779105f0-8d3a-eb11-a813-000d3af3fc19");
+		public static Guid ROMDualInspector = new Guid("ab31408d-dc0d-ed11-b83e-002248ae441f");
 		public static Guid ROMInspector = new Guid("ed37675e-f72c-eb11-a813-000d3af3a7a7");
 		public static Guid ROMISSOPlanner = new Guid("54539bf1-92e6-ec11-bb3c-0022483d8865");
 		public static Guid ROMManager = new Guid("85e36d25-29f5-eb11-94ef-000d3af36036");
