@@ -189,32 +189,28 @@ namespace TSIS2.Plugins
                                 {
                                     //Retrieve all Work Order Service Tasks associated to the current work order
                                     var workOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(f => (f.msdyn_WorkOrder.Id == workOrder.Id)).ToList();
-
-                                    var incidentTypeServiceTask = serviceContext.msdyn_incidenttypeservicetaskSet.Where(f => f.msdyn_IncidentType.Id == workOrder.msdyn_PrimaryIncidentType.Id).ToList();
-                                    if (incidentTypeServiceTask.First() != null)
+                                    //Change the reference to Task Type in each New Work Order Service Task to the Work Order's Task Type
+                                    foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
-                                        var workOrderServiceTasksToDelete = new List<Guid>();
-                                        //Change the reference to Task Type in each New Work Order Service Task to the Work Order's Task Type
-                                        foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
-                                        {
-                                            if (workOrderServiceTask.statuscode == msdyn_workorderservicetask_statuscode.New)
-                                            {
-                                                service.Create(new msdyn_workorderservicetask
-                                                {
-                                                    msdyn_name = workOrderServiceTask.msdyn_name,
-                                                    msdyn_TaskType = incidentTypeServiceTask.First().msdyn_TaskType,
-                                                    msdyn_WorkOrder = workOrderServiceTask.msdyn_WorkOrder
-                                                });
-                                                workOrderServiceTasksToDelete.Add(workOrderServiceTask.Id);
-                                            }
-                                        }
-                                        foreach (Guid workOrderServiceTaskId in workOrderServiceTasksToDelete)
+                                        if (workOrderServiceTask.statuscode == msdyn_workorderservicetask_statuscode.New)
                                         {
                                             service.Update(new msdyn_workorderservicetask
                                             {
-                                                Id = workOrderServiceTaskId,
+                                                Id = workOrderServiceTask.Id,
                                                 statecode = msdyn_workorderservicetaskState.Inactive,
                                                 statuscode = msdyn_workorderservicetask_statuscode.Inactive,
+                                            });
+                                        }
+                                    }
+                                    var incidentTypeServiceTasks = serviceContext.msdyn_incidenttypeservicetaskSet.Where(f => f.msdyn_IncidentType.Id == workOrder.msdyn_PrimaryIncidentType.Id).ToList();
+                                    if (incidentTypeServiceTasks.First() != null)
+                                    {
+                                        foreach (msdyn_incidenttypeservicetask incidentTypeServiceTask in incidentTypeServiceTasks)
+                                        {
+                                            service.Create(new msdyn_workorderservicetask
+                                            {
+                                                msdyn_TaskType = incidentTypeServiceTask.msdyn_TaskType,
+                                                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrder.Id)
                                             });
                                         }
                                         serviceContext.SaveChanges();
