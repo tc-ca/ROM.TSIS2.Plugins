@@ -203,18 +203,24 @@ namespace TSIS2.Plugins
                                         }
                                     }
                                     var incidentTypeServiceTasks = serviceContext.msdyn_incidenttypeservicetaskSet.Where(f => f.msdyn_IncidentType.Id == workOrder.msdyn_PrimaryIncidentType.Id).ToList();
-                                    if (incidentTypeServiceTasks.First() != null)
+                                    var workOrderName = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault().msdyn_name;
+                                    // Set the prefix to be at the 200 level for work order service tasks
+                                    var prefix = workOrderName.Replace("300-", "200-");
+
+                                    // If there are previous work order service tasks, suffix = count + 1 else 1
+                                    var suffix = (workOrderServiceTasks != null) ? workOrderServiceTasks.Count() + 1 : 1;
+
+
+                                    foreach (msdyn_incidenttypeservicetask incidentTypeServiceTask in incidentTypeServiceTasks)
                                     {
-                                        foreach (msdyn_incidenttypeservicetask incidentTypeServiceTask in incidentTypeServiceTasks)
+                                        service.Create(new msdyn_workorderservicetask
                                         {
-                                            service.Create(new msdyn_workorderservicetask
-                                            {
-                                                msdyn_TaskType = incidentTypeServiceTask.msdyn_TaskType,
-                                                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrder.Id)
-                                            });
-                                        }
-                                        serviceContext.SaveChanges();
+                                            msdyn_name = string.Format("{0}-{1}", prefix, suffix),
+                                            msdyn_TaskType = incidentTypeServiceTask.msdyn_TaskType,
+                                            msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrder.Id)
+                                        });
                                     }
+                                    serviceContext.SaveChanges();
                                 }
                             }
                         }

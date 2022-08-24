@@ -97,6 +97,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
 
             var workOrderId = orgAdminService.Create(new msdyn_workorder {  
+                msdyn_name = "300-001351",
                 msdyn_PrimaryIncidentType = incidentType1Reference
             });
 
@@ -150,6 +151,7 @@ namespace ROMTS_GSRST.Plugins.Tests
 
             var workOrderId = orgAdminService.Create(new msdyn_workorder
             {
+                msdyn_name = "300-001351",
                 msdyn_PrimaryIncidentType = incidentType1Reference
             });
 
@@ -204,6 +206,7 @@ namespace ROMTS_GSRST.Plugins.Tests
 
             var workOrderId = orgAdminService.Create(new msdyn_workorder
             {
+                msdyn_name = "300-001351",
                 msdyn_PrimaryIncidentType = incidentType1Reference
             });
 
@@ -268,6 +271,7 @@ namespace ROMTS_GSRST.Plugins.Tests
 
             var workOrderId = orgAdminService.Create(new msdyn_workorder
             {
+                msdyn_name = "300-001351",
                 msdyn_PrimaryIncidentType = incidentType1Reference
             });
 
