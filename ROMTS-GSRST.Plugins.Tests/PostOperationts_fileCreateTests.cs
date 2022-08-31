@@ -82,53 +82,53 @@ namespace ROMTS_GSRST.Plugins.Tests
                 Assert.Null(result.ts_msdyn_workorder);
             }
         }
-        // Commenting out until we figure out how to resolve the Metadata IncidentSet Cast error
-        //[Fact]
-        //public void Create_test_file_with_case_and_work_order_from_work_order_service_task()
-        //{
-        //    using (var context = new Xrm(orgAdminService))
-        //    {
-        //        // ARRANGE
-        //        var file = new ts_File();
-        //        var myCaseId = orgAdminService.Create(new Incident()
-        //        {
-        //            Title = "My test case"
-        //        });
 
-        //        var workOrderId = orgAdminService.Create(new msdyn_workorder()
-        //        {
-        //            msdyn_name = "1234",
-        //            msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, myCaseId)
-        //        });
+        [Fact]
+        public void Create_test_file_with_case_and_work_order_from_work_order_service_task()
+        {
+            using (var context = new Xrm(orgAdminService))
+            {
+                // ARRANGE
+                var file = new ts_File();
+                var myCaseId = orgAdminService.Create(new Incident()
+                {
+                    Title = "My test case"
+                });
 
-        //        var workOrderServiceTaskId = orgAdminService.Create(new msdyn_workorderservicetask()
-        //        {
-        //            msdyn_name = "1234",
-        //            msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId)
-        //        });
+                var workOrderId = orgAdminService.Create(new msdyn_workorder()
+                {
+                    msdyn_name = "1234",
+                    msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, myCaseId)
+                });
 
-        //        // ACT
-        //        file.Id = orgAdminService.Create(new ts_File()
-        //        {
-        //            ts_File_1 = "File test.txt",
-        //            ts_FileContext = ts_filecontext.TC2020PROMOTINGCOMPLIANCE,
-        //            ts_formintegrationid = "WOST 1234-1",
-        //            ts_VisibletoOtherPrograms = false,
-        //        });
+                var workOrderServiceTaskId = orgAdminService.Create(new msdyn_workorderservicetask()
+                {
+                    msdyn_name = "1234",
+                    msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId)
+                });
 
-        //        // ASSERT
-        //        var result = orgAdminService.Retrieve(ts_File.EntityLogicalName, file.Id, new ColumnSet(true)).ToEntity<ts_File>();
+                // ACT
+                file.Id = orgAdminService.Create(new ts_File()
+                {
+                    ts_File_1 = "File test.txt",
+                    ts_FileContext = ts_filecontext.TC2020PROMOTINGCOMPLIANCE,
+                    ts_formintegrationid = "WOST 1234-1",
+                    ts_VisibletoOtherPrograms = false,
+                });
 
-        //        // Expect the file to be associated with Work Order 1234
-        //        Assert.Equal("1234", result.ts_msdyn_workorder.Name);
+                // ASSERT
+                var result = orgAdminService.Retrieve(ts_File.EntityLogicalName, file.Id, new ColumnSet(true)).ToEntity<ts_File>();
 
-        //        // Expect the file to be associated with Case 'My test case'
-        //        Assert.Equal("My test case", result.ts_Incident.Name);
+                // Expect the file to be associated with Work Order 1234
+                Assert.Equal("1234", result.ts_msdyn_workorder.Name);
 
-        //        // Expect the document type to be 'Work Order Service Task'
-        //        Assert.Equal(ts_documenttype.WorkOrderServiceTask, result.ts_DocumentType);
-        //    }
-        //}
+                // Expect the file to be associated with Case 'My test case'
+                Assert.Equal("My test case", result.ts_Incident.Name);
+
+                // Expect the document type to be 'Work Order Service Task'
+                Assert.Equal(ts_documenttype.WorkOrderServiceTask, result.ts_DocumentType);
+            }
+        }
 
         [Fact]
         public void Create_test_file_with_no_case_and_work_order_from_work_order_service_task()
@@ -171,49 +171,49 @@ namespace ROMTS_GSRST.Plugins.Tests
                 Assert.Equal(ts_documenttype.WorkOrderServiceTask, result.ts_DocumentType);
             }
         }
-        // Commenting out until we figure out how to resolve the Metadata IncidentSet Cast error
-        //[Fact]
-        //public void Create_test_file_with_case_from_work_order()
-        //{
-        //    using (var context = new Xrm(orgAdminService))
-        //    {
-        //        // ARRANGE
-        //        var file = new ts_File();
-        //        var myCaseId = orgAdminService.Create(new Incident()
-        //        {
-        //            Title = "My test case"
-        //        });
 
-        //        var workOrderId = orgAdminService.Create(new msdyn_workorder()
-        //        {
-        //            msdyn_name = "1234",
-        //            msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, myCaseId)
-        //        });
+        [Fact]
+        public void Create_test_file_with_case_from_work_order()
+        {
+            using (var context = new Xrm(orgAdminService))
+            {
+                // ARRANGE
+                var file = new ts_File();
+                var myCaseId = orgAdminService.Create(new Incident()
+                {
+                    Title = "My test case"
+                });
 
-        //        // ACT
-        //        file.Id = orgAdminService.Create(new ts_File()
-        //        {
-        //            ts_File_1 = "File test.txt",
-        //            ts_FileContext = ts_filecontext.TC2020PROMOTINGCOMPLIANCE,
-        //            ts_formintegrationid = "WO 1234",
-        //            ts_VisibletoOtherPrograms = false,
-        //        });
+                var workOrderId = orgAdminService.Create(new msdyn_workorder()
+                {
+                    msdyn_name = "1234",
+                    msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, myCaseId)
+                });
 
-        //        // ASSERT
-        //        var result = orgAdminService.Retrieve(ts_File.EntityLogicalName, file.Id, new ColumnSet(true)).ToEntity<ts_File>();
+                // ACT
+                file.Id = orgAdminService.Create(new ts_File()
+                {
+                    ts_File_1 = "File test.txt",
+                    ts_FileContext = ts_filecontext.TC2020PROMOTINGCOMPLIANCE,
+                    ts_formintegrationid = "WO 1234",
+                    ts_VisibletoOtherPrograms = false,
+                });
 
-        //        // Expect the file to not be associated with a Work Order
-        //        // Note: Remember files coming in from Document Centre - Work Order do not need to have the ts_msdyn_workorder populated,
-        //        // only files coming in from Document Centre - Work Order Service Task use that.
-        //        Assert.Null(result.ts_msdyn_workorder);
+                // ASSERT
+                var result = orgAdminService.Retrieve(ts_File.EntityLogicalName, file.Id, new ColumnSet(true)).ToEntity<ts_File>();
 
-        //        // Expect the file to be associated with Case 'My test case'
-        //        Assert.Equal("My test case", result.ts_Incident.Name);
+                // Expect the file to not be associated with a Work Order
+                // Note: Remember files coming in from Document Centre - Work Order do not need to have the ts_msdyn_workorder populated,
+                // only files coming in from Document Centre - Work Order Service Task use that.
+                Assert.Null(result.ts_msdyn_workorder);
 
-        //        // Expect the document type to be 'Work Order'
-        //        Assert.Equal(ts_documenttype.WorkOrder, result.ts_DocumentType);
-        //    }
-        //}
+                // Expect the file to be associated with Case 'My test case'
+                Assert.Equal("My test case", result.ts_Incident.Name);
+
+                // Expect the document type to be 'Work Order'
+                Assert.Equal(ts_documenttype.WorkOrder, result.ts_DocumentType);
+            }
+        }
 
         [Fact]
         public void Create_test_file_with_no_case_from_work_order()
