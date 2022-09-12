@@ -79,19 +79,14 @@ namespace TSIS2.Plugins
                 if (target.LogicalName.Equals(msdyn_workorder.EntityLogicalName))
                 {
                     //Set State to Committed if making the Work Order from the ROM application
-                    if (context.ParentContext != null)
+                    if (context.ParentContext != null &&
+                        context.ParentContext.InputParameters != null &&
+                        context.ParentContext.InputParameters["x-ms-app-name"] != null &&
+                        context.ParentContext.InputParameters["x-ms-app-name"].ToString() == "ovs_ROM")
                     {
-                        if (context.ParentContext.InputParameters != null)
-                        {
-                            if (context.ParentContext.InputParameters["x-ms-app-name"] != null)
-                            {
-                                if (context.ParentContext.InputParameters["x-ms-app-name"].ToString() == "ovs_ROM")
-                                {
-                                    target.Attributes["ts_state"] = new OptionSetValue(717750001); //Committed
-                                }
-                            }
-                        }
+                        target.Attributes["ts_state"] = new OptionSetValue(717750001); //Committed
                     }
+
                     if (target.Attributes.Contains("ovs_operationid") && target.Attributes["ovs_operationid"] != null)
                     {
                         EntityReference operation = (EntityReference)target.Attributes["ovs_operationid"];
