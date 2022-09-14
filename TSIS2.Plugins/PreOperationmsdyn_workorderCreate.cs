@@ -81,6 +81,7 @@ namespace TSIS2.Plugins
                     //Set State to Committed if making the Work Order from the ROM application
                     if (context.ParentContext != null &&
                         context.ParentContext.InputParameters != null &&
+                        context.ParentContext.InputParameters.ContainsKey("x-ms-app-name") &&
                         context.ParentContext.InputParameters["x-ms-app-name"] != null &&
                         context.ParentContext.InputParameters["x-ms-app-name"].ToString() == "ovs_ROM")
                     {
