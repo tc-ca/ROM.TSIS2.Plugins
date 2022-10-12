@@ -48,9 +48,37 @@ namespace TSIS2.Plugins
                 {
                     if (target.LogicalName.Equals(ts_TeamPlanningData.EntityLogicalName))
                     {
-                        ts_TeamPlanningData teamPlanningData = target.ToEntity<ts_TeamPlanningData>();
+                        using (var serviceContext = new Xrm(service))
+                        {
+                            ts_TeamPlanningData targetTeamPlanngingData = target.ToEntity<ts_TeamPlanningData>();
+                            ts_TeamPlanningData teamPlanningData = serviceContext.ts_TeamPlanningDataSet.FirstOrDefault(tpd => tpd.Id == target.Id);
 
-                        
+                            //Retrieve all Operations owned by the same Owner
+                            var operations = serviceContext.ovs_operationSet.Where(op => op.OwnerId == teamPlanningData.OwnerId);
+
+                            foreach (ovs_operation operation in operations)
+                            {
+                                var operationActivities = serviceContext.ts_OperationActivitySet.Where(oa => oa.ts_Operation.Id == operation.ovs_operationId);
+                                foreach (ts_OperationActivity operationActivity in operationActivities)
+                                {
+                                    msdyn_incidenttype incidentType = serviceContext.msdyn_incidenttypeSet.FirstOrDefault(it => it.Id == operationActivity.ts_Activity.Id);
+
+                                    string englishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
+                                    string frenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
+                                    
+
+                                    service.Create(new ts_PlanningData
+                                    {
+                                        ts_Name = englishName + "::" + frenchName,
+                                        ts_EnglishName = englishName,
+                                        ts_FrenchName = frenchName,
+                                        ts_FiscalYear = teamPlanningData.ts_FiscalYear,
+                                        ts_TeamPlanningData = new EntityReference(ts_TeamPlanningData.EntityLogicalName, teamPlanningData.Id),
+
+                                    });
+                                }
+                            }
+                        }
                     }
                 }
                 catch (NotImplementedException ex)
