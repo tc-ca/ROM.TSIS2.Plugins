@@ -94,6 +94,21 @@ namespace TSIS2.Plugins
                                 }
                             }
                         }
+                        //Store previous definitions incase definition is lost somehow
+                        if (target.Attributes.Contains("ts_questionnairedefinition"))
+                        {
+                            using (var serviceContext = new Xrm(service))
+                            {
+                                ts_questionnaireversion targetQuestionnaireVersion = target.ToEntity<ts_questionnaireversion>();
+                                ts_questionnaireversion currentQuestionnaireVersion = serviceContext.ts_questionnaireversionSet.FirstOrDefault(qv => qv.Id == targetQuestionnaireVersion.Id);
+
+                                target["ts_questionnairedefinitionhistory1"] = currentQuestionnaireVersion.ts_questionnairedefinition;
+                                target["ts_questionnairedefinitionhistory2"] = currentQuestionnaireVersion.ts_QuestionnaireDefinitionHistory1;
+                                target["ts_questionnairedefinitionhistory3"] = currentQuestionnaireVersion.ts_QuestionnaireDefinitionHistory2;
+                                target["ts_questionnairedefinitionhistory4"] = currentQuestionnaireVersion.ts_QuestionnaireDefinitionHistory3;
+                                target["ts_questionnairedefinitionhistory5"] = currentQuestionnaireVersion.ts_QuestionnaireDefinitionHistory4;
+                            }
+                        }
                     }
                 }
                 catch (Exception e)
