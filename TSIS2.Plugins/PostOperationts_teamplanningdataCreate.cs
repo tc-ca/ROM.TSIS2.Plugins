@@ -61,11 +61,31 @@ namespace TSIS2.Plugins
                                 var operationActivities = serviceContext.ts_OperationActivitySet.Where(oa => oa.ts_Operation.Id == operation.ovs_operationId);
                                 foreach (ts_OperationActivity operationActivity in operationActivities)
                                 {
+                                    //TODO null check
+
                                     msdyn_incidenttype incidentType = serviceContext.msdyn_incidenttypeSet.FirstOrDefault(it => it.Id == operationActivity.ts_Activity.Id);
+                                    ts_RecurrenceFrequencies recurrenceFrequency = serviceContext.ts_RecurrenceFrequenciesSet.FirstOrDefault(rf => rf.Id == incidentType.ts_RiskScore.Id);
+                                    msdyn_FunctionalLocation functionalLocation = serviceContext.msdyn_FunctionalLocationSet.FirstOrDefault(fl => fl.Id == operation.ts_site.Id);
 
                                     string englishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
                                     string frenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
-                                    
+
+                                    int interval = 0;
+                                    int frequency = 0;
+
+                                    if (recurrenceFrequency != null)
+                                    {
+
+                                    }
+                                    if (functionalLocation.ts_Class == msdyn_FunctionalLocation_ts_Class._1)
+                                    {
+                                        interval = (int)recurrenceFrequency.ts_Class1Interval;
+                                        frequency = (int)recurrenceFrequency.ts_Class1Frequency;
+                                    } 
+                                    else //Class 2 or 3
+                                    {
+
+                                    }
 
                                     service.Create(new ts_PlanningData
                                     {
