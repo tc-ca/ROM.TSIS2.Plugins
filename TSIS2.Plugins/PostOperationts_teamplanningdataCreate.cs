@@ -61,101 +61,107 @@ namespace TSIS2.Plugins
                                 var operationActivities = serviceContext.ts_OperationActivitySet.Where(oa => oa.ts_Operation.Id == operation.ovs_operationId);
                                 foreach (ts_OperationActivity operationActivity in operationActivities)
                                 {
-                                    //TODO null check
-
-                                    msdyn_incidenttype incidentType = serviceContext.msdyn_incidenttypeSet.FirstOrDefault(it => it.Id == operationActivity.ts_Activity.Id);
-                                    ts_RecurrenceFrequencies recurrenceFrequency = serviceContext.ts_RecurrenceFrequenciesSet.FirstOrDefault(rf => rf.Id == incidentType.ts_RiskScore.Id);
-                                    msdyn_FunctionalLocation functionalLocation = serviceContext.msdyn_FunctionalLocationSet.FirstOrDefault(fl => fl.Id == operation.ts_site.Id);
-                                    tc_TCFiscalYear fiscalYear = serviceContext.tc_TCFiscalYearSet.FirstOrDefault(fy => fy.Id == targetTeamPlanngingData.ts_FiscalYear.Id);
-                                    tc_TCFiscalQuarter fiscalYearQ1 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q1" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                    tc_TCFiscalQuarter fiscalYearQ2 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q2" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                    tc_TCFiscalQuarter fiscalYearQ3 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q3" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                    tc_TCFiscalQuarter fiscalYearQ4 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q4" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-
-                                    string englishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
-                                    string frenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
-
-                                    var inspections = serviceContext.msdyn_workorderSet.Where(wo => wo.msdyn_PrimaryIncidentType.Id == incidentType.Id && wo.ovs_OperationId.Id == operation.Id);
-                                    tc_TCFiscalQuarter latestFiscalQuarter = GetLatestWorkOrderFiscalQuarter(inspections, serviceContext);
-
-                                    int interval = 0;
-
-                                    if (recurrenceFrequency != null)
+                                    if (operationActivity.ts_Activity != null && operation.ts_site != null)
                                     {
-                                        if (functionalLocation.ts_Class == msdyn_FunctionalLocation_ts_Class._1)
+                                        msdyn_incidenttype incidentType = serviceContext.msdyn_incidenttypeSet.FirstOrDefault(it => it.Id == operationActivity.ts_Activity.Id);
+                                        msdyn_FunctionalLocation functionalLocation = serviceContext.msdyn_FunctionalLocationSet.FirstOrDefault(fl => fl.Id == operation.ts_site.Id);
+                                        if (incidentType != null && incidentType.ts_RiskScore != null)
                                         {
-                                            interval = (int)recurrenceFrequency.ts_Class1Interval;
-                                        }
-                                        else //Class 2 or 3
-                                        {
-                                            if (functionalLocation.ts_RiskScore > 5)
+                                            ts_RecurrenceFrequencies recurrenceFrequency = serviceContext.ts_RecurrenceFrequenciesSet.FirstOrDefault(rf => rf.Id == incidentType.ts_RiskScore.Id);
+                                            tc_TCFiscalYear fiscalYear = serviceContext.tc_TCFiscalYearSet.FirstOrDefault(fy => fy.Id == targetTeamPlanngingData.ts_FiscalYear.Id);
+                                            tc_TCFiscalQuarter fiscalYearQ1 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q1" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                            tc_TCFiscalQuarter fiscalYearQ2 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q2" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                            tc_TCFiscalQuarter fiscalYearQ3 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q3" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                            tc_TCFiscalQuarter fiscalYearQ4 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q4" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                            if (incidentType.ovs_IncidentTypeNameEnglish != null && incidentType.ovs_IncidentTypeNameFrench != null)
                                             {
-                                                interval = (int)recurrenceFrequency.ts_Class2and3HighRiskInterval;
-                                            } 
-                                            else
-                                            {
-                                                interval = (int)recurrenceFrequency.ts_Class2and3LowRiskInterval;
+                                                string englishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
+                                                string frenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
+                                                var inspections = serviceContext.msdyn_workorderSet.Where(wo => wo.msdyn_PrimaryIncidentType.Id == incidentType.Id && wo.ovs_OperationId.Id == operation.Id);
+
+                                                tc_TCFiscalQuarter latestFiscalQuarter = GetLatestWorkOrderFiscalQuarter(inspections, serviceContext);
+
+                                                int interval = 0;
+
+                                                if (recurrenceFrequency != null)
+                                                {
+                                                    if (functionalLocation.ts_Class == msdyn_FunctionalLocation_ts_Class._1)
+                                                    {
+                                                        interval = (int)recurrenceFrequency.ts_Class1Interval;
+                                                    }
+                                                    else //Class 2 or 3
+                                                    {
+                                                        if (functionalLocation.ts_RiskScore > 5)
+                                                        {
+                                                            interval = (int)recurrenceFrequency.ts_Class2and3HighRiskInterval;
+                                                        }
+                                                        else
+                                                        {
+                                                            interval = (int)recurrenceFrequency.ts_Class2and3LowRiskInterval;
+                                                        }
+                                                    }
+                                                }
+                                                int planningDataTarget = 0;
+                                                int planningDataDueQ1 = 0;
+                                                int planningDataDueQ2 = 0;
+                                                int planningDataDueQ3 = 0;
+                                                int planningDataDueQ4 = 0;
+
+                                                tc_TCFiscalQuarter nextExpectedInspectionQuarter = JumpQuarters(latestFiscalQuarter, interval, serviceContext);
+
+                                                //If the next expected inspection occurs before the current fiscal year, it's overdue and needs to occur Q1
+                                                if (((DateTime)nextExpectedInspectionQuarter.tc_QuarterStart).AddDays(1) <= fiscalYear.tc_FiscalStart)
+                                                {
+                                                    planningDataTarget++;
+                                                    planningDataDueQ1++;
+                                                    nextExpectedInspectionQuarter = fiscalYearQ1;
+                                                }
+
+                                                bool isWithinCurrentFiscalYear = true;
+                                                while (isWithinCurrentFiscalYear)
+                                                {
+                                                    nextExpectedInspectionQuarter = JumpQuarters(nextExpectedInspectionQuarter, interval, serviceContext);
+                                                    //If the next inspection is within the planning fiscal year
+                                                    if (((DateTime)nextExpectedInspectionQuarter.tc_QuarterStart) <= fiscalYear.tc_FiscalEnd)
+                                                    {
+                                                        if (nextExpectedInspectionQuarter.tc_Name == "Q2")
+                                                        {
+                                                            planningDataTarget++;
+                                                            planningDataDueQ2++;
+                                                        }
+                                                        else if (nextExpectedInspectionQuarter.tc_Name == "Q3")
+                                                        {
+                                                            planningDataTarget++;
+                                                            planningDataDueQ3++;
+                                                        }
+                                                        else if (nextExpectedInspectionQuarter.tc_Name == "Q4")
+                                                        {
+                                                            planningDataTarget++;
+                                                            planningDataDueQ4++;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        isWithinCurrentFiscalYear = false;
+                                                    }
+                                                }
+
+                                                service.Create(new ts_PlanningData
+                                                {
+                                                    ts_Name = englishName + "::" + frenchName,
+                                                    ts_EnglishName = englishName,
+                                                    ts_FrenchName = frenchName,
+                                                    ts_FiscalYear = teamPlanningData.ts_FiscalYear,
+                                                    ts_TeamPlanningData = new EntityReference(ts_TeamPlanningData.EntityLogicalName, teamPlanningData.Id),
+                                                    ts_Target = planningDataTarget,
+                                                    ts_DueQ1 = planningDataDueQ1,
+                                                    ts_DueQ2 = planningDataDueQ2,
+                                                    ts_DueQ3 = planningDataDueQ3,
+                                                    ts_DueQ4 = planningDataDueQ4
+                                                });
                                             }
                                         }
                                     }
-                                    int planningDataTarget = 0;
-                                    int planningDataDueQ1 = 0;
-                                    int planningDataDueQ2 = 0;
-                                    int planningDataDueQ3 = 0;
-                                    int planningDataDueQ4 = 0;
-
-                                    tc_TCFiscalQuarter nextExpectedInspectionQuarter = JumpQuarters(latestFiscalQuarter, interval, serviceContext);
-
-                                    //If the next expected inspection occurs before the current fiscal year, it's overdue and needs to occur Q1
-                                    if (((DateTime)nextExpectedInspectionQuarter.tc_QuarterStart).AddDays(1) <= fiscalYear.tc_FiscalStart)
-                                    {
-                                        planningDataTarget++;
-                                        planningDataDueQ1++;
-                                        nextExpectedInspectionQuarter = fiscalYearQ1;
-                                    }
-
-                                    bool isWithinCurrentFiscalYear = true;
-                                    while (isWithinCurrentFiscalYear)
-                                    {
-                                        nextExpectedInspectionQuarter = JumpQuarters(nextExpectedInspectionQuarter, interval, serviceContext);
-                                        //If the next inspection is within the planning fiscal year
-                                        if (((DateTime)nextExpectedInspectionQuarter.tc_QuarterStart) <= fiscalYear.tc_FiscalEnd)
-                                        {
-                                            if (nextExpectedInspectionQuarter.tc_Name == "Q2")
-                                            {
-                                                planningDataTarget++;
-                                                planningDataDueQ2++;
-                                            }
-                                            else if (nextExpectedInspectionQuarter.tc_Name == "Q3")
-                                            {
-                                                planningDataTarget++;
-                                                planningDataDueQ3++;
-                                            }
-                                            else if (nextExpectedInspectionQuarter.tc_Name == "Q4")
-                                            {
-                                                planningDataTarget++;
-                                                planningDataDueQ4++;
-                                            }
-                                        } 
-                                        else
-                                        {
-                                            isWithinCurrentFiscalYear = false;
-                                        }
-                                    }
-
-                                    service.Create(new ts_PlanningData
-                                    {
-                                        ts_Name = englishName + "::" + frenchName,
-                                        ts_EnglishName = englishName,
-                                        ts_FrenchName = frenchName,
-                                        ts_FiscalYear = teamPlanningData.ts_FiscalYear,
-                                        ts_TeamPlanningData = new EntityReference(ts_TeamPlanningData.EntityLogicalName, teamPlanningData.Id),
-                                        ts_Target = planningDataTarget,
-                                        ts_DueQ1 = planningDataDueQ1,
-                                        ts_DueQ2 = planningDataDueQ2,
-                                        ts_DueQ3 = planningDataDueQ3,
-                                        ts_DueQ4 = planningDataDueQ4
-                                    });
                                 }
                             }
                         }
