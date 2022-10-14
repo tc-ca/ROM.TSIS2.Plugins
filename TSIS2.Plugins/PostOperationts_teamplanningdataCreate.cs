@@ -67,6 +67,10 @@ namespace TSIS2.Plugins
                                     ts_RecurrenceFrequencies recurrenceFrequency = serviceContext.ts_RecurrenceFrequenciesSet.FirstOrDefault(rf => rf.Id == incidentType.ts_RiskScore.Id);
                                     msdyn_FunctionalLocation functionalLocation = serviceContext.msdyn_FunctionalLocationSet.FirstOrDefault(fl => fl.Id == operation.ts_site.Id);
                                     tc_TCFiscalYear fiscalYear = serviceContext.tc_TCFiscalYearSet.FirstOrDefault(fy => fy.Id == targetTeamPlanngingData.ts_FiscalYear.Id);
+                                    tc_TCFiscalQuarter fiscalYearQ1 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q1" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                    tc_TCFiscalQuarter fiscalYearQ2 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q2" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                    tc_TCFiscalQuarter fiscalYearQ3 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q3" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                    tc_TCFiscalQuarter fiscalYearQ4 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q4" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
 
                                     string englishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
                                     string frenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
@@ -107,6 +111,36 @@ namespace TSIS2.Plugins
                                     {
                                         planningDataTarget++;
                                         planningDataDueQ1++;
+                                        nextExpectedInspectionQuarter = fiscalYearQ1;
+                                    }
+
+                                    bool isWithinCurrentFiscalYear = true;
+                                    while (isWithinCurrentFiscalYear)
+                                    {
+                                        nextExpectedInspectionQuarter = JumpQuarters(nextExpectedInspectionQuarter, interval, serviceContext);
+                                        //If the next inspection is within the planning fiscal year
+                                        if (((DateTime)nextExpectedInspectionQuarter.tc_QuarterStart) <= fiscalYear.tc_FiscalEnd)
+                                        {
+                                            if (nextExpectedInspectionQuarter.tc_Name == "Q2")
+                                            {
+                                                planningDataTarget++;
+                                                planningDataDueQ2++;
+                                            }
+                                            else if (nextExpectedInspectionQuarter.tc_Name == "Q3")
+                                            {
+                                                planningDataTarget++;
+                                                planningDataDueQ3++;
+                                            }
+                                            else if (nextExpectedInspectionQuarter.tc_Name == "Q4")
+                                            {
+                                                planningDataTarget++;
+                                                planningDataDueQ4++;
+                                            }
+                                        } 
+                                        else
+                                        {
+                                            isWithinCurrentFiscalYear = false;
+                                        }
                                     }
 
                                     service.Create(new ts_PlanningData
@@ -116,7 +150,11 @@ namespace TSIS2.Plugins
                                         ts_FrenchName = frenchName,
                                         ts_FiscalYear = teamPlanningData.ts_FiscalYear,
                                         ts_TeamPlanningData = new EntityReference(ts_TeamPlanningData.EntityLogicalName, teamPlanningData.Id),
-
+                                        ts_Target = planningDataTarget,
+                                        ts_DueQ1 = planningDataDueQ1,
+                                        ts_DueQ2 = planningDataDueQ2,
+                                        ts_DueQ3 = planningDataDueQ3,
+                                        ts_DueQ4 = planningDataDueQ4
                                     });
                                 }
                             }
