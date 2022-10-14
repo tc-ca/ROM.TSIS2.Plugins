@@ -54,7 +54,7 @@ namespace TSIS2.Plugins
                             ts_TeamPlanningData teamPlanningData = serviceContext.ts_TeamPlanningDataSet.FirstOrDefault(tpd => tpd.Id == target.Id);
 
                             //Retrieve all Operations owned by the same Owner
-                            var operations = serviceContext.ovs_operationSet.Where(op => op.OwnerId == teamPlanningData.OwnerId);
+                            var operations = serviceContext.ovs_operationSet.Where(op => op.OwnerId.Id == teamPlanningData.ts_Team.Id);
 
                             foreach (ovs_operation operation in operations)
                             {
@@ -69,11 +69,11 @@ namespace TSIS2.Plugins
                                         {
                                             ts_RecurrenceFrequencies recurrenceFrequency = serviceContext.ts_RecurrenceFrequenciesSet.FirstOrDefault(rf => rf.Id == incidentType.ts_RiskScore.Id);
                                             tc_TCFiscalYear fiscalYear = serviceContext.tc_TCFiscalYearSet.FirstOrDefault(fy => fy.Id == targetTeamPlanngingData.ts_FiscalYear.Id);
-                                            tc_TCFiscalQuarter fiscalYearQ1 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q1" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                            tc_TCFiscalQuarter fiscalYearQ2 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q2" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                            tc_TCFiscalQuarter fiscalYearQ3 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q3" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                            tc_TCFiscalQuarter fiscalYearQ4 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_Name == "Q4" && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                            if (incidentType.ovs_IncidentTypeNameEnglish != null && incidentType.ovs_IncidentTypeNameFrench != null)
+                                            tc_TCFiscalQuarter fiscalYearQ1 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_FiscalQuarterNum == 1 && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                            tc_TCFiscalQuarter fiscalYearQ2 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_FiscalQuarterNum == 2 && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                            tc_TCFiscalQuarter fiscalYearQ3 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_FiscalQuarterNum == 3 && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                            tc_TCFiscalQuarter fiscalYearQ4 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_FiscalQuarterNum == 4 && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
+                                            if (incidentType.ovs_IncidentTypeNameEnglish != null && incidentType.ovs_IncidentTypeNameFrench != null && fiscalYearQ1 != null && fiscalYearQ2 != null && fiscalYearQ3 != null && fiscalYearQ4 != null)
                                             {
                                                 string englishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
                                                 string frenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
@@ -121,6 +121,8 @@ namespace TSIS2.Plugins
                                                 planningDataDueQ1++;
                                                 tc_TCFiscalQuarter nextExpectedInspectionQuarter = fiscalYearQ1;
 
+                                                //TODO replace all this quarter jumping nonsense with array idea
+
                                                 bool isWithinCurrentFiscalYear = true;
                                                 while (isWithinCurrentFiscalYear)
                                                 {
@@ -128,17 +130,17 @@ namespace TSIS2.Plugins
                                                     //If the next inspection is within the planning fiscal year
                                                     if (((DateTime)nextExpectedInspectionQuarter.tc_QuarterStart) <= fiscalYear.tc_FiscalEnd)
                                                     {
-                                                        if (nextExpectedInspectionQuarter.tc_Name == "Q2")
+                                                        if (nextExpectedInspectionQuarter.tc_FiscalQuarterNum == 2)
                                                         {
                                                             planningDataTarget++;
                                                             planningDataDueQ2++;
                                                         }
-                                                        else if (nextExpectedInspectionQuarter.tc_Name == "Q3")
+                                                        else if (nextExpectedInspectionQuarter.tc_FiscalQuarterNum == 3)
                                                         {
                                                             planningDataTarget++;
                                                             planningDataDueQ3++;
                                                         }
-                                                        else if (nextExpectedInspectionQuarter.tc_Name == "Q4")
+                                                        else if (nextExpectedInspectionQuarter.tc_FiscalQuarterNum == 4)
                                                         {
                                                             planningDataTarget++;
                                                             planningDataDueQ4++;
@@ -220,7 +222,7 @@ namespace TSIS2.Plugins
         private tc_TCFiscalQuarter JumpQuarters(tc_TCFiscalQuarter startingQuarter, int numberOfQuarters, Xrm serviceContext)
         {
             DateTime startingDate = (DateTime)startingQuarter.tc_QuarterEnd;
-            DateTime jumpDate = startingDate.AddMonths(numberOfQuarters * 3).AddDays(1);
+            DateTime jumpDate = startingDate.AddMonths(numberOfQuarters * 3).AddDays(-1);
             return serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_QuarterStart <= jumpDate && fq.tc_QuarterEnd >= jumpDate);
         }
     }
