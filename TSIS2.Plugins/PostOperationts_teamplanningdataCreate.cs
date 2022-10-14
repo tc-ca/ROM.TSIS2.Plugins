@@ -77,9 +77,9 @@ namespace TSIS2.Plugins
                                             {
                                                 string englishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
                                                 string frenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
-                                                var inspections = serviceContext.msdyn_workorderSet.Where(wo => wo.msdyn_PrimaryIncidentType.Id == incidentType.Id && wo.ovs_OperationId.Id == operation.Id);
+                                                //var inspections = serviceContext.msdyn_workorderSet.Where(wo => wo.msdyn_PrimaryIncidentType.Id == incidentType.Id && wo.ovs_OperationId.Id == operation.Id);
 
-                                                tc_TCFiscalQuarter latestFiscalQuarter = GetLatestWorkOrderFiscalQuarter(inspections, serviceContext);
+                                                //tc_TCFiscalQuarter latestFiscalQuarter = GetLatestWorkOrderFiscalQuarter(inspections, serviceContext);
 
                                                 int interval = 0;
 
@@ -107,15 +107,19 @@ namespace TSIS2.Plugins
                                                 int planningDataDueQ3 = 0;
                                                 int planningDataDueQ4 = 0;
 
-                                                tc_TCFiscalQuarter nextExpectedInspectionQuarter = JumpQuarters(latestFiscalQuarter, interval, serviceContext);
+                                                //tc_TCFiscalQuarter nextExpectedInspectionQuarter = JumpQuarters(latestFiscalQuarter, interval, serviceContext);
 
                                                 //If the next expected inspection occurs before the current fiscal year, it's overdue and needs to occur Q1
-                                                if (((DateTime)nextExpectedInspectionQuarter.tc_QuarterStart).AddDays(1) <= fiscalYear.tc_FiscalStart)
-                                                {
-                                                    planningDataTarget++;
-                                                    planningDataDueQ1++;
-                                                    nextExpectedInspectionQuarter = fiscalYearQ1;
-                                                }
+                                                //if (((DateTime)nextExpectedInspectionQuarter.tc_QuarterStart).AddDays(1) <= fiscalYear.tc_FiscalStart)
+                                                //{
+                                                //    planningDataTarget++;
+                                                //    planningDataDueQ1++;
+                                                //    nextExpectedInspectionQuarter = fiscalYearQ1;
+                                                //}
+
+                                                planningDataTarget++;
+                                                planningDataDueQ1++;
+                                                tc_TCFiscalQuarter nextExpectedInspectionQuarter = fiscalYearQ1;
 
                                                 bool isWithinCurrentFiscalYear = true;
                                                 while (isWithinCurrentFiscalYear)
