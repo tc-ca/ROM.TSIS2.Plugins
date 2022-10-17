@@ -61,6 +61,15 @@ namespace TSIS2.Plugins
                                 var operationActivities = serviceContext.ts_OperationActivitySet.Where(oa => oa.ts_Operation.Id == operation.ovs_operationId);
                                 foreach (ts_OperationActivity operationActivity in operationActivities)
                                 {
+                                    string generationLog = "";
+                                    bool isMissingData = false;
+                                    string planningDataName = "";
+                                    string planningDataEnglishName = "";
+                                    string planningDataFrenchName = "";
+                                    tc_TCFiscalYear planningDataFiscalYear = null;
+                                    int planningDataTarget = 0;
+                                    int[] planningDataQuarters = new int[4];
+
                                     if (operationActivity.ts_Activity != null && operation.ts_site != null)
                                     {
                                         msdyn_incidenttype incidentType = serviceContext.msdyn_incidenttypeSet.FirstOrDefault(it => it.Id == operationActivity.ts_Activity.Id);
@@ -68,18 +77,12 @@ namespace TSIS2.Plugins
                                         if (incidentType != null && incidentType.ts_RiskScore != null)
                                         {
                                             ts_RecurrenceFrequencies recurrenceFrequency = serviceContext.ts_RecurrenceFrequenciesSet.FirstOrDefault(rf => rf.Id == incidentType.ts_RiskScore.Id);
-                                            tc_TCFiscalYear fiscalYear = serviceContext.tc_TCFiscalYearSet.FirstOrDefault(fy => fy.Id == targetTeamPlanngingData.ts_FiscalYear.Id);
-                                            tc_TCFiscalQuarter fiscalYearQ1 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_FiscalQuarterNum == 1 && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                            tc_TCFiscalQuarter fiscalYearQ2 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_FiscalQuarterNum == 2 && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                            tc_TCFiscalQuarter fiscalYearQ3 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_FiscalQuarterNum == 3 && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                            tc_TCFiscalQuarter fiscalYearQ4 = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_FiscalQuarterNum == 4 && fq.tc_TCFiscalYearId.Id == fiscalYear.Id);
-                                            if (incidentType.ovs_IncidentTypeNameEnglish != null && incidentType.ovs_IncidentTypeNameFrench != null && fiscalYearQ1 != null && fiscalYearQ2 != null && fiscalYearQ3 != null && fiscalYearQ4 != null)
+                                            planningDataFiscalYear = serviceContext.tc_TCFiscalYearSet.FirstOrDefault(fy => fy.Id == targetTeamPlanngingData.ts_FiscalYear.Id);
+                                            if (incidentType.ovs_IncidentTypeNameEnglish != null && incidentType.ovs_IncidentTypeNameFrench != null)
                                             {
-                                                string englishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
-                                                string frenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
-                                                //var inspections = serviceContext.msdyn_workorderSet.Where(wo => wo.msdyn_PrimaryIncidentType.Id == incidentType.Id && wo.ovs_OperationId.Id == operation.Id);
-
-                                                //tc_TCFiscalQuarter latestFiscalQuarter = GetLatestWorkOrderFiscalQuarter(inspections, serviceContext);
+                                                planningDataEnglishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
+                                                planningDataFrenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
+                                                planningDataName = planningDataEnglishName + "::" + planningDataFrenchName;
 
                                                 int interval = 0;
 
@@ -101,73 +104,69 @@ namespace TSIS2.Plugins
                                                         }
                                                     }
                                                 }
-                                                int planningDataTarget = 0;
-                                                int planningDataDueQ1 = 0;
-                                                int planningDataDueQ2 = 0;
-                                                int planningDataDueQ3 = 0;
-                                                int planningDataDueQ4 = 0;
-
-                                                //tc_TCFiscalQuarter nextExpectedInspectionQuarter = JumpQuarters(latestFiscalQuarter, interval, serviceContext);
-
-                                                //If the next expected inspection occurs before the current fiscal year, it's overdue and needs to occur Q1
-                                                //if (((DateTime)nextExpectedInspectionQuarter.tc_QuarterStart).AddDays(1) <= fiscalYear.tc_FiscalStart)
-                                                //{
-                                                //    planningDataTarget++;
-                                                //    planningDataDueQ1++;
-                                                //    nextExpectedInspectionQuarter = fiscalYearQ1;
-                                                //}
-
-                                                planningDataTarget++;
-                                                planningDataDueQ1++;
-                                                tc_TCFiscalQuarter nextExpectedInspectionQuarter = fiscalYearQ1;
-
-                                                //TODO replace all this quarter jumping nonsense with array idea
-
-                                                bool isWithinCurrentFiscalYear = true;
-                                                while (isWithinCurrentFiscalYear)
+                                                else
                                                 {
-                                                    nextExpectedInspectionQuarter = JumpQuarters(nextExpectedInspectionQuarter, interval, serviceContext);
-                                                    //If the next inspection is within the planning fiscal year
-                                                    if (((DateTime)nextExpectedInspectionQuarter.tc_QuarterStart) <= fiscalYear.tc_FiscalEnd)
-                                                    {
-                                                        if (nextExpectedInspectionQuarter.tc_FiscalQuarterNum == 2)
-                                                        {
-                                                            planningDataTarget++;
-                                                            planningDataDueQ2++;
-                                                        }
-                                                        else if (nextExpectedInspectionQuarter.tc_FiscalQuarterNum == 3)
-                                                        {
-                                                            planningDataTarget++;
-                                                            planningDataDueQ3++;
-                                                        }
-                                                        else if (nextExpectedInspectionQuarter.tc_FiscalQuarterNum == 4)
-                                                        {
-                                                            planningDataTarget++;
-                                                            planningDataDueQ4++;
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        isWithinCurrentFiscalYear = false;
-                                                    }
+                                                    generationLog += "Could not retrieve Risk Score from the Activity Type of the Operation Activity \n";
                                                 }
 
-                                                service.Create(new ts_PlanningData
+                                                for (int i = 0; i < 4; i += interval)
                                                 {
-                                                    ts_Name = englishName + "::" + frenchName,
-                                                    ts_EnglishName = englishName,
-                                                    ts_FrenchName = frenchName,
-                                                    ts_FiscalYear = teamPlanningData.ts_FiscalYear,
-                                                    ts_TeamPlanningData = new EntityReference(ts_TeamPlanningData.EntityLogicalName, teamPlanningData.Id),
-                                                    ts_Target = planningDataTarget,
-                                                    ts_DueQ1 = planningDataDueQ1,
-                                                    ts_DueQ2 = planningDataDueQ2,
-                                                    ts_DueQ3 = planningDataDueQ3,
-                                                    ts_DueQ4 = planningDataDueQ4
-                                                });
+                                                    planningDataQuarters[i]++;
+                                                    planningDataTarget++;
+                                                }
                                             }
+                                            else
+                                            {
+                                                if (incidentType.ovs_IncidentTypeNameEnglish == null)
+                                                {
+                                                    generationLog += "There is no English Name value for the Activty Type of the Operation Activity \n";
+                                                }
+                                                if (incidentType.ovs_IncidentTypeNameFrench != null)
+                                                {
+                                                    generationLog += "There is no French Name value for the Activty Type of the Operation Activity \n";
+                                                }
+                                                isMissingData = true;
+                                            }
+                                        } 
+                                        else
+                                        {
+                                            if (incidentType == null)
+                                            {
+                                                generationLog += "Could not retrieve Incident Type from Operation Type \n";
+                                            }
+                                            if (incidentType.ts_RiskScore == null)
+                                            {
+                                                generationLog += "The Incident Type does not have a Risk Score \n";
+                                            }
+                                            isMissingData = true;
                                         }
+                                    } 
+                                    else
+                                    {
+                                        if (operationActivity.ts_Activity == null)
+                                        {
+                                            generationLog += "The Operation Activity is missing an Activity Type \n";
+                                        }
+                                        if (operation.ts_site == null)
+                                        {
+                                            generationLog += "The Operation of the Operation Activity is missing a Site \n";
+                                        }
+                                        isMissingData = true;
                                     }
+                                    service.Create(new ts_PlanningData
+                                    {
+                                        ts_Name = (isMissingData) ? "ERROR " + planningDataName : planningDataName,
+                                        ts_EnglishName = planningDataEnglishName,
+                                        ts_FrenchName = planningDataFrenchName,
+                                        ts_FiscalYear = new EntityReference(ts_TeamPlanningData.EntityLogicalName, planningDataFiscalYear.Id),
+                                        ts_TeamPlanningData = new EntityReference(ts_TeamPlanningData.EntityLogicalName, teamPlanningData.Id),
+                                        ts_Target = planningDataTarget,
+                                        ts_DueQ1 = planningDataQuarters[0],
+                                        ts_DueQ2 = planningDataQuarters[1],
+                                        ts_DueQ3 = planningDataQuarters[2],
+                                        ts_DueQ4 = planningDataQuarters[3],
+                                        ts_GenerationLog = generationLog
+                                    });
                                 }
                             }
                         }
