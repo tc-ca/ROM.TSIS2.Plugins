@@ -66,18 +66,20 @@ namespace TSIS2.Plugins
                                     string planningDataName = "";
                                     string planningDataEnglishName = "";
                                     string planningDataFrenchName = "";
-                                    tc_TCFiscalYear planningDataFiscalYear = null;
+                                    Guid planningDataFiscalYearId = targetTeamPlanngingData.ts_FiscalYear.Id;
                                     int planningDataTarget = 0;
+                                    int planningDataEstimatedDuration = 0;
                                     int[] planningDataQuarters = new int[4];
 
                                     if (operationActivity.ts_Activity != null && operation.ts_site != null)
                                     {
                                         msdyn_incidenttype incidentType = serviceContext.msdyn_incidenttypeSet.FirstOrDefault(it => it.Id == operationActivity.ts_Activity.Id);
                                         msdyn_FunctionalLocation functionalLocation = serviceContext.msdyn_FunctionalLocationSet.FirstOrDefault(fl => fl.Id == operation.ts_site.Id);
-                                        if (incidentType != null && incidentType.ts_RiskScore != null)
+                                        if (incidentType != null && incidentType.ts_RiskScore != null && incidentType.msdyn_EstimatedDuration != null)
                                         {
                                             ts_RecurrenceFrequencies recurrenceFrequency = serviceContext.ts_RecurrenceFrequenciesSet.FirstOrDefault(rf => rf.Id == incidentType.ts_RiskScore.Id);
-                                            planningDataFiscalYear = serviceContext.tc_TCFiscalYearSet.FirstOrDefault(fy => fy.Id == targetTeamPlanngingData.ts_FiscalYear.Id);
+                                            planningDataEstimatedDuration = ((int)incidentType.msdyn_EstimatedDuration) / 60;
+
                                             if (incidentType.ovs_IncidentTypeNameEnglish != null && incidentType.ovs_IncidentTypeNameFrench != null)
                                             {
                                                 planningDataEnglishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
@@ -121,7 +123,7 @@ namespace TSIS2.Plugins
                                                 {
                                                     generationLog += "There is no English Name value for the Activty Type of the Operation Activity \n";
                                                 }
-                                                if (incidentType.ovs_IncidentTypeNameFrench != null)
+                                                if (incidentType.ovs_IncidentTypeNameFrench == null)
                                                 {
                                                     generationLog += "There is no French Name value for the Activty Type of the Operation Activity \n";
                                                 }
@@ -137,6 +139,10 @@ namespace TSIS2.Plugins
                                             if (incidentType.ts_RiskScore == null)
                                             {
                                                 generationLog += "The Incident Type does not have a Risk Score \n";
+                                            }
+                                            if (incidentType.msdyn_EstimatedDuration == null)
+                                            {
+                                                generationLog += "The Incident Type does not have an Estimated Duration \n";
                                             }
                                             isMissingData = true;
                                         }
@@ -156,15 +162,21 @@ namespace TSIS2.Plugins
                                     service.Create(new ts_PlanningData
                                     {
                                         ts_Name = (isMissingData) ? "ERROR " + planningDataName : planningDataName,
-                                        ts_EnglishName = planningDataEnglishName,
-                                        ts_FrenchName = planningDataFrenchName,
-                                        ts_FiscalYear = new EntityReference(ts_TeamPlanningData.EntityLogicalName, planningDataFiscalYear.Id),
+                                        ts_EnglishName = (isMissingData) ? "ERROR " + planningDataEnglishName : planningDataEnglishName,
+                                        ts_FrenchName = (isMissingData) ? "ERREUR " + planningDataFrenchName : planningDataFrenchName,
+                                        ts_OperationActivity = new EntityReference(ts_OperationActivity.EntityLogicalName, operationActivity.Id),
+                                        ts_FiscalYear = new EntityReference(ts_TeamPlanningData.EntityLogicalName, planningDataFiscalYearId),
                                         ts_TeamPlanningData = new EntityReference(ts_TeamPlanningData.EntityLogicalName, teamPlanningData.Id),
                                         ts_Target = planningDataTarget,
+                                        ts_TeamEstimatedDuration = planningDataEstimatedDuration,
                                         ts_DueQ1 = planningDataQuarters[0],
                                         ts_DueQ2 = planningDataQuarters[1],
                                         ts_DueQ3 = planningDataQuarters[2],
                                         ts_DueQ4 = planningDataQuarters[3],
+                                        ts_PlannedQ1 = planningDataQuarters[0],
+                                        ts_PlannedQ2 = planningDataQuarters[1],
+                                        ts_PlannedQ3 = planningDataQuarters[2],
+                                        ts_PlannedQ4 = planningDataQuarters[3],
                                         ts_GenerationLog = generationLog
                                     });
                                 }
@@ -191,38 +203,6 @@ namespace TSIS2.Plugins
                     throw;
                 }
             }
-        }
-        //Returns to most recent fiscal quarter of a list of Work Orders
-        private tc_TCFiscalQuarter GetLatestWorkOrderFiscalQuarter(IQueryable<msdyn_workorder> workOrders, Xrm serviceContext)
-        {
-            msdyn_workorder latestWorkOrder = null;
-            tc_TCFiscalQuarter latestWorkOrderFiscalQuarter = null;
-            foreach(msdyn_workorder workOrder in workOrders)
-            {
-                if (latestWorkOrder == null)
-                {
-                    latestWorkOrder = workOrder;
-                    latestWorkOrderFiscalQuarter = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fc => fc.Id == workOrder.ovs_FiscalQuarter.Id);
-                } 
-                else 
-                {
-                    var currentWorkOrderFiscalQuarter = serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fc => fc.Id == workOrder.ovs_FiscalQuarter.Id);
-                    if (currentWorkOrderFiscalQuarter.tc_QuarterEnd < latestWorkOrderFiscalQuarter.tc_QuarterEnd)
-                    {
-                        latestWorkOrder = workOrder;
-                        latestWorkOrderFiscalQuarter = currentWorkOrderFiscalQuarter;
-                    }
-                }
-            }
-            return latestWorkOrderFiscalQuarter;
-        }
-
-        //Return the Fiscal Quarter numberOfQuarters after the startingQuarter
-        private tc_TCFiscalQuarter JumpQuarters(tc_TCFiscalQuarter startingQuarter, int numberOfQuarters, Xrm serviceContext)
-        {
-            DateTime startingDate = (DateTime)startingQuarter.tc_QuarterEnd;
-            DateTime jumpDate = startingDate.AddMonths(numberOfQuarters * 3).AddDays(-1);
-            return serviceContext.tc_TCFiscalQuarterSet.FirstOrDefault(fq => fq.tc_QuarterStart <= jumpDate && fq.tc_QuarterEnd >= jumpDate);
         }
     }
 }
