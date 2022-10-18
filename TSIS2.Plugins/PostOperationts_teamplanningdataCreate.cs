@@ -50,7 +50,7 @@ namespace TSIS2.Plugins
                     {
                         using (var serviceContext = new Xrm(service))
                         {
-                            ts_TeamPlanningData targetTeamPlanngingData = target.ToEntity<ts_TeamPlanningData>();
+                            ts_TeamPlanningData targetTeamPlanningData = target.ToEntity<ts_TeamPlanningData>();
                             ts_TeamPlanningData teamPlanningData = serviceContext.ts_TeamPlanningDataSet.FirstOrDefault(tpd => tpd.Id == target.Id);
 
                             //Retrieve all Operations owned by the same Owner
@@ -66,7 +66,7 @@ namespace TSIS2.Plugins
                                     string planningDataName = "";
                                     string planningDataEnglishName = "";
                                     string planningDataFrenchName = "";
-                                    Guid planningDataFiscalYearId = targetTeamPlanngingData.ts_FiscalYear.Id;
+                                    Guid planningDataFiscalYearId = targetTeamPlanningData.ts_FiscalYear.Id;
                                     int planningDataTarget = 0;
                                     int planningDataEstimatedDuration = 0;
                                     int[] planningDataQuarters = new int[4];
@@ -178,6 +178,11 @@ namespace TSIS2.Plugins
                                         ts_PlannedQ3 = planningDataQuarters[2],
                                         ts_PlannedQ4 = planningDataQuarters[3],
                                         ts_GenerationLog = generationLog
+                                    });
+                                    service.Update(new ts_TeamPlanningData
+                                    {
+                                        Id = targetTeamPlanningData.Id,
+                                        ts_Name = teamPlanningData.ts_Team.Name + " | " + teamPlanningData.ts_FiscalYear.Name
                                     });
                                 }
                             }
