@@ -67,12 +67,20 @@ namespace TSIS2.Plugins
                                     string planningDataEnglishName = "";
                                     string planningDataFrenchName = "";
                                     Guid planningDataFiscalYearId = targetTeamPlanningData.ts_FiscalYear.Id;
+                                    Guid planningDataStakeholderId = new Guid();
+                                    Guid planningDataOperationTypeId = new Guid();
+                                    Guid planningDataSiteId = new Guid();
+                                    Guid planningDataActivityTypeId = new Guid();
                                     int planningDataTarget = 0;
                                     int planningDataEstimatedDuration = 0;
                                     int[] planningDataQuarters = new int[4];
 
-                                    if (operationActivity.ts_Activity != null && operation.ts_site != null)
+                                    if (operationActivity.ts_Activity != null && operation.ts_stakeholder != null && operation.ovs_OperationTypeId != null && operation.ts_site != null)
                                     {
+                                        planningDataStakeholderId = operation.ts_stakeholder.Id;
+                                        planningDataOperationTypeId = operation.ovs_OperationTypeId.Id;
+                                        planningDataSiteId = operation.ts_site.Id;
+                                        planningDataActivityTypeId = operationActivity.ts_Activity.Id;
                                         msdyn_incidenttype incidentType = serviceContext.msdyn_incidenttypeSet.FirstOrDefault(it => it.Id == operationActivity.ts_Activity.Id);
                                         msdyn_FunctionalLocation functionalLocation = serviceContext.msdyn_FunctionalLocationSet.FirstOrDefault(fl => fl.Id == operation.ts_site.Id);
                                         if (incidentType != null && incidentType.ts_RiskScore != null && incidentType.msdyn_EstimatedDuration != null)
@@ -134,7 +142,7 @@ namespace TSIS2.Plugins
                                         {
                                             if (incidentType == null)
                                             {
-                                                generationLog += "Could not retrieve Incident Type from Operation Type \n";
+                                                generationLog += "Could not retrieve Incident Type from Operation Activity \n";
                                             }
                                             if (incidentType.ts_RiskScore == null)
                                             {
@@ -153,6 +161,14 @@ namespace TSIS2.Plugins
                                         {
                                             generationLog += "The Operation Activity is missing an Activity Type \n";
                                         }
+                                        if (operation.ts_stakeholder == null)
+                                        {
+                                            generationLog += "The Operation of the Operation Activity is missing a Stakeholder \n";
+                                        }
+                                        if (operation.ovs_OperationTypeId == null)
+                                        {
+                                            generationLog += "The Operation of the Operation Activity is missing an Operation Type \n";
+                                        }
                                         if (operation.ts_site == null)
                                         {
                                             generationLog += "The Operation of the Operation Activity is missing a Site \n";
@@ -167,6 +183,10 @@ namespace TSIS2.Plugins
                                         ts_OperationActivity = new EntityReference(ts_OperationActivity.EntityLogicalName, operationActivity.Id),
                                         ts_FiscalYear = new EntityReference(ts_TeamPlanningData.EntityLogicalName, planningDataFiscalYearId),
                                         ts_TeamPlanningData = new EntityReference(ts_TeamPlanningData.EntityLogicalName, teamPlanningData.Id),
+                                        ts_Stakeholder = new EntityReference(Account.EntityLogicalName, planningDataStakeholderId),
+                                        ts_OperationType = new EntityReference(ovs_operationtype.EntityLogicalName, planningDataOperationTypeId),
+                                        ts_Site = new EntityReference(msdyn_FunctionalLocation.EntityLogicalName, planningDataSiteId),
+                                        ts_ActivityType = new EntityReference(msdyn_incidenttype.EntityLogicalName, planningDataActivityTypeId),
                                         ts_Target = planningDataTarget,
                                         ts_TeamEstimatedDuration = planningDataEstimatedDuration,
                                         ts_DueQ1 = planningDataQuarters[0],
