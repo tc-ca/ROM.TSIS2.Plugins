@@ -54,7 +54,7 @@ namespace TSIS2.Plugins
                             ts_TeamPlanningData teamPlanningData = serviceContext.ts_TeamPlanningDataSet.FirstOrDefault(tpd => tpd.Id == target.Id);
 
                             //Retrieve all Operations owned by the same Owner
-                            var operations = serviceContext.ovs_operationSet.Where(op => op.OwnerId.Id == teamPlanningData.ts_Team.Id);
+                            var operations = serviceContext.ovs_operationSet.Where(op => op.ts_OPITeam.Id == teamPlanningData.ts_Team.Id);
 
                             foreach (ovs_operation operation in operations)
                             {
