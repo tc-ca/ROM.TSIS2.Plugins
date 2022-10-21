@@ -106,13 +106,23 @@ namespace TSIS2.Plugins
                                         if (incidentType != null && incidentType.ts_RiskScore != null && incidentType.msdyn_EstimatedDuration != null)
                                         {
                                             ts_RecurrenceFrequencies recurrenceFrequency = serviceContext.ts_RecurrenceFrequenciesSet.FirstOrDefault(rf => rf.Id == incidentType.ts_RiskScore.Id);
-                                            planningDataEstimatedDuration = ((int)incidentType.msdyn_EstimatedDuration) / 60;
 
                                             if (incidentType.ovs_IncidentTypeNameEnglish != null && incidentType.ovs_IncidentTypeNameFrench != null)
                                             {
                                                 planningDataEnglishName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameEnglish + " | " + teamPlanningData.ts_FiscalYear.Name;
                                                 planningDataFrenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
                                                 planningDataName = planningDataEnglishName + "::" + planningDataFrenchName;
+
+                                                ts_TeamActivityTypeEstimatedDuration teamActivityTypeEstimatedDuration = serviceContext.ts_TeamActivityTypeEstimatedDurationSet.FirstOrDefault(ed => ed.ts_Team.Id == teamPlanningData.ts_Team.Id && ed.ts_ActivityType.Id == incidentType.Id);
+                                                if (teamActivityTypeEstimatedDuration != null)
+                                                {
+                                                    planningDataEstimatedDuration = ((int)teamActivityTypeEstimatedDuration.ts_EstimatedDuration) / 60;
+                                                }
+                                                else
+                                                {
+                                                    planningDataEstimatedDuration = ((int)incidentType.msdyn_EstimatedDuration) / 60;
+                                                    generationLog += "Missing Team Estimated Duration for this Team and Activity Type. Using Activity Type Estimated Duration. \n";
+                                                }
 
                                                 int interval = 0;
 
@@ -136,7 +146,7 @@ namespace TSIS2.Plugins
                                                 }
                                                 else
                                                 {
-                                                    generationLog += "Could not retrieve Risk Score from the Activity Type of the Operation Activity \n";
+                                                    generationLog += "Could not retrieve Risk Score from the Activity Type of the Operation Activity. \n";
                                                 }
 
                                                 for (int i = 0; i < 4; i += interval)
@@ -158,11 +168,11 @@ namespace TSIS2.Plugins
                                             {
                                                 if (incidentType.ovs_IncidentTypeNameEnglish == null)
                                                 {
-                                                    generationLog += "There is no English Name value for the Activty Type of the Operation Activity \n";
+                                                    generationLog += "There is no English Name value for the Activty Type of the Operation Activity. \n";
                                                 }
                                                 if (incidentType.ovs_IncidentTypeNameFrench == null)
                                                 {
-                                                    generationLog += "There is no French Name value for the Activty Type of the Operation Activity \n";
+                                                    generationLog += "There is no French Name value for the Activty Type of the Operation Activity. \n";
                                                 }
                                                 isMissingData = true;
                                             }
@@ -171,15 +181,15 @@ namespace TSIS2.Plugins
                                         {
                                             if (incidentType == null)
                                             {
-                                                generationLog += "Could not retrieve Incident Type from Operation Activity \n";
+                                                generationLog += "Could not retrieve Incident Type from Operation Activity. \n";
                                             }
                                             if (incidentType.ts_RiskScore == null)
                                             {
-                                                generationLog += "The Incident Type does not have a Risk Score \n";
+                                                generationLog += "The Incident Type does not have a Risk Score. \n";
                                             }
                                             if (incidentType.msdyn_EstimatedDuration == null)
                                             {
-                                                generationLog += "The Incident Type does not have an Estimated Duration \n";
+                                                generationLog += "The Incident Type does not have an Estimated Duration. \n";
                                             }
                                             isMissingData = true;
                                         }
@@ -188,19 +198,19 @@ namespace TSIS2.Plugins
                                     {
                                         if (operationActivity.ts_Activity == null)
                                         {
-                                            generationLog += "The Operation Activity is missing an Activity Type \n";
+                                            generationLog += "The Operation Activity is missing an Activity Type. \n";
                                         }
                                         if (operation.ts_stakeholder == null)
                                         {
-                                            generationLog += "The Operation of the Operation Activity is missing a Stakeholder \n";
+                                            generationLog += "The Operation of the Operation Activity is missing a Stakeholder. \n";
                                         }
                                         if (operation.ovs_OperationTypeId == null)
                                         {
-                                            generationLog += "The Operation of the Operation Activity is missing an Operation Type \n";
+                                            generationLog += "The Operation of the Operation Activity is missing an Operation Type. \n";
                                         }
                                         if (operation.ts_site == null)
                                         {
-                                            generationLog += "The Operation of the Operation Activity is missing a Site \n";
+                                            generationLog += "The Operation of the Operation Activity is missing a Site. \n";
                                         }
                                         isMissingData = true;
                                     }
