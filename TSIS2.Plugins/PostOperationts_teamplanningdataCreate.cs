@@ -53,8 +53,28 @@ namespace TSIS2.Plugins
                             ts_TeamPlanningData targetTeamPlanningData = target.ToEntity<ts_TeamPlanningData>();
                             ts_TeamPlanningData teamPlanningData = serviceContext.ts_TeamPlanningDataSet.FirstOrDefault(tpd => tpd.Id == target.Id);
 
-                            //Retrieve all Operations owned by the same Owner
+                            //Retrieve all Operations where OPI Team equals Team Planning Data Team
                             var operations = serviceContext.ovs_operationSet.Where(op => op.ts_OPITeam.Id == teamPlanningData.ts_Team.Id);
+
+                            int teamPlanningDataPlannedQ1 = 0;
+                            int teamPlanningDataPlannedQ2 = 0;
+                            int teamPlanningDataPlannedQ3 = 0;
+                            int teamPlanningDataPlannedQ4 = 0;
+
+                            decimal teamPlanningDataAvailableInspectorHoursQ1 = 0;
+                            decimal teamPlanningDataAvailableInspectorHoursQ2 = 0;
+                            decimal teamPlanningDataAvailableInspectorHoursQ3 = 0;
+                            decimal teamPlanningDataAvailableInspectorHoursQ4 = 0;
+
+                            decimal teamPlanningDataTeamEstimatedDurationQ1 = 0;
+                            decimal teamPlanningDataTeamEstimatedDurationQ2 = 0;
+                            decimal teamPlanningDataTeamEstimatedDurationQ3 = 0;
+                            decimal teamPlanningDataTeamEstimatedDurationQ4 = 0;
+
+                            decimal ts_teamPlanningDataResidualinspectorhoursQ1 = 0;
+                            decimal ts_teamPlanningDataResidualinspectorhoursQ2 = 0;
+                            decimal ts_teamPlanningDataResidualinspectorhoursQ3 = 0;
+                            decimal ts_teamPlanningDataResidualinspectorhoursQ4 = 0;
 
                             foreach (ovs_operation operation in operations)
                             {
@@ -124,6 +144,15 @@ namespace TSIS2.Plugins
                                                     planningDataQuarters[i]++;
                                                     planningDataTarget++;
                                                 }
+                                                teamPlanningDataPlannedQ1 += planningDataQuarters[0];
+                                                teamPlanningDataPlannedQ2 += planningDataQuarters[1];
+                                                teamPlanningDataPlannedQ3 += planningDataQuarters[2];
+                                                teamPlanningDataPlannedQ4 += planningDataQuarters[3];
+
+                                                teamPlanningDataTeamEstimatedDurationQ1 += planningDataQuarters[0] * planningDataEstimatedDuration;
+                                                teamPlanningDataTeamEstimatedDurationQ2 += planningDataQuarters[1] * planningDataEstimatedDuration;
+                                                teamPlanningDataTeamEstimatedDurationQ3 += planningDataQuarters[2] * planningDataEstimatedDuration;
+                                                teamPlanningDataTeamEstimatedDurationQ4 += planningDataQuarters[3] * planningDataEstimatedDuration;
                                             }
                                             else
                                             {
@@ -199,13 +228,45 @@ namespace TSIS2.Plugins
                                         ts_PlannedQ4 = planningDataQuarters[3],
                                         ts_GenerationLog = generationLog
                                     });
-                                    service.Update(new ts_TeamPlanningData
-                                    {
-                                        Id = targetTeamPlanningData.Id,
-                                        ts_Name = teamPlanningData.ts_Team.Name + " | " + teamPlanningData.ts_FiscalYear.Name
-                                    });
                                 }
                             }
+
+                            ts_BaselineHours baselineHours = serviceContext.ts_BaselineHoursSet.FirstOrDefault(blh => blh.ts_Team.Id == teamPlanningData.ts_Team.Id);
+
+                            if (baselineHours != null)
+                            {
+                                teamPlanningDataAvailableInspectorHoursQ1 = (decimal)baselineHours.ts_PlannedQ1;
+                                teamPlanningDataAvailableInspectorHoursQ2 = (decimal)baselineHours.ts_PlannedQ2;
+                                teamPlanningDataAvailableInspectorHoursQ3 = (decimal)baselineHours.ts_PlannedQ3;
+                                teamPlanningDataAvailableInspectorHoursQ4 = (decimal)baselineHours.ts_PlannedQ4;
+
+                                ts_teamPlanningDataResidualinspectorhoursQ1 = teamPlanningDataAvailableInspectorHoursQ1 - teamPlanningDataTeamEstimatedDurationQ1;
+                                ts_teamPlanningDataResidualinspectorhoursQ2 = teamPlanningDataAvailableInspectorHoursQ2 - teamPlanningDataTeamEstimatedDurationQ2;
+                                ts_teamPlanningDataResidualinspectorhoursQ3 = teamPlanningDataAvailableInspectorHoursQ3 - teamPlanningDataTeamEstimatedDurationQ3;
+                                ts_teamPlanningDataResidualinspectorhoursQ4 = teamPlanningDataAvailableInspectorHoursQ4 - teamPlanningDataTeamEstimatedDurationQ4;
+                            }
+
+                            service.Update(new ts_TeamPlanningData
+                            {
+                                Id = targetTeamPlanningData.Id,
+                                ts_Name = teamPlanningData.ts_Team.Name + " | " + teamPlanningData.ts_FiscalYear.Name,
+                                ts_PlannedActivityQ1 = teamPlanningDataPlannedQ1,
+                                ts_PlannedActivityQ2 = teamPlanningDataPlannedQ2,
+                                ts_PlannedActivityQ3 = teamPlanningDataPlannedQ3,
+                                ts_PlannedActivityQ4 = teamPlanningDataPlannedQ4,
+                                ts_AvailableHoursQ1 = teamPlanningDataAvailableInspectorHoursQ1,
+                                ts_AvailableHoursQ2 = teamPlanningDataAvailableInspectorHoursQ2,
+                                ts_AvailableHoursQ3 = teamPlanningDataAvailableInspectorHoursQ3,
+                                ts_AvailableHoursQ4 = teamPlanningDataAvailableInspectorHoursQ4,
+                                ts_TeamestimateddurationQ1 = teamPlanningDataTeamEstimatedDurationQ1,
+                                ts_TeamestimateddurationQ2 = teamPlanningDataTeamEstimatedDurationQ2,
+                                ts_TeamestimateddurationQ3 = teamPlanningDataTeamEstimatedDurationQ3,
+                                ts_TeamestimateddurationQ4 = teamPlanningDataTeamEstimatedDurationQ4,
+                                ts_ResidualinspectorhoursQ1 = ts_teamPlanningDataResidualinspectorhoursQ1,
+                                ts_ResidualinspectorhoursQ2 = ts_teamPlanningDataResidualinspectorhoursQ2,
+                                ts_ResidualinspectorhoursQ3 = ts_teamPlanningDataResidualinspectorhoursQ3,
+                                ts_ResidualinspectorhoursQ4 = ts_teamPlanningDataResidualinspectorhoursQ4,
+                            });
                         }
                     }
                 }
