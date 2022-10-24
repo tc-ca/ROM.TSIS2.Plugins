@@ -124,45 +124,53 @@ namespace TSIS2.Plugins
                                                     generationLog += "Missing Team Estimated Duration for this Team and Activity Type. Using Activity Type Estimated Duration. \n";
                                                 }
 
-                                                int interval = 0;
-
-                                                if (recurrenceFrequency != null)
+                                                if (operationActivity.ts_OperationalStatus == ts_operationalstatus.Operational)
                                                 {
-                                                    if (functionalLocation.ts_Class == msdyn_FunctionalLocation_ts_Class._1)
+                                                    int interval = 0;
+
+                                                    if (recurrenceFrequency != null)
                                                     {
-                                                        interval = (int)recurrenceFrequency.ts_Class1Interval;
+                                                        if (functionalLocation.ts_Class == msdyn_FunctionalLocation_ts_Class._1)
+                                                        {
+                                                            interval = (int)recurrenceFrequency.ts_Class1Interval;
+                                                        }
+                                                        else //Class 2 or 3
+                                                        {
+                                                            if (functionalLocation.ts_RiskScore > 5)
+                                                            {
+                                                                interval = (int)recurrenceFrequency.ts_Class2and3HighRiskInterval;
+                                                            }
+                                                            else
+                                                            {
+                                                                interval = (int)recurrenceFrequency.ts_Class2and3LowRiskInterval;
+                                                            }
+                                                        }
                                                     }
-                                                    else //Class 2 or 3
+                                                    else
                                                     {
-                                                        if (functionalLocation.ts_RiskScore > 5)
-                                                        {
-                                                            interval = (int)recurrenceFrequency.ts_Class2and3HighRiskInterval;
-                                                        }
-                                                        else
-                                                        {
-                                                            interval = (int)recurrenceFrequency.ts_Class2and3LowRiskInterval;
-                                                        }
+                                                        generationLog += "Could not retrieve Risk Score from the Activity Type of the Operation Activity. \n";
                                                     }
-                                                }
+
+                                                    for (int i = 0; i < 4; i += interval)
+                                                    {
+                                                        planningDataQuarters[i]++;
+                                                        planningDataTarget++;
+                                                    }
+                                                    teamPlanningDataPlannedQ1 += planningDataQuarters[0];
+                                                    teamPlanningDataPlannedQ2 += planningDataQuarters[1];
+                                                    teamPlanningDataPlannedQ3 += planningDataQuarters[2];
+                                                    teamPlanningDataPlannedQ4 += planningDataQuarters[3];
+
+                                                    teamPlanningDataTeamEstimatedDurationQ1 += planningDataQuarters[0] * planningDataEstimatedDuration;
+                                                    teamPlanningDataTeamEstimatedDurationQ2 += planningDataQuarters[1] * planningDataEstimatedDuration;
+                                                    teamPlanningDataTeamEstimatedDurationQ3 += planningDataQuarters[2] * planningDataEstimatedDuration;
+                                                    teamPlanningDataTeamEstimatedDurationQ4 += planningDataQuarters[3] * planningDataEstimatedDuration;
+                                                } 
                                                 else
                                                 {
-                                                    generationLog += "Could not retrieve Risk Score from the Activity Type of the Operation Activity. \n";
+                                                    generationLog += "The Operational Status is Non-Operational";
                                                 }
-
-                                                for (int i = 0; i < 4; i += interval)
-                                                {
-                                                    planningDataQuarters[i]++;
-                                                    planningDataTarget++;
-                                                }
-                                                teamPlanningDataPlannedQ1 += planningDataQuarters[0];
-                                                teamPlanningDataPlannedQ2 += planningDataQuarters[1];
-                                                teamPlanningDataPlannedQ3 += planningDataQuarters[2];
-                                                teamPlanningDataPlannedQ4 += planningDataQuarters[3];
-
-                                                teamPlanningDataTeamEstimatedDurationQ1 += planningDataQuarters[0] * planningDataEstimatedDuration;
-                                                teamPlanningDataTeamEstimatedDurationQ2 += planningDataQuarters[1] * planningDataEstimatedDuration;
-                                                teamPlanningDataTeamEstimatedDurationQ3 += planningDataQuarters[2] * planningDataEstimatedDuration;
-                                                teamPlanningDataTeamEstimatedDurationQ4 += planningDataQuarters[3] * planningDataEstimatedDuration;
+                                                
                                             }
                                             else
                                             {
