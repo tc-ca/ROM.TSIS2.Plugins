@@ -53,8 +53,28 @@ namespace TSIS2.Plugins
                             ts_TeamPlanningData targetTeamPlanningData = target.ToEntity<ts_TeamPlanningData>();
                             ts_TeamPlanningData teamPlanningData = serviceContext.ts_TeamPlanningDataSet.FirstOrDefault(tpd => tpd.Id == target.Id);
 
-                            //Retrieve all Operations owned by the same Owner
-                            var operations = serviceContext.ovs_operationSet.Where(op => op.OwnerId.Id == teamPlanningData.ts_Team.Id);
+                            //Retrieve all Operations where OPI Team equals Team Planning Data Team
+                            var operations = serviceContext.ovs_operationSet.Where(op => op.ts_OPITeam.Id == teamPlanningData.ts_Team.Id);
+
+                            int teamPlanningDataPlannedQ1 = 0;
+                            int teamPlanningDataPlannedQ2 = 0;
+                            int teamPlanningDataPlannedQ3 = 0;
+                            int teamPlanningDataPlannedQ4 = 0;
+
+                            decimal teamPlanningDataAvailableInspectorHoursQ1 = 0;
+                            decimal teamPlanningDataAvailableInspectorHoursQ2 = 0;
+                            decimal teamPlanningDataAvailableInspectorHoursQ3 = 0;
+                            decimal teamPlanningDataAvailableInspectorHoursQ4 = 0;
+
+                            decimal teamPlanningDataTeamEstimatedDurationQ1 = 0;
+                            decimal teamPlanningDataTeamEstimatedDurationQ2 = 0;
+                            decimal teamPlanningDataTeamEstimatedDurationQ3 = 0;
+                            decimal teamPlanningDataTeamEstimatedDurationQ4 = 0;
+
+                            decimal ts_teamPlanningDataResidualinspectorhoursQ1 = 0;
+                            decimal ts_teamPlanningDataResidualinspectorhoursQ2 = 0;
+                            decimal ts_teamPlanningDataResidualinspectorhoursQ3 = 0;
+                            decimal ts_teamPlanningDataResidualinspectorhoursQ4 = 0;
 
                             foreach (ovs_operation operation in operations)
                             {
@@ -86,7 +106,6 @@ namespace TSIS2.Plugins
                                         if (incidentType != null && incidentType.ts_RiskScore != null && incidentType.msdyn_EstimatedDuration != null)
                                         {
                                             ts_RecurrenceFrequencies recurrenceFrequency = serviceContext.ts_RecurrenceFrequenciesSet.FirstOrDefault(rf => rf.Id == incidentType.ts_RiskScore.Id);
-                                            planningDataEstimatedDuration = ((int)incidentType.msdyn_EstimatedDuration) / 60;
 
                                             if (incidentType.ovs_IncidentTypeNameEnglish != null && incidentType.ovs_IncidentTypeNameFrench != null)
                                             {
@@ -94,46 +113,74 @@ namespace TSIS2.Plugins
                                                 planningDataFrenchName = operation.ovs_name + " | " + incidentType.ovs_IncidentTypeNameFrench + " | " + teamPlanningData.ts_FiscalYear.Name;
                                                 planningDataName = planningDataEnglishName + "::" + planningDataFrenchName;
 
-                                                int interval = 0;
-
-                                                if (recurrenceFrequency != null)
+                                                ts_TeamActivityTypeEstimatedDuration teamActivityTypeEstimatedDuration = serviceContext.ts_TeamActivityTypeEstimatedDurationSet.FirstOrDefault(ed => ed.ts_Team.Id == teamPlanningData.ts_Team.Id && ed.ts_ActivityType.Id == incidentType.Id);
+                                                if (teamActivityTypeEstimatedDuration != null)
                                                 {
-                                                    if (functionalLocation.ts_Class == msdyn_FunctionalLocation_ts_Class._1)
-                                                    {
-                                                        interval = (int)recurrenceFrequency.ts_Class1Interval;
-                                                    }
-                                                    else //Class 2 or 3
-                                                    {
-                                                        if (functionalLocation.ts_RiskScore > 5)
-                                                        {
-                                                            interval = (int)recurrenceFrequency.ts_Class2and3HighRiskInterval;
-                                                        }
-                                                        else
-                                                        {
-                                                            interval = (int)recurrenceFrequency.ts_Class2and3LowRiskInterval;
-                                                        }
-                                                    }
+                                                    planningDataEstimatedDuration = ((int)teamActivityTypeEstimatedDuration.ts_EstimatedDuration) / 60;
                                                 }
                                                 else
                                                 {
-                                                    generationLog += "Could not retrieve Risk Score from the Activity Type of the Operation Activity \n";
+                                                    planningDataEstimatedDuration = ((int)incidentType.msdyn_EstimatedDuration) / 60;
+                                                    generationLog += "Missing Team Estimated Duration for this Team and Activity Type. Using Activity Type Estimated Duration. \n";
                                                 }
 
-                                                for (int i = 0; i < 4; i += interval)
+                                                if (operationActivity.ts_OperationalStatus == ts_operationalstatus.Operational)
                                                 {
-                                                    planningDataQuarters[i]++;
-                                                    planningDataTarget++;
+                                                    int interval = 0;
+
+                                                    if (recurrenceFrequency != null)
+                                                    {
+                                                        if (functionalLocation.ts_Class == msdyn_FunctionalLocation_ts_Class._1)
+                                                        {
+                                                            interval = (int)recurrenceFrequency.ts_Class1Interval;
+                                                        }
+                                                        else //Class 2 or 3
+                                                        {
+                                                            if (functionalLocation.ts_RiskScore > 5)
+                                                            {
+                                                                interval = (int)recurrenceFrequency.ts_Class2and3HighRiskInterval;
+                                                            }
+                                                            else
+                                                            {
+                                                                interval = (int)recurrenceFrequency.ts_Class2and3LowRiskInterval;
+                                                            }
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        generationLog += "Could not retrieve Risk Score from the Activity Type of the Operation Activity. \n";
+                                                    }
+
+                                                    for (int i = 0; i < 4; i += interval)
+                                                    {
+                                                        planningDataQuarters[i]++;
+                                                        planningDataTarget++;
+                                                    }
+                                                    teamPlanningDataPlannedQ1 += planningDataQuarters[0];
+                                                    teamPlanningDataPlannedQ2 += planningDataQuarters[1];
+                                                    teamPlanningDataPlannedQ3 += planningDataQuarters[2];
+                                                    teamPlanningDataPlannedQ4 += planningDataQuarters[3];
+
+                                                    teamPlanningDataTeamEstimatedDurationQ1 += planningDataQuarters[0] * planningDataEstimatedDuration;
+                                                    teamPlanningDataTeamEstimatedDurationQ2 += planningDataQuarters[1] * planningDataEstimatedDuration;
+                                                    teamPlanningDataTeamEstimatedDurationQ3 += planningDataQuarters[2] * planningDataEstimatedDuration;
+                                                    teamPlanningDataTeamEstimatedDurationQ4 += planningDataQuarters[3] * planningDataEstimatedDuration;
+                                                } 
+                                                else
+                                                {
+                                                    generationLog += "The Operational Status is Non-Operational.";
                                                 }
+                                                
                                             }
                                             else
                                             {
                                                 if (incidentType.ovs_IncidentTypeNameEnglish == null)
                                                 {
-                                                    generationLog += "There is no English Name value for the Activty Type of the Operation Activity \n";
+                                                    generationLog += "There is no English Name value for the Activty Type of the Operation Activity. \n";
                                                 }
                                                 if (incidentType.ovs_IncidentTypeNameFrench == null)
                                                 {
-                                                    generationLog += "There is no French Name value for the Activty Type of the Operation Activity \n";
+                                                    generationLog += "There is no French Name value for the Activty Type of the Operation Activity. \n";
                                                 }
                                                 isMissingData = true;
                                             }
@@ -142,15 +189,15 @@ namespace TSIS2.Plugins
                                         {
                                             if (incidentType == null)
                                             {
-                                                generationLog += "Could not retrieve Incident Type from Operation Activity \n";
+                                                generationLog += "Could not retrieve Incident Type from Operation Activity. \n";
                                             }
                                             if (incidentType.ts_RiskScore == null)
                                             {
-                                                generationLog += "The Incident Type does not have a Risk Score \n";
+                                                generationLog += "The Incident Type does not have a Risk Score. \n";
                                             }
                                             if (incidentType.msdyn_EstimatedDuration == null)
                                             {
-                                                generationLog += "The Incident Type does not have an Estimated Duration \n";
+                                                generationLog += "The Incident Type does not have an Estimated Duration. \n";
                                             }
                                             isMissingData = true;
                                         }
@@ -159,19 +206,19 @@ namespace TSIS2.Plugins
                                     {
                                         if (operationActivity.ts_Activity == null)
                                         {
-                                            generationLog += "The Operation Activity is missing an Activity Type \n";
+                                            generationLog += "The Operation Activity is missing an Activity Type. \n";
                                         }
                                         if (operation.ts_stakeholder == null)
                                         {
-                                            generationLog += "The Operation of the Operation Activity is missing a Stakeholder \n";
+                                            generationLog += "The Operation of the Operation Activity is missing a Stakeholder. \n";
                                         }
                                         if (operation.ovs_OperationTypeId == null)
                                         {
-                                            generationLog += "The Operation of the Operation Activity is missing an Operation Type \n";
+                                            generationLog += "The Operation of the Operation Activity is missing an Operation Type. \n";
                                         }
                                         if (operation.ts_site == null)
                                         {
-                                            generationLog += "The Operation of the Operation Activity is missing a Site \n";
+                                            generationLog += "The Operation of the Operation Activity is missing a Site. \n";
                                         }
                                         isMissingData = true;
                                     }
@@ -199,13 +246,45 @@ namespace TSIS2.Plugins
                                         ts_PlannedQ4 = planningDataQuarters[3],
                                         ts_GenerationLog = generationLog
                                     });
-                                    service.Update(new ts_TeamPlanningData
-                                    {
-                                        Id = targetTeamPlanningData.Id,
-                                        ts_Name = teamPlanningData.ts_Team.Name + " | " + teamPlanningData.ts_FiscalYear.Name
-                                    });
                                 }
                             }
+
+                            ts_BaselineHours baselineHours = serviceContext.ts_BaselineHoursSet.FirstOrDefault(blh => blh.ts_Team.Id == teamPlanningData.ts_Team.Id);
+
+                            if (baselineHours != null)
+                            {
+                                teamPlanningDataAvailableInspectorHoursQ1 = (decimal)baselineHours.ts_PlannedQ1;
+                                teamPlanningDataAvailableInspectorHoursQ2 = (decimal)baselineHours.ts_PlannedQ2;
+                                teamPlanningDataAvailableInspectorHoursQ3 = (decimal)baselineHours.ts_PlannedQ3;
+                                teamPlanningDataAvailableInspectorHoursQ4 = (decimal)baselineHours.ts_PlannedQ4;
+
+                                ts_teamPlanningDataResidualinspectorhoursQ1 = teamPlanningDataAvailableInspectorHoursQ1 - teamPlanningDataTeamEstimatedDurationQ1;
+                                ts_teamPlanningDataResidualinspectorhoursQ2 = teamPlanningDataAvailableInspectorHoursQ2 - teamPlanningDataTeamEstimatedDurationQ2;
+                                ts_teamPlanningDataResidualinspectorhoursQ3 = teamPlanningDataAvailableInspectorHoursQ3 - teamPlanningDataTeamEstimatedDurationQ3;
+                                ts_teamPlanningDataResidualinspectorhoursQ4 = teamPlanningDataAvailableInspectorHoursQ4 - teamPlanningDataTeamEstimatedDurationQ4;
+                            }
+
+                            service.Update(new ts_TeamPlanningData
+                            {
+                                Id = targetTeamPlanningData.Id,
+                                ts_Name = teamPlanningData.ts_Team.Name + " | " + teamPlanningData.ts_FiscalYear.Name,
+                                ts_PlannedActivityQ1 = teamPlanningDataPlannedQ1,
+                                ts_PlannedActivityQ2 = teamPlanningDataPlannedQ2,
+                                ts_PlannedActivityQ3 = teamPlanningDataPlannedQ3,
+                                ts_PlannedActivityQ4 = teamPlanningDataPlannedQ4,
+                                ts_AvailableHoursQ1 = teamPlanningDataAvailableInspectorHoursQ1,
+                                ts_AvailableHoursQ2 = teamPlanningDataAvailableInspectorHoursQ2,
+                                ts_AvailableHoursQ3 = teamPlanningDataAvailableInspectorHoursQ3,
+                                ts_AvailableHoursQ4 = teamPlanningDataAvailableInspectorHoursQ4,
+                                ts_TeamestimateddurationQ1 = teamPlanningDataTeamEstimatedDurationQ1,
+                                ts_TeamestimateddurationQ2 = teamPlanningDataTeamEstimatedDurationQ2,
+                                ts_TeamestimateddurationQ3 = teamPlanningDataTeamEstimatedDurationQ3,
+                                ts_TeamestimateddurationQ4 = teamPlanningDataTeamEstimatedDurationQ4,
+                                ts_ResidualinspectorhoursQ1 = ts_teamPlanningDataResidualinspectorhoursQ1,
+                                ts_ResidualinspectorhoursQ2 = ts_teamPlanningDataResidualinspectorhoursQ2,
+                                ts_ResidualinspectorhoursQ3 = ts_teamPlanningDataResidualinspectorhoursQ3,
+                                ts_ResidualinspectorhoursQ4 = ts_teamPlanningDataResidualinspectorhoursQ4,
+                            });
                         }
                     }
                 }
