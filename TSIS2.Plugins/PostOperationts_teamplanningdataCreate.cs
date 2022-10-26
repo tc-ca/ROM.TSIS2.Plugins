@@ -168,7 +168,7 @@ namespace TSIS2.Plugins
                                                 } 
                                                 else
                                                 {
-                                                    generationLog += "The Operational Status is Non-Operational";
+                                                    generationLog += "The Operational Status is Non-Operational.";
                                                 }
                                                 
                                             }
