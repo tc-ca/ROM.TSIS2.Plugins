@@ -114,7 +114,7 @@ namespace TSIS2.Plugins
                                                 planningDataName = planningDataEnglishName + "::" + planningDataFrenchName;
 
                                                 ts_TeamActivityTypeEstimatedDuration teamActivityTypeEstimatedDuration = serviceContext.ts_TeamActivityTypeEstimatedDurationSet.FirstOrDefault(ed => ed.ts_Team.Id == teamPlanningData.ts_Team.Id && ed.ts_ActivityType.Id == incidentType.Id);
-                                                if (teamActivityTypeEstimatedDuration != null)
+                                                if (teamActivityTypeEstimatedDuration != null && teamActivityTypeEstimatedDuration.ts_EstimatedDuration != null)
                                                 {
                                                     planningDataEstimatedDuration = ((int)teamActivityTypeEstimatedDuration.ts_EstimatedDuration) / 60;
                                                 }
