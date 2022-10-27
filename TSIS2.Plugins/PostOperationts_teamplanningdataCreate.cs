@@ -103,7 +103,7 @@ namespace TSIS2.Plugins
                                         planningDataActivityTypeId = operationActivity.ts_Activity.Id;
                                         msdyn_incidenttype incidentType = serviceContext.msdyn_incidenttypeSet.FirstOrDefault(it => it.Id == operationActivity.ts_Activity.Id);
                                         msdyn_FunctionalLocation functionalLocation = serviceContext.msdyn_FunctionalLocationSet.FirstOrDefault(fl => fl.Id == operation.ts_site.Id);
-                                        if (incidentType != null && incidentType.ts_RiskScore != null && incidentType.msdyn_EstimatedDuration != null)
+                                        if (incidentType != null && incidentType.ts_RiskScore != null)
                                         {
                                             ts_RecurrenceFrequencies recurrenceFrequency = serviceContext.ts_RecurrenceFrequenciesSet.FirstOrDefault(rf => rf.Id == incidentType.ts_RiskScore.Id);
 
@@ -114,14 +114,17 @@ namespace TSIS2.Plugins
                                                 planningDataName = planningDataEnglishName + "::" + planningDataFrenchName;
 
                                                 ts_TeamActivityTypeEstimatedDuration teamActivityTypeEstimatedDuration = serviceContext.ts_TeamActivityTypeEstimatedDurationSet.FirstOrDefault(ed => ed.ts_Team.Id == teamPlanningData.ts_Team.Id && ed.ts_ActivityType.Id == incidentType.Id);
-                                                if (teamActivityTypeEstimatedDuration != null)
+                                                if (teamActivityTypeEstimatedDuration != null && teamActivityTypeEstimatedDuration.ts_EstimatedDuration != null)
                                                 {
                                                     planningDataEstimatedDuration = ((int)teamActivityTypeEstimatedDuration.ts_EstimatedDuration) / 60;
                                                 }
-                                                else
+                                                else if (incidentType.msdyn_EstimatedDuration != null)
                                                 {
                                                     planningDataEstimatedDuration = ((int)incidentType.msdyn_EstimatedDuration) / 60;
                                                     generationLog += "Missing Team Estimated Duration for this Team and Activity Type. Using Activity Type Estimated Duration. \n";
+                                                } else
+                                                {
+                                                    generationLog += "The Incident Type does not have an Estimated Duration. \n";
                                                 }
 
                                                 if (operationActivity.ts_OperationalStatus == ts_operationalstatus.Operational)
@@ -194,10 +197,6 @@ namespace TSIS2.Plugins
                                             if (incidentType.ts_RiskScore == null)
                                             {
                                                 generationLog += "The Incident Type does not have a Risk Score. \n";
-                                            }
-                                            if (incidentType.msdyn_EstimatedDuration == null)
-                                            {
-                                                generationLog += "The Incident Type does not have an Estimated Duration. \n";
                                             }
                                             isMissingData = true;
                                         }
