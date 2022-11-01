@@ -123,6 +123,17 @@ namespace TSIS2.Plugins
                                     ts_TeamestimateddurationQ4 = teamEstimatedDurationQ4,
                                 });
                             }
+
+                            var plannedWO = planningData.ts_PlannedQ1 + planningData.ts_PlannedQ2 + planningData.ts_PlannedQ3 + planningData.ts_PlannedQ4;
+                            var variance = plannedWO - planningData.ts_Target;
+
+                            //Make sure the "calculated" fields are correct
+                            service.Update(new ts_PlanningData
+                            {
+                                Id = planningData.Id,
+                                ts_PlannedWOUncalculated = plannedWO,
+                                ts_VarianceUncalculated = variance
+                            });
                         }
                     }
                 }
