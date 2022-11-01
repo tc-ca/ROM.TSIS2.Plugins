@@ -55,12 +55,8 @@ namespace TSIS2.Plugins
                         using (var serviceContext = new Xrm(service))
                         {
                             ts_PlanningData planningData = serviceContext.ts_PlanningDataSet.FirstOrDefault(pd => pd.Id == planningDataTarget.Id);
-                            if (planningData == null) return;
-
                             Guid teamPlanningDataId = planningData.ts_TeamPlanningData.Id;
                             ts_TeamPlanningData teamPlanningData = serviceContext.ts_TeamPlanningDataSet.FirstOrDefault(tpd => tpd.Id == teamPlanningDataId);
-                            if (teamPlanningData == null) return;
-
                             var planningDataList = serviceContext.ts_PlanningDataSet.Where(pd => pd.ts_TeamPlanningData.Id == teamPlanningDataId);
 
                             ts_BaselineHours baselineHours = serviceContext.ts_BaselineHoursSet.FirstOrDefault(blh => blh.ts_Team.Id == teamPlanningData.ts_Team.Id);
