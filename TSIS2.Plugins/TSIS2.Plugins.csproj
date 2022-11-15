@@ -112,7 +112,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PostOperationts_planningdataUpdate.cs" />
     <Compile Include="PreOperationovs_operationCreate.cs" />
     <Compile Include="LocalizationHelper.cs" />
     <Compile Include="PluginBase.cs" />
