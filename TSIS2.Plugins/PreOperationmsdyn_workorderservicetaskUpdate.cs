@@ -222,6 +222,14 @@ namespace TSIS2.Plugins
                                                     //reference site (functional location)
                                                     newFinding.ts_functionallocation = operationEntity.ts_site;
 
+                                                    if (operationEntity.ovs_OperationTypeId != null && operationEntity.ovs_OperationTypeId.Id == new Guid("{BE8B0910-C751-EB11-A812-000D3AF3AC0D}")) //Operation Type is Person
+                                                    {
+                                                        if (workOrder.ts_Contact != null && workOrder.ts_Contact.Id != null)
+                                                        {
+                                                            newFinding.ts_Contact = new EntityReference(Contact.EntityLogicalName, workOrder.ts_Contact.Id); 
+                                                        }
+                                                    }
+
                                                     // reference the Provision Category of the Provision
                                                     JsonObject provisionData = finding.ContainsKey("provisionData") ? (JsonObject)finding["provisionData"] : new JsonObject();
                                                     var provisionCategoryId = provisionData.ContainsKey("provisioncategoryid") ? provisionData["provisioncategoryid"] : null;
