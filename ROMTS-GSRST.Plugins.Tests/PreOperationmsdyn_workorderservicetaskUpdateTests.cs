@@ -1387,7 +1387,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ASSERT
             var query = new QueryExpression(ovs_Finding.EntityLogicalName)
             {
-                ColumnSet = new ColumnSet()
+                ColumnSet = new ColumnSet("ovs_findingcomments", "ts_notetostakeholder")
             };
             var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().ToList();
 
