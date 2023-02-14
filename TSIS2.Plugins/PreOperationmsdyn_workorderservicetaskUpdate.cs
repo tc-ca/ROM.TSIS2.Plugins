@@ -133,8 +133,18 @@ namespace TSIS2.Plugins
                                             // retrieve the provision data containing the legislationID and provisionCategory
                                             var provisionData = finding.ContainsKey("provisionData") ? finding["provisionData"] : new JsonObject();
 
-                                            Guid legislationId = provisionData != null && provisionData.ContainsKey("legislationid") && provisionData["legislationid"] != null ? Guid.Parse(provisionData["legislationid"]) : Guid.Empty;
+                                            //Retrieve the provision name, might be stored in different keys
+                                            string provisionReferenceName = finding.ContainsKey("reference") && finding["reference"] != null && finding["reference"] != "" ? finding["reference"].ToString().Trim('"') : null;
+                                            if (provisionReferenceName == null)
+                                            {
+                                                provisionReferenceName = finding.ContainsKey("provisionReference") && finding["provisionReference"] != null && finding["provisionReference"] != "" ? finding["provisionReference"].ToString().Trim('"') : null;
+                                                if (provisionReferenceName == null)
+                                                {
+                                                    provisionReferenceName = finding.ContainsKey("provision") && finding["provision"] != null && finding["provision"] != "" ? finding["provision"].ToString().Trim('"') : null;
+                                                }
+                                            }
 
+                                            // retrieve the provision category
                                             Guid provisionCategoryId = provisionData != null && provisionData.ContainsKey("provisioncategoryid") && provisionData["provisioncategoryid"] != null ? Guid.Parse(provisionData["provisioncategoryid"]) : Guid.Empty;
 
                                             //Loop through the operations. Check if a finding already exists for that operation. Update the comment if it exists, or make a new finding if it doesn't
@@ -239,13 +249,21 @@ namespace TSIS2.Plugins
 
                                                     if (provisionCategoryId != Guid.Empty)
                                                     {
-                                                        newFinding.ts_ProvisionCategory = new EntityReference(ts_ProvisionCategory.EntityLogicalName, provisionCategoryId);
+                                                        ts_ProvisionCategory provisionCategory = serviceContext.ts_ProvisionCategorySet.Where(provCat => provCat.Id == provisionCategoryId).FirstOrDefault();
+                                                        newFinding.ts_ProvisionCategory = new EntityReference(ts_ProvisionCategory.EntityLogicalName, provisionCategory.Id);
                                                     }
 
-                                                    // reference the legislation/provision id
-                                                    if (legislationId != Guid.Empty)
+                                                    //reference legislation/provision
+                                                    qm_rclegislation legislation;
+
+                                                    if (provisionReferenceName != null)
                                                     {
-                                                        newFinding.ts_qm_rclegislation = new EntityReference(qm_rclegislation.EntityLogicalName, legislationId);
+                                                        legislation = serviceContext.qm_rclegislationSet.Where(leg => leg.ts_NameEnglish.Equals(provisionReferenceName)).FirstOrDefault();
+                                                        if (legislation == null) //Check the french name
+                                                        {
+                                                            legislation = serviceContext.qm_rclegislationSet.Where(leg => leg.ts_NameFrench.Equals(provisionReferenceName)).FirstOrDefault();
+                                                        }
+                                                        newFinding.ts_qm_rclegislation = new EntityReference(qm_rclegislation.EntityLogicalName, legislation.Id);
                                                     }
 
                                                     // Create new ovs_finding
