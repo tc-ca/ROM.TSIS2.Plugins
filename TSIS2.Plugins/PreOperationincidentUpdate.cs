@@ -76,10 +76,21 @@ namespace TSIS2.Plugins
 
                                 if (updatedOwnerUser != null)
                                 {
-                                    if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Id != updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id &&
-                                    !currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.Equals("Transport Canada", StringComparison.OrdinalIgnoreCase))
+                                    if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation"))
                                     {
-                                        throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignCaseErrorMsg"));
+                                        if (!updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation") ||
+                                        updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Name.Contains("PPP"))
+                                        {
+                                            throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignCaseErrorMsg"));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Id != updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id &&
+                                        !currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.Equals("Transport Canada", StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignCaseErrorMsg"));
+                                        }
                                     }
                                 }
                                 else
