@@ -93,7 +93,8 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident { });
-            var workOrderId = orgAdminUIService.Create(new msdyn_workorder {
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder
+            {
                 msdyn_name = "300-345678",
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
                 msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
@@ -105,6 +106,29 @@ namespace ROMTS_GSRST.Plugins.Tests
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
                 ts_stakeholder = accountReference
             });
+
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 4",
+                ts_NameEnglish = "SATR 4",
+                ts_NameFrench = "RSDA 4",
+            });
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("517d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 5",
+                ts_NameEnglish = "SATR 5",
+                ts_NameFrench = "RSDA 5",
+            });
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("617d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 6",
+                ts_NameEnglish = "SATR 6",
+                ts_NameFrench = "RSDA 6",
+            });
+
             var existingWorkOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
             {
                 msdyn_name = "200-345678-1",
@@ -240,6 +264,14 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ts_stakeholder = testAccountReference4
             });
 
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 4",
+                ts_NameEnglish = "SATR 4",
+                ts_NameFrench = "RSDA 4",
+            });
+
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
             {
                 msdyn_name = "200-345678-1",
@@ -304,7 +336,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ARRANGE
             var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
             var incidentId = orgAdminUIService.Create(new Incident());
-           // var siteId = orgAdminUIService.Create(new msdyn_FunctionalLocation());
+            // var siteId = orgAdminUIService.Create(new msdyn_FunctionalLocation());
             var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
             {
                 msdyn_name = "300-345678",
@@ -369,6 +401,14 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ts_stakeholder = testAccountReference4,
                 ts_site = testSiteReference4,
                 ovs_OperationTypeId = testOperationTypeReference4
+            });
+
+           orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 4",
+                ts_NameEnglish = "SATR 4",
+                ts_NameFrench = "RSDA 4",
             });
 
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -462,6 +502,28 @@ namespace ROMTS_GSRST.Plugins.Tests
             {
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
                 ts_stakeholder = testAccountReference1
+            });
+
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84125e"),
+                qm_name = "SATR 2",
+                ts_NameEnglish = "SATR 2",
+                ts_NameFrench = "RSDA 2",
+            });
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84157e"),
+                qm_name = "SATR 7 (1) (a)",
+                ts_NameEnglish = "SATR 7 (1) (a)",
+                ts_NameFrench = "RSDA 7 (1) (a)",
+            });
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84126e"),
+                qm_name = "SATR 2",
+                ts_NameEnglish = "SATR 2 (b) (ii)",
+                ts_NameFrench = "RSDA 2 (b) (ii)",
             });
 
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
@@ -685,6 +747,15 @@ namespace ROMTS_GSRST.Plugins.Tests
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
                 ts_stakeholder = accountReference
             });
+
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 4",
+                ts_NameEnglish = "SATR 4",
+                ts_NameFrench = "RSDA 4",
+            });
+
             var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
             {
                 msdyn_name = "200-345678-1",
@@ -1062,6 +1133,14 @@ namespace ROMTS_GSRST.Plugins.Tests
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
                 ts_stakeholder = accountReference
             });
+
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 4",
+                ts_NameEnglish = "SATR 4",
+                ts_NameFrench = "RSDA 4",
+            });
             // ACT
             orgAdminUIService.Update(new msdyn_workorderservicetask
             {
@@ -1111,7 +1190,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             var account = orgAdminUIService.Create(new Account());
             var accountReference1 = new EntityReference(Account.EntityLogicalName, account);
             var accountReference2 = new EntityReference(Account.EntityLogicalName, account);
-            var accountReference3 = new EntityReference(Account.EntityLogicalName, account);           
+            var accountReference3 = new EntityReference(Account.EntityLogicalName, account);
 
             var operation1 = orgAdminUIService.Create(new ovs_operation()
             {
@@ -1127,7 +1206,23 @@ namespace ROMTS_GSRST.Plugins.Tests
             {
                 Id = new Guid("22364b7e-e1ce-eb11-bacc-0022483c068d"),
                 ts_stakeholder = accountReference3
-            });           
+            });
+
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 4",
+                ts_NameEnglish = "SATR 4",
+                ts_NameFrench = "RSDA 4",
+            });
+
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84128e"),
+                qm_name = "SATR 5",
+                ts_NameEnglish = "SATR 5",
+                ts_NameFrench = "RSDA 5",
+            });
 
             // ACT
             orgAdminUIService.Update(new msdyn_workorderservicetask
@@ -1166,7 +1261,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             var workOrderServiceTasks = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<msdyn_workorderservicetask>().ToList();
 
             // Expect exactly one finding
-            Assert.Single(workOrderServiceTasks);            
+            Assert.Single(workOrderServiceTasks);
             Assert.Equal(msdyn_inspectionresult.Fail, workOrderServiceTasks.Single().msdyn_inspectiontaskresult);
         }
 
@@ -1207,6 +1302,22 @@ namespace ROMTS_GSRST.Plugins.Tests
             {
                 Id = new Guid("22364b7e-e1ce-eb11-bacc-0022483c068d"),
                 ts_stakeholder = accountReference3
+            });
+
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 4",
+                ts_NameEnglish = "SATR 4",
+                ts_NameFrench = "RSDA 4",
+            });
+
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("517d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 5",
+                ts_NameEnglish = "SATR 5",
+                ts_NameFrench = "RSDA 5",
             });
 
             // ACT
@@ -1275,6 +1386,14 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ts_stakeholder = accountReference
             });
 
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 4",
+                ts_NameEnglish = "SATR 4",
+                ts_NameFrench = "RSDA 4",
+            });
+
             // ACT
             orgAdminUIService.Update(new msdyn_workorderservicetask
             {
@@ -1341,7 +1460,91 @@ namespace ROMTS_GSRST.Plugins.Tests
             }
         }
 
-        [Fact]    
+        [Fact]
+        public void When_ovs_questionnaireresponse_contains_finding_expect_legislation_reference_equals_ts_qm_rclegislation()
+        {
+            // ARRANGE
+            var serviceAccountId = orgAdminUIService.Create(new Account() { Name = "Test Service Account" });
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder()
+            {
+                msdyn_name = "300-345678",
+                msdyn_ServiceRequest = null,
+                msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId)
+
+            });
+            var workOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask()
+            {
+                msdyn_name = "200-345678-1",
+                msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
+                msdyn_PercentComplete = 0.00,
+            });
+            var account = orgAdminUIService.Create(new Account());
+            var accountReference = new EntityReference(Account.EntityLogicalName, account);
+
+            Guid operationGuid = new Guid("cb84b80e-f2f6-eb11-94ef-000d3a09c1c3");
+            var operation = orgAdminUIService.Create(new ovs_operation()
+            {
+                Id = operationGuid,
+                ts_stakeholder = accountReference
+            });
+
+            Guid legislationGuid = new Guid("1de3a6e1-c2ad-eb11-1231-100d3ae8b861");
+            var legislationid = orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = legislationGuid,
+                qm_name = "SATR 4.1 (1) (b)",
+                ts_NameEnglish = "SATR 4.1 (1) (b)",
+                ts_NameFrench = "RSDA 4.1 (1) (b)",
+            });
+
+            // ACT
+            orgAdminUIService.Update(new msdyn_workorderservicetask
+            {
+                Id = workOrderServiceTaskId,
+                msdyn_PercentComplete = 100.00,
+                ovs_QuestionnaireResponse = @"
+                {
+                    ""finding-sq_141"": {
+                        ""provisionReference"": ""SATR 4.1 (1) (b)"",
+                        ""provisionTextEn"": ""<html><strong>Verification of Identity</strong></br><strong>SATR 4.1</strong>: </br><strong>SATR 4.1 (1)</strong>: The air carrier must carry out each verification referred to in section 3 or 4 by</br><strong><mark>SATR 4.1 (1) (b)</mark></strong>: if the passenger presents a piece of photo identification, comparing the passenger’s entire face with the face displayed in the photograph.</br></html>"",
+                        ""provisionTextFr"": ""<html><strong>Vérification de l’identité</strong></br><strong>SATR 4.1</strong>: </br><strong>SATR 4.1 (1)</strong>: Le transporteur aérien effectue la vérification visée à l’article 3 ou 4 de la manière suivante :</br><strong><mark>SATR 4.1 (1) (b)</mark></strong>: si le passager présente une pièce d’identité avec photo, en comparant son visage en entier avec le visage paraissant sur la photo.</br></html>"",
+                        ""operations"": [{""operationID"": """ + operationGuid + @""",""findingType"": ""717750001""}],
+                        ""provisionData"": {""legislationid"": """ + legislationid + @""",""provisioncategoryid"": null},
+                        ""comments"": ""test comments 1"",
+                        ""reference"": ""SATR 4.1 (1) (b)""
+                    },   
+                    ""finding-sq_142"": {
+                        ""provisionReference"": ""RSDA 4.1 (1) (b)"",
+                        ""provisionTextEn"": ""<strong>Verification of Identity</strong></br><strong><mark><mark>SATR 4</mark></mark></strong>: An air carrier must, at the boarding gate for an international flight, verify the identity of each passenger who appears to be 18 years of age or older using</br><ul style='list-style-type:none;'><li><strong>(a)</strong> one of the following pieces of photo identification issued by a government authority that shows the passenger’s surname, first name and any middle names, their date of birth and gender and that is valid:</li><ul style='list-style-type:none;'><li><strong>(i)</strong> a passport issued by the country of which the passenger is a citizen or a national,</li><li><strong>(ii)</strong> a NEXUS card,</li><li><strong>(iii)</strong> any document referred to in subsection 50(1) or 52(1) of the Immigration and Refugee Protection Regulations; or</li></ul><li><strong>(b)</strong> a valid restricted area identity card, as defined in section 3 of the Canadian Aviation Security Regulations, 2012.</li></ul>"",
+                        ""provisionTextFr"": ""<strong>Verification of Identity</strong></br><strong><mark><mark><mark>SATR 4</mark></mark></mark></strong>: Tout transporteur aérien vérifie, à la porte d’embarquement pour un vol international, l’identité de chaque passager qui semble âgé de 18 ans ou plus au moyen :</br><ul style='list-style-type:none;'><li><strong>(a)</strong> soit de l’une des pièces d’identité avec photo ci-après qui est délivrée par une autorité gouvernementale, qui indique les nom et prénoms, date de naissance et genre du passager et qui est valide :</li><ul style='list-style-type:none;'><li><strong>(i)</strong> un passeport délivré au passager par le pays dont il est citoyen ou ressortissant,</li><li><strong>(ii)</strong> une carte NEXUS,</li><li><strong>(iii)</strong> un document visé au paragraphe 50(1) ou 52(1) du Règlement sur l’immigration et la protection des réfugiés;</li></ul><li><strong>(b)</strong> soit d’une carte d’identité de zone réglementée au sens de l’article 3 du Règlement canadien de 2012 sur la sûreté aérienne qui est valide.</li></ul>"",
+                        ""operations"": [{""operationID"": """ + operationGuid + @""",""findingType"": ""717750001""}],
+                        ""provisionData"": {""legislationid"": """ + legislationid + @""",""provisioncategoryid"": null},
+                        ""comments"": ""test comments 1"",
+                        ""reference"": ""RSDA 4.1 (1) (b)""
+                    },
+                    ""finding-sq_143"": {
+                        ""provisionReference"": ""SATR 4.1 (1) (b)"",
+                        ""provisionTextEn"": ""<strong>Verification of Identity</strong></br><strong><mark><mark>SATR 4</mark></mark></strong>: An air carrier must, at the boarding gate for an international flight, verify the identity of each passenger who appears to be 18 years of age or older using</br><ul style='list-style-type:none;'><li><strong>(a)</strong> one of the following pieces of photo identification issued by a government authority that shows the passenger’s surname, first name and any middle names, their date of birth and gender and that is valid:</li><ul style='list-style-type:none;'><li><strong>(i)</strong> a passport issued by the country of which the passenger is a citizen or a national,</li><li><strong>(ii)</strong> a NEXUS card,</li><li><strong>(iii)</strong> any document referred to in subsection 50(1) or 52(1) of the Immigration and Refugee Protection Regulations; or</li></ul><li><strong>(b)</strong> a valid restricted area identity card, as defined in section 3 of the Canadian Aviation Security Regulations, 2012.</li></ul>"",
+                        ""provisionTextFr"": ""<strong>Verification of Identity</strong></br><strong><mark><mark><mark>SATR 4</mark></mark></mark></strong>: Tout transporteur aérien vérifie, à la porte d’embarquement pour un vol international, l’identité de chaque passager qui semble âgé de 18 ans ou plus au moyen :</br><ul style='list-style-type:none;'><li><strong>(a)</strong> soit de l’une des pièces d’identité avec photo ci-après qui est délivrée par une autorité gouvernementale, qui indique les nom et prénoms, date de naissance et genre du passager et qui est valide :</li><ul style='list-style-type:none;'><li><strong>(i)</strong> un passeport délivré au passager par le pays dont il est citoyen ou ressortissant,</li><li><strong>(ii)</strong> une carte NEXUS,</li><li><strong>(iii)</strong> un document visé au paragraphe 50(1) ou 52(1) du Règlement sur l’immigration et la protection des réfugiés;</li></ul><li><strong>(b)</strong> soit d’une carte d’identité de zone réglementée au sens de l’article 3 du Règlement canadien de 2012 sur la sûreté aérienne qui est valide.</li></ul>"",
+                        ""operations"": [{""operationID"": """ + operationGuid + @""",""findingType"": ""717750001""}],
+                        ""comments"": ""test comments 2""
+                    }
+                }
+                "
+            });
+
+            // ASSERT
+            var query = new QueryExpression(ovs_Finding.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet("ts_qm_rclegislation")
+            };
+            var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().ToList();
+
+            Assert.Equal(legislationGuid.ToString(), findings[0].ts_qm_rclegislation.Id.ToString());
+            Assert.Equal(legislationGuid.ToString(), findings[1].ts_qm_rclegislation.Id.ToString());
+        }
+
+        [Fact]
         public void When_ovs_questionnaireresponse_contains_finding_expect_NotetoStakeholder_equals_inspector_comments()
         {
             // ARRANGE
@@ -1366,6 +1569,15 @@ namespace ROMTS_GSRST.Plugins.Tests
                 Id = new Guid("9de3a6e3-c4ad-eb11-8236-000d3ae8b866"),
                 ts_stakeholder = accountReference
             });
+
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 4",
+                ts_NameEnglish = "SATR 4",
+                ts_NameFrench = "RSDA 4",
+            });
+
             // ACT
             orgAdminUIService.Update(new msdyn_workorderservicetask
             {
@@ -1387,7 +1599,7 @@ namespace ROMTS_GSRST.Plugins.Tests
             // ASSERT
             var query = new QueryExpression(ovs_Finding.EntityLogicalName)
             {
-                ColumnSet = new ColumnSet()
+                ColumnSet = new ColumnSet("ovs_findingcomments", "ts_notetostakeholder")
             };
             var findings = orgAdminUIService.RetrieveMultiple(query).Entities.Cast<ovs_Finding>().ToList();
 
@@ -1439,6 +1651,29 @@ namespace ROMTS_GSRST.Plugins.Tests
                 Id = new Guid("22364b7e-e1ce-eb11-bacc-0022483c068d"),
                 ts_stakeholder = testAccountReference4
             });
+
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("417d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 4",
+                ts_NameEnglish = "SATR 4",
+                ts_NameFrench = "RSDA 4",
+            });
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("517d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 5",
+                ts_NameEnglish = "SATR 5",
+                ts_NameFrench = "RSDA 5",
+            });
+            orgAdminUIService.Create(new qm_rclegislation()
+            {
+                Id = new Guid("617d6241-386a-eb11-a812-000d3a84129e"),
+                qm_name = "SATR 6",
+                ts_NameEnglish = "SATR 6",
+                ts_NameFrench = "RSDA 6",
+            });
+
 
             var existingWorkOrderServiceTaskId = orgAdminUIService.Create(new msdyn_workorderservicetask
             {
@@ -1594,6 +1829,6 @@ namespace ROMTS_GSRST.Plugins.Tests
             // Expect newly created tenth ovs_finding to have the proper name
             var tenth = findings[9];
             Assert.Equal("100-345678-1-3-3", tenth.ovs_Finding_1);
-        }   
+        }
     }
 }

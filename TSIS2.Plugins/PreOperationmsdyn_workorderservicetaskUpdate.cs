@@ -130,6 +130,23 @@ namespace TSIS2.Plugins
                                             // The finding JSON may contain an array of string Id's of operation records
                                             var operations = finding.ContainsKey("operations") ? finding["operations"] : new JsonArray();
 
+                                            // retrieve the provision data containing the legislationID and provisionCategory
+                                            var provisionData = finding.ContainsKey("provisionData") ? finding["provisionData"] : new JsonObject();
+
+                                            //Retrieve the provision name, might be stored in different keys
+                                            string provisionReferenceName = finding.ContainsKey("reference") && finding["reference"] != null && finding["reference"] != "" ? finding["reference"].ToString().Trim('"') : null;
+                                            if (provisionReferenceName == null)
+                                            {
+                                                provisionReferenceName = finding.ContainsKey("provisionReference") && finding["provisionReference"] != null && finding["provisionReference"] != "" ? finding["provisionReference"].ToString().Trim('"') : null;
+                                                if (provisionReferenceName == null)
+                                                {
+                                                    provisionReferenceName = finding.ContainsKey("provision") && finding["provision"] != null && finding["provision"] != "" ? finding["provision"].ToString().Trim('"') : null;
+                                                }
+                                            }
+
+                                            // retrieve the provision category
+                                            Guid provisionCategoryId = provisionData != null && provisionData.ContainsKey("provisioncategoryid") && provisionData["provisioncategoryid"] != null ? Guid.Parse(provisionData["provisioncategoryid"]) : Guid.Empty;
+
                                             //Loop through the operations. Check if a finding already exists for that operation. Update the comment if it exists, or make a new finding if it doesn't
                                             foreach (JsonObject operation in operations)
                                             {
@@ -226,16 +243,27 @@ namespace TSIS2.Plugins
                                                     {
                                                         if (workOrder.ts_Contact != null && workOrder.ts_Contact.Id != null)
                                                         {
-                                                            newFinding.ts_Contact = new EntityReference(Contact.EntityLogicalName, workOrder.ts_Contact.Id); 
+                                                            newFinding.ts_Contact = new EntityReference(Contact.EntityLogicalName, workOrder.ts_Contact.Id);
                                                         }
                                                     }
 
-                                                    // reference the Provision Category of the Provision
-                                                    JsonObject provisionData = finding.ContainsKey("provisionData") ? (JsonObject)finding["provisionData"] : new JsonObject();
-                                                    var provisionCategoryId = provisionData.ContainsKey("provisioncategoryid") ? provisionData["provisioncategoryid"] : null;
-                                                    if (provisionCategoryId != null)
+                                                    if (provisionCategoryId != Guid.Empty)
                                                     {
-                                                        newFinding.ts_ProvisionCategory = new EntityReference(ts_ProvisionCategory.EntityLogicalName, new Guid(provisionData["provisioncategoryid"]));
+                                                        ts_ProvisionCategory provisionCategory = serviceContext.ts_ProvisionCategorySet.Where(provCat => provCat.Id == provisionCategoryId).FirstOrDefault();
+                                                        newFinding.ts_ProvisionCategory = new EntityReference(ts_ProvisionCategory.EntityLogicalName, provisionCategory.Id);
+                                                    }
+
+                                                    //reference legislation/provision
+                                                    qm_rclegislation legislation;
+
+                                                    if (provisionReferenceName != null)
+                                                    {
+                                                        legislation = serviceContext.qm_rclegislationSet.Where(leg => leg.ts_NameEnglish.Equals(provisionReferenceName)).FirstOrDefault();
+                                                        if (legislation == null) //Check the french name
+                                                        {
+                                                            legislation = serviceContext.qm_rclegislationSet.Where(leg => leg.ts_NameFrench.Equals(provisionReferenceName)).FirstOrDefault();
+                                                        }
+                                                        newFinding.ts_qm_rclegislation = new EntityReference(qm_rclegislation.EntityLogicalName, legislation.Id);
                                                     }
 
                                                     // Create new ovs_finding
