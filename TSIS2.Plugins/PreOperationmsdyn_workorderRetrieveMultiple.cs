@@ -62,12 +62,12 @@ namespace TSIS2.Plugins
                         Boolean dualInspector = false;
 
                         //Get User BU
-                        Guid businessUnitId = ((EntityReference)(service.Retrieve("systemuser", userId, new ColumnSet("businessunitid"))).Attributes["businessunitid"]).Id;
-                        string businessUnitName = (string)service.Retrieve("businessunit", businessUnitId, new ColumnSet("name")).Attributes["name"];
+                        Guid userBusinessUnitId = ((EntityReference)(service.Retrieve("systemuser", userId, new ColumnSet("businessunitid"))).Attributes["businessunitid"]).Id;
+                        string userBusinessUnitName = (string)service.Retrieve("businessunit", userBusinessUnitId, new ColumnSet("name")).Attributes["name"];
 
-                        if (businessUnitName != "Transport Canada")
+                        if (userBusinessUnitName != "Transport Canada")
                         {
-                            String fetchXml = @"<fetch distinct='false' mapping='logical' returntotalrecordcount='true' no-lock='false'>
+                            String teamFetchXML = @"<fetch distinct='false' mapping='logical' returntotalrecordcount='true' no-lock='false'>
                                               <entity name='team'>
                                                 <attribute name='name' />
                                                 <filter type='and'>
@@ -84,7 +84,7 @@ namespace TSIS2.Plugins
                                               </entity>
                                             </fetch>";
 
-                            EntityCollection retrievedTeams = service.RetrieveMultiple(new FetchExpression(fetchXml));
+                            EntityCollection retrievedTeams = service.RetrieveMultiple(new FetchExpression(teamFetchXML));
 
                             bool inISSOInspectorTeam = false;
                             bool inAvSecInspectorTeam = false;
@@ -106,17 +106,22 @@ namespace TSIS2.Plugins
 
                             if (!dualInspector)
                             {
+                                //Add condition to only show WO with activity type BU equals to user BU
                                 entityElement.Add(
-                                        new XElement("filter",
-                                            new XElement("condition",
-                                                new XAttribute("attribute", "owningbusinessunit"),
-                                                new XAttribute("operator", "eq"),
-                                                new XAttribute("value", businessUnitId.ToString())
+                                        new XElement("link-entity",
+                                            new XAttribute("name", "msdyn_incidenttype"),
+                                            new XAttribute("from", "msdyn_incidenttypeid"),
+                                            new XAttribute("to", "msdyn_primaryincidenttype"),
+                                            new XAttribute("link-type", "inner"),
+                                                 new XElement("filter",
+                                                    new XElement("condition",
+                                                        new XAttribute("attribute", "owningbusinessunit"),
+                                                        new XAttribute("operator", "eq"),
+                                                        new XAttribute("value", userBusinessUnitId.ToString())
+                                                    )
                                                 )
                                             )
                                         );
-
-
                                 objFetchExpression.Query = fetchXmlDoc.ToString();
                             }
                         }
