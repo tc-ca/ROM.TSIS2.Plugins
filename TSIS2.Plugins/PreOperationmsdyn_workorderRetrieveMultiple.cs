@@ -33,10 +33,6 @@ namespace TSIS2.Plugins
             IPluginExecutionContext context = (IPluginExecutionContext)
                 serviceProvider.GetService(typeof(IPluginExecutionContext));
 
-            FetchExpression objFetchExpression = (FetchExpression)context.InputParameters["Query"];
-            XDocument fetchXmlDoc = XDocument.Parse(objFetchExpression.Query);
-            var entityElement = fetchXmlDoc.Descendants("entity").FirstOrDefault();
-            var entityName = entityElement.Attributes("name").FirstOrDefault().Value;
 
             // The InputParameters collection contains all the data passed in the message request.
             if (context.InputParameters.Contains("Query") &&
@@ -50,6 +46,10 @@ namespace TSIS2.Plugins
 
                 try
                 {
+                    FetchExpression objFetchExpression = (FetchExpression)context.InputParameters["Query"];
+                    XDocument fetchXmlDoc = XDocument.Parse(objFetchExpression.Query);
+                    var entityElement = fetchXmlDoc.Descendants("entity").FirstOrDefault();
+                    var entityName = entityElement.Attributes("name").FirstOrDefault().Value;
 
                     var filterElements = entityElement.Descendants("filter");
                     var condition = from c in filterElements.Descendants("condition") //bogus filter in "Active Work Order" to identify it
