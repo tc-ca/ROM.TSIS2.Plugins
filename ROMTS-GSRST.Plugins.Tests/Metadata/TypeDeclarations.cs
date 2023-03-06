@@ -4,11 +4,15 @@ namespace DG.Tools.XrmMockup {
 	public struct SecurityRoles {
 		public static Guid DeprecatedMarketingRealtimeFeatureConfigurationAdministrator = new Guid("5a8c8098-b933-eb11-a813-000d3a8e7ded");
 		public static Guid DeprecatedMarketingRealtimeFeatureConfigurationReader = new Guid("1cbf96a1-b933-eb11-a813-000d3a8e7ded");
+		public static Guid DeprecatedMarketingRealtimeFeatureConfigurationServicesUser = new Guid("5d24f5ab-b933-eb11-a813-000d3a8e7ded");
+		public static Guid DeprecatedMetadataStoreReader = new Guid("d88a1b99-fea8-eb11-8237-000d3a1ae7b4");
+		public static Guid DeprecatedMetadataStoreUpdaterServiceRole = new Guid("4ad10052-b0c3-eb11-b1b7-000d3af64e96");
 		public static Guid ActivityFeeds = new Guid("cb269f84-e19d-e011-b66c-00155db528b6");
 		public static Guid AIBRoles = new Guid("e57bff35-58b4-4725-aee2-40fb18f4c8bd");
 		public static Guid AIBSMLRoles = new Guid("3f199ebd-977e-43e5-abe5-fe865a1f2904");
 		public static Guid AnalyticsReportAuthor = new Guid("5d654478-ef8d-ec11-b3fe-000d3a5cee94");
 		public static Guid AppDeploymentOrchestrationRole = new Guid("1bb44f6d-15a5-48aa-a2f2-8d2cb0095d2d");
+		public static Guid AppOpener = new Guid("979144c2-989b-41a5-a146-6b3ea4130e8c");
 		public static Guid AppProfileManagerAdministrator = new Guid("4758a2be-ccd8-ea11-a813-000d3a579805");
 		public static Guid AppProfileUser = new Guid("61649654-ced8-ea11-a813-000d3a579805");
 		public static Guid ApprovalsAdministrator = new Guid("854af338-f3c5-e711-8122-000d3aa01c52");
@@ -27,6 +31,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid CCAAnalyticsApp = new Guid("09686f40-772a-42d8-98ca-199483b1b275");
 		public static Guid CCIadmin = new Guid("a1801436-efd6-e811-a96e-000d3a3ab886");
 		public static Guid CEOBusinessManager = new Guid("a5b6bf71-a21c-424c-82b8-bd2a2147a168");
+		public static Guid ChannelAccess = new Guid("a2cccf01-f964-449c-a827-9b66e03f7fc8");
 		public static Guid Click2CloneAdministrator = new Guid("9bd753ee-41a9-e511-9414-00155d068906");
 		public static Guid Click2CloneUser = new Guid("c65a1216-42a9-e511-9414-00155d068906");
 		public static Guid CSRManager = new Guid("a0c28c41-5e86-4d45-a0d1-70a9cde49e33");
@@ -35,6 +40,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid CustomerServiceScheduleAdministrator = new Guid("245b20ea-dd8d-464d-ba3a-8ed3ea015198");
 		public static Guid CustomerServiceScheduler = new Guid("0df07e88-3880-4109-bfa5-06e97c80eb46");
 		public static Guid CustomerVoiceAddon = new Guid("90bb098b-d3b6-ea11-a812-000d3a31eec8");
+		public static Guid CxpDataverseDatasourceServicesUser = new Guid("060a3f14-a531-4214-a30f-22ef4c5838ce");
 		public static Guid CxpPersonalizationServicesUser = new Guid("d55cd2f7-60e8-44cd-8ba8-dd45382e9151");
 		public static Guid CxpServicesUser = new Guid("532a53ec-fcc2-4a8c-a2ad-ddf1e639b0be");
 		public static Guid D365ChannelDefinitionsAdmin = new Guid("19014756-5407-ed11-82e4-000d3a1f71e3");
@@ -44,7 +50,6 @@ namespace DG.Tools.XrmMockup {
 		public static Guid DataLakeWorkspaceAppAccess = new Guid("edfcbfd2-358f-ea11-a81f-000d3a6eafd3");
 		public static Guid DataProcessingConfigTableAppAccess = new Guid("896a28e5-678d-4fa8-ad59-c606d1aa98ce");
 		public static Guid DataverseSearchRole = new Guid("a0a59a4a-b5a8-4e6f-a094-a866573c17d4");
-		public static Guid DataverseDataSourceImpersonationRole = new Guid("060a3f14-a531-4214-a30f-22ef4c5838ce");
 		public static Guid DeflectionServiceRole = new Guid("c95980b3-97dc-4762-a037-c15fe02dae8c");
 		public static Guid Delegate = new Guid("10472c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid DelegatedMailboxApprover = new Guid("d19d7df9-96e3-440a-ada1-7f469d2a00d1");
@@ -81,9 +86,6 @@ namespace DG.Tools.XrmMockup {
 		public static Guid KnowledgeManager = new Guid("58306a42-48ec-4293-83be-a0b68ff87f5f");
 		public static Guid MarketingManager = new Guid("b701b110-4a7c-44cf-8cc1-c673b35decbe");
 		public static Guid MarketingProfessional = new Guid("34e0e805-c3e7-48f5-aaee-b758b4ef82c7");
-		public static Guid MarketingRealtimeFeatureConfigurationServicesUser = new Guid("5d24f5ab-b933-eb11-a813-000d3a8e7ded");
-		public static Guid MetadataStoreReader = new Guid("d88a1b99-fea8-eb11-8237-000d3a1ae7b4");
-		public static Guid MetadataStoreUpdaterServiceRole = new Guid("4ad10052-b0c3-eb11-b1b7-000d3af64e96");
 		public static Guid OfficeCollaborator = new Guid("e8fb3146-7717-ec11-b1b7-000d3af68e17");
 		public static Guid Omnichanneladministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
 		public static Guid Omnichannelagent = new Guid("c30bdbfe-7553-e811-8147-000d3aa39708");
@@ -141,6 +143,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid SystemAdministrator = new Guid("ca432c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid SystemCustomizer = new Guid("1b482c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid TCOMS = new Guid("3c721f42-5864-ed11-9562-0022483c5061");
+		public static Guid TeamsChatSyncAppAccess = new Guid("fe46802a-88ae-4c6d-b452-7a024d8c294e");
 		public static Guid TimeEntryUser = new Guid("feae608b-0633-ea11-a81c-000d3ac406c6");
 		public static Guid TourAuthor = new Guid("2d8b17d9-643c-40b1-9f7d-a6ba95063906");
 		public static Guid TourConsumer = new Guid("30db5b2f-b1c6-4892-ba03-5e532ab8534e");
