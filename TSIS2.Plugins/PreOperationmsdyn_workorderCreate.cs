@@ -78,6 +78,15 @@ namespace TSIS2.Plugins
             {
                 if (target.LogicalName.Equals(msdyn_workorder.EntityLogicalName))
                 {
+                    //Set Category to Planned if making the Work Order from the Planning Module
+                    if (context.ParentContext != null &&
+                        context.ParentContext.InputParameters != null &&
+                        context.ParentContext.InputParameters.ContainsKey("x-ms-app-name") &&
+                        context.ParentContext.InputParameters["x-ms-app-name"] != null &&
+                        context.ParentContext.InputParameters["x-ms-app-name"].ToString() == "ts_OversightPlanningModule")
+                    {
+                        target.Attributes["ovs_rational"] = new EntityReference(ovs_TYRational.EntityLogicalName, new Guid("994c3ec1-c104-eb11-a813-000d3af3a7a7")); //Planned
+                    }
                     //Set State to Committed if making the Work Order from the ROM application
                     if (context.ParentContext != null &&
                         context.ParentContext.InputParameters != null &&
