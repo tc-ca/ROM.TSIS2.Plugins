@@ -56,9 +56,13 @@ namespace TSIS2.Plugins
                                     where c.Attribute("attribute").Value.Equals("msdyn_workordersummary")
                                     select c;
 
-                    if (condition.Count() > 0)
+                    Guid userId = context.InitiatingUserId;
+
+
+
+                    if (condition.Count() > 0 && !IsUserSystemAdministrator(context.UserId, service))
                     {
-                        Guid userId = context.InitiatingUserId;
+                        userId = context.InitiatingUserId;
                         Boolean dualInspector = false;
 
                         //Get User BU
@@ -135,5 +139,28 @@ namespace TSIS2.Plugins
 
             }
         }
+
+        private bool IsUserSystemAdministrator(Guid userId, IOrganizationService service)
+        {
+            string fetchXml = $@"<fetch>
+                                    <entity name='systemuser'>
+                                        <attribute name='systemuserid' />
+                                        <filter>
+                                            <condition attribute='systemuserid' operator='eq' value='{userId}' />
+                                        </filter>
+                                        <link-entity name='systemuserroles' from='systemuserid' to='systemuserid'>
+                                            <link-entity name='role' from='roleid' to='roleid'>
+                                                <filter>
+                                                    <condition attribute='name' operator='eq' value='System Administrator' />
+                                                </filter>
+                                            </link-entity>
+                                        </link-entity>
+                                    </entity>
+                                </fetch>";
+
+            EntityCollection result = service.RetrieveMultiple(new FetchExpression(fetchXml));
+            return result.Entities.Count > 0;
+        }
     }
+
 }
