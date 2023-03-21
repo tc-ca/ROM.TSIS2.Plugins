@@ -241,20 +241,24 @@ namespace TSIS2.Plugins
 
                                 if (updatedOwnerUser != null)
                                 {
-                                    if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation") )
+                                    //If updatedOwnerUser is not dual inspector
+                                    if (!updatedOwnerUser.GetAttributeValue<bool>("ts_dualinspector"))
                                     {
-                                        if (!updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation") ||
-                                        updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Name.Contains("PPP"))
+                                        if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation"))
                                         {
-                                            throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
+                                            if (!updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation") ||
+                                            updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Name.Contains("PPP"))
+                                            {
+                                                throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
+                                            }
                                         }
-                                    }
-                                    else
-                                    {
-                                        if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Id != updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id &&
-                                        !currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.Equals("Transport Canada", StringComparison.OrdinalIgnoreCase))
+                                        else
                                         {
-                                            throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
+                                            if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Id != updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id &&
+                                            !currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.Equals("Transport Canada", StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
+                                            }
                                         }
                                     }
                                 }
