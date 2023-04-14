@@ -15,8 +15,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid AppOpener = new Guid("979144c2-989b-41a5-a146-6b3ea4130e8c");
 		public static Guid AppProfileManagerAdministrator = new Guid("4758a2be-ccd8-ea11-a813-000d3a579805");
 		public static Guid AppProfileUser = new Guid("61649654-ced8-ea11-a813-000d3a579805");
-		public static Guid ApprovalsAdministrator = new Guid("854af338-f3c5-e711-8122-000d3aa01c52");
-		public static Guid ApprovalsUser = new Guid("b9b08637-acf6-e711-a95a-000d3a11f5ee");
+		public static Guid Asyncingestion = new Guid("ab8b8c58-1f50-4037-8b26-7523d6145cc3");
 		public static Guid Attach2DynamicsAdministrator = new Guid("755701c6-5dca-e811-80d1-00155d060713");
 		public static Guid Attach2DynamicsUser = new Guid("1c5c29f9-5dca-e811-80d1-00155d060713");
 		public static Guid BasicUser = new Guid("1a482c33-29a1-eb11-b1ac-000d3ae8bbe0");
@@ -41,6 +40,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid CustomerServiceScheduler = new Guid("0df07e88-3880-4109-bfa5-06e97c80eb46");
 		public static Guid CustomerVoiceAddon = new Guid("90bb098b-d3b6-ea11-a812-000d3a31eec8");
 		public static Guid CxpDataverseDatasourceServicesUser = new Guid("060a3f14-a531-4214-a30f-22ef4c5838ce");
+		public static Guid CxpExperimentationServicesUser = new Guid("a02d65d0-5d67-4a36-b1a6-dffe75974a58");
 		public static Guid CxpPersonalizationServicesUser = new Guid("d55cd2f7-60e8-44cd-8ba8-dd45382e9151");
 		public static Guid CxpServicesUser = new Guid("532a53ec-fcc2-4a8c-a2ad-ddf1e639b0be");
 		public static Guid D365ChannelDefinitionsAdmin = new Guid("19014756-5407-ed11-82e4-000d3a1f71e3");
@@ -123,6 +123,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid Salessystemaccess = new Guid("b5b6cb27-47e9-49f7-84bb-f6823fc8461c");
 		public static Guid Salessystemaccessextension = new Guid("f6f7455f-bcea-44dc-abbd-7fd51b1cc880");
 		public static Guid SalesTeamMember = new Guid("7e13fe7f-ea02-4a4e-a523-89ed9361961d");
+		public static Guid SalesWhoKnowsWhomSearchAdmin = new Guid("79b9f3b0-c8c2-4c1e-9d4c-97f0c38d1401");
 		public static Guid SalesInsightsAutoCaptureAdmin = new Guid("5d667671-6492-4651-a297-cb1a9981e159");
 		public static Guid Salesperson = new Guid("3bf365ba-6d27-42e7-8d08-d18dd51407d7");
 		public static Guid ScheduleManager = new Guid("9d264e42-8b56-44bc-9950-9011ecefafb4");
