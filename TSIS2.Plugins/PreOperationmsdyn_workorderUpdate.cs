@@ -199,6 +199,7 @@ namespace TSIS2.Plugins
                                                 Id = workOrderServiceTask.Id,
                                                 statecode = msdyn_workorderservicetaskState.Inactive,
                                                 statuscode = msdyn_workorderservicetask_statuscode.Inactive,
+                                                ts_Mandatory = false
                                             });
                                         }
                                     }
