@@ -40,7 +40,6 @@ namespace DG.Tools.XrmMockup {
 		public static Guid CustomerServiceScheduler = new Guid("0df07e88-3880-4109-bfa5-06e97c80eb46");
 		public static Guid CustomerVoiceAddon = new Guid("90bb098b-d3b6-ea11-a812-000d3a31eec8");
 		public static Guid CxpDataverseDatasourceServicesUser = new Guid("060a3f14-a531-4214-a30f-22ef4c5838ce");
-		public static Guid CxpExperimentationServicesUser = new Guid("a02d65d0-5d67-4a36-b1a6-dffe75974a58");
 		public static Guid CxpPersonalizationServicesUser = new Guid("d55cd2f7-60e8-44cd-8ba8-dd45382e9151");
 		public static Guid CxpServicesUser = new Guid("532a53ec-fcc2-4a8c-a2ad-ddf1e639b0be");
 		public static Guid D365ChannelDefinitionsAdmin = new Guid("19014756-5407-ed11-82e4-000d3a1f71e3");
@@ -61,6 +60,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid DesktopFlowsModuleDeveloper = new Guid("ee7bc749-3dd6-45ac-b95d-a3031463380b");
 		public static Guid DesktopFlowsRuntimeApplicationUser = new Guid("ee2c8e11-6d57-4c5d-9f84-659c0db132bb");
 		public static Guid Dynamics365AppforOutlookUser = new Guid("2407db5e-edae-4e36-9be1-fd61d4d15809");
+		public static Guid DynamicsMarketingExperimentationServicesUser = new Guid("a02d65d0-5d67-4a36-b1a6-dffe75974a58");
 		public static Guid EACAppAccess = new Guid("2c321cf0-f096-ea11-a81a-000d3a6ecd99");
 		public static Guid EACReaderAppAccess = new Guid("7be5a395-6b58-4f8c-908f-97dc8810fc50");
 		public static Guid EnvironmentMaker = new Guid("d58407f2-48d5-e711-a82c-000d3a37c848");
