@@ -149,48 +149,92 @@ namespace TSIS2.Plugins
                             }
                         }
 
-                        // if the uploaded file is visible to other programs
-                        if (myFile.ts_VisibletoOtherPrograms == true)
+                        // Update the ownership of the file
+                        if (!String.IsNullOrWhiteSpace(myFile.OwnerId.ToString()))
                         {
-                            // retrieve the list of teams that the file is being shared with
-                            var teams = myFile.ts_ProgramAccessTeamNameID.Split(',').ToList();
-
-                            // drop the last item in the array if it is empty
-                            if (String.IsNullOrWhiteSpace(teams[teams.Count - 1]))
-                                teams.RemoveAt(teams.Count - 1);
-
-                            // go through each team that was selected and share the uploaded file with that team
-                            foreach (var teamItem in teams)
+                            using (var serviceContext = new Xrm(service))
                             {
-                                // create the team entity ref
-                                var teamID = new Guid(teamItem);
-                                var teamRef = new EntityReference("team", teamID);
+                                // get the user uploading the file
+                                var currentUser = serviceContext.SystemUserSet.Where(u => u.Id == context.InitiatingUserId).FirstOrDefault();
 
-                                // create the file entity ref
-                                var fileRef = new EntityReference(target.LogicalName, target.Id);
+                                // the business unit name of the user
+                                var businessUnitName = currentUser.BusinessUnitId.Name;
 
-                                // create the grant access request for the file entity
-                                var grantAccess = new GrantAccessRequest
+                                // get the team with the business unit name
+                                var team = serviceContext.TeamSet.Where(t => t.Name == businessUnitName).FirstOrDefault();
+
+                                if (team != null)
                                 {
-                                    PrincipalAccess = new PrincipalAccess
+                                    // do the grant access so the unit tests pass successfully
+                                    var userID = new Guid(currentUser.Id.ToString());
+                                    var userRef = new EntityReference("systemuser", userID);
+
+                                    // create the file entity ref
+                                    var fileRef = myFile.ToEntityReference();
+
+                                    // create the grant access request for the file entity
+                                    var grantAccess = new GrantAccessRequest
                                     {
-                                        AccessMask = AccessRights.ReadAccess,
-                                        Principal = teamRef
-                                    },
-                                    Target = fileRef
-                                };
+                                        PrincipalAccess = new PrincipalAccess
+                                        {
+                                            AccessMask = AccessRights.ReadAccess,
+                                            Principal = team.ToEntityReference()
+                                        },
+                                        Target = fileRef
+                                    };
 
-                                // set the many-to-many with team
-                                EntityReferenceCollection relatedEntities = new EntityReferenceCollection();
+                                    service.Execute(grantAccess);
 
-                                relatedEntities.Add(teamRef);
+                                    // update the file ownership
+                                    service.Update(new ts_File
+                                    {
+                                        Id = myFile.Id,
+                                        OwnerId = team.ToEntityReference()
+                                    });
 
-                                Relationship relationship = new Relationship("ts_File_Team_Team");
+                                }
 
-                                service.Associate(fileRef.LogicalName, fileRef.Id, relationship, relatedEntities);
+                                // if the user is a dual-inspector
+                                if (currentUser.ts_dualinspector != null && currentUser.ts_dualinspector == true)
+                                {
+                                    // find out what other teams the user belongs to
+                                    var userTeams = serviceContext.TeamMembershipSet.Where(u => u.SystemUserId == context.InitiatingUserId).ToList();
 
-                                // give the team access to the uploaded file
-                                service.Execute(grantAccess);
+                                    if (userTeams.Count() > 0)
+                                    {
+                                        // grant access to any other teams that have the same name as the business unit
+                                        foreach (var userTeam in userTeams)
+                                        {
+                                            // get the team
+                                            var userTeamItem = serviceContext.TeamSet.Where(t => t.Id == userTeam.TeamId).FirstOrDefault();
+
+                                            if (userTeamItem != null)
+                                            {
+                                                // get the business unit name of the team
+                                                var teamBusinessUnitName = userTeamItem.BusinessUnitId.Name;
+
+                                                // now get the team with the same name as the business unit
+                                                var teamWithBusinessUnitName = serviceContext.TeamSet.Where(t => t.Name == teamBusinessUnitName).FirstOrDefault();
+
+                                                // have this if statement since access was already set for businessUnitName in the previous code block
+                                                if (teamWithBusinessUnitName.Name != businessUnitName)
+                                                {
+                                                    var grantAccess = new GrantAccessRequest
+                                                    {
+                                                        PrincipalAccess = new PrincipalAccess
+                                                        {
+                                                            AccessMask = AccessRights.ReadAccess,
+                                                            Principal = teamWithBusinessUnitName.ToEntityReference()
+                                                        },
+                                                        Target = myFile.ToEntityReference()
+                                                    };
+
+                                                    service.Execute(grantAccess);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -214,6 +258,6 @@ namespace TSIS2.Plugins
                     throw;
                 }
             }
-        }
+        }    
     }
 }
