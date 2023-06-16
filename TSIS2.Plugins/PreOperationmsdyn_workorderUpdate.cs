@@ -185,7 +185,10 @@ namespace TSIS2.Plugins
                                 // Cast the target to the expected entity
                                 msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
 
-                                if (workOrder.msdyn_PrimaryIncidentType != null)
+                                msdyn_workorder oldWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
+
+                                //Proceed only if the Work Order has new Activity Type and there was one prior to the update
+                                if (workOrder.msdyn_PrimaryIncidentType != null && oldWorkOrder.msdyn_PrimaryIncidentType != null)
                                 {
                                     //Retrieve all Work Order Service Tasks associated to the current work order
                                     var workOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(f => (f.msdyn_WorkOrder.Id == workOrder.Id)).ToList();
