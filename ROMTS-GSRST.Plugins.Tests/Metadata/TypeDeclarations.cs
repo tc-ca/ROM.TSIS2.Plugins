@@ -90,6 +90,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid Omnichanneladministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
 		public static Guid Omnichannelagent = new Guid("c30bdbfe-7553-e811-8147-000d3aa39708");
 		public static Guid OmnichannelAPIaccess = new Guid("08593e02-ca6e-ec11-8943-000d3a9d73b9");
+		public static Guid OmnichannelCDSFlushRole = new Guid("36491c22-df5c-4155-927c-b1d8d2848e3b");
 		public static Guid Omnichannelsupervisor = new Guid("e4435009-7653-e811-8147-000d3aa39708");
 		public static Guid PlaybookManager = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2732");
 		public static Guid PlaybookUser = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2731");
@@ -98,6 +99,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid PowerBIworkspaceadmin = new Guid("53d935d6-60c8-4315-afe6-fe472cb343be");
 		public static Guid PowerBIworkspacecontributor = new Guid("065a0f7a-7805-4e51-abf7-8f13df4688a8");
 		public static Guid PowerBIworkspaceviewer = new Guid("a02e0e38-20c1-4046-becb-a5a48190fd6b");
+		public static Guid PowerPlatformDataflowsServiceRole = new Guid("f2550a3a-f9c6-4409-bf77-8d4ceadb27ab");
 		public static Guid PowerAppsRPRole = new Guid("527c7b12-e5ac-4408-9f46-ecc762397544");
 		public static Guid PPPAnalyst = new Guid("70abdd18-59b6-ea11-a812-000d3a0c8127");
 		public static Guid PPPBasicRole = new Guid("54631c5d-3edb-ea11-a813-000d3a0c8127");
@@ -107,23 +109,27 @@ namespace DG.Tools.XrmMockup {
 		public static Guid Productivitytoolsadministrator = new Guid("6beb51c1-0eda-e911-a81c-000d3af75d63");
 		public static Guid Productivitytoolsuser = new Guid("c49aae0a-0fda-e911-a81c-000d3af75d63");
 		public static Guid ProjectOwner = new Guid("f9a5a958-d07f-44cd-886d-eb6343309c2a");
+		public static Guid ReadOnlyEverything = new Guid("c76ee401-4a26-ee11-9965-0022483c5061");
 		public static Guid RelationshipInsightsAdmin = new Guid("016fd16e-7be7-e611-80d6-00155d204901");
 		public static Guid ROMAdmin = new Guid("8281365b-0a40-ed11-bba2-0022483d5ee0");
 		public static Guid ROMAvSecPlanner = new Guid("5a6ed00f-94e6-ec11-bb3c-0022483d8865");
 		public static Guid ROMBase = new Guid("158781c7-f92c-eb11-a813-000d3af3a7a7");
 		public static Guid ROMBusinessAdmin = new Guid("779105f0-8d3a-eb11-a813-000d3af3fc19");
+		public static Guid ROMDataAdmin = new Guid("a54887e9-0628-ee11-9965-0022483c5061");
 		public static Guid ROMDualInspector = new Guid("ab31408d-dc0d-ed11-b83e-002248ae441f");
 		public static Guid ROMInspector = new Guid("ed37675e-f72c-eb11-a813-000d3af3a7a7");
 		public static Guid ROMISSOPlanner = new Guid("54539bf1-92e6-ec11-bb3c-0022483d8865");
 		public static Guid ROMManager = new Guid("85e36d25-29f5-eb11-94ef-000d3af36036");
 		public static Guid ROMPlanner = new Guid("9f03e814-29f5-eb11-94ef-000d3af36036");
 		public static Guid ROMQuestionnaireAdmin = new Guid("e4c394e4-a048-ec11-8c62-000d3ae89a77");
+		public static Guid SalesConversationIntelligenceDataOwner = new Guid("4a40ec4b-0fdb-4caa-bb9d-925ca43c0fa4");
 		public static Guid SalesEnterpriseappaccess = new Guid("cad52a75-568c-e611-80d4-00155d42a122");
 		public static Guid SalesManager = new Guid("a9547c3b-1c7f-4820-821f-9fb4fc383d2b");
 		public static Guid Salessystemaccess = new Guid("b5b6cb27-47e9-49f7-84bb-f6823fc8461c");
 		public static Guid Salessystemaccessextension = new Guid("f6f7455f-bcea-44dc-abbd-7fd51b1cc880");
 		public static Guid SalesTeamMember = new Guid("7e13fe7f-ea02-4a4e-a523-89ed9361961d");
 		public static Guid SalesWhoKnowsWhomSearchAdmin = new Guid("79b9f3b0-c8c2-4c1e-9d4c-97f0c38d1401");
+		public static Guid SalesWorkAssignmentAPIAccess = new Guid("255ee185-7158-41df-891f-bc3ef9b60365");
 		public static Guid SalesInsightsAutoCaptureAdmin = new Guid("5d667671-6492-4651-a297-cb1a9981e159");
 		public static Guid Salesperson = new Guid("3bf365ba-6d27-42e7-8d08-d18dd51407d7");
 		public static Guid ScheduleManager = new Guid("9d264e42-8b56-44bc-9950-9011ecefafb4");
@@ -150,6 +156,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid TourConsumer = new Guid("30db5b2f-b1c6-4892-ba03-5e532ab8534e");
 		public static Guid VicePresidentofMarketing = new Guid("c484fc40-a84a-4ad7-9ac5-c62d0421d90b");
 		public static Guid VicePresidentofSales = new Guid("52453e37-163d-4797-a1a2-be1be26ad269");
+		public static Guid VivaSales = new Guid("4ac214a3-e1f8-4574-b807-f33dda6475b3");
 		public static Guid VivaSalesAdministrator = new Guid("ebbb3fcb-fcd7-4bf8-9a48-7b5a9878e79e");
 		public static Guid VivaSalesUser = new Guid("50e667f9-14cf-4fc1-8c46-cff71096e9da");
 	}
