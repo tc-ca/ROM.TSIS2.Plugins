@@ -229,7 +229,26 @@ namespace TSIS2.Plugins
                             }
                         }
 
-                        int UserLanguage = LocalizationHelper.RetrieveUserUILanguageCode(service, context.InitiatingUserId);
+                        if (target.Attributes.Contains("msdyn_systemstatus"))
+                        {
+                            using (var serviceContext = new Xrm(service))
+                            {
+                                // Cast the target to the expected entity
+                                msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
+                                msdyn_workorder workOrderPreImage = preImageEntity.ToEntity<msdyn_workorder>();
+                                if (workOrder.ModifiedOn != null && workOrder.ModifiedBy != null)
+                                {
+                                    //Update the closed values only if either are null
+                                    if (workOrderPreImage.msdyn_TimeClosed == null || workOrderPreImage.msdyn_ClosedBy == null)
+                                    {
+                                        workOrder.msdyn_TimeClosed = workOrder.ModifiedOn;
+                                        workOrder.msdyn_ClosedBy = workOrder.ModifiedBy;
+                                    }
+                                }
+                            }
+                        }
+
+                            int UserLanguage = LocalizationHelper.RetrieveUserUILanguageCode(service, context.InitiatingUserId);
                         string ResourceFile = "ovs_/resx/WorkOrder.1033.resx";
                         if (UserLanguage == 1036) //French
                         {
