@@ -16,9 +16,9 @@ namespace TSIS2.Plugins
     "TSIS2.Plugins.PreValidationnovs_operationCreate Plugin",
     1,
     IsolationModeEnum.Sandbox,
-    Description = "Rename ISSO Operation to follow this format : Stakeholder | Operation Type | Site  ")]
+    Description = "Change ownership of operation to business units team and rename ISSO operations to follow this format : Stakeholder | Operation Type | Site ")]
 
-    public class PreOperationovs_operationCreate : IPlugin
+    public class PreValidationovs_operationCreate : IPlugin
     {
         private IOrganizationService service;
         public void Execute(IServiceProvider serviceProvider)
