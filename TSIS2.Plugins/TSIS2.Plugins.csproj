@@ -115,7 +115,7 @@
     <Compile Include="PreOperation_securityincidentUpdate.cs" />
     <Compile Include="TimeZoneHelper.cs" />
     <Compile Include="PreOperation_securityincidentCreate.cs" />
-    <Compile Include="PreOperationovs_operationCreate.cs" />
+    <Compile Include="PreValidationovs_operationCreate.cs" />
     <Compile Include="PreOperationmsdyn_workorderRetrieveMultiple.cs" />
     <Compile Include="LocalizationHelper.cs" />
     <Compile Include="PluginBase.cs" />
