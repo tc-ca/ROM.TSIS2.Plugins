@@ -235,14 +235,14 @@ namespace TSIS2.Plugins
                             {
                                 // Cast the target to the expected entity
                                 msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
-                                msdyn_workorder workOrderPreImage = preImageEntity.ToEntity<msdyn_workorder>();
-                                if (workOrder.ModifiedOn != null && workOrder.ModifiedBy != null)
+                                if (workOrder.msdyn_SystemStatus == msdyn_wosystemstatus.Closed)
                                 {
+                                    msdyn_workorder oldWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
                                     //Update the closed values only if either are null
-                                    if (workOrderPreImage.msdyn_TimeClosed == null || workOrderPreImage.msdyn_ClosedBy == null)
+                                    if (oldWorkOrder != null && context.InitiatingUserId != null && (oldWorkOrder.msdyn_TimeClosed == null || oldWorkOrder.msdyn_ClosedBy == null))
                                     {
-                                        workOrder.msdyn_TimeClosed = workOrder.ModifiedOn;
-                                        workOrder.msdyn_ClosedBy = workOrder.ModifiedBy;
+                                        target["msdyn_timeclosed"] = DateTime.UtcNow;
+                                        target["msdyn_closedby"] = new EntityReference(SystemUser.EntityLogicalName, context.InitiatingUserId);
                                     }
                                 }
                             }
