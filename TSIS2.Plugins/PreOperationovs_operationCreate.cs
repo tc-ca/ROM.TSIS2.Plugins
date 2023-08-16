@@ -64,16 +64,16 @@ namespace TSIS2.Plugins
                             if (owner.LogicalName == "team" && RetrieveLookupName(service, owner, "name").StartsWith("Intermodal"))
                             {
                                 string stakeholderAltLangValue = RetrieveAltLangName(service, stakeHolderRef, userLang == 1033 ? "ovs_accountnamefrench" : "ovs_accountnameenglish", "name");
-                                string siteAltLangValue = RetrieveAltLangName(service, siteRef, userLang == 1033 ? "ts_functionallocationnamefrench" : "ts_functionallocationnameenglish", "msdyn_name");
                                 string operationTypeAltLangValue = RetrieveAltLangName(service, operationTypeRef, userLang == 1033 ? "ovs_operationtypenamefrench" : "ovs_operationtypenameenglish", "ovs_name");
+                                string siteAltLangValue = RetrieveAltLangName(service, siteRef, userLang == 1033 ? "ts_functionallocationnamefrench" : "ts_functionallocationnameenglish", "msdyn_name");
 
                                 string stakeholderName = RetrieveLookupName(service, stakeHolderRef, "name");
-                                string siteName = RetrieveLookupName(service, siteRef, "msdyn_name");
                                 string operationTypeName = RetrieveLookupName(service, operationTypeRef, "ovs_name");
+                                string siteName = RetrieveLookupName(service, siteRef, "msdyn_name");
 
-                                target.Attributes["ovs_name"] = $"{stakeholderName} | {siteName} | {operationTypeName}";
-                                target.Attributes[userLang == 1033 ? "ts_operationnameenglish" : "ts_operationnamefrench"] = $"{stakeholderAltLangValue} | {siteAltLangValue} | {operationTypeAltLangValue}";
-
+                                target.Attributes["ovs_name"] = $"{stakeholderName} | {operationTypeName} | {siteName}";
+                                target.Attributes[userLang == 1033 ? "ts_operationnamefrench" : "ts_operationnameenglish"] = $"{stakeholderAltLangValue} | {operationTypeAltLangValue} | {siteAltLangValue}";
+                                target.Attributes[userLang == 1033 ? "ts_operationnameenglish" : "ts_operationnamefrench"] = $"{stakeholderName} | {operationTypeName} | {siteName}";
                             }
                             changeOwnerToUserBusinessUnit(context, service);
                         }
