@@ -10,10 +10,10 @@ namespace TSIS2.Plugins
     [CrmPluginRegistration(
     MessageNameEnum.Create,
     "ovs_operation",
-    StageEnum.PreOperation,
+    StageEnum.PreValidation,
     ExecutionModeEnum.Synchronous,
     "",
-    "TSIS2.Plugins.PreOperationovs_operationCreate Plugin",
+    "TSIS2.Plugins.PreValidationnovs_operationCreate Plugin",
     1,
     IsolationModeEnum.Sandbox,
     Description = "Rename ISSO Operation to follow this format : Stakeholder | Operation Type | Site  ")]
@@ -61,7 +61,7 @@ namespace TSIS2.Plugins
 
                             EntityReference owner = (EntityReference)target.Attributes["ownerid"];
 
-                            if (owner.LogicalName == "team" && RetrieveLookupName(service, owner, "name").StartsWith("Intermodal"))
+                            if (owner.LogicalName == "team" && RetrieveLookupName(service, owner, "name").StartsWith("Intermodal") || IsISSOUser(context, service))
                             {
                                 string stakeholderAltLangValue = RetrieveAltLangName(service, stakeHolderRef, userLang == 1033 ? "ovs_accountnamefrench" : "ovs_accountnameenglish", "name");
                                 string operationTypeAltLangValue = RetrieveAltLangName(service, operationTypeRef, userLang == 1033 ? "ovs_operationtypenamefrench" : "ovs_operationtypenameenglish", "ovs_name");
@@ -84,6 +84,11 @@ namespace TSIS2.Plugins
                     throw new InvalidPluginExecutionException(e.Message);
                 }
             }
+        }
+
+        private bool IsISSOUser(IPluginExecutionContext context, IOrganizationService service)
+        {
+            return ((string)service.Retrieve("businessunit", ((EntityReference)(service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("businessunitid"))).Attributes["businessunitid"]).Id, new ColumnSet("name")).Attributes["name"]).StartsWith("Intermodal");
         }
 
         private void changeOwnerToUserBusinessUnit(IPluginExecutionContext context, IOrganizationService service)
@@ -121,8 +126,6 @@ namespace TSIS2.Plugins
             EntityCollection result = service.RetrieveMultiple(query);
             return result.Entities.Count > 0 ? result.Entities[0].ToEntityReference() : null;
         }
-
-
         private string RetrieveLookupName(IOrganizationService service, EntityReference ownerRef, string attributeName)
         {
             try
@@ -141,6 +144,7 @@ namespace TSIS2.Plugins
                 throw new InvalidPluginExecutionException($"Error retrieving owner name ({ownerRef.LogicalName} - {ownerRef.Id}): {ex.Message}", ex);
             }
         }
+
         private string RetrieveAltLangName(IOrganizationService service, EntityReference entityRef, string alternateLangLookupName, string LookupName)
         {
             try
@@ -159,7 +163,6 @@ namespace TSIS2.Plugins
                 throw new InvalidPluginExecutionException($"Error retrieving alternate language value ({entityRef.Name}): {ex.Message}", ex);
             }
         }
-
 
         private int RetrieveUserLang(IOrganizationService service, Guid userId)
         {
