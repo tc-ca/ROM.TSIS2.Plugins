@@ -40,6 +40,37 @@ namespace ROMTS_GSRST.Plugins.Tests
             var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_systemstatus")).ToEntity<msdyn_workorder>();
             Assert.Equal(msdyn_wosystemstatus.Closed, workOrder.msdyn_SystemStatus);
         }
+
+        [Fact]
+        public void When_system_status_set_to_closed_update_timeclosed_and_closedby()
+        {
+            // ARRANGE
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder());
+
+            // ACT
+            orgAdminUIService.Update(new msdyn_workorder { Id = workOrderId, msdyn_SystemStatus = msdyn_wosystemstatus.Closed });
+
+            // ASSERT
+            var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_timeclosed", "msdyn_closedby")).ToEntity<msdyn_workorder>();
+            Assert.NotNull(workOrder.msdyn_TimeClosed);
+            Assert.NotNull(workOrder.msdyn_ClosedBy);
+        }
+
+        [Fact]
+        public void When_system_status_set_to_in_progress_do_not_update_timeclosed_and_closedby()
+        {
+            // ARRANGE
+            var workOrderId = orgAdminUIService.Create(new msdyn_workorder());
+
+            // ACT
+            orgAdminUIService.Update(new msdyn_workorder { Id = workOrderId, msdyn_SystemStatus = msdyn_wosystemstatus.InProgress });
+
+            // ASSERT
+            var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_timeclosed", "msdyn_closedby")).ToEntity<msdyn_workorder>();
+            Assert.Null(workOrder.msdyn_TimeClosed);
+            Assert.Null(workOrder.msdyn_ClosedBy);
+        }
+
         [Fact]
         public void When_case_of_work_order_updated_to_new_case_expect_existing_findings_of_old_case_to_be_associated_to_new_case()
         {

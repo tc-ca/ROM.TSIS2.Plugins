@@ -229,7 +229,26 @@ namespace TSIS2.Plugins
                             }
                         }
 
-                        int UserLanguage = LocalizationHelper.RetrieveUserUILanguageCode(service, context.InitiatingUserId);
+                        if (target.Attributes.Contains("msdyn_systemstatus"))
+                        {
+                            using (var serviceContext = new Xrm(service))
+                            {
+                                // Cast the target to the expected entity
+                                msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
+                                if (workOrder.msdyn_SystemStatus == msdyn_wosystemstatus.Closed)
+                                {
+                                    msdyn_workorder oldWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
+                                    //Update the closed values only if either are null
+                                    if (oldWorkOrder != null && context.InitiatingUserId != null && (oldWorkOrder.msdyn_TimeClosed == null || oldWorkOrder.msdyn_ClosedBy == null))
+                                    {
+                                        target["msdyn_timeclosed"] = DateTime.UtcNow;
+                                        target["msdyn_closedby"] = new EntityReference(SystemUser.EntityLogicalName, context.InitiatingUserId);
+                                    }
+                                }
+                            }
+                        }
+
+                            int UserLanguage = LocalizationHelper.RetrieveUserUILanguageCode(service, context.InitiatingUserId);
                         string ResourceFile = "ovs_/resx/WorkOrder.1033.resx";
                         if (UserLanguage == 1036) //French
                         {

@@ -109,6 +109,20 @@ namespace TSIS2.Plugins
                                 target.Attributes["ts_reporteddatetimeadjust"] = TimeZoneHelper.GetAdjustedDateTime(timeZone.Value, securityincidentOriginal.ts_reporteddatetime.Value);
                             }
                         }
+
+                        if (target.Attributes.Contains("ts_recordstatus"))
+                        {
+                            if (securityincident.ts_recordstatus == ts_securityincidentstatus.Closed)
+                            {
+                                ts_securityincident oldSecurityIncident = serviceContext.ts_securityincidentSet.Where(si => si.Id == securityincident.Id).FirstOrDefault();
+                                //Update the closed values only if either are null
+                                if (oldSecurityIncident != null && context.InitiatingUserId != null && (oldSecurityIncident.ts_closedon == null || oldSecurityIncident.ts_closedby == null))
+                                {
+                                    target["ts_closedon"] = DateTime.UtcNow;
+                                    target["ts_closedby"] = new EntityReference(SystemUser.EntityLogicalName, context.InitiatingUserId);
+                                }
+                            }
+                        }
                     }
                 }
             }
