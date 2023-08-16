@@ -16,7 +16,7 @@ namespace TSIS2.Plugins
     "TSIS2.Plugins.PreOperationovs_operationCreate Plugin",
     1,
     IsolationModeEnum.Sandbox,
-    Description = "Rename ISSO Operation to follow this format : Stakeholder | Site | Operation Type ")]
+    Description = "Rename ISSO Operation to follow this format : Stakeholder | Operation Type | Site  ")]
 
     public class PreOperationovs_operationCreate : IPlugin
     {
