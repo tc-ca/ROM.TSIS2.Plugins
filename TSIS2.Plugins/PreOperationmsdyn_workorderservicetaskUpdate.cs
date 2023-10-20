@@ -258,12 +258,11 @@ namespace TSIS2.Plugins
 
                                                     if (provisionReferenceName != null)
                                                     {
-                                                        legislation = serviceContext.qm_rclegislationSet.Where(leg => leg.ts_NameEnglish.Equals(provisionReferenceName)).FirstOrDefault();
-                                                        if (legislation == null) //Check the french name
+                                                        legislation = serviceContext.qm_rclegislationSet.Where(leg => (leg.ts_NameEnglish.Equals(provisionReferenceName) || leg.ts_NameFrench.Equals(provisionReferenceName) || leg.qm_name.Equals(provisionReferenceName))).FirstOrDefault();
+                                                        if (legislation != null)
                                                         {
-                                                            legislation = serviceContext.qm_rclegislationSet.Where(leg => leg.ts_NameFrench.Equals(provisionReferenceName)).FirstOrDefault();
+                                                            newFinding.ts_qm_rclegislation = new EntityReference(qm_rclegislation.EntityLogicalName, legislation.Id);
                                                         }
-                                                        newFinding.ts_qm_rclegislation = new EntityReference(qm_rclegislation.EntityLogicalName, legislation.Id);
                                                     }
 
                                                     // Create new ovs_finding
