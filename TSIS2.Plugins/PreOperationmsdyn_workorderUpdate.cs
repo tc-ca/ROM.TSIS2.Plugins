@@ -154,6 +154,86 @@ namespace TSIS2.Plugins
                                             ovs_CaseId = workOrder.msdyn_ServiceRequest
                                         });
                                     }
+
+                                    //Find out if the Work Order has a recored in ts_sharepointfile
+                                    {
+                                        //var myWorkOrderSharePointFile = serviceContext.ts_SharePointFileSet.Where(spf => spf.ts_TableRecordID == workOrder.Id.ToString().ToUpper().Trim() && spf.ts_TableName == "Work Order").FirstOrDefault();
+
+                                        var myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, workOrder.Id.ToString().ToUpper().Trim(), PostOperationts_sharepointfileCreate.WORK_ORDER);
+
+                                        if (myWorkOrderSharePointFile != null)
+                                        {
+                                            // get the Case
+                                            var myWorkOrderCase = serviceContext.IncidentSet.Where(c => c.Id == workOrder.msdyn_ServiceRequest.Id).FirstOrDefault();
+
+                                            var myWorkOrderCaseSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext,myWorkOrderCase.Id.ToString().Trim().ToUpper(), PostOperationts_sharepointfileCreate.CASE);
+
+                                            string myOwner = "";
+
+                                            Guid myWorkOrderCaseSharePointFileGroupID = new Guid();
+
+                                            if (myWorkOrderCaseSharePointFile == null)
+                                            {
+                                                // get the owner of the case
+                                                string workOrderCaseFetchXML = $@"
+                                                    <fetch>
+                                                      <entity name='msdyn_workorder'>
+                                                        <link-entity name='ovs_operationtype' to='ovs_operationtypeid' from='ovs_operationtypeid' alias='ovs_operationtype' link-type='inner'>
+                                                          <link-entity name='team' to='owningteam' from='teamid' alias='team' link-type='inner'>
+                                                            <attribute name='name' alias='OWNER_NAME' />
+                                                          </link-entity>
+                                                        </link-entity>
+                                                        <filter>
+                                                          <condition attribute='msdyn_workorderid' operator='eq' value='{workOrder.Id.ToString()}' />
+                                                        </filter>
+                                                      </entity>
+                                                    </fetch>                                                
+                                                ";
+
+                                                var myWorkOrderEntityCollection = service.RetrieveMultiple(new FetchExpression(workOrderCaseFetchXML));
+
+                                                foreach (var item in myWorkOrderEntityCollection.Entities)
+                                                {
+                                                    if (item.Attributes["OWNER_NAME"] is AliasedValue aliasedOwner)
+                                                    {
+                                                        myOwner = aliasedOwner.Value.ToString();
+                                                    }
+                                                }
+
+                                                // create the SharePointFile for the Case
+                                                Guid myWorkOrderCaseSharePointFileID = PostOperationts_sharepointfileCreate.CreateSharePointFile(myWorkOrderCase.Title,PostOperationts_sharepointfileCreate.CASE,PostOperationts_sharepointfileCreate.CASE_FR,myWorkOrderCase.Id.ToString().Trim().ToUpper(),myWorkOrderCase.Title,myOwner,service);
+
+                                                // get the SharePointFile
+                                                myWorkOrderCaseSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, myWorkOrderCase.Id.ToString().Trim().ToUpper(), PostOperationts_sharepointfileCreate.CASE);
+
+                                                // create the SharePointFile Group
+                                                myWorkOrderCaseSharePointFileGroupID = PostOperationts_sharepointfileCreate.CreateSharePointFileGroup(myWorkOrderCaseSharePointFile, service);
+
+                                                // since the Case just got assigned a new SharePointFile and Group, update everything else with it
+                                                PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrders(service, myWorkOrderCase.Id, myWorkOrderCaseSharePointFileGroupID, myWorkOrderCaseSharePointFile);
+                                            }
+                                            else
+                                            {
+                                                myOwner = myWorkOrderCaseSharePointFile.ts_TableRecordOwner;
+                                                myWorkOrderCaseSharePointFileGroupID = myWorkOrderCaseSharePointFile.ts_SharePointFileGroup.Id;
+                                            }
+
+                                            // update the Work Order SharePoint File Group
+                                            service.Update(new ts_SharePointFile
+                                            {
+                                                Id = myWorkOrderSharePointFile.Id,
+                                                ts_SharePointFileGroup = myWorkOrderCaseSharePointFile.ts_SharePointFileGroup
+                                            });
+
+                                            // update the Work Order Service Tasks that are related to the Work Order
+                                            PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrderServiceTasks(service, workOrder.Id, myWorkOrderCaseSharePointFileGroupID, myWorkOrderSharePointFile);
+
+                                        }
+                                        else
+                                        {
+                                            // do nothing since we don't have to worry about updating ts_sharepointfile and ts_sharepointfilegroup
+                                        }
+                                    }
                                 }
                                 else
                                 {
