@@ -83,6 +83,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid HelpPageAuthor = new Guid("0e72f536-3a3a-4e74-96e9-3cab5effe10c");
 		public static Guid HelpPageConsumer = new Guid("f3d2098f-9eb0-45b3-9c7d-96526af614c4");
 		public static Guid InsightsAppsPlatformRole = new Guid("b8299fc3-f7a2-4655-a2d9-48ca2dec0346");
+		public static Guid IntegratedSearchApp = new Guid("bd33526c-3668-4f81-9045-cb70c6156dc6");
 		public static Guid IoTAdministrator = new Guid("5e4a9faa-b260-e611-8106-00155db8820b");
 		public static Guid IoTEndpointUser = new Guid("05f9a03f-5534-4b26-9bba-0726d33c6351");
 		public static Guid KnowledgeManager = new Guid("58306a42-48ec-4293-83be-a0b68ff87f5f");
