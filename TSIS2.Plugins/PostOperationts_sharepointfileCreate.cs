@@ -20,19 +20,19 @@ namespace TSIS2.Plugins
     public class PostOperationts_sharepointfileCreate : IPlugin
     {
         // Static Variables
-        private static string CASE = "Case";
-        private static string CASE_FR = "Cas";
+        public static string CASE = "Case";
+        public static string CASE_FR = "Cas";
         private static string EXEMPTION = "Exemption";
-        private static string EXEMPTION_FR = "Exemption";
+        //private static string EXEMPTION_FR = "Exemption";
         private static string OPERATION = "Operation";
-        private static string OPERATION_FR = "Opération";
+        //private static string OPERATION_FR = "Opération";
         private static string SECURITY_INCIDENT = "Security Incident";
-        private static string SECURITY_INCIDENT_FR = "Incidents de sûreté";
+        //private static string SECURITY_INCIDENT_FR = "Incidents de sûreté";
         private static string SITE = "Site";
-        private static string SITE_FR = "Site";
+        //private static string SITE_FR = "Site";
         private static string STAKEHOLDER = "Stakeholder";
-        private static string STAKEHOLDER_FR = "Partie prenante";
-        private static string WORK_ORDER = "Work Order";
+        //private static string STAKEHOLDER_FR = "Partie prenante";
+        public static string WORK_ORDER = "Work Order";
         private static string WORK_ORDER_FR = "Ordre de travail";
         private static string WORK_ORDER_SERVICE_TASK = "Work Order Service Task";
         private static string WORK_ORDER_SERVICE_TASK_FR = "Tâche de service de l'ordre de travail";
@@ -324,7 +324,7 @@ namespace TSIS2.Plugins
             }
         }
     
-        public Guid CreateSharePointFile(string ts_name, string ts_tablename, string ts_tablenamefrench, string ts_tablerecordid, string ts_tablerecordname, string ts_tablerecordowner, IOrganizationService service)
+        public static Guid CreateSharePointFile(string ts_name, string ts_tablename, string ts_tablenamefrench, string ts_tablerecordid, string ts_tablerecordname, string ts_tablerecordowner, IOrganizationService service)
         {
             ts_SharePointFile newSharePointFile = new ts_SharePointFile();
             newSharePointFile.ts_Name = ts_name;
@@ -345,7 +345,7 @@ namespace TSIS2.Plugins
             return newSharePointFileID;
         }
 
-        public Guid CreateSharePointFileGroup(ts_SharePointFile mySharePointFile, IOrganizationService service)
+        public static Guid CreateSharePointFileGroup(ts_SharePointFile mySharePointFile, IOrganizationService service)
         {
             // create the SharePoint File Group
             ts_sharepointfilegroup newSharePointFileGroup = new ts_sharepointfilegroup();
@@ -362,7 +362,7 @@ namespace TSIS2.Plugins
             return newSharePointFileGroupId;
         }
 
-        public ts_SharePointFile CheckSharePointFile(Xrm serviceContext, string myTableRecordID, string myTableName)
+        public static ts_SharePointFile CheckSharePointFile(Xrm serviceContext, string myTableRecordID, string myTableName)
         {
             ts_SharePointFile mySharePointFile = null;
 
@@ -380,7 +380,7 @@ namespace TSIS2.Plugins
             return mySharePointFile;
         }
         
-        public void UpdateRelatedWorkOrders(IOrganizationService service, Guid myCaseID, Guid myCaseSharePointFileGroupID, ts_SharePointFile mySharePointFile)
+        public static void UpdateRelatedWorkOrders(IOrganizationService service, Guid myCaseID, Guid myCaseSharePointFileGroupID, ts_SharePointFile mySharePointFile)
         {
             using (var serviceContext = new Xrm(service))
             {
@@ -441,7 +441,7 @@ namespace TSIS2.Plugins
             }
         }
 
-        public void UpdateRelatedWorkOrderServiceTasks(IOrganizationService service, Guid myWorkOrderID, Guid myWorkOrderSharePointFileGroupID, ts_SharePointFile mySharePointFile)
+        public static void UpdateRelatedWorkOrderServiceTasks(IOrganizationService service, Guid myWorkOrderID, Guid myWorkOrderSharePointFileGroupID, ts_SharePointFile mySharePointFile)
         {
             using (var serviceContext = new Xrm(service))
             {
