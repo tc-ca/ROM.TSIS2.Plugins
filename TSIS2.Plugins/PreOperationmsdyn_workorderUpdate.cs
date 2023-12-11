@@ -211,7 +211,7 @@ namespace TSIS2.Plugins
                                                     myWorkOrderCaseSharePointFileGroupID = PostOperationts_sharepointfileCreate.CreateSharePointFileGroup(myWorkOrderCaseSharePointFile, service);
 
                                                     // since the Case just got assigned a new SharePointFile and Group, update everything else with it
-                                                    PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrders(service, myWorkOrderCase.Id, myWorkOrderCaseSharePointFileGroupID, myWorkOrderCaseSharePointFile);
+                                                    PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrders(service, myWorkOrderCase.Id, myWorkOrderCaseSharePointFileGroupID, myOwner);
                                                 }
                                                 else
                                                 {
@@ -241,7 +241,7 @@ namespace TSIS2.Plugins
                                                 });
 
                                                 // update the Work Order Service Tasks that are related to the Work Order
-                                                PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrderServiceTasks(service, workOrder.Id, myWorkOrderCaseSharePointFileGroupID, myWorkOrderSharePointFile);
+                                                PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrderServiceTasks(service, workOrder.Id, myWorkOrderCaseSharePointFileGroupID, myOwner);
                                             }
                                             else if (myWorkOrderCaseSharePointFile == null && myWorkOrderSharePointFile == null)
                                             {

@@ -34,8 +34,8 @@ namespace TSIS2.Plugins
         //private static string STAKEHOLDER_FR = "Partie prenante";
         public static string WORK_ORDER = "Work Order";
         public static string WORK_ORDER_FR = "Ordre de travail";
-        private static string WORK_ORDER_SERVICE_TASK = "Work Order Service Task";
-        private static string WORK_ORDER_SERVICE_TASK_FR = "Tâche de service de l'ordre de travail";
+        public static string WORK_ORDER_SERVICE_TASK = "Work Order Service Task";
+        public static string WORK_ORDER_SERVICE_TASK_FR = "Tâche de service de l'ordre de travail";
 
         public void Execute(IServiceProvider serviceProvider)
         {
@@ -89,7 +89,7 @@ namespace TSIS2.Plugins
 
                                     Guid myCaseID = new Guid(mySharePointFile.ts_TableRecordID);
 
-                                    UpdateRelatedWorkOrders(service, myCaseID, myCaseSharePointFileGroupID,mySharePointFile);
+                                    UpdateRelatedWorkOrders(service, myCaseID, myCaseSharePointFileGroupID,mySharePointFile.ts_TableRecordOwner);
                                 }
                                 else
                                 {
@@ -136,7 +136,7 @@ namespace TSIS2.Plugins
                                             });
 
                                             // do this here because we have created a new SharePoint File for Case with a SharePoint File Group
-                                            UpdateRelatedWorkOrders(service, myWorkOrder.msdyn_ServiceRequest.Id, myCaseSharePointFileGroupID, mySharePointFile);
+                                            UpdateRelatedWorkOrders(service, myWorkOrder.msdyn_ServiceRequest.Id, myCaseSharePointFileGroupID, mySharePointFile.ts_TableRecordOwner);
                                         }
                                         else
                                         {
@@ -156,7 +156,7 @@ namespace TSIS2.Plugins
                                         var mySharePointFileGroupId = CreateSharePointFileGroup(mySharePointFile, service);
 
                                         // update all related Work Order Service Tasks
-                                        UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderID, mySharePointFileGroupId, mySharePointFile);
+                                        UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderID, mySharePointFileGroupId, mySharePointFile.ts_TableRecordOwner);
                                     }
                                 }
                             }
@@ -232,7 +232,7 @@ namespace TSIS2.Plugins
                                                 Guid newCaseSharePointFileGroupID = CreateSharePointFileGroup(myCaseSharePointFile, service);
 
                                                 // Update all Work Orders, and Work Order Service Tasks related to the Case with the SharePoint Group File
-                                                UpdateRelatedWorkOrders(service, new Guid(myWorkOrderCase.CaseID), newCaseSharePointFileGroupID, mySharePointFile);
+                                                UpdateRelatedWorkOrders(service, new Guid(myWorkOrderCase.CaseID), newCaseSharePointFileGroupID, mySharePointFile.ts_TableRecordOwner);
                                             }
                                             else
                                             {
@@ -263,7 +263,7 @@ namespace TSIS2.Plugins
                                                 // Update all other Work Order Service Tasks related to the Work Order with the SharePoint File Group
                                                 // We go over this because we want the Work Order Service Task to show all related attachments, even if it doesn't have one.
 
-                                                UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderServiceTask.msdyn_WorkOrder.Id, myWorkOrderSharePointFileGroup.Id, mySharePointFile);
+                                                UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderServiceTask.msdyn_WorkOrder.Id, myWorkOrderSharePointFileGroup.Id, mySharePointFile.ts_TableRecordOwner);
                                             }
                                             else
                                             {
@@ -380,7 +380,7 @@ namespace TSIS2.Plugins
             return mySharePointFile;
         }
         
-        public static void UpdateRelatedWorkOrders(IOrganizationService service, Guid myCaseID, Guid myCaseSharePointFileGroupID, ts_SharePointFile mySharePointFile)
+        public static void UpdateRelatedWorkOrders(IOrganizationService service, Guid myCaseID, Guid myCaseSharePointFileGroupID, string recordOwner)
         {
             using (var serviceContext = new Xrm(service))
             {
@@ -398,7 +398,7 @@ namespace TSIS2.Plugins
                     if (myWorkOrderSharePointFile == null)
                     {
                         // if it doesn't have a SharePoint File, create it
-                        Guid newWorkOrderSharePointFileID = CreateSharePointFile(myWorkOrder.msdyn_name, WORK_ORDER, WORK_ORDER_FR, myWorkOrderIdString, myWorkOrder.msdyn_name, mySharePointFile.ts_TableRecordOwner, service);
+                        Guid newWorkOrderSharePointFileID = CreateSharePointFile(myWorkOrder.msdyn_name, WORK_ORDER, WORK_ORDER_FR, myWorkOrderIdString, myWorkOrder.msdyn_name, recordOwner, service);
 
                         myWorkOrderSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newWorkOrderSharePointFileID).FirstOrDefault();
                     }
@@ -425,7 +425,7 @@ namespace TSIS2.Plugins
                         if (myWorkOrderServiceTaskSharePointFile == null)
                         {
                             // if it doesn't have a SharePoint File, create it
-                            Guid newWorkOrderServiceTaskSharePointFileID = CreateSharePointFile(myWorkOrderServiceTask.msdyn_name, WORK_ORDER_SERVICE_TASK, WORK_ORDER_SERVICE_TASK_FR, myWorkOrderServiceTaskIdString,myWorkOrderServiceTask.msdyn_name, mySharePointFile.ts_TableRecordOwner, service);
+                            Guid newWorkOrderServiceTaskSharePointFileID = CreateSharePointFile(myWorkOrderServiceTask.msdyn_name, WORK_ORDER_SERVICE_TASK, WORK_ORDER_SERVICE_TASK_FR, myWorkOrderServiceTaskIdString,myWorkOrderServiceTask.msdyn_name, recordOwner, service);
 
                             myWorkOrderServiceTaskSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newWorkOrderServiceTaskSharePointFileID).FirstOrDefault();
                         }
@@ -441,7 +441,7 @@ namespace TSIS2.Plugins
             }
         }
 
-        public static void UpdateRelatedWorkOrderServiceTasks(IOrganizationService service, Guid myWorkOrderID, Guid myWorkOrderSharePointFileGroupID, ts_SharePointFile mySharePointFile)
+        public static void UpdateRelatedWorkOrderServiceTasks(IOrganizationService service, Guid myWorkOrderID, Guid myWorkOrderSharePointFileGroupID, string recordOwner)
         {
             using (var serviceContext = new Xrm(service))
             {
@@ -459,7 +459,7 @@ namespace TSIS2.Plugins
                     if (myWorkOrderSharePointFile == null)
                     {
                         // if it doesn't have a SharePoint File, create it
-                        Guid newWorkOrderSharePointFileID = CreateSharePointFile(myWorkOrder.msdyn_name, WORK_ORDER, WORK_ORDER_FR, myWorkOrderIdString, myWorkOrder.msdyn_name, mySharePointFile.ts_TableRecordOwner, service);
+                        Guid newWorkOrderSharePointFileID = CreateSharePointFile(myWorkOrder.msdyn_name, WORK_ORDER, WORK_ORDER_FR, myWorkOrderIdString, myWorkOrder.msdyn_name, recordOwner, service);
 
                         myWorkOrderSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newWorkOrderSharePointFileID).FirstOrDefault();
                     }
@@ -486,7 +486,7 @@ namespace TSIS2.Plugins
                         if (myWorkOrderServiceTaskSharePointFile == null)
                         {
                             // if it doesn't have a SharePoint File, create it
-                            Guid newWorkOrderServiceTaskSharePointFileID = CreateSharePointFile(myWorkOrderServiceTask.msdyn_name, WORK_ORDER_SERVICE_TASK, WORK_ORDER_SERVICE_TASK_FR, myWorkOrderServiceTaskIdString, myWorkOrderServiceTask.msdyn_name, mySharePointFile.ts_TableRecordOwner, service);
+                            Guid newWorkOrderServiceTaskSharePointFileID = CreateSharePointFile(myWorkOrderServiceTask.msdyn_name, WORK_ORDER_SERVICE_TASK, WORK_ORDER_SERVICE_TASK_FR, myWorkOrderServiceTaskIdString, myWorkOrderServiceTask.msdyn_name, recordOwner, service);
 
                             myWorkOrderServiceTaskSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newWorkOrderServiceTaskSharePointFileID).FirstOrDefault();
                         }
