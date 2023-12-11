@@ -162,34 +162,34 @@ namespace TSIS2.Plugins
                                         {
                                             var myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, workOrder.Id.ToString().ToUpper().Trim(), PostOperationts_sharepointfileCreate.WORK_ORDER);
 
-                                            if (myWorkOrderSharePointFile != null)
+                                            // get the Case
+                                            var myWorkOrderCase = serviceContext.IncidentSet.Where(c => c.Id == workOrder.msdyn_ServiceRequest.Id).FirstOrDefault();
+
+                                            var myWorkOrderCaseSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, myWorkOrderCase.Id.ToString().Trim().ToUpper(), PostOperationts_sharepointfileCreate.CASE);
+
+                                            string myOwner = "";
+
+                                            Guid myWorkOrderCaseSharePointFileGroupID = new Guid();
+
+                                            if (myWorkOrderCaseSharePointFile != null || myWorkOrderSharePointFile != null)
                                             {
-                                                // get the Case
-                                                var myWorkOrderCase = serviceContext.IncidentSet.Where(c => c.Id == workOrder.msdyn_ServiceRequest.Id).FirstOrDefault();
-
-                                                var myWorkOrderCaseSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, myWorkOrderCase.Id.ToString().Trim().ToUpper(), PostOperationts_sharepointfileCreate.CASE);
-
-                                                string myOwner = "";
-
-                                                Guid myWorkOrderCaseSharePointFileGroupID = new Guid();
-
                                                 if (myWorkOrderCaseSharePointFile == null)
                                                 {
                                                     // get the owner of the case
                                                     string workOrderCaseFetchXML = $@"
-                                                    <fetch>
-                                                      <entity name='msdyn_workorder'>
-                                                        <link-entity name='ovs_operationtype' to='ovs_operationtypeid' from='ovs_operationtypeid' alias='ovs_operationtype' link-type='inner'>
-                                                          <link-entity name='team' to='owningteam' from='teamid' alias='team' link-type='inner'>
-                                                            <attribute name='name' alias='OWNER_NAME' />
-                                                          </link-entity>
-                                                        </link-entity>
-                                                        <filter>
-                                                          <condition attribute='msdyn_workorderid' operator='eq' value='{workOrder.Id.ToString()}' />
-                                                        </filter>
-                                                      </entity>
-                                                    </fetch>                                                
-                                                ";
+                                                        <fetch>
+                                                            <entity name='msdyn_workorder'>
+                                                            <link-entity name='ovs_operationtype' to='ovs_operationtypeid' from='ovs_operationtypeid' alias='ovs_operationtype' link-type='inner'>
+                                                                <link-entity name='team' to='owningteam' from='teamid' alias='team' link-type='inner'>
+                                                                <attribute name='name' alias='OWNER_NAME' />
+                                                                </link-entity>
+                                                            </link-entity>
+                                                            <filter>
+                                                                <condition attribute='msdyn_workorderid' operator='eq' value='{workOrder.Id.ToString()}' />
+                                                            </filter>
+                                                            </entity>
+                                                        </fetch>                                                
+                                                    ";
 
                                                     var myWorkOrderEntityCollection = service.RetrieveMultiple(new FetchExpression(workOrderCaseFetchXML));
 
@@ -219,6 +219,20 @@ namespace TSIS2.Plugins
                                                     myWorkOrderCaseSharePointFileGroupID = myWorkOrderCaseSharePointFile.ts_SharePointFileGroup.Id;
                                                 }
 
+                                                // if we don't have a SharePoint File for the Work Order
+                                                if (myWorkOrderSharePointFile == null)
+                                                {
+                                                    // need this to get the Work Order Name
+                                                    var myWorkOrderName = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault().msdyn_name;
+
+                                                    // create the SharePointFile for the WorkOrder
+                                                    Guid myWorkOrderSharePointFileID = PostOperationts_sharepointfileCreate.CreateSharePointFile(myWorkOrderName, PostOperationts_sharepointfileCreate.WORK_ORDER, PostOperationts_sharepointfileCreate.WORK_ORDER_FR, workOrder.Id.ToString().Trim().ToUpper(), myWorkOrderName, myOwner, service);
+
+                                                    // get the SharePointFile
+                                                    myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, workOrder.Id.ToString().Trim().ToUpper(), PostOperationts_sharepointfileCreate.WORK_ORDER);
+
+                                                }
+
                                                 // update the Work Order SharePoint File Group
                                                 service.Update(new ts_SharePointFile
                                                 {
@@ -228,11 +242,10 @@ namespace TSIS2.Plugins
 
                                                 // update the Work Order Service Tasks that are related to the Work Order
                                                 PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrderServiceTasks(service, workOrder.Id, myWorkOrderCaseSharePointFileGroupID, myWorkOrderSharePointFile);
-
                                             }
-                                            else
+                                            else if (myWorkOrderCaseSharePointFile == null && myWorkOrderSharePointFile == null)
                                             {
-                                                // do nothing since we don't have to worry about updating ts_sharepointfile and ts_sharepointfilegroup
+                                                // do nothing since the Case and Work Order don't have a ts_sharepoint file
                                             }
                                         }
                                         catch (Exception ex)

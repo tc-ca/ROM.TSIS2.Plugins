@@ -33,7 +33,7 @@ namespace TSIS2.Plugins
         private static string STAKEHOLDER = "Stakeholder";
         //private static string STAKEHOLDER_FR = "Partie prenante";
         public static string WORK_ORDER = "Work Order";
-        private static string WORK_ORDER_FR = "Ordre de travail";
+        public static string WORK_ORDER_FR = "Ordre de travail";
         private static string WORK_ORDER_SERVICE_TASK = "Work Order Service Task";
         private static string WORK_ORDER_SERVICE_TASK_FR = "Tâche de service de l'ordre de travail";
 
