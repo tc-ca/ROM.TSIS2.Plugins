@@ -115,33 +115,7 @@ namespace TSIS2.Plugins
                                     if (myWorkOrderSharePointFile != null || myWorkOrderServiceTaskSharePointFile != null)
                                     {
                                         // get the Owner of the Work Order
-                                        string myOwner = "";
-
-                                        // get the owner of the case
-                                        string workOrderCaseFetchXML = $@"
-                                            <fetch>
-                                                <entity name='msdyn_workorder'>
-                                                <link-entity name='ovs_operationtype' to='ovs_operationtypeid' from='ovs_operationtypeid' alias='ovs_operationtype' link-type='inner'>
-                                                    <link-entity name='team' to='owningteam' from='teamid' alias='team' link-type='inner'>
-                                                    <attribute name='name' alias='OWNER_NAME' />
-                                                    </link-entity>
-                                                </link-entity>
-                                                <filter>
-                                                    <condition attribute='msdyn_workorderid' operator='eq' value='{selectedWorkOrder.Id.ToString()}' />
-                                                </filter>
-                                                </entity>
-                                            </fetch>                                                
-                                        ";
-
-                                        var myWorkOrderEntityCollection = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(workOrderCaseFetchXML));
-
-                                        foreach (var item in myWorkOrderEntityCollection.Entities)
-                                        {
-                                            if (item.Attributes["OWNER_NAME"] is AliasedValue aliasedOwner)
-                                            {
-                                                myOwner = aliasedOwner.Value.ToString();
-                                            }
-                                        }
+                                        string myOwner = PostOperationts_sharepointfileCreate.GetWorkOrderOwner(localContext.OrganizationService, selectedWorkOrder.Id);
 
                                         // if we have a SharePoint File for the Work Order
                                         if (myWorkOrderSharePointFile != null)
@@ -160,24 +134,15 @@ namespace TSIS2.Plugins
                                                 ts_SharePointFileGroup = myWorkOrderSharePointFile.ts_SharePointFileGroup
                                             });
 
-                                            // update the Work Order Service Tasks that are related to the Work Order
+                                            // The assumption is that if a Work Order has a SharePoint file, then it has the SharePoint File Group from the Case 
+                                            // Update the Work Order Service Tasks that are related to the Work Order
                                             PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrderServiceTasks(localContext.OrganizationService, selectedWorkOrder.Id, myWorkOrderSharePointFile.ts_SharePointFileGroup.Id, myOwner);
                                         }
                                         else if(myWorkOrderSharePointFile == null && myWorkOrderServiceTaskSharePointFile != null)
                                         {
-                                            // check if we have a SharePoint File for the Work Order
-                                            if (myWorkOrderSharePointFile == null)
-                                            {
-                                                Guid myWorkOrderSharePointFileID = PostOperationts_sharepointfileCreate.CreateSharePointFile(selectedWorkOrder.msdyn_name, PostOperationts_sharepointfileCreate.WORK_ORDER, PostOperationts_sharepointfileCreate.WORK_ORDER_FR, selectedWorkOrder.Id.ToString().Trim().ToUpper(), selectedWorkOrder.msdyn_name, myOwner, localContext.OrganizationService);
-                                                myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, myWorkOrderSharePointFileID.ToString().ToUpper(), PostOperationts_sharepointfileCreate.WORK_ORDER);
-
-                                                // update the SharePoint File Group for the Work Order
-                                                localContext.OrganizationService.Update(new ts_SharePointFile
-                                                {
-                                                    Id = myWorkOrderSharePointFile.Id,
-                                                    ts_SharePointFileGroup = myWorkOrderServiceTaskSharePointFile.ts_SharePointFileGroup
-                                                });
-                                            }
+                                            // Create the SharePoint File for the Work Order
+                                            Guid myWorkOrderSharePointFileID = PostOperationts_sharepointfileCreate.CreateSharePointFile(selectedWorkOrder.msdyn_name, PostOperationts_sharepointfileCreate.WORK_ORDER, PostOperationts_sharepointfileCreate.WORK_ORDER_FR, selectedWorkOrder.Id.ToString().Trim().ToUpper(), selectedWorkOrder.msdyn_name, myOwner, localContext.OrganizationService);
+                                            myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, myWorkOrderSharePointFileID.ToString().ToUpper(), PostOperationts_sharepointfileCreate.WORK_ORDER);
 
                                             // check if the Work Order has a Case
                                             if (selectedWorkOrder.msdyn_ServiceRequest != null)
@@ -197,25 +162,27 @@ namespace TSIS2.Plugins
                                                     // get the SharePointFile
                                                     myWorkOrderCaseSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, myWorkOrderCase.Id.ToString().Trim().ToUpper(), PostOperationts_sharepointfileCreate.CASE);
 
-                                                    // update the SharePointFileGroup for the Case with the SharePoint File Group that is being used for the Work Order Service Task
-                                                    localContext.OrganizationService.Update(new ts_SharePointFile
-                                                    {
-                                                        Id = myWorkOrderCaseSharePointFileID,
-                                                        ts_SharePointFileGroup = myWorkOrderServiceTaskSharePointFile.ts_SharePointFileGroup
-                                                    });
+                                                    // create the SharePoint File Group for the Case
+                                                    Guid myWorkOrderCaseSharePointFileGroupID = PostOperationts_sharepointfileCreate.CreateSharePointFileGroup(myWorkOrderCaseSharePointFile, localContext.OrganizationService);
 
                                                     // then update everything related to the Case with the SharePoint File Group
-                                                    PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrders(localContext.OrganizationService, myWorkOrderCase.Id, myWorkOrderServiceTaskSharePointFile.ts_SharePointFileGroup.Id, myOwner);
+                                                    PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrders(localContext.OrganizationService, myWorkOrderCase.Id, myWorkOrderCaseSharePointFileGroupID, myOwner);
                                                 }
                                                 else
                                                 {
                                                     mySharePointFileGroup = myWorkOrderCaseSharePointFile.ts_SharePointFileGroup;
+
+                                                    // update everything related to the Case with the SharePoint File Group
+                                                    PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrders(localContext.OrganizationService, myWorkOrderCase.Id, myWorkOrderServiceTaskSharePointFile.ts_SharePointFileGroup.Id, myOwner);
                                                 }
                                             }
                                             else
                                             {
-                                                // if not just update the Work Order Service Tasks that are related to the Work Order
-                                                PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrderServiceTasks(localContext.OrganizationService, selectedWorkOrder.Id, myWorkOrderServiceTaskSharePointFile.ts_SharePointFileGroup.Id, myOwner);
+                                                // create the SharePoint File Group for the Work Order
+                                                Guid myWorkOrderSharePointFileGroupID = PostOperationts_sharepointfileCreate.CreateSharePointFileGroup(myWorkOrderSharePointFile, localContext.OrganizationService);
+
+                                                // update the Work Order Service Tasks that are related to the Work Order
+                                                PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrderServiceTasks(localContext.OrganizationService, selectedWorkOrder.Id, myWorkOrderSharePointFileGroupID, myOwner);
                                             }
                                         }
                                     }
