@@ -501,5 +501,38 @@ namespace TSIS2.Plugins
                 }
             }
         }
+    
+        public static string GetWorkOrderOwner(IOrganizationService serviceContext, Guid workOrderId)
+        {
+            string myOwner = "";
+
+            // get the owner
+            string ownerFetchXML = $@"
+                                        <fetch>
+                                            <entity name='msdyn_workorder'>
+                                            <link-entity name='ovs_operationtype' to='ovs_operationtypeid' from='ovs_operationtypeid' alias='ovs_operationtype' link-type='inner'>
+                                                <link-entity name='team' to='owningteam' from='teamid' alias='team' link-type='inner'>
+                                                <attribute name='name' alias='OWNER_NAME' />
+                                                </link-entity>
+                                            </link-entity>
+                                            <filter>
+                                                <condition attribute='msdyn_workorderid' operator='eq' value='{workOrderId.ToString()}' />
+                                            </filter>
+                                            </entity>
+                                        </fetch>                                                
+            ";
+
+            var myWorkOrderEntityCollection = serviceContext.RetrieveMultiple(new FetchExpression(ownerFetchXML));
+
+            foreach (var item in myWorkOrderEntityCollection.Entities)
+            {
+                if (item.Attributes["OWNER_NAME"] is AliasedValue aliasedOwner)
+                {
+                    myOwner = aliasedOwner.Value.ToString();
+                }
+            }
+
+            return myOwner;
+        }
     }
 }
