@@ -532,6 +532,12 @@ namespace TSIS2.Plugins
                 }
             }
 
+            // make this adjustment for the DEV Environment
+            if (myOwner == "Intermodal Surface Security Oversight (ISSO) (dev)")
+            {
+                myOwner = "Intermodal Surface Security Oversight (ISSO)";
+            }
+
             return myOwner;
         }
     }
