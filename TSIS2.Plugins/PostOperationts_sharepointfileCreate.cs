@@ -20,22 +20,22 @@ namespace TSIS2.Plugins
     public class PostOperationts_sharepointfileCreate : IPlugin
     {
         // Static Variables
-        private static string CASE = "Case";
-        private static string CASE_FR = "Cas";
+        public static string CASE = "Case";
+        public static string CASE_FR = "Cas";
         private static string EXEMPTION = "Exemption";
-        private static string EXEMPTION_FR = "Exemption";
+        //private static string EXEMPTION_FR = "Exemption";
         private static string OPERATION = "Operation";
-        private static string OPERATION_FR = "Opération";
+        //private static string OPERATION_FR = "Opération";
         private static string SECURITY_INCIDENT = "Security Incident";
-        private static string SECURITY_INCIDENT_FR = "Incidents de sûreté";
+        //private static string SECURITY_INCIDENT_FR = "Incidents de sûreté";
         private static string SITE = "Site";
-        private static string SITE_FR = "Site";
+        //private static string SITE_FR = "Site";
         private static string STAKEHOLDER = "Stakeholder";
-        private static string STAKEHOLDER_FR = "Partie prenante";
-        private static string WORK_ORDER = "Work Order";
-        private static string WORK_ORDER_FR = "Ordre de travail";
-        private static string WORK_ORDER_SERVICE_TASK = "Work Order Service Task";
-        private static string WORK_ORDER_SERVICE_TASK_FR = "Tâche de service de l'ordre de travail";
+        //private static string STAKEHOLDER_FR = "Partie prenante";
+        public static string WORK_ORDER = "Work Order";
+        public static string WORK_ORDER_FR = "Ordre de travail";
+        public static string WORK_ORDER_SERVICE_TASK = "Work Order Service Task";
+        public static string WORK_ORDER_SERVICE_TASK_FR = "Tâche de service de l'ordre de travail";
 
         public void Execute(IServiceProvider serviceProvider)
         {
@@ -89,7 +89,7 @@ namespace TSIS2.Plugins
 
                                     Guid myCaseID = new Guid(mySharePointFile.ts_TableRecordID);
 
-                                    UpdateRelatedWorkOrders(service, myCaseID, myCaseSharePointFileGroupID,mySharePointFile);
+                                    UpdateRelatedWorkOrders(service, myCaseID, myCaseSharePointFileGroupID,mySharePointFile.ts_TableRecordOwner);
                                 }
                                 else
                                 {
@@ -136,7 +136,7 @@ namespace TSIS2.Plugins
                                             });
 
                                             // do this here because we have created a new SharePoint File for Case with a SharePoint File Group
-                                            UpdateRelatedWorkOrders(service, myWorkOrder.msdyn_ServiceRequest.Id, myCaseSharePointFileGroupID, mySharePointFile);
+                                            UpdateRelatedWorkOrders(service, myWorkOrder.msdyn_ServiceRequest.Id, myCaseSharePointFileGroupID, mySharePointFile.ts_TableRecordOwner);
                                         }
                                         else
                                         {
@@ -156,7 +156,7 @@ namespace TSIS2.Plugins
                                         var mySharePointFileGroupId = CreateSharePointFileGroup(mySharePointFile, service);
 
                                         // update all related Work Order Service Tasks
-                                        UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderID, mySharePointFileGroupId, mySharePointFile);
+                                        UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderID, mySharePointFileGroupId, mySharePointFile.ts_TableRecordOwner);
                                     }
                                 }
                             }
@@ -232,7 +232,7 @@ namespace TSIS2.Plugins
                                                 Guid newCaseSharePointFileGroupID = CreateSharePointFileGroup(myCaseSharePointFile, service);
 
                                                 // Update all Work Orders, and Work Order Service Tasks related to the Case with the SharePoint Group File
-                                                UpdateRelatedWorkOrders(service, new Guid(myWorkOrderCase.CaseID), newCaseSharePointFileGroupID, mySharePointFile);
+                                                UpdateRelatedWorkOrders(service, new Guid(myWorkOrderCase.CaseID), newCaseSharePointFileGroupID, mySharePointFile.ts_TableRecordOwner);
                                             }
                                             else
                                             {
@@ -263,7 +263,7 @@ namespace TSIS2.Plugins
                                                 // Update all other Work Order Service Tasks related to the Work Order with the SharePoint File Group
                                                 // We go over this because we want the Work Order Service Task to show all related attachments, even if it doesn't have one.
 
-                                                UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderServiceTask.msdyn_WorkOrder.Id, myWorkOrderSharePointFileGroup.Id, mySharePointFile);
+                                                UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderServiceTask.msdyn_WorkOrder.Id, myWorkOrderSharePointFileGroup.Id, mySharePointFile.ts_TableRecordOwner);
                                             }
                                             else
                                             {
@@ -324,7 +324,7 @@ namespace TSIS2.Plugins
             }
         }
     
-        public Guid CreateSharePointFile(string ts_name, string ts_tablename, string ts_tablenamefrench, string ts_tablerecordid, string ts_tablerecordname, string ts_tablerecordowner, IOrganizationService service)
+        public static Guid CreateSharePointFile(string ts_name, string ts_tablename, string ts_tablenamefrench, string ts_tablerecordid, string ts_tablerecordname, string ts_tablerecordowner, IOrganizationService service)
         {
             ts_SharePointFile newSharePointFile = new ts_SharePointFile();
             newSharePointFile.ts_Name = ts_name;
@@ -345,7 +345,7 @@ namespace TSIS2.Plugins
             return newSharePointFileID;
         }
 
-        public Guid CreateSharePointFileGroup(ts_SharePointFile mySharePointFile, IOrganizationService service)
+        public static Guid CreateSharePointFileGroup(ts_SharePointFile mySharePointFile, IOrganizationService service)
         {
             // create the SharePoint File Group
             ts_sharepointfilegroup newSharePointFileGroup = new ts_sharepointfilegroup();
@@ -362,7 +362,7 @@ namespace TSIS2.Plugins
             return newSharePointFileGroupId;
         }
 
-        public ts_SharePointFile CheckSharePointFile(Xrm serviceContext, string myTableRecordID, string myTableName)
+        public static ts_SharePointFile CheckSharePointFile(Xrm serviceContext, string myTableRecordID, string myTableName)
         {
             ts_SharePointFile mySharePointFile = null;
 
@@ -380,7 +380,7 @@ namespace TSIS2.Plugins
             return mySharePointFile;
         }
         
-        public void UpdateRelatedWorkOrders(IOrganizationService service, Guid myCaseID, Guid myCaseSharePointFileGroupID, ts_SharePointFile mySharePointFile)
+        public static void UpdateRelatedWorkOrders(IOrganizationService service, Guid myCaseID, Guid myCaseSharePointFileGroupID, string recordOwner)
         {
             using (var serviceContext = new Xrm(service))
             {
@@ -398,7 +398,7 @@ namespace TSIS2.Plugins
                     if (myWorkOrderSharePointFile == null)
                     {
                         // if it doesn't have a SharePoint File, create it
-                        Guid newWorkOrderSharePointFileID = CreateSharePointFile(myWorkOrder.msdyn_name, WORK_ORDER, WORK_ORDER_FR, myWorkOrderIdString, myWorkOrder.msdyn_name, mySharePointFile.ts_TableRecordOwner, service);
+                        Guid newWorkOrderSharePointFileID = CreateSharePointFile(myWorkOrder.msdyn_name, WORK_ORDER, WORK_ORDER_FR, myWorkOrderIdString, myWorkOrder.msdyn_name, recordOwner, service);
 
                         myWorkOrderSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newWorkOrderSharePointFileID).FirstOrDefault();
                     }
@@ -425,7 +425,7 @@ namespace TSIS2.Plugins
                         if (myWorkOrderServiceTaskSharePointFile == null)
                         {
                             // if it doesn't have a SharePoint File, create it
-                            Guid newWorkOrderServiceTaskSharePointFileID = CreateSharePointFile(myWorkOrderServiceTask.msdyn_name, WORK_ORDER_SERVICE_TASK, WORK_ORDER_SERVICE_TASK_FR, myWorkOrderServiceTaskIdString,myWorkOrderServiceTask.msdyn_name, mySharePointFile.ts_TableRecordOwner, service);
+                            Guid newWorkOrderServiceTaskSharePointFileID = CreateSharePointFile(myWorkOrderServiceTask.msdyn_name, WORK_ORDER_SERVICE_TASK, WORK_ORDER_SERVICE_TASK_FR, myWorkOrderServiceTaskIdString,myWorkOrderServiceTask.msdyn_name, recordOwner, service);
 
                             myWorkOrderServiceTaskSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newWorkOrderServiceTaskSharePointFileID).FirstOrDefault();
                         }
@@ -441,7 +441,7 @@ namespace TSIS2.Plugins
             }
         }
 
-        public void UpdateRelatedWorkOrderServiceTasks(IOrganizationService service, Guid myWorkOrderID, Guid myWorkOrderSharePointFileGroupID, ts_SharePointFile mySharePointFile)
+        public static void UpdateRelatedWorkOrderServiceTasks(IOrganizationService service, Guid myWorkOrderID, Guid myWorkOrderSharePointFileGroupID, string recordOwner)
         {
             using (var serviceContext = new Xrm(service))
             {
@@ -459,7 +459,7 @@ namespace TSIS2.Plugins
                     if (myWorkOrderSharePointFile == null)
                     {
                         // if it doesn't have a SharePoint File, create it
-                        Guid newWorkOrderSharePointFileID = CreateSharePointFile(myWorkOrder.msdyn_name, WORK_ORDER, WORK_ORDER_FR, myWorkOrderIdString, myWorkOrder.msdyn_name, mySharePointFile.ts_TableRecordOwner, service);
+                        Guid newWorkOrderSharePointFileID = CreateSharePointFile(myWorkOrder.msdyn_name, WORK_ORDER, WORK_ORDER_FR, myWorkOrderIdString, myWorkOrder.msdyn_name, recordOwner, service);
 
                         myWorkOrderSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newWorkOrderSharePointFileID).FirstOrDefault();
                     }
@@ -486,7 +486,7 @@ namespace TSIS2.Plugins
                         if (myWorkOrderServiceTaskSharePointFile == null)
                         {
                             // if it doesn't have a SharePoint File, create it
-                            Guid newWorkOrderServiceTaskSharePointFileID = CreateSharePointFile(myWorkOrderServiceTask.msdyn_name, WORK_ORDER_SERVICE_TASK, WORK_ORDER_SERVICE_TASK_FR, myWorkOrderServiceTaskIdString, myWorkOrderServiceTask.msdyn_name, mySharePointFile.ts_TableRecordOwner, service);
+                            Guid newWorkOrderServiceTaskSharePointFileID = CreateSharePointFile(myWorkOrderServiceTask.msdyn_name, WORK_ORDER_SERVICE_TASK, WORK_ORDER_SERVICE_TASK_FR, myWorkOrderServiceTaskIdString, myWorkOrderServiceTask.msdyn_name, recordOwner, service);
 
                             myWorkOrderServiceTaskSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newWorkOrderServiceTaskSharePointFileID).FirstOrDefault();
                         }
@@ -500,6 +500,45 @@ namespace TSIS2.Plugins
                     }
                 }
             }
+        }
+    
+        public static string GetWorkOrderOwner(IOrganizationService serviceContext, Guid workOrderId)
+        {
+            string myOwner = "";
+
+            // get the owner
+            string ownerFetchXML = $@"
+                                        <fetch>
+                                            <entity name='msdyn_workorder'>
+                                            <link-entity name='ovs_operationtype' to='ovs_operationtypeid' from='ovs_operationtypeid' alias='ovs_operationtype' link-type='inner'>
+                                                <link-entity name='team' to='owningteam' from='teamid' alias='team' link-type='inner'>
+                                                <attribute name='name' alias='OWNER_NAME' />
+                                                </link-entity>
+                                            </link-entity>
+                                            <filter>
+                                                <condition attribute='msdyn_workorderid' operator='eq' value='{workOrderId.ToString()}' />
+                                            </filter>
+                                            </entity>
+                                        </fetch>                                                
+            ";
+
+            var myWorkOrderEntityCollection = serviceContext.RetrieveMultiple(new FetchExpression(ownerFetchXML));
+
+            foreach (var item in myWorkOrderEntityCollection.Entities)
+            {
+                if (item.Attributes["OWNER_NAME"] is AliasedValue aliasedOwner)
+                {
+                    myOwner = aliasedOwner.Value.ToString();
+                }
+            }
+
+            // make this adjustment for the DEV Environment
+            if (myOwner == "Intermodal Surface Security Oversight (ISSO) (dev)")
+            {
+                myOwner = "Intermodal Surface Security Oversight (ISSO)";
+            }
+
+            return myOwner;
         }
     }
 }
