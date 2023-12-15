@@ -142,7 +142,7 @@ namespace TSIS2.Plugins
                                         {
                                             // Create the SharePoint File for the Work Order
                                             Guid myWorkOrderSharePointFileID = PostOperationts_sharepointfileCreate.CreateSharePointFile(selectedWorkOrder.msdyn_name, PostOperationts_sharepointfileCreate.WORK_ORDER, PostOperationts_sharepointfileCreate.WORK_ORDER_FR, selectedWorkOrder.Id.ToString().Trim().ToUpper(), selectedWorkOrder.msdyn_name, myOwner, localContext.OrganizationService);
-                                            myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, myWorkOrderSharePointFileID.ToString().ToUpper(), PostOperationts_sharepointfileCreate.WORK_ORDER);
+                                            myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, selectedWorkOrder.Id.ToString().ToUpper(), PostOperationts_sharepointfileCreate.WORK_ORDER);
 
                                             // check if the Work Order has a Case
                                             if (selectedWorkOrder.msdyn_ServiceRequest != null)
