@@ -366,20 +366,20 @@ namespace TSIS2.Plugins
         {
             ts_SharePointFile mySharePointFile = null;
 
-            var allSharePointFiles = serviceContext.ts_SharePointFileSet.ToList();
-
-            foreach (var ts_SharePointFileItem in allSharePointFiles)
+            try
             {
-                if (ts_SharePointFileItem.ts_TableRecordID != null && ts_SharePointFileItem.ts_TableRecordID.Trim().ToUpper() == myTableRecordID && ts_SharePointFileItem.ts_TableName == myTableName)
-                {
-                    mySharePointFile = ts_SharePointFileItem;
-                    break;
-                }
+                mySharePointFile = serviceContext.ts_SharePointFileSet
+                    .FirstOrDefault(file => file.ts_TableRecordID == myTableRecordID && file.ts_TableName == myTableName);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                System.Diagnostics.Trace.TraceError("An error occurred while running PostOperationSharePointFileCreate.CheckSharePointFile(): " + ex.ToString());
             }
 
             return mySharePointFile;
         }
-        
+
         public static void UpdateRelatedWorkOrders(IOrganizationService service, Guid myCaseID, Guid myCaseSharePointFileGroupID, string recordOwner)
         {
             using (var serviceContext = new Xrm(service))
