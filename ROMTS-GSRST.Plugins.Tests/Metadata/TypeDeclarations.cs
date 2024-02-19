@@ -35,6 +35,8 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ChannelAccess = new Guid("a2cccf01-f964-449c-a827-9b66e03f7fc8");
 		public static Guid Click2CloneAdministrator = new Guid("9bd753ee-41a9-e511-9414-00155d068906");
 		public static Guid Click2CloneUser = new Guid("c65a1216-42a9-e511-9414-00155d068906");
+		public static Guid CopilotforServiceAdministrator = new Guid("470a750f-d810-4ee7-a64a-ec002965c1ec");
+		public static Guid CopilotforServiceUser = new Guid("6cdd8165-d5a4-4d98-9be4-680418ea600a");
 		public static Guid CSRManager = new Guid("a0c28c41-5e86-4d45-a0d1-70a9cde49e33");
 		public static Guid Customerserviceappaccess = new Guid("3dac4d9e-568c-e611-80d4-00155d42a122");
 		public static Guid CustomerServiceRepresentative = new Guid("50cb5773-2966-4bd1-999f-45dd6be8c9e5");
@@ -56,6 +58,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid Delegate = new Guid("10472c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid DelegatedMailboxApprover = new Guid("d19d7df9-96e3-440a-ada1-7f469d2a00d1");
 		public static Guid DesktopFlowMachineConfigurationAdmin = new Guid("6b860c71-0e4e-ec11-b1b5-000d3a6ed5b3");
+		public static Guid DesktopFlowsAIApplicationUser = new Guid("726d11d6-d9cf-4503-ade9-d6a4be7fa095");
 		public static Guid DesktopFlowsMachineApplicationUser = new Guid("9f572d55-6090-493b-904a-3956bdc55343");
 		public static Guid DesktopFlowsMachineOwner = new Guid("313995f9-4a4a-4d4a-afd1-c892da78e13e");
 		public static Guid DesktopFlowsMachineUser = new Guid("169ead94-a7e8-42c5-9ae8-d81205dfee77");
@@ -115,6 +118,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ProjectOwner = new Guid("f9a5a958-d07f-44cd-886d-eb6343309c2a");
 		public static Guid ReadOnlyEverything = new Guid("c76ee401-4a26-ee11-9965-0022483c5061");
 		public static Guid RelationshipInsightsAdmin = new Guid("016fd16e-7be7-e611-80d6-00155d204901");
+		public static Guid ROM20 = new Guid("eed78bb6-bca5-ee11-a568-002248aeebdb");
 		public static Guid ROMAdmin = new Guid("8281365b-0a40-ed11-bba2-0022483d5ee0");
 		public static Guid ROMAvSecPlanner = new Guid("5a6ed00f-94e6-ec11-bb3c-0022483d8865");
 		public static Guid ROMBase = new Guid("158781c7-f92c-eb11-a813-000d3af3a7a7");
@@ -131,6 +135,8 @@ namespace DG.Tools.XrmMockup {
 		public static Guid SalesCopilotUser = new Guid("50e667f9-14cf-4fc1-8c46-cff71096e9da");
 		public static Guid SalesEnterpriseappaccess = new Guid("cad52a75-568c-e611-80d4-00155d42a122");
 		public static Guid SalesManager = new Guid("a9547c3b-1c7f-4820-821f-9fb4fc383d2b");
+		public static Guid SalesSequenceStatsReportingServiceUser = new Guid("9094f3e2-40e1-491f-b8d9-b621a38f60ef");
+		public static Guid SalesSequenceStatsServiceUser = new Guid("afd66a78-57d5-4bad-a60d-b226b1a8b5d3");
 		public static Guid Salessystemaccess = new Guid("b5b6cb27-47e9-49f7-84bb-f6823fc8461c");
 		public static Guid Salessystemaccessextension = new Guid("f6f7455f-bcea-44dc-abbd-7fd51b1cc880");
 		public static Guid SalesTeamMember = new Guid("7e13fe7f-ea02-4a4e-a523-89ed9361961d");
