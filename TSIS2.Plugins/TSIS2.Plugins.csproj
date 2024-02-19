@@ -112,7 +112,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PostOperationts_operationriskassessmentCreate.cs" />
     <Compile Include="PostOperationts_sharepointfileCreate.cs" />
     <Compile Include="PreOperation_securityincidentUpdate.cs" />
     <Compile Include="TimeZoneHelper.cs" />

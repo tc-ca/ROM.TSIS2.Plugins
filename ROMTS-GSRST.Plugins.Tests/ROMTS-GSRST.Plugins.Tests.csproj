@@ -138,7 +138,6 @@
   <ItemGroup>
     <Compile Include="PostOperationts_fileCreateTests.cs" />
     <Compile Include="PostOperationovs_questionnaireCreateTests.cs" />
-    <Compile Include="PostOperationts_operationriskassessmentTests.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskCreateTests.cs" />
     <Compile Include="Metadata\TypeDeclarations.cs" />
     <Compile Include="PreOperationmsdyn_workorderservicetaskUpdateTests.cs" />
