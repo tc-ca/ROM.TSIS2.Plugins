@@ -108,48 +108,48 @@ namespace TSIS2.Plugins
                     }
 
                     //Find out if the Work Order has a recored in ts_sharepointfile
-                    {
-                        using (var servicecontext = new Xrm(localContext.OrganizationService)) 
-                        {
-                            msdyn_workorderservicetask workOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
+                    //{
+                    //    using (var servicecontext = new Xrm(localContext.OrganizationService)) 
+                    //    {
+                    //        msdyn_workorderservicetask workOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
 
-                            // Get the selected Work Order
-                            var workOrder = servicecontext.msdyn_workorderSet.Where(wo => wo.Id == workOrderServiceTask.msdyn_WorkOrder.Id).FirstOrDefault();
+                    //        // Get the selected Work Order
+                    //        var workOrder = servicecontext.msdyn_workorderSet.Where(wo => wo.Id == workOrderServiceTask.msdyn_WorkOrder.Id).FirstOrDefault();
 
-                            // check if the Work Order has a SharePoint File
-                            var myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(servicecontext, workOrder.Id.ToString().ToUpper().Trim(), PostOperationts_sharepointfileCreate.WORK_ORDER);
+                    //        // check if the Work Order has a SharePoint File
+                    //        var myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(servicecontext, workOrder.Id.ToString().ToUpper().Trim(), PostOperationts_sharepointfileCreate.WORK_ORDER);
 
-                            if (myWorkOrderSharePointFile != null)
-                            {
-                                // get the Name
-                                string myWorkOrderServiceTaskName = servicecontext.msdyn_workorderservicetaskSet.Where(wost => wost.Id == workOrderServiceTask.Id).FirstOrDefault().msdyn_name;
+                    //        if (myWorkOrderSharePointFile != null)
+                    //        {
+                    //            // get the Name
+                    //            string myWorkOrderServiceTaskName = servicecontext.msdyn_workorderservicetaskSet.Where(wost => wost.Id == workOrderServiceTask.Id).FirstOrDefault().msdyn_name;
 
-                                // get the Owner
-                                string owner = PostOperationts_sharepointfileCreate.GetWorkOrderOwner(localContext.OrganizationService,workOrder.Id) ;
+                    //            // get the Owner
+                    //            string owner = PostOperationts_sharepointfileCreate.GetWorkOrderOwner(localContext.OrganizationService,workOrder.Id) ;
 
-                                // create the SharePointFile for the Work Order Service Task
-                                Guid myWorkOrderServiceTaskSharePointFileId = PostOperationts_sharepointfileCreate.CreateSharePointFile(
-                                    myWorkOrderServiceTaskName, 
-                                    PostOperationts_sharepointfileCreate.WORK_ORDER_SERVICE_TASK, 
-                                    PostOperationts_sharepointfileCreate.WORK_ORDER_SERVICE_TASK_FR, 
-                                    workOrderServiceTask.Id.ToString().ToUpper(), 
-                                    myWorkOrderServiceTaskName, 
-                                    owner, 
-                                    localContext.OrganizationService);
+                    //            // create the SharePointFile for the Work Order Service Task
+                    //            Guid myWorkOrderServiceTaskSharePointFileId = PostOperationts_sharepointfileCreate.CreateSharePointFile(
+                    //                myWorkOrderServiceTaskName, 
+                    //                PostOperationts_sharepointfileCreate.WORK_ORDER_SERVICE_TASK, 
+                    //                PostOperationts_sharepointfileCreate.WORK_ORDER_SERVICE_TASK_FR, 
+                    //                workOrderServiceTask.Id.ToString().ToUpper(), 
+                    //                myWorkOrderServiceTaskName, 
+                    //                owner, 
+                    //                localContext.OrganizationService);
 
-                                // update the Work Order Service Tasks with the SharePointFile Group for the Work Order
-                                localContext.OrganizationService.Update(new ts_SharePointFile
-                                {
-                                    Id = myWorkOrderServiceTaskSharePointFileId,
-                                    ts_SharePointFileGroup = myWorkOrderSharePointFile.ts_SharePointFileGroup
-                                });
-                            }
-                            else
-                            {
-                                // do nothing since there is no SharePoint File for the Work Order
-                            }
-                        };
-                    }
+                    //            // update the Work Order Service Tasks with the SharePointFile Group for the Work Order
+                    //            localContext.OrganizationService.Update(new ts_SharePointFile
+                    //            {
+                    //                Id = myWorkOrderServiceTaskSharePointFileId,
+                    //                ts_SharePointFileGroup = myWorkOrderSharePointFile.ts_SharePointFileGroup
+                    //            });
+                    //        }
+                    //        else
+                    //        {
+                    //            // do nothing since there is no SharePoint File for the Work Order
+                    //        }
+                    //    };
+                    //}
                 }
             }
             catch (Exception e)
