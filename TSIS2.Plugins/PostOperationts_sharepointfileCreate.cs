@@ -67,253 +67,253 @@ namespace TSIS2.Plugins
                 {
                     if (target.LogicalName.Equals(ts_SharePointFile.EntityLogicalName))
                     {
-                        //ts_SharePointFile mySharePointFile = target.ToEntity<ts_SharePointFile>();
-                        //var mySharePointFileGroup = mySharePointFile.ts_SharePointFileGroup;
+                        ts_SharePointFile mySharePointFile = target.ToEntity<ts_SharePointFile>();
+                        var mySharePointFileGroup = mySharePointFile.ts_SharePointFileGroup;
 
 
-                        //// check if we are working with a Case, Work Order, or Work Order Service Task
-                        //if (mySharePointFile.ts_TableName == CASE || 
-                        //    mySharePointFile.ts_TableName == WORK_ORDER ||
-                        //    mySharePointFile.ts_TableName == WORK_ORDER_SERVICE_TASK)
-                        //{
-                        //    var sharePointFileTableName = mySharePointFile.ts_TableName;
+                        // check if we are working with a Case, Work Order, or Work Order Service Task
+                        if (mySharePointFile.ts_TableName == CASE ||
+                            mySharePointFile.ts_TableName == WORK_ORDER ||
+                            mySharePointFile.ts_TableName == WORK_ORDER_SERVICE_TASK)
+                        {
+                            var sharePointFileTableName = mySharePointFile.ts_TableName;
 
-                        //    // Case
-                        //    if (sharePointFileTableName == CASE)
-                        //    {
-                        //        // check if the case has a SharePoint File Group
-                        //        if (mySharePointFileGroup == null)
-                        //        {
-                        //            // create the SharePoint File Group
-                        //            Guid myCaseSharePointFileGroupID = CreateSharePointFileGroup(mySharePointFile,service);
+                            // Case
+                            if (sharePointFileTableName == CASE)
+                            {
+                                // check if the case has a SharePoint File Group
+                                if (mySharePointFileGroup == null)
+                                {
+                                    // create the SharePoint File Group
+                                    Guid myCaseSharePointFileGroupID = CreateSharePointFileGroup(mySharePointFile, service);
 
-                        //            Guid myCaseID = new Guid(mySharePointFile.ts_TableRecordID);
+                                    Guid myCaseID = new Guid(mySharePointFile.ts_TableRecordID);
 
-                        //            UpdateRelatedWorkOrders(service, myCaseID, myCaseSharePointFileGroupID,mySharePointFile.ts_TableRecordOwner);
-                        //        }
-                        //        else
-                        //        {
-                        //            // do nothing
-                        //        }
-                        //    }
+                                    UpdateRelatedWorkOrders(service, myCaseID, myCaseSharePointFileGroupID, mySharePointFile.ts_TableRecordOwner);
+                                }
+                                else
+                                {
+                                    // do nothing
+                                }
+                            }
 
-                        //    // Work Order
-                        //    if (sharePointFileTableName == WORK_ORDER)
-                        //    {
-                        //        // find out if the Work Order has a Case assigned to it
-                        //        using(var serviceContext = new Xrm(service))
-                        //        {
-                        //            Guid myWorkOrderID = new Guid(mySharePointFile.ts_TableRecordID);
+                            // Work Order
+                            if (sharePointFileTableName == WORK_ORDER)
+                            {
+                                // find out if the Work Order has a Case assigned to it
+                                using (var serviceContext = new Xrm(service))
+                                {
+                                    Guid myWorkOrderID = new Guid(mySharePointFile.ts_TableRecordID);
 
-                        //            msdyn_workorder myWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == myWorkOrderID).FirstOrDefault();
+                                    msdyn_workorder myWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == myWorkOrderID).FirstOrDefault();
 
-                        //            if (myWorkOrder.msdyn_ServiceRequest != null)
-                        //            {
-                        //                // if we have a Case - find out if it has a SharePoint File
-                        //                string myCaseIdString = myWorkOrder.msdyn_ServiceRequest.Id.ToString().ToUpper();
+                                    if (myWorkOrder.msdyn_ServiceRequest != null)
+                                    {
+                                        // if we have a Case - find out if it has a SharePoint File
+                                        string myCaseIdString = myWorkOrder.msdyn_ServiceRequest.Id.ToString().ToUpper();
 
-                        //                ts_SharePointFile myCaseSharePointFile = null;
+                                        ts_SharePointFile myCaseSharePointFile = null;
 
-                        //                myCaseSharePointFile = CheckSharePointFile(serviceContext, myCaseIdString, CASE);
+                                        myCaseSharePointFile = CheckSharePointFile(serviceContext, myCaseIdString, CASE);
 
-                        //                Guid myCaseSharePointFileGroupID = new Guid();
+                                        Guid myCaseSharePointFileGroupID = new Guid();
 
-                        //                if (myCaseSharePointFile == null)
-                        //                {
-                        //                    // if it doesn't have a SharePoint File, create it
-                        //                    Guid newCaseSharePointFileID = CreateSharePointFile(myWorkOrder.msdyn_ServiceRequest.Name,CASE,CASE_FR,myCaseIdString,myWorkOrder.msdyn_ServiceRequest.Name,mySharePointFile.ts_TableRecordOwner,service);
+                                        if (myCaseSharePointFile == null)
+                                        {
+                                            // if it doesn't have a SharePoint File, create it
+                                            Guid newCaseSharePointFileID = CreateSharePointFile(myWorkOrder.msdyn_ServiceRequest.Name, CASE, CASE_FR, myCaseIdString, myWorkOrder.msdyn_ServiceRequest.Name, mySharePointFile.ts_TableRecordOwner, service);
 
-                        //                    myCaseSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newCaseSharePointFileID).FirstOrDefault();
+                                            myCaseSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newCaseSharePointFileID).FirstOrDefault();
 
-                        //                    // Create the SharePoint File Group
-                        //                    myCaseSharePointFileGroupID = CreateSharePointFileGroup(myCaseSharePointFile, service);
+                                            // Create the SharePoint File Group
+                                            myCaseSharePointFileGroupID = CreateSharePointFileGroup(myCaseSharePointFile, service);
 
-                        //                    // Assign the Work Order SharePoint File Group to the SharePoint File Group of the Case
-                        //                    service.Update(new ts_SharePointFile
-                        //                    {
-                        //                        Id = mySharePointFile.Id,
-                        //                        ts_SharePointFileGroup = new EntityReference(ts_sharepointfilegroup.EntityLogicalName, myCaseSharePointFileGroupID)
-                        //                    });
+                                            // Assign the Work Order SharePoint File Group to the SharePoint File Group of the Case
+                                            service.Update(new ts_SharePointFile
+                                            {
+                                                Id = mySharePointFile.Id,
+                                                ts_SharePointFileGroup = new EntityReference(ts_sharepointfilegroup.EntityLogicalName, myCaseSharePointFileGroupID)
+                                            });
 
-                        //                    // do this here because we have created a new SharePoint File for Case with a SharePoint File Group
-                        //                    UpdateRelatedWorkOrders(service, myWorkOrder.msdyn_ServiceRequest.Id, myCaseSharePointFileGroupID, mySharePointFile.ts_TableRecordOwner);
-                        //                }
-                        //                else
-                        //                {
-                        //                    // if it does, then get the SharePoint Group file and assign it to the Work Order
-                        //                    service.Update(new ts_SharePointFile
-                        //                    {
-                        //                        Id=mySharePointFile.Id,
-                        //                        ts_SharePointFileGroup = myCaseSharePointFile.ts_SharePointFileGroup
-                        //                    });
+                                            // do this here because we have created a new SharePoint File for Case with a SharePoint File Group
+                                            UpdateRelatedWorkOrders(service, myWorkOrder.msdyn_ServiceRequest.Id, myCaseSharePointFileGroupID, mySharePointFile.ts_TableRecordOwner);
+                                        }
+                                        else
+                                        {
+                                            // if it does, then get the SharePoint Group file and assign it to the Work Order
+                                            service.Update(new ts_SharePointFile
+                                            {
+                                                Id = mySharePointFile.Id,
+                                                ts_SharePointFileGroup = myCaseSharePointFile.ts_SharePointFileGroup
+                                            });
 
-                        //                    //if a Case already has a SharePoint File, all other Work Orders are already updated with the proper SharePoint Files
-                        //                }
-                        //            }
-                        //            else
-                        //            {
-                        //                // if we don't have a Case - create a SharePoint File Group for the Work Order and assign it
-                        //                var mySharePointFileGroupId = CreateSharePointFileGroup(mySharePointFile, service);
+                                            //if a Case already has a SharePoint File, all other Work Orders are already updated with the proper SharePoint Files
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // if we don't have a Case - create a SharePoint File Group for the Work Order and assign it
+                                        var mySharePointFileGroupId = CreateSharePointFileGroup(mySharePointFile, service);
 
-                        //                // update all related Work Order Service Tasks
-                        //                UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderID, mySharePointFileGroupId, mySharePointFile.ts_TableRecordOwner);
-                        //            }
-                        //        }
-                        //    }
+                                        // update all related Work Order Service Tasks
+                                        UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderID, mySharePointFileGroupId, mySharePointFile.ts_TableRecordOwner);
+                                    }
+                                }
+                            }
 
 
-                        //    // Work Order Service Task
-                        //    if (sharePointFileTableName == WORK_ORDER_SERVICE_TASK)
-                        //    {
-                        //        // find out if the Work Order Service Task has a Work Order assigned to it
-                        //        using (var serviceContext = new Xrm(service))
-                        //        {
-                        //            Guid myWorkOrderServiceTaskID = new Guid(mySharePointFile.ts_TableRecordID);
+                            // Work Order Service Task
+                            if (sharePointFileTableName == WORK_ORDER_SERVICE_TASK)
+                            {
+                                // find out if the Work Order Service Task has a Work Order assigned to it
+                                using (var serviceContext = new Xrm(service))
+                                {
+                                    Guid myWorkOrderServiceTaskID = new Guid(mySharePointFile.ts_TableRecordID);
 
-                        //            msdyn_workorderservicetask myWorkOrderServiceTask = serviceContext.msdyn_workorderservicetaskSet.Where(wost => wost.Id == myWorkOrderServiceTaskID).FirstOrDefault();
+                                    msdyn_workorderservicetask myWorkOrderServiceTask = serviceContext.msdyn_workorderservicetaskSet.Where(wost => wost.Id == myWorkOrderServiceTaskID).FirstOrDefault();
 
-                        //            if (myWorkOrderServiceTask.msdyn_WorkOrder != null)
-                        //            {
-                        //                // Find out if the Work Order has a Case
-                        //                var myWorkOrderCase = (CaseID: "", CaseName: "");
+                                    if (myWorkOrderServiceTask.msdyn_WorkOrder != null)
+                                    {
+                                        // Find out if the Work Order has a Case
+                                        var myWorkOrderCase = (CaseID: "", CaseName: "");
 
-                        //                string workOrderCaseFetchXML = $@"
-                        //                    <fetch>
-                        //                        <entity name='msdyn_workorder'>
-                        //                        <link-entity name='incident' to='msdyn_servicerequest' from='incidentid' alias='incident' link-type='inner'>
-                        //                            <attribute name='incidentid' alias='CASE_ID' />
-                        //                            <attribute name='title' alias='CASE_NAME' />
-                        //                        </link-entity>
-                        //                        <filter>
-                        //                            <condition attribute='msdyn_workorderid' operator='eq' value='{myWorkOrderServiceTask.msdyn_WorkOrder.Id.ToString()}' />
-                        //                        </filter>
-                        //                        </entity>
-                        //                    </fetch>
-                        //                ";
+                                        string workOrderCaseFetchXML = $@"
+                                            <fetch>
+                                                <entity name='msdyn_workorder'>
+                                                <link-entity name='incident' to='msdyn_servicerequest' from='incidentid' alias='incident' link-type='inner'>
+                                                    <attribute name='incidentid' alias='CASE_ID' />
+                                                    <attribute name='title' alias='CASE_NAME' />
+                                                </link-entity>
+                                                <filter>
+                                                    <condition attribute='msdyn_workorderid' operator='eq' value='{myWorkOrderServiceTask.msdyn_WorkOrder.Id.ToString()}' />
+                                                </filter>
+                                                </entity>
+                                            </fetch>
+                                        ";
 
-                        //                EntityCollection myWorkOrderCaseEntityCollection = service.RetrieveMultiple(new FetchExpression(workOrderCaseFetchXML));
+                                        EntityCollection myWorkOrderCaseEntityCollection = service.RetrieveMultiple(new FetchExpression(workOrderCaseFetchXML));
 
-                        //                foreach (var myCaseItem in myWorkOrderCaseEntityCollection.Entities)
-                        //                {
-                        //                    string caseID = "";
-                        //                    string caseName = "";
+                                        foreach (var myCaseItem in myWorkOrderCaseEntityCollection.Entities)
+                                        {
+                                            string caseID = "";
+                                            string caseName = "";
 
-                        //                    if (myCaseItem.Attributes["CASE_ID"] is AliasedValue aliasedCaseId)
-                        //                    {
-                        //                        caseID = aliasedCaseId.Value.ToString();
-                        //                    }
+                                            if (myCaseItem.Attributes["CASE_ID"] is AliasedValue aliasedCaseId)
+                                            {
+                                                caseID = aliasedCaseId.Value.ToString();
+                                            }
 
-                        //                    if (myCaseItem.Attributes["CASE_NAME"] is AliasedValue aliasedCaseName)
-                        //                    {
-                        //                        caseName = aliasedCaseName.Value.ToString();
-                        //                    }
+                                            if (myCaseItem.Attributes["CASE_NAME"] is AliasedValue aliasedCaseName)
+                                            {
+                                                caseName = aliasedCaseName.Value.ToString();
+                                            }
 
-                        //                    myWorkOrderCase = (
-                        //                        CaseID: caseID,
-                        //                        CaseName: caseName
-                        //                        );
-                        //                }
+                                            myWorkOrderCase = (
+                                                CaseID: caseID,
+                                                CaseName: caseName
+                                                );
+                                        }
 
-                        //                if (myWorkOrderCase.CaseID != "")
-                        //                {
-                        //                    // if we have a Case - find out if it has a SharePoint File
-                        //                    ts_SharePointFile myCaseSharePointFile = null;
+                                        if (myWorkOrderCase.CaseID != "")
+                                        {
+                                            // if we have a Case - find out if it has a SharePoint File
+                                            ts_SharePointFile myCaseSharePointFile = null;
 
-                        //                    myCaseSharePointFile = CheckSharePointFile(serviceContext, myWorkOrderCase.CaseID, CASE);
+                                            myCaseSharePointFile = CheckSharePointFile(serviceContext, myWorkOrderCase.CaseID, CASE);
 
-                        //                    if (myCaseSharePointFile == null)
-                        //                    {
-                        //                        // if it doesn't have a SharePoint File, create it
-                        //                        Guid newCaseSharePointFileID = CreateSharePointFile(myWorkOrderCase.CaseName, CASE, CASE_FR, myWorkOrderCase.CaseID, myWorkOrderCase.CaseName, mySharePointFile.ts_TableRecordOwner, service);
+                                            if (myCaseSharePointFile == null)
+                                            {
+                                                // if it doesn't have a SharePoint File, create it
+                                                Guid newCaseSharePointFileID = CreateSharePointFile(myWorkOrderCase.CaseName, CASE, CASE_FR, myWorkOrderCase.CaseID, myWorkOrderCase.CaseName, mySharePointFile.ts_TableRecordOwner, service);
 
-                        //                        myCaseSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newCaseSharePointFileID).FirstOrDefault();
+                                                myCaseSharePointFile = serviceContext.ts_SharePointFileSet.Where(sf => sf.Id == newCaseSharePointFileID).FirstOrDefault();
 
-                        //                        // Create the SharePoint File Group
-                        //                        Guid newCaseSharePointFileGroupID = CreateSharePointFileGroup(myCaseSharePointFile, service);
+                                                // Create the SharePoint File Group
+                                                Guid newCaseSharePointFileGroupID = CreateSharePointFileGroup(myCaseSharePointFile, service);
 
-                        //                        // Update all Work Orders, and Work Order Service Tasks related to the Case with the SharePoint Group File
-                        //                        UpdateRelatedWorkOrders(service, new Guid(myWorkOrderCase.CaseID), newCaseSharePointFileGroupID, mySharePointFile.ts_TableRecordOwner);
-                        //                    }
-                        //                    else
-                        //                    {
-                        //                        // only update the Work Order Service Task with the SharePoint Group File for the Case
-                        //                        service.Update(new ts_SharePointFile
-                        //                        {
-                        //                            Id = mySharePointFile.Id,
-                        //                            ts_SharePointFileGroup = myCaseSharePointFile.ts_SharePointFileGroup
-                        //                        });
-                        //                    }
-                        //                }
-                        //                else
-                        //                {
-                        //                    // If the Work Order doesn't have a Case
+                                                // Update all Work Orders, and Work Order Service Tasks related to the Case with the SharePoint Group File
+                                                UpdateRelatedWorkOrders(service, new Guid(myWorkOrderCase.CaseID), newCaseSharePointFileGroupID, mySharePointFile.ts_TableRecordOwner);
+                                            }
+                                            else
+                                            {
+                                                // only update the Work Order Service Task with the SharePoint Group File for the Case
+                                                service.Update(new ts_SharePointFile
+                                                {
+                                                    Id = mySharePointFile.Id,
+                                                    ts_SharePointFileGroup = myCaseSharePointFile.ts_SharePointFileGroup
+                                                });
+                                            }
+                                        }
+                                        else
+                                        {
+                                            // If the Work Order doesn't have a Case
 
-                        //                    // Find out if the Work Order has a SharePoint File
-                        //                    ts_SharePointFile myWorkOrderSharePointFile = CheckSharePointFile(serviceContext, myWorkOrderServiceTask.msdyn_WorkOrder.Id.ToString().ToUpper(), WORK_ORDER);
-                        //                    ts_sharepointfilegroup myWorkOrderSharePointFileGroup = null;
+                                            // Find out if the Work Order has a SharePoint File
+                                            ts_SharePointFile myWorkOrderSharePointFile = CheckSharePointFile(serviceContext, myWorkOrderServiceTask.msdyn_WorkOrder.Id.ToString().ToUpper(), WORK_ORDER);
+                                            ts_sharepointfilegroup myWorkOrderSharePointFileGroup = null;
 
-                        //                    // Create the SharePoint File if it doesn't exists, along with the SharePoint File Group
-                        //                    if (myWorkOrderSharePointFile == null)
-                        //                    {
-                        //                        Guid newWorkOrderSharePointFileID = CreateSharePointFile(myWorkOrderServiceTask.msdyn_WorkOrder.Name, WORK_ORDER, WORK_ORDER_FR, myWorkOrderServiceTask.msdyn_WorkOrder.Id.ToString().ToUpper(), myWorkOrderServiceTask.msdyn_WorkOrder.Name, mySharePointFile.ts_TableRecordOwner, service);
-                        //                        myWorkOrderSharePointFile = CheckSharePointFile(serviceContext, myWorkOrderServiceTask.msdyn_WorkOrder.Id.ToString().ToUpper(), WORK_ORDER);
-                        //                        Guid newWorkOrderSharePointFileGroupID = CreateSharePointFileGroup(myWorkOrderSharePointFile, service);
-                        //                        myWorkOrderSharePointFileGroup = serviceContext.ts_sharepointfilegroupSet.Where(sg => sg.Id == newWorkOrderSharePointFileGroupID).FirstOrDefault();
+                                            // Create the SharePoint File if it doesn't exists, along with the SharePoint File Group
+                                            if (myWorkOrderSharePointFile == null)
+                                            {
+                                                Guid newWorkOrderSharePointFileID = CreateSharePointFile(myWorkOrderServiceTask.msdyn_WorkOrder.Name, WORK_ORDER, WORK_ORDER_FR, myWorkOrderServiceTask.msdyn_WorkOrder.Id.ToString().ToUpper(), myWorkOrderServiceTask.msdyn_WorkOrder.Name, mySharePointFile.ts_TableRecordOwner, service);
+                                                myWorkOrderSharePointFile = CheckSharePointFile(serviceContext, myWorkOrderServiceTask.msdyn_WorkOrder.Id.ToString().ToUpper(), WORK_ORDER);
+                                                Guid newWorkOrderSharePointFileGroupID = CreateSharePointFileGroup(myWorkOrderSharePointFile, service);
+                                                myWorkOrderSharePointFileGroup = serviceContext.ts_sharepointfilegroupSet.Where(sg => sg.Id == newWorkOrderSharePointFileGroupID).FirstOrDefault();
 
-                        //                        // Update all other Work Order Service Tasks related to the Work Order with the SharePoint File Group
-                        //                        // We go over this because we want the Work Order Service Task to show all related attachments, even if it doesn't have one.
+                                                // Update all other Work Order Service Tasks related to the Work Order with the SharePoint File Group
+                                                // We go over this because we want the Work Order Service Task to show all related attachments, even if it doesn't have one.
 
-                        //                        UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderServiceTask.msdyn_WorkOrder.Id, myWorkOrderSharePointFileGroup.Id, mySharePointFile.ts_TableRecordOwner);
-                        //                    }
-                        //                    else
-                        //                    {
-                        //                        // Check if the SharePoint File has a SharePoint File Group
-                        //                        if (myWorkOrderSharePointFile.ts_SharePointFileGroup == null)
-                        //                        {
-                        //                            // if it doesn't create it
-                        //                            Guid newWorkOrderSharePointFileGroupID = CreateSharePointFileGroup(myWorkOrderSharePointFile, service);
-                        //                            myWorkOrderSharePointFileGroup = serviceContext.ts_sharepointfilegroupSet.Where(sg => sg.Id == newWorkOrderSharePointFileGroupID).FirstOrDefault();
-                        //                        }
-                        //                        else
-                        //                        {
-                        //                            myWorkOrderSharePointFileGroup = serviceContext.ts_sharepointfilegroupSet.Where(sg => sg.Id == myWorkOrderSharePointFile.ts_SharePointFileGroup.Id).FirstOrDefault();
-                        //                        }
+                                                UpdateRelatedWorkOrderServiceTasks(service, myWorkOrderServiceTask.msdyn_WorkOrder.Id, myWorkOrderSharePointFileGroup.Id, mySharePointFile.ts_TableRecordOwner);
+                                            }
+                                            else
+                                            {
+                                                // Check if the SharePoint File has a SharePoint File Group
+                                                if (myWorkOrderSharePointFile.ts_SharePointFileGroup == null)
+                                                {
+                                                    // if it doesn't create it
+                                                    Guid newWorkOrderSharePointFileGroupID = CreateSharePointFileGroup(myWorkOrderSharePointFile, service);
+                                                    myWorkOrderSharePointFileGroup = serviceContext.ts_sharepointfilegroupSet.Where(sg => sg.Id == newWorkOrderSharePointFileGroupID).FirstOrDefault();
+                                                }
+                                                else
+                                                {
+                                                    myWorkOrderSharePointFileGroup = serviceContext.ts_sharepointfilegroupSet.Where(sg => sg.Id == myWorkOrderSharePointFile.ts_SharePointFileGroup.Id).FirstOrDefault();
+                                                }
 
-                        //                        // Update the Work Order Service Task with the Work Order SharePoint File Group 
-                        //                        service.Update(new ts_SharePointFile
-                        //                        {
-                        //                            Id = mySharePointFile.Id,
-                        //                            ts_SharePointFileGroup = myWorkOrderSharePointFileGroup.ToEntityReference()
-                        //                        });
-                        //                    }
-                        //                }
-                        //            }
-                        //            else
-                        //            {
-                        //                // do nothing since the Work Order Service Task doesn't have a Work Order
-                        //            }
-                        //        }
-                        //    }
-                        //}
-                        //else if (mySharePointFile.ts_TableName == STAKEHOLDER ||
-                        //         mySharePointFile.ts_TableName == SITE ||
-                        //         mySharePointFile.ts_TableName == OPERATION ||
-                        //         mySharePointFile.ts_TableName == SECURITY_INCIDENT ||
-                        //         mySharePointFile.ts_TableName == EXEMPTION)
-                        //{
-                        //    // check if the SharePoint File has a SharePoint File Group - might include this in the future if they want to group the above table names
-                        //    //if (mySharePointFileGroup == null)
-                        //    //{
-                        //    //    {
-                        //    //        // create the SharePoint File Group
-                        //    //        CreateSharePointFileGroup(mySharePointFile, service);
-                        //    //    }
-                        //    //}
-                        //}
-                        //else
-                        //{
-                        //    // for everything else do nothing - this is where new SharePoint Files go when they are initially created as placeholders in this plugin
-                        //}
+                                                // Update the Work Order Service Task with the Work Order SharePoint File Group 
+                                                service.Update(new ts_SharePointFile
+                                                {
+                                                    Id = mySharePointFile.Id,
+                                                    ts_SharePointFileGroup = myWorkOrderSharePointFileGroup.ToEntityReference()
+                                                });
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // do nothing since the Work Order Service Task doesn't have a Work Order
+                                    }
+                                }
+                            }
+                        }
+                        else if (mySharePointFile.ts_TableName == STAKEHOLDER ||
+                                 mySharePointFile.ts_TableName == SITE ||
+                                 mySharePointFile.ts_TableName == OPERATION ||
+                                 mySharePointFile.ts_TableName == SECURITY_INCIDENT ||
+                                 mySharePointFile.ts_TableName == EXEMPTION)
+                        {
+                            // check if the SharePoint File has a SharePoint File Group - might include this in the future if they want to group the above table names
+                            //if (mySharePointFileGroup == null)
+                            //{
+                            //    {
+                            //        // create the SharePoint File Group
+                            //        CreateSharePointFileGroup(mySharePointFile, service);
+                            //    }
+                            //}
+                        }
+                        else
+                        {
+                            // for everything else do nothing - this is where new SharePoint Files go when they are initially created as placeholders in this plugin
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -366,15 +366,15 @@ namespace TSIS2.Plugins
         {
             ts_SharePointFile mySharePointFile = null;
 
-            var allSharePointFiles = serviceContext.ts_SharePointFileSet.ToList();
-
-            foreach (var ts_SharePointFileItem in allSharePointFiles)
+            try
             {
-                if (ts_SharePointFileItem.ts_TableRecordID != null && ts_SharePointFileItem.ts_TableRecordID.Trim().ToUpper() == myTableRecordID && ts_SharePointFileItem.ts_TableName == myTableName)
-                {
-                    mySharePointFile = ts_SharePointFileItem;
-                    break;
-                }
+                mySharePointFile = serviceContext.ts_SharePointFileSet
+                    .FirstOrDefault(file => file.ts_TableRecordID == myTableRecordID && file.ts_TableName == myTableName);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                System.Diagnostics.Trace.TraceError("An error occurred while running PostOperationSharePointFileCreate.CheckSharePointFile(): " + ex.ToString());
             }
 
             return mySharePointFile;
