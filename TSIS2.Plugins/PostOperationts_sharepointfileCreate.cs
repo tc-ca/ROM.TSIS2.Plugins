@@ -366,15 +366,15 @@ namespace TSIS2.Plugins
         {
             ts_SharePointFile mySharePointFile = null;
 
-            var allSharePointFiles = serviceContext.ts_SharePointFileSet.ToList();
-
-            foreach (var ts_SharePointFileItem in allSharePointFiles)
-            {
-                if (ts_SharePointFileItem.ts_TableRecordID != null && ts_SharePointFileItem.ts_TableRecordID.Trim().ToUpper() == myTableRecordID && ts_SharePointFileItem.ts_TableName == myTableName)
+            try
                 {
-                    mySharePointFile = ts_SharePointFileItem;
-                    break;
+                mySharePointFile = serviceContext.ts_SharePointFileSet
+                    .FirstOrDefault(file => file.ts_TableRecordID == myTableRecordID && file.ts_TableName == myTableName);
                 }
+            catch (Exception ex)
+            {
+                // Log the exception
+                System.Diagnostics.Trace.TraceError("An error occurred while running PostOperationSharePointFileCreate.CheckSharePointFile(): " + ex.ToString());
             }
 
             return mySharePointFile;
