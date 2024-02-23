@@ -41,6 +41,8 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ts_Name = "Risk Criteria 3"
             });
 
+
+
             //Associate risk criterias to operation type
             orgAdminUIService.Associate("ovs_operationtype", operationType, new Relationship("ts_riskcriteria_ovs_operationtype"), new EntityReferenceCollection
             {
@@ -106,6 +108,55 @@ namespace ROMTS_GSRST.Plugins.Tests
                 }
             });
             Assert.Equal(3, discretionaryFactorResponses.Entities.Count);
+        }
+
+        //Write a test to verify that any other active operation risk assessments are set to inactive
+        [Fact]
+        public void When_operation_risk_assessment_is_created_Then_set_any_other_active_operation_risk_assessments_to_inactive()
+        {
+            // Arrange
+            var operationType = orgAdminService.Create(new ovs_operationtype
+            {
+                
+            });
+            var operation = orgAdminUIService.Create(new ovs_operation
+            {
+                ovs_OperationTypeId = new EntityReference(ovs_operationtype.EntityLogicalName, operationType),
+            });
+
+            var operationRiskAssessment1 = orgAdminUIService.Create(new ts_operationriskassessment
+            {
+                ts_operation = new EntityReference(ovs_operation.EntityLogicalName, operation),
+                statecode = ts_operationriskassessmentState.Active
+            });
+
+            var operationRiskAssessment2 = orgAdminUIService.Create(new ts_operationriskassessment
+            {
+                ts_operation = new EntityReference(ovs_operation.EntityLogicalName, operation),
+                statecode = ts_operationriskassessmentState.Active
+            });
+
+            // Act
+            var operationRiskAssessment3 = orgAdminUIService.Create(new ts_operationriskassessment
+            {
+                ts_operation = new EntityReference(ovs_operation.EntityLogicalName, operation),
+                statecode = ts_operationriskassessmentState.Active
+            });
+
+            // Assert
+            var inactiveOperationRiskAssessments = orgAdminUIService.RetrieveMultiple(new QueryExpression(ts_operationriskassessment.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet(true),
+                Criteria = new FilterExpression
+                {
+                    Conditions =
+                    {
+                        new ConditionExpression("ts_operation", ConditionOperator.Equal, operation),
+                        new ConditionExpression("statecode", ConditionOperator.Equal, ts_operationriskassessmentState.Inactive)
+                    }
+                }
+            });
+            Assert.Equal(2, inactiveOperationRiskAssessments.Entities.Count);
         }
     }
 }
