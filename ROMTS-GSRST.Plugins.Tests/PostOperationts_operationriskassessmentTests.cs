@@ -41,8 +41,6 @@ namespace ROMTS_GSRST.Plugins.Tests
                 ts_Name = "Risk Criteria 3"
             });
 
-
-
             //Associate risk criterias to operation type
             orgAdminUIService.Associate("ovs_operationtype", operationType, new Relationship("ts_riskcriteria_ovs_operationtype"), new EntityReferenceCollection
             {
