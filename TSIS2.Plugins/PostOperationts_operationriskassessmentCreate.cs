@@ -52,49 +52,65 @@ namespace TSIS2.Plugins
 
                         using (var serviceContext = new Xrm(service))
                         {
+                            if (operationRiskAssessment.ts_operation == null) return;
+
                             //Retrieve operation of risk assessment
                             ovs_operation operation = serviceContext.ovs_operationSet.FirstOrDefault(o => o.Id == operationRiskAssessment.ts_operation.Id);
+                            
+                            if (operation.ovs_OperationTypeId != null) {
+                                //Retrieve Risk Criteria Operation Type M:M records of Operation's Operation Type
+                                var riskCriteriaOperationTypes = serviceContext.ts_riskcriteria_ovs_operationtypeSet.Where(rkot => rkot.ovs_operationtypeid == operation.ovs_OperationTypeId.Id).ToList();
 
-                            //Retrieve Risk Criteria Operation Type M:M records of Operation's Operation Type
-                            var riskCriteriaOperationTypes = serviceContext.ts_riskcriteria_ovs_operationtypeSet.Where(rkot => rkot.ovs_operationtypeid == operation.ovs_OperationTypeId.Id);
-
-                            //For each Risk Criteria Operation Type, create Risk Criteria Response
-                            foreach (var riskCriteriaOperationType in riskCriteriaOperationTypes)
-                            {
-                                //Retrieve Risk Criteria of Risk Criteria Operation Type
-                                ts_riskcriteria riskCriteria = serviceContext.ts_riskcriteriaSet.FirstOrDefault(rk => rk.Id == riskCriteriaOperationType.ts_riskcriteriaid);
-
-                                //Create Risk Criteria Response
-                                ts_riskcriteriaresponse riskCriteriaResponse = new ts_riskcriteriaresponse();
-                                riskCriteriaResponse.ts_Name = riskCriteria.ts_Name;
-                                riskCriteriaResponse.ts_description = riskCriteria.ts_description;
-                                riskCriteriaResponse.ts_operationriskassessment = new EntityReference(ts_operationriskassessment.EntityLogicalName, operationRiskAssessment.Id);
-                                riskCriteriaResponse.ts_riskcriteria = new EntityReference(ts_riskcriteria.EntityLogicalName, riskCriteria.Id);
-                                service.Create(riskCriteriaResponse);
-                            }
-
-                            //Retrieve Discretionary Factor Groupings of Operation Type
-                            var discretionaryFactorGroupings = serviceContext.ts_discretionaryfactorgroupingSet.Where(dfg => dfg.ts_operationtype.Id == operation.ovs_OperationTypeId.Id);
-
-                            //For each Discretionary Factor Grouping, create Discretionary Factor Response
-                            foreach (var discretionaryFactorGrouping in discretionaryFactorGroupings)
-                            {
-                                //Retrieve Discretionary Factors of Discretionary Factor Grouping
-                                var discretionaryFactors = serviceContext.ts_discretionaryfactorSet.Where(df => df.ts_discretionaryfactorgrouping.Id == discretionaryFactorGrouping.Id);
-
-                                //For each Discretionary Factor, create Discretionary Factor Response
-                                foreach (var discretionaryFactor in discretionaryFactors)
+                                //For each Risk Criteria Operation Type, create Risk Criteria Response
+                                foreach (var riskCriteriaOperationType in riskCriteriaOperationTypes)
                                 {
-                                    //Create Discretionary Factor Response
-                                    ts_discretionaryfactorresponse discretionaryFactorResponse = new ts_discretionaryfactorresponse();
-                                    discretionaryFactorResponse.ts_Name = discretionaryFactor.ts_Name;
-                                    discretionaryFactorResponse.ts_description = discretionaryFactor.ts_description;
-                                    discretionaryFactorResponse.ts_operationriskassessment = new EntityReference(ts_operationriskassessment.EntityLogicalName, operationRiskAssessment.Id);
-                                    discretionaryFactorResponse.ts_discretionaryfactor = new EntityReference(ts_discretionaryfactor.EntityLogicalName, discretionaryFactor.Id);
-                                    discretionaryFactorResponse.ts_discretionaryfactorgrouping = new EntityReference(ts_discretionaryfactorgrouping.EntityLogicalName, discretionaryFactorGrouping.Id);
-                                    service.Create(discretionaryFactorResponse);
+                                    //Retrieve Risk Criteria of Risk Criteria Operation Type
+                                    ts_riskcriteria riskCriteria = serviceContext.ts_riskcriteriaSet.FirstOrDefault(rk => rk.Id == riskCriteriaOperationType.ts_riskcriteriaid);
+
+                                    //Create Risk Criteria Response
+                                    ts_riskcriteriaresponse riskCriteriaResponse = new ts_riskcriteriaresponse();
+                                    riskCriteriaResponse.ts_Name = riskCriteria.ts_Name;
+                                    riskCriteriaResponse.ts_description = riskCriteria.ts_description;
+                                    riskCriteriaResponse.ts_operationriskassessment = new EntityReference(ts_operationriskassessment.EntityLogicalName, operationRiskAssessment.Id);
+                                    riskCriteriaResponse.ts_riskcriteria = new EntityReference(ts_riskcriteria.EntityLogicalName, riskCriteria.Id);
+                                    service.Create(riskCriteriaResponse);
+                                }
+
+                                //Retrieve Discretionary Factor Groupings of Operation Type
+                                var discretionaryFactorGroupings = serviceContext.ts_discretionaryfactorgroupingSet.Where(dfg => dfg.ts_operationtype.Id == operation.ovs_OperationTypeId.Id).ToList();
+
+                                //For each Discretionary Factor Grouping, create Discretionary Factor Response
+                                foreach (var discretionaryFactorGrouping in discretionaryFactorGroupings)
+                                {
+                                    //Retrieve Discretionary Factors of Discretionary Factor Grouping
+                                    var discretionaryFactors = serviceContext.ts_discretionaryfactorSet.Where(df => df.ts_discretionaryfactorgrouping.Id == discretionaryFactorGrouping.Id).ToList();
+
+                                    //For each Discretionary Factor, create Discretionary Factor Response
+                                    foreach (var discretionaryFactor in discretionaryFactors)
+                                    {
+                                        //Create Discretionary Factor Response
+                                        ts_discretionaryfactorresponse discretionaryFactorResponse = new ts_discretionaryfactorresponse();
+                                        discretionaryFactorResponse.ts_Name = discretionaryFactor.ts_Name;
+                                        discretionaryFactorResponse.ts_description = discretionaryFactor.ts_description;
+                                        discretionaryFactorResponse.ts_operationriskassessment = new EntityReference(ts_operationriskassessment.EntityLogicalName, operationRiskAssessment.Id);
+                                        discretionaryFactorResponse.ts_discretionaryfactor = new EntityReference(ts_discretionaryfactor.EntityLogicalName, discretionaryFactor.Id);
+                                        discretionaryFactorResponse.ts_discretionaryfactorgrouping = new EntityReference(ts_discretionaryfactorgrouping.EntityLogicalName, discretionaryFactorGrouping.Id);
+                                        service.Create(discretionaryFactorResponse);
+                                    }
                                 }
                             }
+
+                            
+
+                            //Retrieve any other active operation risk assessments and set to inactive
+                            var activeOperationRiskAssessments = serviceContext.ts_operationriskassessmentSet.Where(ora => ora.ts_operation.Id == operation.Id && ora.Id != operationRiskAssessment.Id && ora.statecode == ts_operationriskassessmentState.Active).ToList();
+                            foreach (var activeOperationRiskAssessment in activeOperationRiskAssessments)
+                            {
+                                activeOperationRiskAssessment.statecode = ts_operationriskassessmentState.Inactive;
+                                activeOperationRiskAssessment.statuscode = ts_operationriskassessment_statuscode.Inactive;
+                                serviceContext.UpdateObject(activeOperationRiskAssessment);
+                            }
+                            serviceContext.SaveChanges();
                         }
                     }
                 }
