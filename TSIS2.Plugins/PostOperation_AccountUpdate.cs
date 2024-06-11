@@ -1,9 +1,13 @@
 ﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using System;
+using System.Activities.Statements;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Services.Description;
+using System.Xml.Linq;
 
 namespace TSIS2.Plugins
 {
@@ -49,10 +53,79 @@ namespace TSIS2.Plugins
                 throw new InvalidPluginExecutionException("localContext");
             }
 
-            try
-            { }
-            catch (Exception e) { throw new InvalidPluginExecutionException(e.Message); }
-        }
+            IPluginExecutionContext context = localContext.PluginExecutionContext;
+            Entity target = (Entity)context.InputParameters["Target"];
+            Entity postImageEntity = (context.PostEntityImages != null && context.PostEntityImages.Contains(this.postImageAlias)) ? context.PostEntityImages[this.postImageAlias] : null;
 
+
+            try
+            {
+                if (target.LogicalName.Equals(Account.EntityLogicalName))
+                {
+                    if (target.Attributes.Contains("accountid"))
+                    {
+                        Guid accountId = target.GetAttributeValue<Guid>("accountid");
+                        String NewName = target.GetAttributeValue<String>("ovs_accountnameenglish");
+
+                        using (var serviceContext = new Xrm(localContext.OrganizationService))
+                        {
+                            string fetchXml = $@"
+                                <fetch>
+                                <entity name='ovs_operation'>
+                                  <attribute name='ovs_name' />
+                                  <attribute name='ovs_operationid' />
+                                  <attribute name='ovs_operationtypeid' />
+                                  <attribute name='ts_site' />
+                                  <filter>
+                                    <condition attribute='ts_stakeholder' operator='eq' value='{accountId.ToString()}' />
+                                  </filter>
+                                 </entity>
+                                 </fetch>";
+
+                             EntityCollection operations = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(fetchXml));
+
+
+
+                            foreach (Entity operation in operations.Entities)
+                            {
+
+                                //ts_SharePointFile myOperationServiceTaskSharePointFile = null;
+
+                                string ovsName = operation.GetAttributeValue<string>("ovs_name");
+
+                                EntityReference ovsOperationTypeIdRef = operation.GetAttributeValue<EntityReference>("ovs_operationtypeid");
+                                EntityReference tsSiteIdRef = operation.GetAttributeValue<EntityReference>("ts_site");
+
+
+                                Guid ovsOperationId = operation.Id;
+                                Guid ovsSiteId = operation.Id;
+                                 
+
+                                string operationTypeName = ovsOperationTypeIdRef.Name;
+                                string siteName = tsSiteIdRef.Name;
+                                operation["ts_stakeholdername"] = "test";
+
+                                //string newOvsName = $"{NewName} | {operationTypeName} | {siteName}";
+                                //operation["ovs_name"] = newOvsName;
+                                IOrganizationService service = localContext.OrganizationService;
+                                service.Update(operation);
+
+
+
+
+                            }
+
+
+                        }
+
+                    }
+                    // get the Operations that belong to the Account - retrieve them by the Account ID
+
+                        // Loop over the retrieved Operations
+                        // Update the Operation name
+            }
+        }
+        catch (Exception e) { throw new InvalidPluginExecutionException(e.Message); }
+        }
     }
 }
