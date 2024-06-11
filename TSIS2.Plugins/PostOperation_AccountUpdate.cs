@@ -69,6 +69,7 @@ namespace TSIS2.Plugins
 
                         using (var serviceContext = new Xrm(localContext.OrganizationService))
                         {
+                            // Get the Operations that are related to the Stakeholder
                             string fetchXml = $@"
                                 <fetch>
                                 <entity name='ovs_operation'>
@@ -84,40 +85,29 @@ namespace TSIS2.Plugins
 
                              EntityCollection operations = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(fetchXml));
 
-
-
+                            // Go through each related Operation
                             foreach (Entity operation in operations.Entities)
                             {
+                                // Get the english name of the operation
+                                string originalOperationName = operation.GetAttributeValue<string>("ts_operationnameenglish");
+                                string updatedOperationName = "";
 
-                                //ts_SharePointFile myOperationServiceTaskSharePointFile = null;
+                                // Logic to update Operation Name goes here
+                                // Note: Set the updated Operation Name in 'updatedOperationName'
 
-                                string ovsName = operation.GetAttributeValue<string>("ovs_name");
+                                // Update the Operation Name
+                                operation["ts_operationnameenglish"] = updatedOperationName;
 
-                                EntityReference ovsOperationTypeIdRef = operation.GetAttributeValue<EntityReference>("ovs_operationtypeid");
-                                EntityReference tsSiteIdRef = operation.GetAttributeValue<EntityReference>("ts_site");
-
-
-                                Guid ovsOperationId = operation.Id;
-                                Guid ovsSiteId = operation.Id;
-                                 
-
-                                string operationTypeName = ovsOperationTypeIdRef.Name;
-                                string siteName = tsSiteIdRef.Name;
-                                operation["ts_stakeholdername"] = "test";
-
-                                //string newOvsName = $"{NewName} | {operationTypeName} | {siteName}";
-                                //operation["ovs_name"] = newOvsName;
+                                // Perform the update to the Operation
                                 IOrganizationService service = localContext.OrganizationService;
                                 service.Update(operation);
 
 
-
+                                //string newOvsName = $"{NewName} | {operationTypeName} | {siteName}";
+                                //operation["ovs_name"] = newOvsName;
 
                             }
-
-
                         }
-
                     }
                     // get the Operations that belong to the Account - retrieve them by the Account ID
 
