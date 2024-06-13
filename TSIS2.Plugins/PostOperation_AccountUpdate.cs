@@ -62,8 +62,12 @@ namespace TSIS2.Plugins
             {
                 if (target.LogicalName.Equals(Account.EntityLogicalName))
                 {
-                    if (target.Attributes.Contains("accountid"))
+                    // run this code only if these fields are updated
+                    if (target.Attributes.Contains("name") || 
+                        target.Attributes.Contains("ovs_accountnameenglish") || 
+                        target.Attributes.Contains("ovs_accountnamefrench"))
                     {
+                        
                         Guid accountId = target.GetAttributeValue<Guid>("accountid");
                         String NewName = target.GetAttributeValue<String>("ovs_accountnameenglish");
 
@@ -84,7 +88,13 @@ namespace TSIS2.Plugins
                                  </fetch>";
 
                              EntityCollection operations = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(fetchXml));
-                            
+
+                            ////Check if the record belongs to ISSO - if not don't run the code
+                            //if (owner.StartsWith("Intermodal"))
+                            //{
+                            //    return;
+                            //}
+
 
                             // Loop over the retrieved Operations
                             // Update the Operation name
@@ -107,12 +117,14 @@ namespace TSIS2.Plugins
                                 parts[0] = NewName;
                                 updatedOperationName = string.Join("|", parts);
 
+                                // Get the french name of the operation
+                                string originalFrenchOperationName = operation.GetAttributeValue<string>("ts_operationnamefrench");
+
                                 // Update the Operation Name
+                                operation["ovs_name"] = updatedOperationName;
                                 operation["ts_operationnameenglish"] = updatedOperationName;
 
                                 // Perform the update to the Operation
-
-
                                 IOrganizationService service = localContext.OrganizationService;
                                 service.Update(operation);
 
