@@ -69,11 +69,11 @@ namespace TSIS2.Plugins
 
                         using (var serviceContext = new Xrm(localContext.OrganizationService))
                         {
-                            // Get the Operations that are related to the Stakeholder
+                            // get the Operations that belong to the Account - retrieve them by the Account ID
                             string fetchXml = $@"
                                 <fetch>
                                 <entity name='ovs_operation'>
-                                  <attribute name='ovs_name' />
+                                  <attribute name='ts_operationnameenglish' />
                                   <attribute name='ovs_operationid' />
                                   <attribute name='ovs_operationtypeid' />
                                   <attribute name='ts_site' />
@@ -84,6 +84,10 @@ namespace TSIS2.Plugins
                                  </fetch>";
 
                              EntityCollection operations = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(fetchXml));
+                            
+
+                            // Loop over the retrieved Operations
+                            // Update the Operation name
 
                             // Go through each related Operation
                             foreach (Entity operation in operations.Entities)
@@ -91,28 +95,33 @@ namespace TSIS2.Plugins
                                 // Get the english name of the operation
                                 string originalOperationName = operation.GetAttributeValue<string>("ts_operationnameenglish");
                                 string updatedOperationName = "";
+                                string[] parts = originalOperationName.Split('|');
 
                                 // Logic to update Operation Name goes here
                                 // Note: Set the updated Operation Name in 'updatedOperationName'
+                                
+                                for (int i = 0; i < parts.Length; i++)
+                                {
+                                    parts[i] = parts[i].Trim();
+                                }
+                                parts[0] = NewName;
+                                updatedOperationName = string.Join("|", parts);
 
                                 // Update the Operation Name
                                 operation["ts_operationnameenglish"] = updatedOperationName;
 
                                 // Perform the update to the Operation
+
+
                                 IOrganizationService service = localContext.OrganizationService;
                                 service.Update(operation);
 
 
-                                //string newOvsName = $"{NewName} | {operationTypeName} | {siteName}";
-                                //operation["ovs_name"] = newOvsName;
 
                             }
                         }
                     }
-                    // get the Operations that belong to the Account - retrieve them by the Account ID
-
-                        // Loop over the retrieved Operations
-                        // Update the Operation name
+                    
             }
         }
         catch (Exception e) { throw new InvalidPluginExecutionException(e.Message); }
