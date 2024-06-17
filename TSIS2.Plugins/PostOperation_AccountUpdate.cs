@@ -62,10 +62,15 @@ namespace TSIS2.Plugins
             {
                 if (target.LogicalName.Equals(Account.EntityLogicalName))
                 {
-                    if (target.Attributes.Contains("accountid"))
+                    // run this code only if these fields are updated
+                    if (target.Attributes.Contains("name") || 
+                        target.Attributes.Contains("ovs_accountnameenglish") || 
+                        target.Attributes.Contains("ovs_accountnamefrench"))
                     {
+                        
                         Guid accountId = target.GetAttributeValue<Guid>("accountid");
                         String NewName = target.GetAttributeValue<String>("ovs_accountnameenglish");
+                        String NewNameFrench = target.GetAttributeValue<String>("ovs_accountnamefrench");
 
                         using (var serviceContext = new Xrm(localContext.OrganizationService))
                         {
@@ -74,17 +79,38 @@ namespace TSIS2.Plugins
                                 <fetch>
                                 <entity name='ovs_operation'>
                                   <attribute name='ts_operationnameenglish' />
+                                  <attribute name='ts_operationnamefrench' />
                                   <attribute name='ovs_operationid' />
                                   <attribute name='ovs_operationtypeid' />
                                   <attribute name='ts_site' />
+                                  <link-entity name='team' to='ownerid' from='teamid' alias='team' link-type='inner'>
+		                              <attribute name='name' alias='owner' />
+		                          </link-entity>
                                   <filter>
                                     <condition attribute='ts_stakeholder' operator='eq' value='{accountId.ToString()}' />
                                   </filter>
                                  </entity>
                                  </fetch>";
 
-                             EntityCollection operations = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(fetchXml));
-                            
+                            EntityCollection operations = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(fetchXml));
+                            if (operations.Entities.Count == 0)
+                            {
+                                return;
+                            }
+                            Entity firstOperation = operations.Entities[0];
+
+                            // Get the AliasedValue for the attribute "owner"
+                            AliasedValue ownerAliasedValue = firstOperation.GetAttributeValue<AliasedValue>("owner");
+
+                            // Extract the actual value from the AliasedValue
+                            string owner = ownerAliasedValue.Value as string;
+
+                            ////Check if the record belongs to ISSO - if not don't run the code
+                            if (!(owner.StartsWith("Intermodal")))
+                            {
+                                return;
+                            }
+
 
                             // Loop over the retrieved Operations
                             // Update the Operation name
@@ -95,6 +121,7 @@ namespace TSIS2.Plugins
                                 // Get the english name of the operation
                                 string originalOperationName = operation.GetAttributeValue<string>("ts_operationnameenglish");
                                 string updatedOperationName = "";
+                                string updatedOperationNameFrench = "";
                                 string[] parts = originalOperationName.Split('|');
 
                                 // Logic to update Operation Name goes here
@@ -107,12 +134,25 @@ namespace TSIS2.Plugins
                                 parts[0] = NewName;
                                 updatedOperationName = string.Join("|", parts);
 
+                                // Get the french name of the operation
+                                string originalFrenchOperationName = operation.GetAttributeValue<string>("ts_operationnamefrench");
+                                string[] parts_French = originalFrenchOperationName.Split('|');
+                                for (int i = 0; i < parts.Length; i++)
+                                {
+                                    parts_French[i] = parts_French[i].Trim();
+                                }
+                                parts_French[0] = NewNameFrench;
+                                updatedOperationNameFrench = string.Join("|", parts_French);
                                 // Update the Operation Name
+                                operation["ovs_name"] = updatedOperationName;
                                 operation["ts_operationnameenglish"] = updatedOperationName;
+                                operation["ts_operationnamefrench"] = updatedOperationNameFrench;
+                                
+
+
+
 
                                 // Perform the update to the Operation
-
-
                                 IOrganizationService service = localContext.OrganizationService;
                                 service.Update(operation);
 
