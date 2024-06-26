@@ -122,35 +122,40 @@ namespace TSIS2.Plugins
                             string originalOperationName = operation.GetAttributeValue<string>("ts_operationnameenglish");
                             string updatedOperationName = "";
                             string updatedOperationNameFrench = "";
-                            string[] parts = originalOperationName.Split('|');
 
-                            // Logic to update Operation Name goes here
-                            // Note: Set the updated Operation Name in 'updatedOperationName'
-
-                            for (int i = 0; i < parts.Length; i++)
+                            if (originalOperationName != null)
                             {
-                                parts[i] = parts[i].Trim();
-                            }
-                            parts[2] = NewName;
-                            updatedOperationName = string.Join("|", parts);
+                                string[] parts = originalOperationName.Split('|');
 
-                            // Get the french name of the operation
-                            string originalFrenchOperationName = operation.GetAttributeValue<string>("ts_operationnamefrench");
-                            string[] parts_French = originalFrenchOperationName.Split('|');
-                            for (int i = 0; i < parts.Length; i++)
-                            {
-                                parts_French[i] = parts_French[i].Trim();
-                            }
-                            parts_French[2] = NewNameFrench;
-                            updatedOperationNameFrench = string.Join("|", parts_French);
-                            // Update the Operation Name
-                            operation["ovs_name"] = updatedOperationName;
-                            operation["ts_operationnameenglish"] = updatedOperationName;
-                            operation["ts_operationnamefrench"] = updatedOperationNameFrench;
+                                // Logic to update Operation Name goes here
+                                // Note: Set the updated Operation Name in 'updatedOperationName'
 
-                            // Perform the update to the Operation
-                            IOrganizationService service = localContext.OrganizationService;
-                            service.Update(operation);
+                                for (int i = 0; i < parts.Length; i++)
+                                {
+                                    parts[i] = parts[i].Trim();
+                                }
+                                parts[2] = NewName;
+                                updatedOperationName = string.Join("|", parts);
+
+                                // Get the french name of the operation
+                                string originalFrenchOperationName = operation.GetAttributeValue<string>("ts_operationnamefrench");
+                                string[] parts_French = originalFrenchOperationName.Split('|');
+                                for (int i = 0; i < parts.Length; i++)
+                                {
+                                    parts_French[i] = parts_French[i].Trim();
+                                }
+                                parts_French[2] = NewNameFrench;
+                                updatedOperationNameFrench = string.Join("|", parts_French);
+                                // Update the Operation Name
+                                operation["ovs_name"] = updatedOperationName;
+                                operation["ts_operationnameenglish"] = updatedOperationName;
+                                operation["ts_operationnamefrench"] = updatedOperationNameFrench;
+
+                                // Perform the update to the Operation
+                                IOrganizationService service = localContext.OrganizationService;
+                                service.Update(operation);
+
+                            }
 
 
 
