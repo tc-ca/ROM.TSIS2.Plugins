@@ -73,6 +73,18 @@ namespace TSIS2.Plugins
                             }
                         }
 
+                        //check Mandatory field from Task Type
+                        if(target.Contains("msdyn_tasktype") && target["msdyn_tasktype"] != null)
+                        {
+                            var theType = service.Retrieve("msdyn_servicetasktype", target.GetAttributeValue<EntityReference>("msdyn_tasktype").Id, new ColumnSet("ts_mandatory"));
+
+                            if(theType.Contains("ts_mandatory"))
+                            {
+                                target["ts_mandatory"] = theType["ts_mandatory"];
+                            }
+                        }
+
+
                         if (target.Attributes.Contains("msdyn_tasktype") && target.Attributes["msdyn_tasktype"] != null
                             && (!target.Attributes.Contains("ovs_questionnaire") || target.Attributes["ovs_questionnaire"] != null))
                         {
