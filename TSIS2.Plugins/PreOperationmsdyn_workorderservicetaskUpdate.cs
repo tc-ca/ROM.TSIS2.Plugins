@@ -95,12 +95,28 @@ namespace TSIS2.Plugins
                                 {
                                     // If the work order is not null and is not already part of a case
                                     if (workOrder != null && workOrder.msdyn_ServiceRequest == null)
+
                                     {
                                         Incident newIncident = new Incident();
                                         newIncident.ts_TradeNameId = workOrder.ts_tradenameId;
                                         newIncident.CustomerId = workOrder.msdyn_ServiceAccount;
                                         if (workOrder.ts_Site != null) newIncident.msdyn_FunctionalLocation = workOrder.ts_Site;
-                                        if (workOrder.ts_Region != null) newIncident.ovs_Region = workOrder.ts_Region;
+
+                                        // do environtment variable check
+                                        string environmentVariableName = "ts_usenewregiontable";
+                                        string environmentVariableValue = EnvironmentVariableHelper.GetEnvironmentVariableValue(service, environmentVariableName);
+                                        if (environmentVariableValue == "yes")
+                                        {
+                                            //ts_RegionDoNotUsez
+                                            // if we are using the new field service table, do the if statement
+                                            if (workOrder.ts_RegionDoNotUse != null) newIncident.ovs_Region = workOrder.ts_RegionDoNotUse;
+                                        }
+                                        else
+                                        {
+                                            if (workOrder.ts_Region != null) newIncident.ovs_Region = workOrder.ts_Region;
+                                        }
+
+                                        
                                         if (workOrder.ts_Country != null) newIncident.ts_Country = workOrder.ts_Country;
                                         // Stakeholder is a mandatory field on work order but, just in case, throw an error
                                         if (workOrder.msdyn_ServiceAccount == null) throw new ArgumentNullException("msdyn_workorder.msdyn_ServiceAccount");
