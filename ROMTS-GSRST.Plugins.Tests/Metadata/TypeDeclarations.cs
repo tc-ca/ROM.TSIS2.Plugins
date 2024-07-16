@@ -73,9 +73,11 @@ namespace DG.Tools.XrmMockup {
 		public static Guid EnvironmentMaker = new Guid("d58407f2-48d5-e711-a82c-000d3a37c848");
 		public static Guid ExportCustomizationsSolutionChecker = new Guid("4931681d-8163-e811-a965-000d3a11fe32");
 		public static Guid FabricAISkillRole = new Guid("d6e926ad-4afc-42fb-97f1-6e50c2ef174e");
+		public static Guid FederatedKnowledgeRole = new Guid("ffadce64-3542-4bf1-a83a-ac9941104680");
 		public static Guid FieldServiceAdministrator = new Guid("00bb53d6-da92-e111-9d8c-000c2959f9b8");
 		public static Guid FieldServiceDispatcher = new Guid("d008bfde-da92-e111-9d8c-000c2959f9b8");
 		public static Guid FieldServiceInventoryPurchase = new Guid("c4b99aff-89b6-e311-9b7e-00155da8fa1b");
+		public static Guid FieldServiceNewMobileExperience = new Guid("67e0891f-9a0c-ef11-9f89-6045bdd340da");
 		public static Guid FieldServiceResource = new Guid("dc08bfde-da92-e111-9d8c-000c2959f9b8");
 		public static Guid FieldServiceSalesperson = new Guid("0ad45767-036b-e811-8152-000d3a0158bb");
 		public static Guid FileStoreServiceAppAccess = new Guid("d110d819-9b72-430f-894a-94dc87e04519");
