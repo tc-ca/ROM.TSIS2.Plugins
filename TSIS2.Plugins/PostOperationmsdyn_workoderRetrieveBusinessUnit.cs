@@ -77,13 +77,15 @@ namespace TSIS2.Plugins
                         </link-entity>
                         </link-entity>
                         <filter>
-                        <condition attribute='msdyn_workorderid' operator='eq' value='909b920b-22c7-ec11-a7b6-000d3a0c7991' />
+                        <condition attribute='msdyn_workorderid' operator='eq' value='{target.Id.ToString()}' />
                         </filter>
                         </entity>
                     </fetch>
                     ";
                     EntityCollection businessNameCollection = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(fetchXML));
                     string ownerName = "";
+
+                    Guid myWorkOrderId = Guid.NewGuid();
 
                     if (businessNameCollection.Entities.Count > 0)
                     {
@@ -95,15 +97,15 @@ namespace TSIS2.Plugins
                         {
                             // Cast the AliasedValue to string (or the appropriate type)
                             ownerName = aliasedValue.Value as string;
-
-                            // Set the target attribute to the retrieved owner name
-                            if (ownerName != null)
-                            {
-                                target.Attributes["ts_BusinessOwner"] = ownerName;
-                            }
+                            myWorkOrderId = businessNameCollection.Entities[0].Id;
+                            //// Set the target attribute to the retrieved owner name
+                            //if (ownerName != null)
+                            //{
+                            //    target.Attributes["ts_BusinessOwner"] = ownerName;
+                            //}
                         }
                     }
-                    
+
 
                     //Entity updateEntity = new Entity(target.LogicalName, target.Id);
                     //updateEntity["ts_businessowner"] = target.Attributes["ts_businessowner"];
@@ -111,16 +113,19 @@ namespace TSIS2.Plugins
 
                     //localContext.OrganizationService.Update(new ts_File
                     //{
-                      //  Id = file.Id,
-                        //ts_msdyn_workorder = selectedWorkOrder.ToEntityReference(),
-                        //ts_Incident = selectedWorkOrder.msdyn_ServiceRequest
+                    //  Id = file.Id,
+                    //ts_msdyn_workorder = selectedWorkOrder.ToEntityReference(),
+                    //ts_Incident = selectedWorkOrder.msdyn_ServiceRequest
                     //});
 
 
                     // Update the target entity to reflect changes in CRM
                     //localContext.OrganizationService.Update(new msdyn_workorder { Id = target.Id, ts_BusinessOwner = ownerName }
+                    //Guid myWorkOrderId = target.Id;
+                    localContext.OrganizationService.Update(new msdyn_workorder { Id = myWorkOrderId, ts_BusinessOwner = ownerName });
 
-                        //);
+
+                    //);
 
                 }
                 catch (Exception e)
