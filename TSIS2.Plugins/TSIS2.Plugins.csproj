@@ -116,7 +116,7 @@
     <Compile Include="PostOperationts_sharepointfileCreate.cs" />
     <Compile Include="PostOperation_AccountUpdate.cs" />
     <Compile Include="PostOperation_SiteUpdate.cs" />
-    <Compile Include="PostOperationmsdyn_workoderRetrieveBusinessUnit.cs" />
+    <Compile Include="PostOperationmsdyn_workorderUpdate.cs" />
     <Compile Include="PreOperation_securityincidentUpdate.cs" />
     <Compile Include="TimeZoneHelper.cs" />
     <Compile Include="PreOperation_securityincidentCreate.cs" />
