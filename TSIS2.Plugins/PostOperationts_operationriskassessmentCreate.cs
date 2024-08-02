@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Crm.Sdk.Messages;
+using System.Reflection;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
+using Newtonsoft.Json;
 
 namespace TSIS2.Plugins
 {
@@ -61,6 +64,9 @@ namespace TSIS2.Plugins
                                 //Retrieve Risk Criteria Operation Type M:M records of Operation's Operation Type
                                 var riskCriteriaOperationTypes = serviceContext.ts_riskcriteria_ovs_operationtypeSet.Where(rkot => rkot.ovs_operationtypeid == operation.ovs_OperationTypeId.Id).ToList();
 
+                                // this is used for debugging purposes
+                                List<FoundRiskCriteraOption> foundRiskCriteriaOptions = new List<FoundRiskCriteraOption>();
+
                                 //For each Risk Criteria Operation Type, create Risk Criteria Response
                                 foreach (var riskCriteriaOperationType in riskCriteriaOperationTypes)
                                 {
@@ -73,7 +79,87 @@ namespace TSIS2.Plugins
                                     riskCriteriaResponse.ts_description = riskCriteria.ts_description;
                                     riskCriteriaResponse.ts_operationriskassessment = new EntityReference(ts_operationriskassessment.EntityLogicalName, operationRiskAssessment.Id);
                                     riskCriteriaResponse.ts_riskcriteria = new EntityReference(ts_riskcriteria.EntityLogicalName, riskCriteria.Id);
-                                    service.Create(riskCriteriaResponse);
+
+                                    //Get the Risk Critera Response ID
+                                    Guid newRiskCriteriaResponseID = service.Create(riskCriteriaResponse);
+
+                                    // Create the Risk Criteria Option for the Risk Critera Response
+                                    if (operationRiskAssessment.ts_RiskCriteriaOptionsImport != null && newRiskCriteriaResponseID != null)
+                                    {
+                                        try
+                                        {
+                                            // Deserialize the JSON string into a dynamic object
+                                            dynamic riskCriteriaOptions = JsonConvert.DeserializeObject(operationRiskAssessment.ts_RiskCriteriaOptionsImport);
+
+                                            // Get all the related Risk Criteria Options that are available
+                                            string riskCriteriaOptionFetchXML = $@"
+                                                <fetch xmlns:generator='MarkMpn.SQL4CDS'>
+                                                  <entity name='ts_riskcriteriaoption'>
+                                                    <attribute name='ts_riskcriteriaoptionid' />
+                                                    <attribute name='ts_name' />
+                                                    <link-entity name='ts_riskcriteria' to='ts_riskcriteria' from='ts_riskcriteriaid' alias='ts_riskcriteria' link-type='inner'>
+                                                      <attribute name='ts_englishtext' />
+                                                      <filter>
+                                                        <condition attribute='ts_riskcriteriaid' operator='eq' value='{riskCriteria.Id.ToString()}' />
+                                                      </filter>
+                                                    </link-entity>
+                                                  </entity>
+                                                </fetch>
+                                            ";
+
+                                            EntityCollection myRiskCriteriaOptionEntityCollection = service.RetrieveMultiple(new FetchExpression(riskCriteriaOptionFetchXML));
+
+                                            foreach (var importedRiskCriteriaOption in riskCriteriaOptions)
+                                            {
+                                                PropertyInfo namePropertyInfo = importedRiskCriteriaOption.GetType().GetProperty("Name");
+                                                string importedRiskCriteriaOptionName = namePropertyInfo.GetValue(importedRiskCriteriaOption, null).ToString().Trim().ToUpper();
+
+                                                PropertyInfo valuePropertyInfo = importedRiskCriteriaOption.GetType().GetProperty("Value");
+                                                string importedRiskCriteriaOptionValue = valuePropertyInfo.GetValue(importedRiskCriteriaOption, null).ToString();
+                                                importedRiskCriteriaOptionValue = importedRiskCriteriaOptionValue.Trim().ToUpper();
+
+                                                // Iterate through each risk criteria option
+                                                foreach (var myRiskCriteriaOption in myRiskCriteriaOptionEntityCollection.Entities)
+                                                {
+                                                    string riskCriteriaOptionEnglishText = "";
+
+                                                    if (myRiskCriteriaOption.Attributes["ts_riskcriteria.ts_englishtext"] is AliasedValue ts_englishtext)
+                                                    {
+                                                        riskCriteriaOptionEnglishText = ts_englishtext.Value.ToString().Trim().ToUpper();
+                                                    }
+
+                                                    string riskCriteriaOptionName = myRiskCriteriaOption.Attributes["ts_name"].ToString().Trim().ToUpper();
+
+                                                    // Match the Risk Criteria Option with the Imported Risk Criteria Option (JSON)
+                                                    // This code is used when records are manually being imported with SSIS through an Excel file
+                                                    if (importedRiskCriteriaOptionName == riskCriteriaOptionEnglishText &&
+                                                        importedRiskCriteriaOptionValue == riskCriteriaOptionName)
+                                                    {
+                                                        // this is used for debugging purposes
+                                                        foundRiskCriteriaOptions.Add(new FoundRiskCriteraOption { 
+                                                            Id = myRiskCriteriaOption.Attributes["ts_riskcriteriaoptionid"].ToString() ,
+                                                            RiskCriteriaName = riskCriteriaOptionEnglishText ,
+                                                            RiskCriteriaOptionName = myRiskCriteriaOption.Attributes["ts_name"].ToString()
+                                                        });
+
+                                                        Guid foundRiskCriteriaOptionId = new Guid(myRiskCriteriaOption.Attributes["ts_riskcriteriaoptionid"].ToString());
+
+                                                        // Update the Risk Criteria Option of the Risk Criteria that is part of the Operation Risk Assessment
+                                                        ts_riskcriteriaoption myUpdatedRiskCriteriaOption = serviceContext.ts_riskcriteriaoptionSet.Where(rco => rco.Id == foundRiskCriteriaOptionId).FirstOrDefault();
+
+                                                        service.Update(new ts_riskcriteriaresponse { 
+                                                            Id = newRiskCriteriaResponseID,
+                                                            ts_riskcriteriaoption = myUpdatedRiskCriteriaOption.ToEntityReference()
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        catch (JsonReaderException)
+                                        {
+                                            tracingService.Trace($"PostOperationts_operationriskassessmentCreate: Invalid JSON format for operationRiskAssessment {operationRiskAssessment.Id.ToString()} ts_RiskCriteriaOptionsImport value:   {operationRiskAssessment.ts_RiskCriteriaOptionsImport}");
+                                        }
+                                    }
                                 }
 
                                 //Retrieve Discretionary Factor Groupings of Operation Type
@@ -134,5 +220,12 @@ namespace TSIS2.Plugins
                 }
             }
         }
+    }
+
+    public class FoundRiskCriteraOption
+    {
+        public string Id { get; set; }
+        public string RiskCriteriaName { get; set; }
+        public string RiskCriteriaOptionName { get; set; }
     }
 }
