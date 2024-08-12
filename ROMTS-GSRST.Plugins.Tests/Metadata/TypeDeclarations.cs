@@ -106,6 +106,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid OmnichannelAPIaccess = new Guid("08593e02-ca6e-ec11-8943-000d3a9d73b9");
 		public static Guid OmnichannelAssignmentAPIaccess = new Guid("dad4c8cd-aab9-ee11-a568-6045bd07894c");
 		public static Guid OmnichannelCDSFlushRole = new Guid("36491c22-df5c-4155-927c-b1d8d2848e3b");
+		public static Guid OmnichannelMessagingPlatformRole = new Guid("516487a0-27ac-4219-9223-38dcc3dd82c9");
 		public static Guid Omnichannelsupervisor = new Guid("e4435009-7653-e811-8147-000d3aa39708");
 		public static Guid PlaybookManager = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2732");
 		public static Guid PlaybookUser = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2731");
