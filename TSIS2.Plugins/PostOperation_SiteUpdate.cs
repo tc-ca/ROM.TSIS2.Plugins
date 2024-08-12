@@ -79,6 +79,7 @@ namespace TSIS2.Plugins
                             <entity name='ovs_operation'>
                                 <attribute name='ts_operationnameenglish' />
                                 <attribute name='ts_operationnamefrench' />
+                                <attribute name='ovs_name' />
                                 <attribute name='ovs_operationid' />
                                 <attribute name='ovs_operationtypeid' />
                                 <attribute name='ts_site' />
@@ -122,8 +123,11 @@ namespace TSIS2.Plugins
                             string originalOperationName = operation.GetAttributeValue<string>("ts_operationnameenglish");
                             string updatedOperationName = "";
                             string updatedOperationNameFrench = "";
-
-                            if (originalOperationName != null)
+                            if (originalOperationName == null)
+                            {
+                                originalOperationName = operation.GetAttributeValue<string>("ovs_name");
+                            }
+                            if (!(originalOperationName.StartsWith("OP-")))
                             {
                                 string[] parts = originalOperationName.Split('|');
 
@@ -139,6 +143,11 @@ namespace TSIS2.Plugins
 
                                 // Get the french name of the operation
                                 string originalFrenchOperationName = operation.GetAttributeValue<string>("ts_operationnamefrench");
+
+                                if (originalFrenchOperationName == null)
+                                {
+                                    originalFrenchOperationName = operation.GetAttributeValue<string>("ovs_name");
+                                }
                                 string[] parts_French = originalFrenchOperationName.Split('|');
                                 for (int i = 0; i < parts.Length; i++)
                                 {

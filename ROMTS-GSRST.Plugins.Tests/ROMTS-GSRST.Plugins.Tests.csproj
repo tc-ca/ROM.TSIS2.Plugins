@@ -246,12 +246,6 @@
     <Content Include="Metadata\SecurityRoles\VicePresidentofSales.xml" />
     <Content Include="Metadata\Workflows\SetAirCarrierNamefromOrganization.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TSIS2.Plugins\TSIS2.Plugins.csproj">
-      <Project>{0373c222-426a-4518-940c-b886b1ae7111}</Project>
-      <Name>TSIS2.Plugins</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

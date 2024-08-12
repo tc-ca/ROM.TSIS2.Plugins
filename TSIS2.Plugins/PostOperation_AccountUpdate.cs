@@ -79,6 +79,7 @@ namespace TSIS2.Plugins
                                 <fetch>
                                 <entity name='ovs_operation'>
                                   <attribute name='ts_operationnameenglish' />
+                                  <attribute name='ovs_name' />
                                   <attribute name='ts_operationnamefrench' />
                                   <attribute name='ovs_operationid' />
                                   <attribute name='ovs_operationtypeid' />
@@ -120,10 +121,14 @@ namespace TSIS2.Plugins
                             {
                                 // Get the english name of the operation
                                 string originalOperationName = operation.GetAttributeValue<string>("ts_operationnameenglish");
+                                if(originalOperationName == null)
+                                {
+                                    originalOperationName = operation.GetAttributeValue<string>("ovs_name");
+                                }
                                 string updatedOperationName = "";
                                 string updatedOperationNameFrench = "";
                                 
-                                if (originalOperationName != null)
+                                if (!(originalOperationName.StartsWith("OP-")))
                                 {
                                     string[] parts = originalOperationName.Split('|');
                                     for (int i = 0; i < parts.Length; i++)
@@ -135,6 +140,12 @@ namespace TSIS2.Plugins
 
                                     // Get the french name of the operation
                                     string originalFrenchOperationName = operation.GetAttributeValue<string>("ts_operationnamefrench");
+
+                                    if (originalFrenchOperationName == null)
+                                    {
+                                        originalFrenchOperationName = operation.GetAttributeValue<string>("ovs_name");
+                                    }
+
                                     string[] parts_French = originalFrenchOperationName.Split('|');
                                     for (int i = 0; i < parts.Length; i++)
                                     {
