@@ -106,10 +106,12 @@ namespace DG.Tools.XrmMockup {
 		public static Guid OmnichannelAPIaccess = new Guid("08593e02-ca6e-ec11-8943-000d3a9d73b9");
 		public static Guid OmnichannelAssignmentAPIaccess = new Guid("dad4c8cd-aab9-ee11-a568-6045bd07894c");
 		public static Guid OmnichannelCDSFlushRole = new Guid("36491c22-df5c-4155-927c-b1d8d2848e3b");
+		public static Guid OmnichannelMessagingPlatformRole = new Guid("516487a0-27ac-4219-9223-38dcc3dd82c9");
 		public static Guid Omnichannelsupervisor = new Guid("e4435009-7653-e811-8147-000d3aa39708");
 		public static Guid PlaybookManager = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2732");
 		public static Guid PlaybookUser = new Guid("4178df9e-4ea5-e811-8149-000d3a3a2731");
-		public static Guid PortalApplicationUserrole = new Guid("a75a6d67-1730-4298-8fc7-af7e93064fa1");
+		public static Guid PortalApplicationUser = new Guid("a75a6d67-1730-4298-8fc7-af7e93064fa1");
+		public static Guid PortalRPServiceRole = new Guid("cc181d27-3ce6-41e8-b0f4-d951496afcfd");
 		public static Guid PowerAppsCheckerServiceRole = new Guid("d6b2bb0d-8b41-41ba-86ee-a0c6e5954b30");
 		public static Guid PowerAutomateAIFlowsApplicationUser = new Guid("84012ef2-00bd-412e-8654-b1e3a90feafc");
 		public static Guid PowerBIEmbeddedAppAccess = new Guid("8278be3d-dd12-4187-aac6-69a0543ebd85");
@@ -119,6 +121,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid PowerPlatformDataAnalyticsRole = new Guid("57e714ae-debb-4164-9380-58b8585358a8");
 		public static Guid PowerPlatformDataflowsServiceRole = new Guid("f2550a3a-f9c6-4409-bf77-8d4ceadb27ab");
 		public static Guid PowerAppsRPRole = new Guid("527c7b12-e5ac-4408-9f46-ecc762397544");
+		public static Guid PowerPlatformInsightsRole = new Guid("f2e9feb0-adc5-47e5-8dc1-d0e4529befe7");
 		public static Guid PPPAnalyst = new Guid("70abdd18-59b6-ea11-a812-000d3a0c8127");
 		public static Guid PPPBasicRole = new Guid("54631c5d-3edb-ea11-a813-000d3a0c8127");
 		public static Guid PPPManager = new Guid("ebcb2437-59b6-ea11-a812-000d3a0c8127");
