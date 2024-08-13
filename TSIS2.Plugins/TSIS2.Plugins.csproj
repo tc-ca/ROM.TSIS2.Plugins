@@ -112,6 +112,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PostOperationmsdyn_workorderCreate.cs" />
+    <Compile Include="PostOperationmsdyn_workorderUpdate.cs" />
     <Compile Include="PostOperationts_operationriskassessmentCreate.cs" />
     <Compile Include="PostOperationts_sharepointfileCreate.cs" />
     <Compile Include="PostOperation_AccountUpdate.cs" />
