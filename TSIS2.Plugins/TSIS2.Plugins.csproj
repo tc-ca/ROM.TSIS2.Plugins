@@ -113,6 +113,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnvironmentVariableHelper.cs" />
+    <Compile Include="PostOperationmsdyn_workorderCreate.cs" />
+    <Compile Include="PostOperationmsyd_workorderUpdate.cs" />
     <Compile Include="PostOperationts_operationriskassessmentCreate.cs" />
     <Compile Include="PostOperationts_sharepointfileCreate.cs" />
     <Compile Include="PostOperation_AccountUpdate.cs" />
