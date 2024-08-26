@@ -120,6 +120,10 @@
     <Compile Include="PostOperation_AccountUpdate.cs" />
     <Compile Include="PostOperation_SiteUpdate.cs" />
     <Compile Include="PreOperation_securityincidentUpdate.cs" />
+    <Compile Include="retrieveSearchHtmlTableDataMappingPreferences.cs" />
+    <Compile Include="retrieveSearchHtmlTableLogic.cs" />
+    <Compile Include="retrieveSearchHtmlTableLogicDataTableHelper.cs" />
+    <Compile Include="retrieveSearchHtmlPreferenceMapping.cs" />
     <Compile Include="TimeZoneHelper.cs" />
     <Compile Include="PreOperation_securityincidentCreate.cs" />
     <Compile Include="PreValidationovs_operationCreate.cs" />
@@ -141,6 +145,7 @@
     <Compile Include="CrmPluginRegistrationAttribute.cs" />
     <Compile Include="PreOperationts_questionnaireversionUpdate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TSGlobalAction.cs" />
     <Compile Include="XrmContext\XrmContext.cs" />
     <Compile Include="XrmContext\XrmExtensions.cs" />
   </ItemGroup>
