@@ -21,10 +21,16 @@ namespace TSIS2.Plugins
             var opEnt = service.Retrieve("ts_operationactivity", opActivityId, new ColumnSet("ts_operation", "ts_activity"));
 
             var opId = Guid.Empty;
+            var actTypeId = Guid.Empty;
             if (opEnt.Contains("ts_operation"))
             {
                 opId = opEnt.GetAttributeValue<EntityReference>("ts_operation").Id;
             }
+            if (opEnt.Contains("ts_activity"))
+            {
+                actTypeId = opEnt.GetAttributeValue<EntityReference>("ts_activity").Id;
+            }
+
             tracingService.Trace("opId : " + opId.ToString());
             QueryExpression qe = new QueryExpression();
             qe.EntityName = "msdyn_workorder";
@@ -38,6 +44,12 @@ namespace TSIS2.Plugins
             ce.Operator = ConditionOperator.Equal;
             ce.Values.Add(opId);
             feWO.AddCondition(ce);
+            
+            ConditionExpression ce2 = new ConditionExpression();
+            ce2.AttributeName = "msdyn_primaryincidenttype";
+            ce2.Operator = ConditionOperator.Equal;
+            ce2.Values.Add(actTypeId);
+            feWO.AddCondition(ce2);
 
             qe.Criteria.AddFilter(feWO);
 
