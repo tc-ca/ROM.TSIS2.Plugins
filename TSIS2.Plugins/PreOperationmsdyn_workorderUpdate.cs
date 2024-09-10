@@ -103,7 +103,7 @@ namespace TSIS2.Plugins
                                     var allFiles = serviceContext.ts_FileSet.ToList();
                                     {
                                         var myWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
-
+                                        
                                         if (myWorkOrder != null)
                                         {
                                             var workOrderFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WO ", "").Trim() == myWorkOrder.msdyn_name).ToList();
@@ -318,6 +318,35 @@ namespace TSIS2.Plugins
                                     {
                                         target["msdyn_timeclosed"] = DateTime.UtcNow;
                                         target["msdyn_closedby"] = new EntityReference(SystemUser.EntityLogicalName, context.InitiatingUserId);
+
+                                        //Check if there are any related Operation Activities
+                                        // replace value='300-007919' with the current Work Order ID 'workOrder.Id'
+                                        /*
+                                         <fetch xmlns:generator='MarkMpn.SQL4CDS'>
+                                          <entity name='msdyn_workorder'>
+                                            <attribute name='msdyn_workorderid' />
+                                            <link-entity name='ovs_operation' to='ovs_operationid' from='ovs_operationid' alias='ovs_operation' link-type='inner'>
+                                              <attribute name='ovs_operationid' />
+                                              <link-entity name='ts_operationactivity' to='ovs_operationid' from='ts_operation' alias='ts_operationactivity' link-type='inner'>
+                                                <attribute name='ts_operationactivityid' />
+                                                <order attribute='ts_operationactivityid' />
+                                              </link-entity>
+                                              <order attribute='ovs_operationid' />
+                                            </link-entity>
+                                            <filter>
+                                              <condition attribute='msdyn_name' operator='eq' value='300-007919' />
+                                              <condition attribute='msdyn_primaryincidenttype' operator='eq' valueof='ts_operationactivity.ts_activity' />
+                                            </filter>
+                                            <order attribute='msdyn_workorderid' />
+                                          </entity>
+                                        </fetch> 
+                                         
+                                         * **/
+
+                                        // Get the Operation Activity ID
+                                        //var myOperationActivity = serviceContext.ts_OperationActivitySet.Where(oa => oa.Id == myOperationActivityID).FirstOrDefault();
+
+                                        // Update ts_operationactivity.ts_closedondateoflastworkorder with DateTime.UtcNow
                                     }
                                 }
                             }
