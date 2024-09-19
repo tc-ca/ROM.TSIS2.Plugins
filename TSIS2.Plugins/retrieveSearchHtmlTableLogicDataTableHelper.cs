@@ -82,7 +82,7 @@ namespace TSIS2.Plugins
             return new Tuple<string, string>(html, info);
         }
 
-        public static Tuple<string, string> ConvertEntityCollectionToHtmlDataTable(EntityCollection ec, bool hasSearchCondition, IOrganizationService service)
+        public static Tuple<string, string> ConvertEntityCollectionToHtmlDataTable(EntityCollection ec, bool hasSearchCondition, IOrganizationService service, string lang="")
         {
             string html = "";
             string info = "";
@@ -92,7 +92,7 @@ namespace TSIS2.Plugins
                 Dictionary<string, retrieveSearchHtmlTableDataMappingPreferences> dataTableMappings = setDataTableMapping();
                 DataTable dt = createDataTable(ec, dataTableMappings, service);
 
-                html = convertDataTableToHTml(dt, dataTableMappings);
+                html = convertDataTableToHTml(dt, dataTableMappings, lang);
 
 
                 if (dt.Rows.Count >= resultRowsLimit)
@@ -116,7 +116,7 @@ namespace TSIS2.Plugins
             return new Tuple<string, string>(html, info);
         }
 
-        private static string convertDataTableToHTml(DataTable dt, Dictionary<string, retrieveSearchHtmlTableDataMappingPreferences> dataTableMappings)
+        private static string convertDataTableToHTml(DataTable dt, Dictionary<string, retrieveSearchHtmlTableDataMappingPreferences> dataTableMappings, string lang="")
         {
             StringBuilder strHTMLBuilder = new StringBuilder();
 
@@ -128,9 +128,13 @@ namespace TSIS2.Plugins
                 if (dataTableMappings[column.ColumnName].isVisibleInGrid)
                 {
                     strHTMLBuilder.Append("<th>");
+                    var finalColName = column.ColumnName;
+                    if(lang=="1036")
+                    {
+                        finalColName=dataTableMappings[column.ColumnName].frName;
+                    }
 
-
-                    strHTMLBuilder.Append("<div class='grid-header-text' style='color:#045999; opacity: 1;'>" + WebUtility.HtmlEncode(column.ColumnName) + "</div><div class='columnSeparator'>&nbsp;</div>");
+                    strHTMLBuilder.Append("<div class='grid-header-text' style='color:#045999; opacity: 1;'>" + WebUtility.HtmlEncode(finalColName) + "</div><div class='columnSeparator'>&nbsp;</div>");
 
                     strHTMLBuilder.Append("</th>");
                 }
@@ -268,18 +272,18 @@ namespace TSIS2.Plugins
         {
             Dictionary<string, retrieveSearchHtmlTableDataMappingPreferences> dataTableMapping = new Dictionary<string, retrieveSearchHtmlTableDataMappingPreferences>();
 
-            dataTableMapping.Add("WO No.", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_name", false, true, false, false, new retrieveSearchHtmlTableDataMappingPreferences.HyperlinkHelper("msdyn_workorder", "msdyn_workorderid")));
+            dataTableMapping.Add("WO No.", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_name", false, true, false, false, new retrieveSearchHtmlTableDataMappingPreferences.HyperlinkHelper("msdyn_workorder", "msdyn_workorderid"), "Numéro de Bon de Travail"));
 
-            dataTableMapping.Add("Stakeholder", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_serviceaccount", true, true, false, false, null));
-            dataTableMapping.Add("Category", new retrieveSearchHtmlTableDataMappingPreferences("ovs_rational", true, true, false, false, null));
-            dataTableMapping.Add("Site", new retrieveSearchHtmlTableDataMappingPreferences("ts_site", true, true, false, false, null));
-            dataTableMapping.Add("Activity Type", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_primaryincidenttype", true, true, false, false, null));
-            dataTableMapping.Add("Owner", new retrieveSearchHtmlTableDataMappingPreferences("ownerid", true, true, false, false, null));
-            dataTableMapping.Add("Region", new retrieveSearchHtmlTableDataMappingPreferences("ts_region", true, true, false, false, null));
+            dataTableMapping.Add("Stakeholder", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_serviceaccount", true, true, false, false, null, "Intervenant"));
+            dataTableMapping.Add("Category", new retrieveSearchHtmlTableDataMappingPreferences("ovs_rational", true, true, false, false, null, "catégorie"));
+            dataTableMapping.Add("Site", new retrieveSearchHtmlTableDataMappingPreferences("ts_site", true, true, false, false, null, "Site"));
+            dataTableMapping.Add("Activity Type", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_primaryincidenttype", true, true, false, false, null, "Type d’activité"));
+            dataTableMapping.Add("Owner", new retrieveSearchHtmlTableDataMappingPreferences("ownerid", true, true, false, false, null, "Propriétaire"));
+            dataTableMapping.Add("Region", new retrieveSearchHtmlTableDataMappingPreferences("ts_region", true, true, false, false, null, "Région"));
 
-            dataTableMapping.Add("# of Findings", new retrieveSearchHtmlTableDataMappingPreferences("ts_numberoffindings", true, true, false, false, null));
-            dataTableMapping.Add("Closed Date", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_timeclosed", true, true, false, false, null));
-            dataTableMapping.Add("Created On", new retrieveSearchHtmlTableDataMappingPreferences("createdon", true, true, false, false, null));
+            dataTableMapping.Add("# of Findings", new retrieveSearchHtmlTableDataMappingPreferences("ts_numberoffindings", true, true, false, false, null, "Nombre de constatations"));
+            dataTableMapping.Add("Closed Date", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_timeclosed", true, true, false, false, null, "Date de clôture"));
+            dataTableMapping.Add("Created On", new retrieveSearchHtmlTableDataMappingPreferences("createdon", true, true, false, false, null, "créé le"));
             return dataTableMapping;
         }
 

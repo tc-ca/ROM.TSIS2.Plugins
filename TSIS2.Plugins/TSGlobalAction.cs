@@ -34,7 +34,9 @@ namespace TSIS2.Plugins
                 if (context.MessageName.ToLower() == messageName.ToLower())
                 {
                     string action = context.InputParameters["actionName"] as string;
-                    string param1 = context.InputParameters["recordId"] as string;
+                    string recordIdString = context.InputParameters["recordId"] as string;
+                    string param1 = recordIdString.Split('|')[0];
+                    string lang = recordIdString.Split('|')[1];
                     //string param2 = context.InputParameters["Param2"] as string;
 
 
@@ -47,7 +49,7 @@ namespace TSIS2.Plugins
                         var retTuple = retrieveSearchHtmlTableLogicDataTableHelper.searchMatchingRecords( param1, service, tracingService);
 
                         tracingService.Trace(" -----------  WO count: " + retTuple.Entities.Count);
-                        var retObj = retrieveSearchHtmlTableLogicDataTableHelper.ConvertEntityCollectionToHtmlDataTable(retTuple, false, service);
+                        var retObj = retrieveSearchHtmlTableLogicDataTableHelper.ConvertEntityCollectionToHtmlDataTable(retTuple, false, service, lang);
                         retMessage = retObj.Item1;
                         retMessage2 = retObj.Item2;
 
