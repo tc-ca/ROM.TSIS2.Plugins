@@ -15,7 +15,8 @@ namespace TSIS2.Plugins
         public bool isSpecialColumn { get; private set; }
         public HyperlinkHelper hyperlinkHelper { get; private set; }
 
-        public retrieveSearchHtmlTableDataMappingPreferences(string attributeName, bool isToBeHtmlEncoded, bool isVisibleInGrid, bool isSelectionColumn, bool isTermColumn, HyperlinkHelper hyperlinkHelper)
+        public string frName { get; private set; }
+        public retrieveSearchHtmlTableDataMappingPreferences(string attributeName, bool isToBeHtmlEncoded, bool isVisibleInGrid, bool isSelectionColumn, bool isTermColumn, HyperlinkHelper hyperlinkHelper, string frName = "")
         {
             this.attributeName = attributeName;
             this.isToBeHtmlEncoded = isToBeHtmlEncoded;
@@ -23,6 +24,7 @@ namespace TSIS2.Plugins
             this.isSelectionColumn = isSelectionColumn;
             this.isSpecialColumn = isTermColumn;
             this.hyperlinkHelper = hyperlinkHelper;
+            this.frName = frName;
         }
 
         public class HyperlinkHelper
