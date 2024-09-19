@@ -21,6 +21,7 @@ namespace TSIS2.Plugins
     1,
     IsolationModeEnum.Sandbox,
     Image1Name = "PostImage", Image1Type = ImageTypeEnum.PostImage, Image1Attributes = "",
+    Image2Name = "PreImage", Image2Type = ImageTypeEnum.PreImage, Image2Attributes = "",
     Description = "Happens after the Work Order has been updated")]
     public class PostOperationmsdyn_workorderUpdate : PluginBase
     {
@@ -59,9 +60,52 @@ namespace TSIS2.Plugins
             IPluginExecutionContext context = localContext.PluginExecutionContext;
             Entity target = (Entity)context.InputParameters["Target"];
 
+            // Obtain the images for the entity
+            Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
+            Entity postImageEntity = (context.PostEntityImages != null && context.PostEntityImages.Contains("PostImage")) ? context.PostEntityImages["PostImage"] : null;
+
+            // Guid for the International Region
+            string internationalGuid = "3bf0fa88-150f-eb11-a813-000d3af3a7a7";
+
             try
             {
-                if (target.Attributes.Contains("ovs_operationtypeid"))
+
+                // Check if the region has changed
+                // we don't (target.Attributes.Contains("ts_region")) because when an update happens to a Work Order, it run's through here several times
+                {
+                    if (preImageEntity.Contains("ts_region") && postImageEntity.Contains("ts_region"))
+                    {
+                        var preRegion = preImageEntity["ts_region"] as EntityReference;
+                        var postRegion = postImageEntity["ts_region"] as EntityReference;
+
+                        if (preRegion != null && postRegion != null)
+                        {
+                            if (preRegion.Id.Equals(new Guid(internationalGuid)) && postRegion.Id.Equals(new Guid(internationalGuid)))
+                            {
+                                // if the Region is already set to International, exit the Plugin.
+                                // we do this to prevent an infinite loop from happening
+
+                                return;
+                            }
+                            else if (postRegion.Id.Equals(new Guid(internationalGuid)))
+                            {
+                                // if the Region is set to International
+
+                                // set the owner label to International
+                                target.Attributes["ts_businessowner"] = "AvSec International";
+
+                                // Perform the update to the Work Order
+                                IOrganizationService service = localContext.OrganizationService;
+
+                                service.Update(target);
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                // Check if an operation type was updated
+                // we don't (target.Attributes.Contains("ovs_operationtype")) because when an update happens to a Work Order, it run's through here several times
                 {
                     string workOrderId = target.Id.ToString();
                     string ownerName = "";
@@ -100,6 +144,19 @@ namespace TSIS2.Plugins
                             {
                                 // Cast the AliasedValue to string (or the appropriate type)
                                 ownerName = aliasedValue.Value as string;
+
+                                if (preImageEntity.Contains("ts_businessowner"))
+                                {
+                                    // if ts_businessowner is already set to the value of ownerName, exit the Plugin
+                                    // we do this to prevent an infinite loop from happening
+                                    var preBusinessOwner = preImageEntity.Attributes["ts_businessowner"];
+
+                                    if (preBusinessOwner != null && preBusinessOwner.ToString() == ownerName)
+                                    {
+                                        return;
+                                    }
+                                }
+
                             }
 
                             // set the Business Owner Label
@@ -108,6 +165,7 @@ namespace TSIS2.Plugins
                             // Perform the update to the Work Order
                             IOrganizationService service = localContext.OrganizationService;
                             service.Update(workOrder);
+                            return;
                         }
                     }
                 }
