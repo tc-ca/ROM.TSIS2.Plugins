@@ -329,21 +329,23 @@ namespace TSIS2.Plugins
 
                                     string fetchXML = $@"
                                         <fetch xmlns:generator='MarkMpn.SQL4CDS'>
-                                          <entity name='msdyn_workorder'>
-                                            <attribute name='msdyn_workorderid' />
-                                            <link-entity name='ovs_operation' to='ovs_operationid' from='ovs_operationid' alias='ovs_operation' link-type='inner'>
+                                          <entity name='ts_operationactivity'>
+                                            <attribute name='ts_operationactivityid' />
+                                            <link-entity name='ovs_operation' to='ts_operation' from='ovs_operationid' alias='ovs_operation' link-type='inner'>
                                               <attribute name='ovs_operationid' />
-                                              <link-entity name='ts_operationactivity' to='ovs_operationid' from='ts_operation' alias='ts_operationactivity' link-type='inner'>
-                                                <attribute name='ts_operationactivityid' />
-                                                <order attribute='ts_operationactivityid' />
+                                              <link-entity name='msdyn_workorder' to='ovs_operationid' from='ovs_operationid' alias='msdyn_workorder' link-type='inner'>
+                                                <attribute name='msdyn_workorderid' />
+                                                <filter>
+                                                  <condition attribute='msdyn_name' operator='eq' value='{woName}' />
+                                                </filter>
+                                                <order attribute='msdyn_workorderid' />
                                               </link-entity>
                                               <order attribute='ovs_operationid' />
                                             </link-entity>
                                             <filter>
-                                              <condition attribute='msdyn_name' operator='eq' value='{woName}' />
-                                              <condition attribute='msdyn_primaryincidenttype' operator='eq' valueof='ts_operationactivity.ts_activity' />
+                                              <condition attribute='ts_activity' operator='eq' valueof='msdyn_workorder.msdyn_primaryincidenttype' />
                                             </filter>
-                                            <order attribute='msdyn_workorderid' />
+                                            <order attribute='ts_operationactivityid' />
                                           </entity>
                                         </fetch>
                                     ";
