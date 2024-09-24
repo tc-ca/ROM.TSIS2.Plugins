@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Client;
 using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
@@ -319,10 +320,15 @@ namespace TSIS2.Plugins
                                         target["msdyn_timeclosed"] = DateTime.UtcNow;
                                         target["msdyn_closedby"] = new EntityReference(SystemUser.EntityLogicalName, context.InitiatingUserId);
 
-                                        //Check if there are any related Operation Activities
-                                        // replace value='300-007919' with the current Work Order ID 'workOrder.Id'
-                                        /*
-                                         <fetch xmlns:generator='MarkMpn.SQL4CDS'>
+                                    }
+                                    // Check if there are any related Operation Activities
+                                    string workOrderId = target.Id.ToString();
+                                    Guid workOrderGuid = new Guid(workOrderId);
+                                    Entity workOrderNumber = service.Retrieve("msdyn_workorder", workOrderGuid, new ColumnSet("msdyn_name"));
+                                    string woName = workOrderNumber.GetAttributeValue<string>("msdyn_name");
+
+                                    string fetchXML = $@"
+                                        <fetch xmlns:generator='MarkMpn.SQL4CDS'>
                                           <entity name='msdyn_workorder'>
                                             <attribute name='msdyn_workorderid' />
                                             <link-entity name='ovs_operation' to='ovs_operationid' from='ovs_operationid' alias='ovs_operation' link-type='inner'>
@@ -334,25 +340,42 @@ namespace TSIS2.Plugins
                                               <order attribute='ovs_operationid' />
                                             </link-entity>
                                             <filter>
-                                              <condition attribute='msdyn_name' operator='eq' value='300-007919' />
+                                              <condition attribute='msdyn_name' operator='eq' value='{woName}' />
                                               <condition attribute='msdyn_primaryincidenttype' operator='eq' valueof='ts_operationactivity.ts_activity' />
                                             </filter>
                                             <order attribute='msdyn_workorderid' />
                                           </entity>
-                                        </fetch> 
-                                         
-                                         * **/
+                                        </fetch>
+                                    ";
 
-                                        // Get the Operation Activity ID
-                                        //var myOperationActivity = serviceContext.ts_OperationActivitySet.Where(oa => oa.Id == myOperationActivityID).FirstOrDefault();
+                                    EntityCollection operationActivityCollection = service.RetrieveMultiple(new FetchExpression(fetchXML));
+                                    if (operationActivityCollection.Entities.Count == 0)
+                                    {
+                                        // exit out if there are no results 
+                                        return;
+                                    }
+
+                                    else
+                                    {
+                                        // Retrieve the operation activity ID.
+                                        Guid operationActivityId = operationActivityCollection.Entities[0].Id;
+
+                                        // Retrieve the operation activity record.
+                                        Entity operationActivity = service.Retrieve("ts_operationactivity", operationActivityId, new ColumnSet("ts_closedondateoflastworkorder"));
 
                                         // Update ts_operationactivity.ts_closedondateoflastworkorder with DateTime.UtcNow
+                                        operationActivity["ts_closedondateoflastworkorder"] = DateTime.UtcNow;
+
+                                        // Perform the update to the Work Order
+                                        service.Update(operationActivity);
                                     }
+                                    // Get the Operation Activity ID
+                                    //var myOperationActivity = serviceContext.ts_OperationActivitySet.Where(oa => oa.Id == myOperationActivityID).FirstOrDefault();
                                 }
                             }
                         }
 
-                            int UserLanguage = LocalizationHelper.RetrieveUserUILanguageCode(service, context.InitiatingUserId);
+                        int UserLanguage = LocalizationHelper.RetrieveUserUILanguageCode(service, context.InitiatingUserId);
                         string ResourceFile = "ovs_/resx/WorkOrder.1033.resx";
                         if (UserLanguage == 1036) //French
                         {
