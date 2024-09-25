@@ -1,4 +1,5 @@
-﻿using Microsoft.FSharp.Core;
+﻿using Microsoft.Crm.Sdk.Messages;
+using Microsoft.FSharp.Core;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using System;
@@ -73,6 +74,7 @@ namespace TSIS2.Plugins
                 // Check if the region has changed
                 // we don't (target.Attributes.Contains("ts_region")) because when an update happens to a Work Order, it run's through here several times
                 {
+                    IOrganizationService service = localContext.OrganizationService;
                     if (preImageEntity.Contains("ts_region") && postImageEntity.Contains("ts_region"))
                     {
                         var preRegion = preImageEntity["ts_region"] as EntityReference;
@@ -95,12 +97,30 @@ namespace TSIS2.Plugins
                                 target.Attributes["ts_businessowner"] = "AvSec International";
 
                                 // Perform the update to the Work Order
-                                IOrganizationService service = localContext.OrganizationService;
-
                                 service.Update(target);
                                 return;
                             }
                         }
+                    }
+
+                    if (preImageEntity.Contains("ts_trip") && !postImageEntity.Contains("ts_trip") && !target.Contains("ts_ignoreupdate"))
+                    {
+                        //if trip got removed PBI-372064, remove WO from Trip Inspection -> ts_tripinspection
+                        var tripId = preImageEntity.GetAttributeValue<EntityReference>("ts_trip").Id;
+                        localContext.Trace("Trip removed: " + tripId.ToString());
+
+                        var qETripInspection = new QueryExpression("ts_tripinspection");
+                        qETripInspection.ColumnSet.AddColumns("ts_trip");
+
+                        qETripInspection.Criteria.AddCondition("ts_trip", ConditionOperator.Equal, tripId);
+                        qETripInspection.Criteria.AddCondition("ts_inspection", ConditionOperator.Equal, preImageEntity.Id);
+                        EntityCollection returnCol = service.RetrieveMultiple(qETripInspection);
+                        if (returnCol.Entities.Count > 0)
+                        {
+                            localContext.Trace("Trip removed: return  " + returnCol.Entities.Count + " - " + returnCol.Entities[0].Id.ToString());
+                            service.Delete(returnCol.Entities[0].LogicalName, returnCol.Entities[0].Id);
+                        }
+
                     }
                 }
 
