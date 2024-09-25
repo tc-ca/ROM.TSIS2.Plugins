@@ -9,6 +9,16 @@ using System.Web.Security;
 
 namespace TSIS2.Plugins
 {
+    [CrmPluginRegistration(
+       MessageNameEnum.Delete,
+       "ts_tripinspection",
+       StageEnum.PreOperation,
+       ExecutionModeEnum.Synchronous,
+       "",
+       "TSIS2.Plugins.PreOperation_TripInspectionDelete Plugin",
+       1,
+       IsolationModeEnum.Sandbox,       
+       Description = "Happens before the Trip Inspection has been deleted")]
     public class PreOperation_TripInspectionDelete : IPlugin
     {
         public void Execute(IServiceProvider serviceProvider)
