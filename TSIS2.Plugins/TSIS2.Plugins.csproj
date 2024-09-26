@@ -120,6 +120,7 @@
     <Compile Include="PostOperation_AccountUpdate.cs" />
     <Compile Include="PostOperation_SiteUpdate.cs" />
     <Compile Include="PreOperation_securityincidentUpdate.cs" />
+    <Compile Include="PreOperation_TripInspectionDelete.cs" />
     <Compile Include="retrieveSearchHtmlTableDataMappingPreferences.cs" />
     <Compile Include="retrieveSearchHtmlTableLogic.cs" />
     <Compile Include="retrieveSearchHtmlTableLogicDataTableHelper.cs" />

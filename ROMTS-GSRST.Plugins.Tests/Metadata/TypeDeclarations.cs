@@ -35,6 +35,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ChannelAccess = new Guid("a2cccf01-f964-449c-a827-9b66e03f7fc8");
 		public static Guid Click2CloneAdministrator = new Guid("9bd753ee-41a9-e511-9414-00155d068906");
 		public static Guid Click2CloneUser = new Guid("c65a1216-42a9-e511-9414-00155d068906");
+		public static Guid CopilotforSalesIntegrationUser = new Guid("15bcda22-775e-4f2c-bdf5-e7c1f39d3919");
 		public static Guid CopilotforServiceAdministrator = new Guid("470a750f-d810-4ee7-a64a-ec002965c1ec");
 		public static Guid CopilotforServiceUser = new Guid("6cdd8165-d5a4-4d98-9be4-680418ea600a");
 		public static Guid CSRManager = new Guid("a0c28c41-5e86-4d45-a0d1-70a9cde49e33");

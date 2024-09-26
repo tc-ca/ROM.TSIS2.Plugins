@@ -27,10 +27,6 @@ namespace TSIS2.Plugins
             : base(typeof(PostOperationmsdyn_workorderUpdate))
         {
 
-            //if (secure != null && !secure.Equals(string.Empty))
-            //{
-
-            //}
         }
         /// <summary>
         /// Main entry point for he business logic that the plug-in is to execute.
@@ -59,53 +55,73 @@ namespace TSIS2.Plugins
 
             try
             {
-                if (target.Attributes.Contains("ovs_operationtypeid"))
+                if (target.Attributes.Contains("ovs_operationtypeid") || target.Attributes.Contains("ts_region"))
                 {
                     string workOrderId = target.Id.ToString();
                     string ownerName = "";
 
                     using (var serviceContext = new Xrm(localContext.OrganizationService))
                     {
-                        // find out what business owns the Work Order
-                        string fetchXML = $@"
-                            <fetch xmlns:generator='MarkMpn.SQL4CDS'>
-                                <entity name='msdyn_workorder'>
-                                <link-entity name='ovs_operation' to='ovs_operationid' from='ovs_operationid' alias='ovs_operation' link-type='inner'>
-                                <link-entity name='ovs_operationtype' to='ovs_operationtypeid' from='ovs_operationtypeid' alias='ovs_operationtype' link-type='inner'>
-                                <link-entity name='team' to='owningteam' from='teamid' alias='team' link-type='inner'>
-                                <attribute name='name' alias='OwnerName' />
-                                </link-entity>
-                                </link-entity>
-                                </link-entity>
-                                <filter>
-                                <condition attribute='msdyn_workorderid' operator='eq' value='{workOrderId}' />
-                                </filter>
-                                </entity>
-                            </fetch>
-                        ";
+                        // find out if the region is set to International
+                        var selectedRegion = target.Attributes["ts_region"] as EntityReference;
 
-                        EntityCollection businessNameCollection = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(fetchXML));
-
-                        if (businessNameCollection.Entities.Count == 0)
+                        if (selectedRegion != null && selectedRegion.Id.Equals( new Guid("3bf0fa88-150f-eb11-a813-000d3af3a7a7")))
                         {
-                            // exit out if there are no results 
-                            return;
-                        }
-
-                        foreach (Entity workOrder in businessNameCollection.Entities)
-                        {
-                            if (workOrder["OwnerName"] is AliasedValue aliasedValue)
-                            {
-                                // Cast the AliasedValue to string (or the appropriate type)
-                                ownerName = aliasedValue.Value as string;
-                            }
-
-                            // set the Business Owner Label
-                            workOrder["ts_businessowner"] = ownerName;
+                            // set the owner to International
+                            target.Attributes["ts_businessowner"] = "AvSec International";
 
                             // Perform the update to the Work Order
                             IOrganizationService service = localContext.OrganizationService;
-                            service.Update(workOrder);
+                            
+                            service.Update(target);
+
+                            return;
+                        }
+                        else
+                        {
+                            // check the operation type 
+
+                            // find out what business owns the Work Order
+                            string fetchXML = $@"
+                                <fetch xmlns:generator='MarkMpn.SQL4CDS'>
+                                    <entity name='msdyn_workorder'>
+                                    <link-entity name='ovs_operation' to='ovs_operationid' from='ovs_operationid' alias='ovs_operation' link-type='inner'>
+                                    <link-entity name='ovs_operationtype' to='ovs_operationtypeid' from='ovs_operationtypeid' alias='ovs_operationtype' link-type='inner'>
+                                    <link-entity name='team' to='owningteam' from='teamid' alias='team' link-type='inner'>
+                                    <attribute name='name' alias='OwnerName' />
+                                    </link-entity>
+                                    </link-entity>
+                                    </link-entity>
+                                    <filter>
+                                    <condition attribute='msdyn_workorderid' operator='eq' value='{workOrderId}' />
+                                    </filter>
+                                    </entity>
+                                </fetch>
+                            ";
+
+                            EntityCollection businessNameCollection = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(fetchXML));
+
+                            if (businessNameCollection.Entities.Count == 0)
+                            {
+                                // exit out if there are no results 
+                                return;
+                            }
+
+                            foreach (Entity workOrder in businessNameCollection.Entities)
+                            {
+                                if (workOrder["OwnerName"] is AliasedValue aliasedValue)
+                                {
+                                    // Cast the AliasedValue to string (or the appropriate type)
+                                    ownerName = aliasedValue.Value as string;
+                                }
+
+                                // set the Business Owner Label
+                                workOrder["ts_businessowner"] = ownerName;
+
+                                // Perform the update to the Work Order
+                                IOrganizationService service = localContext.OrganizationService;
+                                service.Update(workOrder);
+                            }
                         }
                     }
                 }
