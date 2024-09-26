@@ -321,58 +321,61 @@ namespace TSIS2.Plugins
                                         target["msdyn_closedby"] = new EntityReference(SystemUser.EntityLogicalName, context.InitiatingUserId);
 
                                     }
+
                                     // Check if there are any related Operation Activities
                                     string workOrderId = target.Id.ToString();
+
                                     Guid workOrderGuid = new Guid(workOrderId);
+
                                     Entity workOrderNumber = service.Retrieve("msdyn_workorder", workOrderGuid, new ColumnSet("msdyn_name"));
+
                                     string woName = workOrderNumber.GetAttributeValue<string>("msdyn_name");
 
-                                    string fetchXML = $@"
-                                        <fetch xmlns:generator='MarkMpn.SQL4CDS'>
-                                          <entity name='ts_operationactivity'>
-                                            <attribute name='ts_operationactivityid' />
-                                            <link-entity name='ovs_operation' to='ts_operation' from='ovs_operationid' alias='ovs_operation' link-type='inner'>
-                                              <attribute name='ovs_operationid' />
-                                              <link-entity name='msdyn_workorder' to='ovs_operationid' from='ovs_operationid' alias='msdyn_workorder' link-type='inner'>
-                                                <attribute name='msdyn_workorderid' />
+                                    if (woName != null)
+                                    {
+                                        string fetchXML = $@"
+                                            <fetch xmlns:generator='MarkMpn.SQL4CDS'>
+                                              <entity name='ts_operationactivity'>
+                                                <attribute name='ts_operationactivityid' />
+                                                <link-entity name='ovs_operation' to='ts_operation' from='ovs_operationid' alias='ovs_operation' link-type='inner'>
+                                                  <attribute name='ovs_operationid' />
+                                                  <link-entity name='msdyn_workorder' to='ovs_operationid' from='ovs_operationid' alias='msdyn_workorder' link-type='inner'>
+                                                    <attribute name='msdyn_workorderid' />
+                                                    <filter>
+                                                      <condition attribute='msdyn_name' operator='eq' value='{woName}' />
+                                                    </filter>
+                                                    <order attribute='msdyn_workorderid' />
+                                                  </link-entity>
+                                                  <order attribute='ovs_operationid' />
+                                                </link-entity>
                                                 <filter>
-                                                  <condition attribute='msdyn_name' operator='eq' value='{woName}' />
+                                                  <condition attribute='ts_activity' operator='eq' valueof='msdyn_workorder.msdyn_primaryincidenttype' />
                                                 </filter>
-                                                <order attribute='msdyn_workorderid' />
-                                              </link-entity>
-                                              <order attribute='ovs_operationid' />
-                                            </link-entity>
-                                            <filter>
-                                              <condition attribute='ts_activity' operator='eq' valueof='msdyn_workorder.msdyn_primaryincidenttype' />
-                                            </filter>
-                                            <order attribute='ts_operationactivityid' />
-                                          </entity>
-                                        </fetch>
-                                    ";
+                                                <order attribute='ts_operationactivityid' />
+                                              </entity>
+                                            </fetch>
+                                        ";
 
-                                    EntityCollection operationActivityCollection = service.RetrieveMultiple(new FetchExpression(fetchXML));
-                                    if (operationActivityCollection.Entities.Count == 0)
-                                    {
-                                        // exit out if there are no results 
-                                        return;
+                                        EntityCollection operationActivityCollection = service.RetrieveMultiple(new FetchExpression(fetchXML));
+
+                                        if (operationActivityCollection.Entities.Count == 0)
+                                        {
+                                            return;
+                                        }
+
+                                        else
+                                        {
+                                            // Retrieve the operation activity ID record. Update ts_closedondateoflastworkorder with current date
+                                            Guid operationActivityId = operationActivityCollection.Entities[0].Id;
+
+                                            Entity operationActivity = service.Retrieve("ts_operationactivity", operationActivityId, new ColumnSet("ts_closedondateoflastworkorder"));
+
+                                            operationActivity["ts_closedondateoflastworkorder"] = DateTime.UtcNow;
+
+                                            service.Update(operationActivity);
+                                        }
+
                                     }
-
-                                    else
-                                    {
-                                        // Retrieve the operation activity ID.
-                                        Guid operationActivityId = operationActivityCollection.Entities[0].Id;
-
-                                        // Retrieve the operation activity record.
-                                        Entity operationActivity = service.Retrieve("ts_operationactivity", operationActivityId, new ColumnSet("ts_closedondateoflastworkorder"));
-
-                                        // Update ts_operationactivity.ts_closedondateoflastworkorder with DateTime.UtcNow
-                                        operationActivity["ts_closedondateoflastworkorder"] = DateTime.UtcNow;
-
-                                        // Perform the update to the Work Order
-                                        service.Update(operationActivity);
-                                    }
-                                    // Get the Operation Activity ID
-                                    //var myOperationActivity = serviceContext.ts_OperationActivitySet.Where(oa => oa.Id == myOperationActivityID).FirstOrDefault();
                                 }
                             }
                         }
