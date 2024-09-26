@@ -1,11 +1,56 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
+using System.Security.Principal;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using Xunit;
 
+
+
 namespace ROMTS_GSRST.Plugins.Tests
 {
+    // this is used so RetrieveMultiple code would work in PreOperationmsdyn_workorderUpdate.cs:
+    // EntityCollection operationActivityCollection = service.RetrieveMultiple(new FetchExpression(fetchXML));
+
+    public class MockOrganizationService : IOrganizationService
+    {
+        private readonly Dictionary<Guid, Entity> _dataStore = new Dictionary<Guid, Entity>();
+
+        public Guid Create(Entity entity)
+        {
+            entity.Id = Guid.NewGuid();
+            _dataStore[entity.Id] = entity;
+            return entity.Id;
+        }
+
+        public void Update(Entity entity)
+        {
+            if (_dataStore.ContainsKey(entity.Id))
+            {
+                _dataStore[entity.Id] = entity;
+            }
+        }
+
+        public Entity Retrieve(string entityName, Guid id, ColumnSet columnSet)
+        {
+            return _dataStore.ContainsKey(id) ? _dataStore[id] : null;
+        }
+
+        public EntityCollection RetrieveMultiple(QueryBase query)
+        {
+            // Implement if needed
+            return new EntityCollection();
+        }
+
+        // Other IOrganizationService methods can be implemented as needed
+        public void Delete(string entityName, Guid id) { /* ... */ }
+        public OrganizationResponse Execute(OrganizationRequest request) { return null; }
+        public void Associate(string entityName, Guid entityId, Relationship relationship, EntityReferenceCollection relatedEntities) { /* ... */ }
+        public void Disassociate(string entityName, Guid entityId, Relationship relationship, EntityReferenceCollection relatedEntities) { /* ... */ }
+    }
+
     public class PreOperationmsdyn_workorderUpdateTests : UnitTestBase
     {
 
@@ -15,16 +60,18 @@ namespace ROMTS_GSRST.Plugins.Tests
         public void When_all_work_order_service_tasks_completed_and_work_order_posted_closed_expect_work_order_to_stay_posted_closed()
         {
             // ARRANGE
-            var serviceAccountId = orgAdminUIService.Create(new Account { Name = "Test Service Account" });
-            var incidentId = orgAdminUIService.Create(new Incident { });
-            var workOrderId = orgAdminUIService.Create(new msdyn_workorder
+            var service = new MockOrganizationService();
+
+            var serviceAccountId = service.Create(new Account { Name = "Test Service Account" });
+            var incidentId = service.Create(new Incident { });
+            var workOrderId = service.Create(new msdyn_workorder
             {
                 msdyn_name = "300-345678",
                 msdyn_SystemStatus = msdyn_wosystemstatus.Completed,
                 msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, incidentId),
                 msdyn_ServiceAccount = new EntityReference(Account.EntityLogicalName, serviceAccountId),
             });
-            var existingWorkOrderServiceTask1Id = orgAdminUIService.Create(new msdyn_workorderservicetask
+            var existingWorkOrderServiceTask1Id = service.Create(new msdyn_workorderservicetask
             {
                 msdyn_name = "200-345678-1",
                 msdyn_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrderId), // belongs to a work order
@@ -34,10 +81,10 @@ namespace ROMTS_GSRST.Plugins.Tests
             });
 
             // ACT
-            orgAdminUIService.Update(new msdyn_workorder { Id = workOrderId, msdyn_SystemStatus = msdyn_wosystemstatus.Closed });
+            service.Update(new msdyn_workorder { Id = workOrderId, msdyn_SystemStatus = msdyn_wosystemstatus.Closed });
 
             // ASSERT
-            var workOrder = orgAdminUIService.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_systemstatus")).ToEntity<msdyn_workorder>();
+            var workOrder = service.Retrieve(msdyn_workorder.EntityLogicalName, workOrderId, new ColumnSet("msdyn_systemstatus")).ToEntity<msdyn_workorder>();
             Assert.Equal(msdyn_wosystemstatus.Closed, workOrder.msdyn_SystemStatus);
         }
 
