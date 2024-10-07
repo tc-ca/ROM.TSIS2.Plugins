@@ -29,71 +29,70 @@ namespace TSIS2.Plugins
             ITracingService tracingService =
             (ITracingService)serviceProvider.GetService(typeof(ITracingService));
 
+            tracingService.Trace("Tracking Service Started.");
+
             // Obtain the execution context from the service provider.
             IPluginExecutionContext context = (IPluginExecutionContext)
                 serviceProvider.GetService(typeof(IPluginExecutionContext));
 
-            //Return if triggered by another plugin. Prevents infinite loop.
+            tracingService.Trace("Return if triggered by another plugin. Prevents infinite loop.");
+
             if (context.Depth > 1)
                 return;
 
-            // The InputParameters collection contains all the data passed in the message request.
+            tracingService.Trace("The InputParameters collection contains all the data passed in the message request.");
             if (context.InputParameters.Contains("Target") &&
                 context.InputParameters["Target"] is Entity)
             {
-                // Obtain the target entity from the input parameters.
+                tracingService.Trace("Obtain the target entity from the input parameters.");
                 Entity target = (Entity)context.InputParameters["Target"];
 
-                // Obtain the preimage entity
+                tracingService.Trace("Obtain the preimage entity");
                 Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
 
-                // Obtain the organization service reference which you will need for
-                // web service calls.
+                tracingService.Trace("Obtain the organization service reference which you will need for web service calls");
                 IOrganizationServiceFactory serviceFactory =
                     (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
                 IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
 
                 try
                 {
-                    // Cast the target and preimage to the expected entity
+                    tracingService.Trace("Cast the target and preimage to the expected entity");
                     msdyn_workorderservicetask workOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
                     msdyn_workorderservicetask workOrderServiceTaskPreImage = preImageEntity.ToEntity<msdyn_workorderservicetask>();
 
-                    // Only perform the updates if the work order service task is 100% complete on update
-                    // or work order service task was already 100% complete (from pre-image)
+                    tracingService.Trace("Only perform the updates if the work order service task is 100% complete on update or work order service task was already 100% complete (from pre-image)");
                     if (workOrderServiceTask.msdyn_PercentComplete == 100.00 || (workOrderServiceTask.msdyn_PercentComplete == null && workOrderServiceTaskPreImage.msdyn_PercentComplete == 100.00))
                     {
                         using (var serviceContext = new Xrm(service))
                         {
-                            // Get the referenced work order from the preImage
+                            tracingService.Trace("Get the referenced work order from the preImage");
                             EntityReference workOrderReference = (EntityReference)preImageEntity.Attributes["msdyn_workorder"];
 
-                            // Lookup the referenced work order
+                            tracingService.Trace("Lookup the referenced work order");
                             msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrderReference.Id).FirstOrDefault();
                             // msdyn_workorder parentWorkOrder = serviceContext.msdyn_workorderSet.Where(pwo => pwo.Id == workOrder.msdyn_ParentWorkOrder.Id).FirstOrDefault();
 
-                            // Determine if we use the questionnaire response from this update or from the pre-image since it is not always passed in the update
+                            tracingService.Trace("Determine if we use the questionnaire response from this update or from the pre-image since it is not always passed in the update");
                             var questionnaireResponse = !String.IsNullOrEmpty(workOrderServiceTask.ovs_QuestionnaireResponse) ? workOrderServiceTask.ovs_QuestionnaireResponse : workOrderServiceTaskPreImage.ovs_QuestionnaireResponse;
                             if (!String.IsNullOrWhiteSpace(questionnaireResponse))
                             {
-                                // parse json response
+                                tracingService.Trace("parse json response");
                                 JsonValue jsonValue = JsonValue.Parse(questionnaireResponse);
                                 JsonObject jsonObject = jsonValue as JsonObject;
 
-                                // Retrieve all the findings belonging to this work order service task
+                                tracingService.Trace("Retrieve all the findings belonging to this work order service task");
                                 var findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
 
-                                //List of findingType
+                                tracingService.Trace("List of findingType");
                                 var findingTypeList = new List<string>();
-                                // Start a list of all the used mapping keys
+                                tracingService.Trace("Start a list of all the used mapping keys");
                                 var findingMappingKeys = new List<string>();
 
-                                // If there was at least one finding found
-                                // - Create a case (if work order service task doesn't already belong to a case)
-                                // - Mark the inspection result to fail
+                                tracingService.Trace("If there was at least one finding found, - Create a case (if work order service task doesn't already belong to a case) - Mark the inspection result to fail");
                                 if (jsonObject.Keys.Any(k => k.StartsWith("finding")))
                                 {
-                                    // If the work order is not null and is not already part of a case
+                                    tracingService.Trace("If the work order is not null and is not already part of a case");
                                     if (workOrder != null && workOrder.msdyn_ServiceRequest == null)
 
                                     {
@@ -102,13 +101,13 @@ namespace TSIS2.Plugins
                                         newIncident.CustomerId = workOrder.msdyn_ServiceAccount;
                                         if (workOrder.ts_Site != null) newIncident.msdyn_FunctionalLocation = workOrder.ts_Site;
 
-                                        // do environtment variable check
+                                        tracingService.Trace("do environtment variable check");
                                         string environmentVariableName = "ts_usenewregiontable";
                                         string environmentVariableValue = EnvironmentVariableHelper.GetEnvironmentVariableValue(service, environmentVariableName);
                                         if (environmentVariableValue == "yes")
                                         {
                                             //ts_RegionDoNotUsez
-                                            // if we are using the new field service table, do the if statement
+                                            tracingService.Trace("if we are using the new field service table, do the if statement");
                                             if (workOrder.ts_RegionDoNotUse != null) newIncident.ovs_Region = workOrder.ts_RegionDoNotUse;
                                         }
                                         else
@@ -118,38 +117,42 @@ namespace TSIS2.Plugins
 
                                         
                                         if (workOrder.ts_Country != null) newIncident.ts_Country = workOrder.ts_Country;
-                                        // Stakeholder is a mandatory field on work order but, just in case, throw an error
+                                        tracingService.Trace(" Stakeholder is a mandatory field on work order but, just in case, throw an error");
                                         if (workOrder.msdyn_ServiceAccount == null) throw new ArgumentNullException("msdyn_workorder.msdyn_ServiceAccount");
 
                                         Guid newIncidentId = service.Create(newIncident);
+
+                                        tracingService.Trace("Update the Work Order with the Case");
                                         service.Update(new msdyn_workorder
                                         {
                                             Id = workOrderReference.Id,
                                             msdyn_ServiceRequest = new EntityReference(Incident.EntityLogicalName, newIncidentId)
                                         });
+
+                                        tracingService.Trace("Set the Case ID for the Work Order Service Task");
                                         workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, newIncidentId);
                                     }
-                                    // Already part of a case, just assign the work order case to the work order service task case
                                     else
                                     {
+                                        tracingService.Trace("Already part of a case, just assign the work order case to the work order service task case");
                                         workOrderServiceTask.ovs_CaseId = workOrder.msdyn_ServiceRequest;
                                     }
 
-                                    // loop through each root property in the json object
+                                    tracingService.Trace("loop through each root property in the json object");
                                     foreach (var rootProperty in jsonObject)
                                     {
-                                        // Check if the root property starts with finding
+                                        tracingService.Trace("Check if the root property starts with finding");
                                         if (rootProperty.Key.StartsWith("finding"))
                                         {
                                             var finding = rootProperty.Value;
 
-                                            // The finding JSON may contain an array of string Id's of operation records
+                                            tracingService.Trace("The finding JSON may contain an array of string Id's of operation records");
                                             var operations = finding.ContainsKey("operations") ? finding["operations"] : new JsonArray();
 
-                                            // retrieve the provision data containing the legislationID and provisionCategory
+                                            tracingService.Trace("retrieve the provision data containing the legislationID and provisionCategory");
                                             var provisionData = finding.ContainsKey("provisionData") ? finding["provisionData"] : new JsonObject();
 
-                                            //Retrieve the provision name, might be stored in different keys
+                                            tracingService.Trace("Retrieve the provision name, might be stored in different keys");
                                             string provisionReferenceName = finding.ContainsKey("reference") && finding["reference"] != null && finding["reference"] != "" ? finding["reference"].ToString().Trim('"') : null;
                                             if (provisionReferenceName == null)
                                             {
@@ -160,14 +163,14 @@ namespace TSIS2.Plugins
                                                 }
                                             }
 
-                                            // retrieve the provision category
+                                            tracingService.Trace("retrieve the provision category");
                                             Guid provisionCategoryId = provisionData != null && provisionData.ContainsKey("provisioncategoryid") && provisionData["provisioncategoryid"] != null ? Guid.Parse(provisionData["provisioncategoryid"]) : Guid.Empty;
 
-                                            //Loop through the operations. Check if a finding already exists for that operation. Update the comment if it exists, or make a new finding if it doesn't
+                                            tracingService.Trace("Loop through the operations. Check if a finding already exists for that operation. Update the comment if it exists, or make a new finding if it doesn't");
                                             foreach (JsonObject operation in operations)
                                             {
                                                 string operationid;
-                                                //Grab operationid from Json operation object. If it wasn't populated for some reason, continue to next operation
+                                                tracingService.Trace("Grab operationid from Json operation object. If it wasn't populated for some reason, continue to next operation");
                                                 if (operation.ContainsKey("operationID"))
                                                 {
                                                     operationid = operation["operationID"];
@@ -183,7 +186,7 @@ namespace TSIS2.Plugins
                                                 var existingFinding = serviceContext.ovs_FindingSet.FirstOrDefault(f => f.ts_findingmappingkey == findingMappingKey);
                                                 if (existingFinding == null)
                                                 {
-                                                    // if no, initialize new ovs_finding
+                                                    tracingService.Trace("if no, initialize new ovs_finding");
                                                     ovs_Finding newFinding = new ovs_Finding();
                                                     newFinding.ovs_FindingProvisionReference = finding.ContainsKey("provisionReference") ? (string)finding["provisionReference"] : "";
                                                     newFinding.ts_findingProvisionTextEn = finding.ContainsKey("provisionTextEn") ? (string)finding["provisionTextEn"] : "";
@@ -193,18 +196,18 @@ namespace TSIS2.Plugins
                                                     OptionSetValue findingType = operation.ContainsKey("findingType") ? new OptionSetValue(operation["findingType"]) : new OptionSetValue(717750000); //717750000 is Undecided
                                                     newFinding.Attributes.Add("ts_findingtype", findingType);
 
-                                                    //Update the list of findings for this service task in case a finding was added in a previous loop
+                                                    tracingService.Trace("Update the list of findings for this service task in case a finding was added in a previous loop");
                                                     findings = serviceContext.ovs_FindingSet.Where(f => f.ovs_WorkOrderServiceTaskId.Id == workOrderServiceTask.Id).ToList();
 
-                                                    //Find all the findings that share the same root property key and add to findingCopies list
-                                                    //The count of copies is needed to determine the suffix for the next finding record created
+                                                    tracingService.Trace("Find all the findings that share the same root property key and add to findingCopies list");
+                                                    tracingService.Trace("The count of copies is needed to determine the suffix for the next finding record created");
                                                     var findingCopies = new List<ovs_Finding>();
                                                     foreach (var f in findings)
                                                     {
                                                         if (f.ts_findingmappingkey.StartsWith(workOrderServiceTask.Id.ToString() + "-" + rootProperty.Key.ToString())) findingCopies.Add(f);
                                                     }
 
-                                                    // Determine the current highest infix of all the findings for the service task
+                                                    tracingService.Trace("Determine the current highest infix of all the findings for the service task");
                                                     var highestInfix = 0;
                                                     foreach (ovs_Finding f in findings)
                                                     {
@@ -212,12 +215,12 @@ namespace TSIS2.Plugins
                                                         if (currentInfix > highestInfix) highestInfix = currentInfix;
                                                     }
 
-                                                    // Setup the finding name
-                                                    // Findings are at the 100 level
+                                                    tracingService.Trace("Setup the finding name");
+                                                    tracingService.Trace("Findings are at the 100 level");
                                                     var wostName = preImageEntity.Attributes["msdyn_name"].ToString();
                                                     var prefix = wostName.Replace("200-", "100-");
                                                     var infix = highestInfix + 1;
-                                                    //If there are copies for this finding, use their infix instead
+                                                    tracingService.Trace("If there are copies for this finding, use their infix instead");
                                                     if (findingCopies.Count > 0)
                                                     {
                                                         infix = Int32.Parse(findingCopies[0].ovs_Finding_1.Split('-')[3]);
@@ -225,36 +228,39 @@ namespace TSIS2.Plugins
                                                     var suffix = findingCopies.Count + 1;
                                                     newFinding.ovs_Finding_1 = string.Format("{0}-{1}-{2}", prefix, infix, suffix);
 
-                                                    // Store the mapping key to keep track of mapping between finding and surveyjs questionnaire.
+                                                    tracingService.Trace("Store the mapping key to keep track of mapping between finding and surveyjs questionnaire.");
                                                     newFinding.ts_findingmappingkey = findingMappingKey;
 
-                                                    // reference work order service task
+                                                    tracingService.Trace("reference work order service task");
                                                     newFinding.ovs_WorkOrderServiceTaskId = new EntityReference(msdyn_workorderservicetask.EntityLogicalName, workOrderServiceTask.Id);
                                                     newFinding.ts_WorkOrder = new EntityReference(msdyn_workorder.EntityLogicalName, workOrder.Id);
 
-                                                    // reference case (should already be saved in the work order service task)
-                                                    newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
+                                                    tracingService.Trace("reference case (should already be saved in the work order service task)");
+
+
+                                                     newFinding.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, workOrderServiceTask.ovs_CaseId.Id);
 
                                                     EntityReference operationReference = new EntityReference(ovs_operation.EntityLogicalName, new Guid(operationid));
 
-                                                    // Lookup the operation (Customer Asset Entity) to know its parent Account's id
+                                                    tracingService.Trace("Lookup the operation (Customer Asset Entity) to know its parent Account's id");
                                                     ovs_operation operationEntity = serviceContext.ovs_operationSet.Where(ca => ca.Id == operationReference.Id).FirstOrDefault();
 
-                                                    // Create entity reference to the operation's parent account
+                                                    tracingService.Trace("Create entity reference to the operation's parent account");
                                                     EntityReference parentAccountReference = new EntityReference(Account.EntityLogicalName, operationEntity.ts_stakeholder.Id);
 
-                                                    // reference the current operation's stakeholder (Account Entity) (Lookup logical name: ts_stakeholder)
+                                                    tracingService.Trace("reference the current operation's stakeholder (Account Entity) (Lookup logical name: ts_stakeholder)");
                                                     newFinding.ts_accountid = new EntityReference(Account.EntityLogicalName, operationEntity.ts_stakeholder.Id);
 
-                                                    // reference current operation (Customer Asset Entity) (Lookup logical name: ovs_asset)
+                                                    tracingService.Trace("reference current operation (Customer Asset Entity) (Lookup logical name: ovs_asset)");
                                                     newFinding.ts_operationid = operationReference;
 
-                                                    //reference operation type
+                                                    tracingService.Trace("reference operation type");
                                                     newFinding.ts_ovs_operationtype = operationEntity.ovs_OperationTypeId;
 
-                                                    //reference site (functional location)
+                                                    tracingService.Trace("reference site (functional location)");
                                                     newFinding.ts_functionallocation = operationEntity.ts_site;
 
+                                                    tracingService.Trace("Operation Type is Person");
                                                     if (operationEntity.ovs_OperationTypeId != null && operationEntity.ovs_OperationTypeId.Id == new Guid("{BE8B0910-C751-EB11-A812-000D3AF3AC0D}")) //Operation Type is Person
                                                     {
                                                         if (workOrder.ts_Contact != null && workOrder.ts_Contact.Id != null)
@@ -269,7 +275,7 @@ namespace TSIS2.Plugins
                                                         newFinding.ts_ProvisionCategory = new EntityReference(ts_ProvisionCategory.EntityLogicalName, provisionCategory.Id);
                                                     }
 
-                                                    //reference legislation/provision
+                                                    tracingService.Trace("reference legislation/provision");
                                                     qm_rclegislation legislation;
 
                                                     if (provisionReferenceName != null)
@@ -281,15 +287,15 @@ namespace TSIS2.Plugins
                                                         }
                                                     }
 
-                                                    // Create new ovs_finding
+                                                    tracingService.Trace("Create new ovs_finding");
                                                     Guid newFindingId = service.Create(newFinding);
 
                                                 }
                                                 else
                                                 {
-                                                    //Update the Finding record's comment
+                                                    tracingService.Trace("Update the Finding record's comment");
                                                     existingFinding.ovs_FindingComments = finding.ContainsKey("comments") ? (string)finding["comments"] : "";
-                                                    //Update the Finding record's Finding Type
+                                                    tracingService.Trace("Update the Finding record's Finding Type");
                                                     OptionSetValue findingType = operation.ContainsKey("findingType") ? new OptionSetValue(operation["findingType"]) : new OptionSetValue(717750000); //717750000 is Undecided
                                                     existingFinding["ts_findingtype"] = findingType;
                                                     serviceContext.UpdateObject(existingFinding);
@@ -297,8 +303,8 @@ namespace TSIS2.Plugins
                                             }
                                         }
                                     }
-                                    //Mark the inspection result to Fail if there are non-compliance or Undecided found
-                                    //update documents for parent work order and case
+                                    tracingService.Trace("Mark the inspection result to Fail if there are non-compliance or Undecided found");
+                                    tracingService.Trace("update documents for parent work order and case");
                                     if (findingTypeList.Contains("717750002") || findingTypeList.Contains("717750000"))
                                     {
                                         workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Fail;
@@ -308,24 +314,24 @@ namespace TSIS2.Plugins
                                 }
                                 else
                                 {
-                                    // Mark the inspection result to Pass if there are no findings found
+                                    tracingService.Trace("Mark the inspection result to Pass if there are no findings found");
                                     workOrderServiceTask.msdyn_inspectiontaskresult = msdyn_inspectionresult.Pass;
                                 }
 
-                                // Need to deactivate any old referenced findings in the work order service task and case
-                                // that no longer exist in the questionnaire response.
+                                tracingService.Trace("Need to deactivate any old referenced findings in the work order service task and case");
+                                tracingService.Trace("that no longer exist in the questionnaire response.");
 
                                 foreach (var finding in findings)
                                 {
-                                    // If the existing finding is not in the JSON response, we need to disable it
+                                    tracingService.Trace("If the existing finding is not in the JSON response, we need to disable it");
                                     if (!findingMappingKeys.Contains(finding.ts_findingmappingkey))
                                     {
                                         finding.statuscode = ovs_Finding_statuscode.Inactive;
                                         finding.statecode = ovs_FindingState.Inactive;
                                     }
-                                    // Otherwise, re-enable it
                                     else
                                     {
+                                        tracingService.Trace("Otherwise, re-enable it");
                                         finding.statuscode = ovs_Finding_statuscode.New;
                                         finding.statecode = ovs_FindingState.Active;
                                     }
@@ -333,9 +339,9 @@ namespace TSIS2.Plugins
                                 }
                             }
 
-                            // If the work order is not already "complete" or "closed" and all other work order service tasks are already completed as well, mark the parent work order system status to Open - Completed
+                            tracingService.Trace("If the work order is not already complete or closed and all other work order service tasks are already completed as well, mark the parent work order system status to Open - Completed");
                             var otherWorkOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(wost => wost.msdyn_WorkOrder == workOrderReference && wost.Id != workOrderServiceTask.Id).ToList<msdyn_workorderservicetask>();
-                            
+
                             // Took this out because we don't use the 'Completed' status for Work Orders
                             //if (workOrder.msdyn_SystemStatus != msdyn_wosystemstatus.Closed && workOrder.msdyn_SystemStatus != msdyn_wosystemstatus.Completed)
                             //{
@@ -348,16 +354,16 @@ namespace TSIS2.Plugins
                             //        });
                             //    }
                             //}
-                            // Save all the changes in the context as well.
+                            tracingService.Trace("Save all the changes in the context as well.");
                             serviceContext.SaveChanges();
 
-                            //Avoid updating the rollup field when in the mockup environment
+                            tracingService.Trace("Avoid updating the rollup field when in the mockup environment");
                             if (context.ParentContext == null || (context.ParentContext != null && context.ParentContext.OrganizationName != "MockupOrganization") && (workOrderServiceTask.msdyn_inspectiontaskresult == msdyn_inspectionresult.Fail || workOrderServiceTask.msdyn_inspectiontaskresult == msdyn_inspectionresult.Observations))
                             {
-                                //Update Rollup Fields Number Of Findings for Work Order and Case
+                                tracingService.Trace("Update Rollup Fields Number Of Findings for Work Order and Case");
                                 CalculateRollupFieldRequest request;
                                 CalculateRollupFieldResponse response;
-                                //Update Rollup field Number Of Findings for Work Order
+                                tracingService.Trace("Update Rollup field Number Of Findings for Work Order");
                                 request = new CalculateRollupFieldRequest
                                 {
                                     Target = new EntityReference("msdyn_workorder", workOrder.Id),
@@ -366,7 +372,7 @@ namespace TSIS2.Plugins
 
                                 response = (CalculateRollupFieldResponse)service.Execute(request);
 
-                                //Update Rollup field Number Of Findings for Case
+                                tracingService.Trace("Update Rollup field Number Of Findings for Case");
                                 request = new CalculateRollupFieldRequest
                                 {
                                     Target = new EntityReference("incident", workOrderServiceTask.ovs_CaseId.Id),
@@ -380,14 +386,26 @@ namespace TSIS2.Plugins
 
                 // Seems to be a bug if exception variables have the same name.
                 // Make sure the name of each exception variable is different.
+                // This will show the message in a dialog box for the user
                 catch (FaultException<OrganizationServiceFault> orgServiceEx)
                 {
+                    tracingService.Trace($"MESSAGE: { orgServiceEx.Message}");
+                    tracingService.Trace($"CODE: {orgServiceEx.Code}");
+                    tracingService.Trace($"DETAIL: {orgServiceEx.Detail}");
+                    tracingService.Trace($"INNER FAULT: {orgServiceEx.Detail?.InnerFault}");
+                    tracingService.Trace($"TRACE: {orgServiceEx.Detail?.TraceText}");
+
                     throw new InvalidPluginExecutionException("An error occurred in PreOperationmsdyn_workorderservicetaskUpdate Plugin.", orgServiceEx);
                 }
 
                 catch (Exception ex)
                 {
                     tracingService.Trace("PreOperationmsdyn_workorderservicetaskUpdate Plugin: {0}", ex.ToString());
+                    tracingService.Trace($"MESSAGE: {ex.Message}");
+                    tracingService.Trace($"STACK TRACE: {ex.StackTrace}");
+                    tracingService.Trace($"INNER EXCEPTION: {ex.InnerException?.Message}");
+                    tracingService.Trace($"SOURCE: {ex.Source}");
+
                     throw;
                 }
             }
