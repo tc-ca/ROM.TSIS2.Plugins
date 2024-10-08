@@ -122,6 +122,28 @@ namespace TSIS2.Plugins
                         }
 
                     }
+                    else if (!preImageEntity.Contains("ts_trip") && postImageEntity.Contains("ts_trip") && !target.Contains("ts_ignoreupdate"))
+                    {
+                        //if trip got removed PBI-372064, remove WO from Trip Inspection -> ts_tripinspection
+                        var tripId = postImageEntity.GetAttributeValue<EntityReference>("ts_trip").Id;
+                        localContext.Trace("Trip added: " + tripId.ToString());
+
+                        var qETripInspection = new QueryExpression("ts_tripinspection");
+                        qETripInspection.ColumnSet.AddColumns("ts_trip");
+
+                        qETripInspection.Criteria.AddCondition("ts_trip", ConditionOperator.Equal, tripId);
+                        qETripInspection.Criteria.AddCondition("ts_inspection", ConditionOperator.Equal, preImageEntity.Id);
+                        EntityCollection returnCol = service.RetrieveMultiple(qETripInspection);
+                        if (returnCol.Entities.Count == 0)
+                        {
+                            localContext.Trace("Trip add: return  " + returnCol.Entities.Count );
+                            Entity newEnt= new Entity("ts_tripinspection");
+                            newEnt["ts_trip"] = new EntityReference("ts_trip", tripId);
+                            newEnt["ts_inspection"] = new EntityReference("msdyn_workorder", preImageEntity.Id);
+                            service.Create(newEnt);
+                        }
+
+                    }
                 }
 
                 // Check if an operation type was updated
