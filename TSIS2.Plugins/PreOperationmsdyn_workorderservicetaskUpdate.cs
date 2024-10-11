@@ -102,18 +102,18 @@ namespace TSIS2.Plugins
                                         if (workOrder.ts_Site != null) newIncident.msdyn_FunctionalLocation = workOrder.ts_Site;
 
                                         tracingService.Trace("do environtment variable check");
-                                        string environmentVariableName = "ts_usenewregiontable";
-                                        string environmentVariableValue = EnvironmentVariableHelper.GetEnvironmentVariableValue(service, environmentVariableName);
-                                        if (environmentVariableValue == "yes")
-                                        {
-                                            //ts_RegionDoNotUsez
-                                            tracingService.Trace("if we are using the new field service table, do the if statement");
-                                            if (workOrder.ts_RegionDoNotUse != null) newIncident.ovs_Region = workOrder.ts_RegionDoNotUse;
-                                        }
-                                        else
-                                        {
+                                        //string environmentVariableName = "ts_usenewregiontable";
+                                        //string environmentVariableValue = EnvironmentVariableHelper.GetEnvironmentVariableValue(service, environmentVariableName);
+                                        //if (environmentVariableValue == "yes")
+                                        //{
+                                        //    //ts_RegionDoNotUsez
+                                        //    tracingService.Trace("if we are using the new field service table, do the if statement");
+                                        //    if (workOrder.ts_RegionDoNotUse != null) newIncident.ovs_Region = workOrder.ts_RegionDoNotUse;
+                                        //}
+                                        //else
+                                        //{
                                             if (workOrder.ts_Region != null) newIncident.ovs_Region = workOrder.ts_Region;
-                                        }
+                                        //}
 
                                         
                                         if (workOrder.ts_Country != null) newIncident.ts_Country = workOrder.ts_Country;
