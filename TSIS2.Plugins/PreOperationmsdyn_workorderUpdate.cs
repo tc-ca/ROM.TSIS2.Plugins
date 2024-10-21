@@ -40,22 +40,26 @@ namespace TSIS2.Plugins
             ITracingService tracingService =
             (ITracingService)serviceProvider.GetService(typeof(ITracingService));
 
+            tracingService.Trace("Tracking Service Started.");
+
             // Obtain the execution context from the service provider.
             IPluginExecutionContext context = (IPluginExecutionContext)
                 serviceProvider.GetService(typeof(IPluginExecutionContext));
 
-            // The InputParameters collection contains all the data passed in the message request.
+            tracingService.Trace("The InputParameters collection contains all the data passed in the message request.");
+
             if (context.InputParameters.Contains("Target") &&
                 context.InputParameters["Target"] is Entity)
             {
-                // Obtain the target entity from the input parameters.
+
+                tracingService.Trace("Obtain the target entity from the input parameters.");
                 Entity target = (Entity)context.InputParameters["Target"];
 
-                // Obtain the preimage entity
+                tracingService.Trace("Obtain the preimage entity.");
                 Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
 
-                // Obtain the organization service reference which you will need for
-                // web service calls.
+
+                tracingService.Trace("Obtain the organization service reference which is needed for web service calls.");
                 IOrganizationServiceFactory serviceFactory =
                     (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
                 IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
@@ -84,23 +88,24 @@ namespace TSIS2.Plugins
                                 }
                             }
                         }
-                        //If Case "msdyn_servicerequest" is Updated
+
+                        tracingService.Trace("If Case \"msdyn_servicerequest\" is updated.");
                         if (target.Attributes.Contains("msdyn_servicerequest"))
                         {
                             using (var serviceContext = new Xrm(service))
                             {
-                                // Cast the target to the expected entity
+                                tracingService.Trace("Cast the target to the expected entity.");
                                 msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
 
-                                //Retrieve all findings associated to the current work order
+                                tracingService.Trace("Retrieve all findings associated to the current Work Order.");
                                 var workOrderFindings = serviceContext.ovs_FindingSet.Where(f => f.ts_WorkOrder.Id == workOrder.Id).ToList();
 
-                                //Retrieve all Work Order Service Tasks associated to the current work order
+                                tracingService.Trace("Retrieve all Work Order Service Tasks associated to the current Work Order.");
                                 var workOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(f => f.msdyn_WorkOrder.Id == workOrder.Id).ToList();
 
                                 if (workOrder.msdyn_ServiceRequest != null)
                                 {
-                                    //Retrieve all files associated with the work order and update the associated case
+                                    tracingService.Trace("Retrieve all files associated with the Work Order and update the associated case.");
                                     var allFiles = serviceContext.ts_FileSet.ToList();
                                     {
                                         var myWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
@@ -109,7 +114,7 @@ namespace TSIS2.Plugins
                                         {
                                             var workOrderFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WO ", "").Trim() == myWorkOrder.msdyn_name).ToList();
 
-                                            // update the case for each associated file
+                                            tracingService.Trace("Update the case for each associated file.");
                                             foreach (var workOrderFile in workOrderFiles)
                                             {
                                                 service.Update(new ts_File
@@ -121,7 +126,7 @@ namespace TSIS2.Plugins
                                         }
                                     }
 
-                                    //Change the reference to Case in each Work Order Service Task to the Work Order's new case
+                                    tracingService.Trace("Change the reference to Case in each Work Order Service Task to the Work Order's new case.");
                                     foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
                                         service.Update(new msdyn_workorderservicetask
@@ -130,11 +135,11 @@ namespace TSIS2.Plugins
                                             ovs_CaseId = workOrder.msdyn_ServiceRequest
                                         });
 
-                                        //Retrieve all files associated with the work order service task and update the associated Case
+                                        tracingService.Trace("Retrieve all files associated with the Work Order service task and update the associated case.");
                                         {
                                             var workOrderServiceTasksFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WOST ", "").Trim() == workOrderServiceTask.msdyn_name).ToList();
 
-                                            // update the case for each associated file
+                                            tracingService.Trace("Update the case for each associated file.");
                                             foreach (var workOrderServiceTasksFile in workOrderServiceTasksFiles)
                                             {
                                                 service.Update(new ts_File
@@ -146,7 +151,7 @@ namespace TSIS2.Plugins
                                         }
                                     }
 
-                                    //Change the reference to Case in each finding to the Work Order's new case
+                                    tracingService.Trace("Change the reference to Case in each finding to the Work Order's new case.");
                                     foreach (ovs_Finding finding in workOrderFindings)
                                     {
                                         service.Update(new ovs_Finding
@@ -156,14 +161,14 @@ namespace TSIS2.Plugins
                                         });
                                     }
 
-                                    //Find out if the Work Order has a recored in ts_sharepointfile
+                                    tracingService.Trace("Find out if the Work Order has a recored in ts_sharepointfile.");
                                     {
-                                        // we have a try catch here in case an error happens, we want the rest of the code in the method to run
+                                        tracingService.Trace("Try catch here in case error occurs. Allows rest of the code in the method to run.");
                                         try
                                         {
                                             var myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, workOrder.Id.ToString().ToUpper().Trim(), PostOperationts_sharepointfileCreate.WORK_ORDER);
 
-                                            // get the Case
+                                            tracingService.Trace("Retrieve the case.");
                                             var myWorkOrderCase = serviceContext.IncidentSet.Where(c => c.Id == workOrder.msdyn_ServiceRequest.Id).FirstOrDefault();
 
                                             var myWorkOrderCaseSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, myWorkOrderCase.Id.ToString().Trim().ToUpper(), PostOperationts_sharepointfileCreate.CASE);
@@ -174,55 +179,55 @@ namespace TSIS2.Plugins
 
                                             if (myWorkOrderCaseSharePointFile != null || myWorkOrderSharePointFile != null)
                                             {
-                                                // get the owner
+                                                tracingService.Trace("Retrieve the owner.");
                                                 myOwner = PostOperationts_sharepointfileCreate.GetWorkOrderOwner(service, workOrder.Id);
 
-                                                // if we don't have a SharePoint File for the Work Order
+                                                tracingService.Trace("If SharePoint file for the Work Order does not exist.");
                                                 if (myWorkOrderSharePointFile == null)
                                                 {
-                                                    // need this to get the Work Order Name
+                                                    tracingService.Trace("Retrieve Work Order Name.");
                                                     var myWorkOrderName = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault().msdyn_name;
 
-                                                    // create the SharePointFile for the WorkOrder
+                                                    tracingService.Trace("Create the SharePoint file for the Work Order.");
                                                     Guid myWorkOrderSharePointFileID = PostOperationts_sharepointfileCreate.CreateSharePointFile(myWorkOrderName, PostOperationts_sharepointfileCreate.WORK_ORDER, PostOperationts_sharepointfileCreate.WORK_ORDER_FR, workOrder.Id.ToString().Trim().ToUpper(), myWorkOrderName, myOwner, service);
 
-                                                    // get the SharePointFile
+                                                    tracingService.Trace("Retrieve the SharePoint file.");
                                                     myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, workOrder.Id.ToString().Trim().ToUpper(), PostOperationts_sharepointfileCreate.WORK_ORDER);
                                                 }
 
                                                 if (myWorkOrderCaseSharePointFile == null)
                                                 {
-                                                    // create the SharePointFile for the Case
+                                                    tracingService.Trace("Create the SharePoint file for the Case.");
                                                     Guid myWorkOrderCaseSharePointFileID = PostOperationts_sharepointfileCreate.CreateSharePointFile(myWorkOrderCase.Title, PostOperationts_sharepointfileCreate.CASE, PostOperationts_sharepointfileCreate.CASE_FR, myWorkOrderCase.Id.ToString().Trim().ToUpper(), myWorkOrderCase.Title, myOwner, service);
 
-                                                    // get the SharePointFile
+                                                    tracingService.Trace("Get the SharePoint file.");
                                                     myWorkOrderCaseSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(serviceContext, myWorkOrderCase.Id.ToString().Trim().ToUpper(), PostOperationts_sharepointfileCreate.CASE);
 
-                                                    // create the SharePointFile Group
+                                                    tracingService.Trace("Create the SharePoint group.");
                                                     myWorkOrderCaseSharePointFileGroupID = PostOperationts_sharepointfileCreate.CreateSharePointFileGroup(myWorkOrderCaseSharePointFile, service);
                                                 }
                                                 else
                                                 {
-                                                    // set the SharePoint File Group from the existing SharePoint File for the Case
+                                                    tracingService.Trace("Set the SharePoint file group from the existing SharePoint file for the case.");
                                                     myWorkOrderCaseSharePointFileGroupID = myWorkOrderCaseSharePointFile.ts_SharePointFileGroup.Id;
                                                 }
 
-                                                // Update everything related to the Case with the SharePoint File Group
+                                                tracingService.Trace("Update everything related to the Case with the SharePoint File Group.");
                                                 PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrders(service, myWorkOrderCase.Id, myWorkOrderCaseSharePointFileGroupID, myOwner);
 
-                                                // update the Work Order SharePoint File Group - we do this because we are in a pre-operation, so the Work Order is not officially related to the Case yet and won't be picked up by UpdateRelatedWorkOrders() 
+                                                tracingService.Trace("Update the Work Order SharePoint file group - we do this because we are in a pre-operation, so the Work Order is not officially related to the Case yet and won't be picked up by UpdateRelatedWorkOrders().");
                                                 service.Update(new ts_SharePointFile
                                                 {
                                                     Id = myWorkOrderSharePointFile.Id,
                                                     ts_SharePointFileGroup = myWorkOrderCaseSharePointFile.ts_SharePointFileGroup
                                                 });
 
-                                                // update the Work Order Service Tasks that are related to the Work Order
+                                                tracingService.Trace("Update the Work Order Service Tasks that are related to the Work Order.");
                                                 PostOperationts_sharepointfileCreate.UpdateRelatedWorkOrderServiceTasks(service, workOrder.Id, myWorkOrderCaseSharePointFileGroupID, myOwner);
                                             }
                                             else if (myWorkOrderCaseSharePointFile == null && myWorkOrderSharePointFile == null)
                                             {
-                                                // do nothing since the Case and Work Order don't have a ts_sharepoint file
+                                                tracingService.Trace("Do nothing since the Case and Work Order don't have a ts_sharepoint file.");
                                             }
                                         }
                                         catch (Exception ex)
@@ -233,7 +238,7 @@ namespace TSIS2.Plugins
                                 }
                                 else
                                 {
-                                    //Change the reference to Case in each Work Order Service Task to null
+                                    tracingService.Trace("Change the reference to Case in each Work Order Service Task to null.");
                                     foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
                                         service.Update(new msdyn_workorderservicetask
@@ -242,7 +247,7 @@ namespace TSIS2.Plugins
                                             ovs_CaseId = null
                                         });
                                     }
-                                    //Change the reference to Case in each finding to null
+                                    tracingService.Trace("Change the reference to Case in each finding to null.");
                                     foreach (ovs_Finding finding in workOrderFindings)
                                     {
                                         service.Update(new ovs_Finding
@@ -258,17 +263,18 @@ namespace TSIS2.Plugins
                         {
                             using (var serviceContext = new Xrm(service))
                             {
-                                // Cast the target to the expected entity
+                                tracingService.Trace("Cast the target to the expected entity.");
                                 msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
 
                                 msdyn_workorder oldWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
 
-                                //Proceed only if the Work Order has new Activity Type and there was one prior to the update
+                                tracingService.Trace("Proceed only if the Work Order has new Activity Type and there was one prior to the update.");
                                 if (workOrder.msdyn_PrimaryIncidentType != null && oldWorkOrder != null && oldWorkOrder.msdyn_PrimaryIncidentType != null)
                                 {
-                                    //Retrieve all Work Order Service Tasks associated to the current work order
+                                    tracingService.Trace("Retrieve all Work Order Service Tasks associated to the current work order.");
                                     var workOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(f => (f.msdyn_WorkOrder.Id == workOrder.Id)).ToList();
-                                    //Change the reference to Task Type in each New Work Order Service Task to the Work Order's Task Type
+
+                                    tracingService.Trace("Change the reference to Task Type in each New Work Order Service Task to the Work Order's Task Type.");
                                     foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
                                         if (workOrderServiceTask.statuscode == msdyn_workorderservicetask_statuscode.New)
@@ -284,10 +290,11 @@ namespace TSIS2.Plugins
                                     }
                                     var incidentTypeServiceTasks = serviceContext.msdyn_incidenttypeservicetaskSet.Where(f => f.msdyn_IncidentType.Id == workOrder.msdyn_PrimaryIncidentType.Id).ToList();
                                     var workOrderName = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault().msdyn_name;
-                                    // Set the prefix to be at the 200 level for work order service tasks
+
+                                    tracingService.Trace("Set the prefix to be at the 200 level for work order service tasks.");
                                     var prefix = workOrderName.Replace("300-", "200-");
 
-                                    // If there are previous work order service tasks, suffix = count + 1 else 1
+                                    tracingService.Trace("If there are previous work order service tasks, suffix = count + 1 else 1.");
                                     var suffix = (workOrderServiceTasks != null) ? workOrderServiceTasks.Count() + 1 : 1;
 
 
@@ -309,12 +316,13 @@ namespace TSIS2.Plugins
                         {
                             using (var serviceContext = new Xrm(service))
                             {
-                                // Cast the target to the expected entity
+                                tracingService.Trace("Cast the target to the expected entity.");
                                 msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
                                 if (workOrder.msdyn_SystemStatus == msdyn_wosystemstatus.Closed)
                                 {
                                     msdyn_workorder oldWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
-                                    //Update the closed values only if either are null
+
+                                    tracingService.Trace("Update the closed values only if either are null.");
                                     if (oldWorkOrder != null && context.InitiatingUserId != null && (oldWorkOrder.msdyn_TimeClosed == null || oldWorkOrder.msdyn_ClosedBy == null))
                                     {
                                         target["msdyn_timeclosed"] = DateTime.UtcNow;
@@ -322,7 +330,7 @@ namespace TSIS2.Plugins
 
                                     }
 
-                                    // Check if there are any related Operation Activities
+                                    tracingService.Trace("Check if there are any related Operation Activities.");
                                     string workOrderId = target.Id.ToString();
 
                                     Guid workOrderGuid = new Guid(workOrderId);
@@ -365,11 +373,12 @@ namespace TSIS2.Plugins
 
                                         else
                                         {
-                                            // Retrieve the operation activity ID record. Update ts_closedondateoflastworkorder with current date
+                                            tracingService.Trace("Retrieve the operation activity ID record.");
                                             Guid operationActivityId = operationActivityCollection.Entities[0].Id;
 
                                             Entity operationActivity = service.Retrieve("ts_operationactivity", operationActivityId, new ColumnSet("ts_closedondateoflastworkorder"));
 
+                                            tracingService.Trace("Update ts_closedondateoflastworkorder with current date.");
                                             operationActivity["ts_closedondateoflastworkorder"] = DateTime.UtcNow;
 
                                             service.Update(operationActivity);
@@ -396,10 +405,10 @@ namespace TSIS2.Plugins
 
                                 if (updatedOwnerUser != null)
                                 {
-                                    //If currentUser is not dual inspector
+                                    tracingService.Trace("If currentUser is not dual inspector.");
                                     if (!currentUser.GetAttributeValue<bool>("ts_dualinspector"))
                                     {
-                                        //If updatedOwnerUser is not dual inspector
+                                        tracingService.Trace("If updatedOwnerUser is not dual inspector.");
                                         if (!updatedOwnerUser.GetAttributeValue<bool>("ts_dualinspector"))
                                         {
                                             if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation"))
