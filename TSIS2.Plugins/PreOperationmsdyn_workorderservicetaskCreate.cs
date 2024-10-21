@@ -27,19 +27,20 @@ namespace TSIS2.Plugins
             ITracingService tracingService =
             (ITracingService)serviceProvider.GetService(typeof(ITracingService));
 
+            tracingService.Trace("Tracking Service Started.");
+
             // Obtain the execution context from the service provider.
             IPluginExecutionContext context = (IPluginExecutionContext)
                 serviceProvider.GetService(typeof(IPluginExecutionContext));
 
-            // The InputParameters collection contains all the data passed in the message request.
+            tracingService.Trace("The InputParameters collection contains all the data passed in the message request.");
             if (context.InputParameters.Contains("Target") &&
                 context.InputParameters["Target"] is Entity)
             {
-                // Obtain the target entity from the input parameters.
+                tracingService.Trace("Obtain the target entity from the input parameters.");
                 Entity target = (Entity)context.InputParameters["Target"];
 
-                // Obtain the organization service reference which you will need for
-                // web service calls.
+                tracingService.Trace("Obtain the organization service reference which you will need for web service calls.");
                 IOrganizationServiceFactory serviceFactory =
                     (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
                 IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
@@ -48,33 +49,33 @@ namespace TSIS2.Plugins
                 {
                     if (target.LogicalName.Equals(msdyn_workorderservicetask.EntityLogicalName))
                     {
-                        // Cast the target to the expected entity
+                        tracingService.Trace("Cast the target to the expected entity.");
                         msdyn_workorderservicetask workOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
 
                         if (workOrderServiceTask.msdyn_name != null)
                         {
-                            // Set the new work order service task to be prefixed with the parent work order name
+                            tracingService.Trace("Set the new Work Order service task to be prefixed with the parent Work Order name.");
                             using (var serviceContext = new Xrm(service))
                             {
                                 msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.FirstOrDefault(wo => wo.Id == workOrderServiceTask.msdyn_WorkOrder.Id);
 
-                                // Relationships are lazy loaded. Need to explicitly call load property to get the related work order service tasks.
+                                tracingService.Trace("Relationships are lazy loaded. Need to explicitly call load property to get the related Work Order service tasks.");
                                 serviceContext.LoadProperty(workOrder, "msdyn_msdyn_workorder_msdyn_workorderservicetask_WorkOrder");
 
-                                // Suffix based off previous number of work order service tasks.
+                                tracingService.Trace("Suffix based off previous number of Work Order service tasks.");
                                 var workOrderServiceTasks = workOrder.msdyn_msdyn_workorder_msdyn_workorderservicetask_WorkOrder;
 
-                                // Set the prefix to be at the 200 level for work order service tasks
+                                tracingService.Trace("Set the prefix to be at the 200 level for Work Order service tasks.");
                                 var prefix = workOrder.msdyn_name.Replace("300-", "200-");
 
-                                // If there are previous work order service tasks, suffix = count + 1 else 1
+                                tracingService.Trace("If there are previous Work Order service tasks, suffix = count + 1 else 1.");
                                 var suffix = (workOrderServiceTasks != null) ? workOrderServiceTasks.Count() + 1 : 1;
                                 workOrderServiceTask.msdyn_name = string.Format("{0}-{1}", prefix, suffix);
                             }
                         }
 
-                        //check Mandatory field from Task Type
-                        if(target.Contains("msdyn_tasktype") && target["msdyn_tasktype"] != null)
+                        tracingService.Trace("Check Mandatory field from Task Type.");
+                        if (target.Contains("msdyn_tasktype") && target["msdyn_tasktype"] != null)
                         {
                             var theType = service.Retrieve("msdyn_servicetasktype", target.GetAttributeValue<EntityReference>("msdyn_tasktype").Id, new ColumnSet("ts_mandatory"));
 
@@ -102,26 +103,25 @@ namespace TSIS2.Plugins
                                     target.Attributes["ovs_questionnaire"] = servicetasktype.ovs_Questionnaire;
                                     if (servicetasktype.ovs_Questionnaire != null && servicetasktype.ovs_Questionnaire.Id != null)
                                     {
-                                        //Retrieve Questionnaire Versions
 
-                                        // Instantiate QueryExpression query
+                                        tracingService.Trace("Retrieve Questionnaire Versions. Initiate QueryExpression query.");
                                         var questionnaireVersionsQuery = new QueryExpression("ts_questionnaireversion");
 
-                                        // Add columns to query.ColumnSet
+                                        tracingService.Trace("Add columns to query.ColumnSet.");
                                         questionnaireVersionsQuery.ColumnSet.AddColumns("ts_questionnairedefinition");
                                         questionnaireVersionsQuery.AddOrder("modifiedon", OrderType.Descending);
 
-                                        // Define filter query.Criteria
+                                        tracingService.Trace("Define filter query.Criteria.");
                                         questionnaireVersionsQuery.Criteria.AddCondition("ts_ovs_questionnaire", ConditionOperator.Equal, servicetasktype.ovs_Questionnaire.Id);
 
                                         var questionnaireVersions = service.RetrieveMultiple(questionnaireVersionsQuery);
 
                                         if (questionnaireVersions[0] != null)
                                         {
-                                            //For now just use the most recently modified version. Will replace with Effective Date logic later.
+                                            tracingService.Trace("For now, use the most recently modified version. Will replace with Effective Date logic later.");
                                             var latestQuestionnaireVersion = questionnaireVersions[0];
 
-                                            //Set questionnaire definition to latest questionnaire versions' definition
+                                            tracingService.Trace("Set questionnaire definition to latest questionnaire versions' definition.");
                                             target.Attributes["ovs_questionnairedefinition"] = latestQuestionnaireVersion.Attributes["ts_questionnairedefinition"].ToString();
                                         }
                                     }
