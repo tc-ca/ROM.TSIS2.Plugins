@@ -51,7 +51,9 @@ namespace TSIS2.Plugins
             }
 
             IPluginExecutionContext context = localContext.PluginExecutionContext;
+            ITracingService tracingService = localContext.TracingService;
             Entity target = (Entity)context.InputParameters["Target"];
+            tracingService.Trace("Entering ExecuteCrmPlugin method.");
 
             try
             {
@@ -62,15 +64,15 @@ namespace TSIS2.Plugins
 
                     using (var serviceContext = new Xrm(localContext.OrganizationService))
                     {
-                        // find out if the region is set to International
+                        tracingService.Trace("Determine if the region is set to International.");
                         var selectedRegion = target.Attributes["ts_region"] as EntityReference;
 
                         if (selectedRegion != null && selectedRegion.Id.Equals( new Guid("3bf0fa88-150f-eb11-a813-000d3af3a7a7")))
                         {
-                            // set the owner to International
+                            tracingService.Trace("Setting business owner to International.");
                             target.Attributes["ts_businessowner"] = "AvSec International";
 
-                            // Perform the update to the Work Order
+                            tracingService.Trace("Perform the update to the Work Order.");
                             IOrganizationService service = localContext.OrganizationService;
                             
                             service.Update(target);
@@ -79,8 +81,7 @@ namespace TSIS2.Plugins
                         }
                         else
                         {
-                            // check the operation type 
-
+                            tracingService.Trace("Selected region is not International, checking operation type.");
                             // find out what business owns the Work Order
                             string fetchXML = $@"
                                 <fetch xmlns:generator='MarkMpn.SQL4CDS'>
@@ -103,7 +104,7 @@ namespace TSIS2.Plugins
 
                             if (businessNameCollection.Entities.Count == 0)
                             {
-                                // exit out if there are no results 
+                                tracingService.Trace("No business owner found for work order ID. Exit out if no results.");
                                 return;
                             }
 
@@ -111,14 +112,14 @@ namespace TSIS2.Plugins
                             {
                                 if (workOrder["OwnerName"] is AliasedValue aliasedValue)
                                 {
-                                    // Cast the AliasedValue to string (or the appropriate type)
+                                    tracingService.Trace("Cast the AliasedValue to string (or the appropriate type).");
                                     ownerName = aliasedValue.Value as string;
                                 }
 
-                                // set the Business Owner Label
+                                tracingService.Trace("Set the Business Owner Label.");
                                 workOrder["ts_businessowner"] = ownerName;
 
-                                // Perform the update to the Work Order
+                                tracingService.Trace("Perform the update to the Work Order.");
                                 IOrganizationService service = localContext.OrganizationService;
                                 service.Update(workOrder);
                             }
@@ -128,6 +129,7 @@ namespace TSIS2.Plugins
             }
             catch (Exception e)
             {
+                tracingService.Trace("Exception occurred: {0}");
                 throw new InvalidPluginExecutionException(e.Message);
             }
         }
