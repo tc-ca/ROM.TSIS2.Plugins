@@ -72,11 +72,14 @@ namespace TSIS2.Plugins
             }
 
             IPluginExecutionContext context = localContext.PluginExecutionContext;
+            ITracingService tracingService = localContext.TracingService;
             Entity target = (Entity)context.InputParameters["Target"];
-            //Entity postImageEntity = (context.PostEntityImages != null && context.PostEntityImages.Contains(this.postImageAlias)) ? context.PostEntityImages[this.postImageAlias] : null;
 
+            //Entity postImageEntity = (context.PostEntityImages != null && context.PostEntityImages.Contains(this.postImageAlias)) ? context.PostEntityImages[this.postImageAlias] : null;
+            tracingService.Trace("Entering ExecuteCrmPlugin method.");
             try
             {
+                tracingService.Trace("PostOperationmsdyn_workorderservicetaskCreate: Begin.");
                 if (target.LogicalName.Equals(msdyn_workorderservicetask.EntityLogicalName))
                 {
                     if (target.Attributes.Contains("msdyn_tasktype") && target.Attributes["msdyn_tasktype"] != null)
@@ -84,6 +87,7 @@ namespace TSIS2.Plugins
                         EntityReference tasktype = (EntityReference)target.Attributes["msdyn_tasktype"];
                         using (var servicecontext = new Xrm(localContext.OrganizationService))
                         {
+                            tracingService.Trace("Task type found: {0}", tasktype.Id);
                             var rclegislations = (from tt in servicecontext.ovs_msdyn_servicetasktype_qm_rclegislationSet
                                                   join le in servicecontext.qm_rclegislationSet
                                                   on tt.qm_rclegislationid.Value equals le.qm_rclegislationId.Value
@@ -107,27 +111,27 @@ namespace TSIS2.Plugins
                         }
                     }
 
-                    //Find out if the Work Order has a recored in ts_sharepointfile
+                    tracingService.Trace("Find out if the Work Order has a recored in ts_sharepointfile.");
                     {
                         using (var servicecontext = new Xrm(localContext.OrganizationService))
                         {
                             msdyn_workorderservicetask workOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
 
-                            // Get the selected Work Order
+                            tracingService.Trace("Get the selected Work Order.");
                             var workOrder = servicecontext.msdyn_workorderSet.Where(wo => wo.Id == workOrderServiceTask.msdyn_WorkOrder.Id).FirstOrDefault();
 
-                            // check if the Work Order has a SharePoint File
+                            tracingService.Trace("Check if the Work Order has a SharePoint File.");
                             var myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(servicecontext, workOrder.Id.ToString().ToUpper().Trim(), PostOperationts_sharepointfileCreate.WORK_ORDER);
 
                             if (myWorkOrderSharePointFile != null)
                             {
-                                // get the Name
+                                tracingService.Trace("Retrieve the name.");
                                 string myWorkOrderServiceTaskName = servicecontext.msdyn_workorderservicetaskSet.Where(wost => wost.Id == workOrderServiceTask.Id).FirstOrDefault().msdyn_name;
 
-                                // get the Owner
+                                tracingService.Trace("Retrieve the owner.");
                                 string owner = PostOperationts_sharepointfileCreate.GetWorkOrderOwner(localContext.OrganizationService, workOrder.Id);
 
-                                // create the SharePointFile for the Work Order Service Task
+                                tracingService.Trace("Create the SharePointFile for the Work Order Service Task.");
                                 Guid myWorkOrderServiceTaskSharePointFileId = PostOperationts_sharepointfileCreate.CreateSharePointFile(
                                     myWorkOrderServiceTaskName,
                                     PostOperationts_sharepointfileCreate.WORK_ORDER_SERVICE_TASK,
@@ -137,7 +141,7 @@ namespace TSIS2.Plugins
                                     owner,
                                     localContext.OrganizationService);
 
-                                // update the Work Order Service Tasks with the SharePointFile Group for the Work Order
+                                tracingService.Trace("Update the Work Order Service Tasks with the SharePointFile Group for the Work Order.");
                                 localContext.OrganizationService.Update(new ts_SharePointFile
                                 {
                                     Id = myWorkOrderServiceTaskSharePointFileId,
@@ -146,7 +150,7 @@ namespace TSIS2.Plugins
                             }
                             else
                             {
-                                // do nothing since there is no SharePoint File for the Work Order
+                                tracingService.Trace("No SharePoint File for the Work Order");
                             }
                         };
                     }
@@ -154,6 +158,7 @@ namespace TSIS2.Plugins
             }
             catch (Exception e)
             {
+                tracingService.Trace("Exception occurred: {0}", e.ToString());
                 throw new InvalidPluginExecutionException(e.Message);
             }
         }

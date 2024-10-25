@@ -132,6 +132,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid Productivitytoolsuser = new Guid("c49aae0a-0fda-e911-a81c-000d3af75d63");
 		public static Guid ProjectBackgroundServicesAppRole = new Guid("209a44f9-636e-40bb-8cb0-67a34459f39a");
 		public static Guid ProjectOwner = new Guid("f9a5a958-d07f-44cd-886d-eb6343309c2a");
+		public static Guid PurviewLabelRole = new Guid("df3185a3-3141-4361-fb29-6eaa33dd0169");
 		public static Guid ReadOnlyEverything = new Guid("c76ee401-4a26-ee11-9965-0022483c5061");
 		public static Guid RelationshipInsightsAdmin = new Guid("016fd16e-7be7-e611-80d6-00155d204901");
 		public static Guid ROM20 = new Guid("eed78bb6-bca5-ee11-a568-002248aeebdb");
