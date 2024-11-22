@@ -89,10 +89,28 @@ namespace TSIS2.Plugins
                             updEnt["ts_estimatedtraveltime"] = tripEnt["ts_estimatedtraveltime"];
                             needUpdate = true;
                         }
-                        else if(!tripEnt.Contains("ts_estimatedtraveltime"))
+                        else if (!tripEnt.Contains("ts_estimatedtraveltime"))
                         {
                             //wait for business team decide logic if removed the value from Suggested Inspection
+                        }
 
+                        if (tripEnt.Contains("ts_plannedfiscalquarter"))
+                        {
+                            var labelQuarter = tripEnt.GetAttributeValue<EntityReference>("ts_plannedfiscalquarter").Name.ToLower();
+
+                            var quarterArray = new string[] { "q1", "q2", "q3", "q4" };
+                            foreach ( var quarter in quarterArray )
+                            {
+                                var fieldName = "ts_" + quarter;
+                                if (labelQuarter == quarter)
+                                {
+                                    updEnt[fieldName] = 1;
+                                }
+                                else {
+                                    updEnt[fieldName] = 0;
+                                }
+                            }
+                            needUpdate = true;
                         }
 
                         if (needUpdate)
