@@ -78,13 +78,13 @@ namespace TSIS2.Plugins
                         localContext.Trace("Trip added   ");
                         bool needUpdate = false;
                         Entity updEnt = new Entity("ts_suggestedinspection", postImageEntity.Id);
-                        if (tripEnt.Contains("ts_estimatedcost") && postImageEntity["ts_estimatedcost"] != tripEnt["ts_estimatedcost"])
+                        if (tripEnt.Contains("ts_estimatedcost") && (!postImageEntity.Contains("ts_estimatedcost") || postImageEntity["ts_estimatedcost"] != tripEnt["ts_estimatedcost"]))
                         {
                             updEnt["ts_estimatedcost"] = tripEnt["ts_estimatedcost"];
                             needUpdate = true;
                         }
 
-                        if (tripEnt.Contains("ts_estimatedtraveltime") && postImageEntity["ts_estimatedtraveltime"] != tripEnt["ts_estimatedtraveltime"])
+                        if (tripEnt.Contains("ts_estimatedtraveltime") && (!postImageEntity.Contains("ts_estimatedtraveltime") || postImageEntity["ts_estimatedtraveltime"] != tripEnt["ts_estimatedtraveltime"]))
                         {
                             updEnt["ts_estimatedtraveltime"] = tripEnt["ts_estimatedtraveltime"];
                             needUpdate = true;
@@ -112,9 +112,10 @@ namespace TSIS2.Plugins
                             }
                             needUpdate = true;
                         }
-
+                        
                         if (needUpdate)
                         {
+                            localContext.Trace("Update SuggestedInspection..");
                             service.Update(updEnt);
                         }
                     }
