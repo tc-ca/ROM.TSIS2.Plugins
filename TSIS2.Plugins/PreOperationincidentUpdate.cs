@@ -48,12 +48,8 @@ namespace TSIS2.Plugins
                 var systemUser = service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
                 // Retrieve the ticketnumber from the database
                 Entity incident = service.Retrieve("incident", context.PrimaryEntityId, new ColumnSet("ticketnumber"));
-                // Retrieve the owner EntityReference
-                EntityReference ownerRef = target.GetAttributeValue<EntityReference>("ownerid");
-                // Retrieve the owner's name using IOrganizationService
-                Entity owner = service.Retrieve(ownerRef.LogicalName, ownerRef.Id, new ColumnSet("fullname"));
-                string ownerName = owner.GetAttributeValue<string>("fullname");
-                tracingService.Trace("Success obtaining the system username, case id, ticket number, and owner name");
+                
+                tracingService.Trace("Success obtaining the system username and case (incident) id");
 
                 try
                 {
@@ -86,6 +82,11 @@ namespace TSIS2.Plugins
 
                         if (target.Attributes.Contains("ownerid") && target.GetAttributeValue<EntityReference>("ownerid").Id  != context.InitiatingUserId)
                         {
+                            EntityReference ownerRef = target.GetAttributeValue<EntityReference>("ownerid");
+                            tracingService.Trace("Retrieve the owner EntityReference");
+                            Entity owner = service.Retrieve(ownerRef.LogicalName, ownerRef.Id, new ColumnSet("fullname"));
+                            tracingService.Trace("Retrieve the owner's name using IOrganizationService");
+                            string ownerName = owner.GetAttributeValue<string>("fullname");
                             tracingService.Trace("Ownerid is changing to {0} by {1} ", ownerName, systemUser.GetAttributeValue<string>("fullname"));
                             using (var servicecontext = new Xrm(service))
                             {
