@@ -11,6 +11,7 @@
 
 using System;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
@@ -73,10 +74,18 @@ namespace TSIS2.Plugins
             IPluginExecutionContext context = localContext.PluginExecutionContext;
             ITracingService tracingService = localContext.TracingService;
             Entity target = (Entity)context.InputParameters["Target"];
+            IOrganizationService service = localContext.OrganizationService;
             //Entity postImageEntity = (context.PostEntityImages != null && context.PostEntityImages.Contains(this.postImageAlias)) ? context.PostEntityImages[this.postImageAlias] : null;
+
+            // Retrieve the system username
+            var userId = service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
             tracingService.Trace("PreOperationincidentCreate: Entering ExecuteCrmPlugin method.");
+
             try
             {
+                tracingService.Trace("Plugin executed by user: {0}", userId.GetAttributeValue<string>("fullname"));
+                tracingService.Trace("Case GUID: {0}", context.PrimaryEntityId);
+                tracingService.Trace("Case Number: {0}", target.GetAttributeValue<string>("ticketnumber"));
                 if (target.LogicalName.Equals(Incident.EntityLogicalName))
                 {
                     tracingService.Trace("PreOperationincidentCreate: Processing incident entity.");

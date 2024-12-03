@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Json;
 using System.Linq;
 using System.ServiceModel;
+using DG.XrmContext;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -57,6 +58,13 @@ namespace TSIS2.Plugins
 
                 try
                 {
+                    // Log the system username and Work Order Service Task at the start
+                    var systemUser = service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
+                    var WOST = service.Retrieve("msdyn_workorderservicetask", context.PrimaryEntityId, new ColumnSet("msdyn_name"));
+                    tracingService.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
+                    tracingService.Trace("Work Order Service Task GUID: {0}", context.PrimaryEntityId);
+                    tracingService.Trace("Work Order Service Task Name: {0}", WOST.GetAttributeValue<string>("msdyn_name"));
+
                     tracingService.Trace("Cast the target and preimage to the expected entity");
                     msdyn_workorderservicetask workOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
                     msdyn_workorderservicetask workOrderServiceTaskPreImage = preImageEntity.ToEntity<msdyn_workorderservicetask>();
@@ -68,6 +76,10 @@ namespace TSIS2.Plugins
                         {
                             tracingService.Trace("Get the referenced work order from the preImage");
                             EntityReference workOrderReference = (EntityReference)preImageEntity.Attributes["msdyn_workorder"];
+                            // Retrieve the msdyn_workorder record to get the msdyn_name
+                            var workOrderName = service.Retrieve("msdyn_workorder", workOrderReference.Id, new ColumnSet("msdyn_name"));
+                            tracingService.Trace("Work Order GUID: {0}", workOrderReference.Id);
+                            tracingService.Trace("Work Order Name: {0}", workOrderName.GetAttributeValue<string>("msdyn_name"));
 
                             tracingService.Trace("Lookup the referenced work order");
                             msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrderReference.Id).FirstOrDefault();
