@@ -114,6 +114,7 @@
   <ItemGroup>
     <Compile Include="EnvironmentVariableHelper.cs" />
     <Compile Include="PostOperationmsdyn_workorderCreate.cs" />
+    <Compile Include="PostOperationts_entityriskCreate.cs" />
     <Compile Include="PostOperationts_suggestedinspectionUpdate.cs" />
     <Compile Include="PostOperationmsyd_workorderUpdate.cs" />
     <Compile Include="PostOperationts_operationriskassessmentCreate.cs" />
