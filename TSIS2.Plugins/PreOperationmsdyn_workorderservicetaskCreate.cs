@@ -47,6 +47,10 @@ namespace TSIS2.Plugins
 
                 try
                 {
+                    // Log the system username at the start
+                    var systemUser = service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
+                    tracingService.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
+
                     if (target.LogicalName.Equals(msdyn_workorderservicetask.EntityLogicalName))
                     {
                         tracingService.Trace("Cast the target to the expected entity.");
@@ -58,6 +62,14 @@ namespace TSIS2.Plugins
                             using (var serviceContext = new Xrm(service))
                             {
                                 msdyn_workorder workOrder = serviceContext.msdyn_workorderSet.FirstOrDefault(wo => wo.Id == workOrderServiceTask.msdyn_WorkOrder.Id);
+                                if (workOrder != null)
+                                {
+                                    tracingService.Trace("Successfully retrieved Work Order with name: {0}", workOrder.msdyn_name);
+                                }
+                                else
+                                {
+                                    tracingService.Trace("Work Order not found for Work Order Service Task ID: {0}", workOrderServiceTask.msdyn_WorkOrder.Id);
+                                }
 
                                 tracingService.Trace("Relationships are lazy loaded. Need to explicitly call load property to get the related Work Order service tasks.");
                                 serviceContext.LoadProperty(workOrder, "msdyn_msdyn_workorder_msdyn_workorderservicetask_WorkOrder");
@@ -71,8 +83,11 @@ namespace TSIS2.Plugins
                                 tracingService.Trace("If there are previous Work Order service tasks, suffix = count + 1 else 1.");
                                 var suffix = (workOrderServiceTasks != null) ? workOrderServiceTasks.Count() + 1 : 1;
                                 workOrderServiceTask.msdyn_name = string.Format("{0}-{1}", prefix, suffix);
+
                             }
                         }
+                        // Log the Work Order Service Task Name
+                        tracingService.Trace("Work Order Service Task Name: {0}", workOrderServiceTask.msdyn_name);
 
                         tracingService.Trace("Check Mandatory field from Task Type.");
                         if (target.Contains("msdyn_tasktype") && target["msdyn_tasktype"] != null)
@@ -132,6 +147,7 @@ namespace TSIS2.Plugins
                 }
                 catch (Exception e)
                 {
+                    tracingService.Trace("Error occurred in the plugin execution: {0}", e.Message);
                     throw new InvalidPluginExecutionException(e.Message);
                 }
             }
