@@ -11,7 +11,9 @@
 
 using System;
 using System.Linq;
+using System.Web.Services.Description;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
@@ -79,6 +81,10 @@ namespace TSIS2.Plugins
             tracingService.Trace("Entering ExecuteCrmPlugin method.");
             try
             {
+                // Log the system username at the start
+                var systemUser = localContext.OrganizationService.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
+                tracingService.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
+
                 tracingService.Trace("PostOperationmsdyn_workorderservicetaskCreate: Begin.");
                 if (target.LogicalName.Equals(msdyn_workorderservicetask.EntityLogicalName))
                 {
@@ -119,6 +125,9 @@ namespace TSIS2.Plugins
 
                             tracingService.Trace("Get the selected Work Order.");
                             var workOrder = servicecontext.msdyn_workorderSet.Where(wo => wo.Id == workOrderServiceTask.msdyn_WorkOrder.Id).FirstOrDefault();
+
+                            // Log the Work Order Service Task Name
+                            tracingService.Trace("Work Order Service Task Name: {0}", workOrderServiceTask.msdyn_name);
 
                             tracingService.Trace("Check if the Work Order has a SharePoint File.");
                             var myWorkOrderSharePointFile = PostOperationts_sharepointfileCreate.CheckSharePointFile(servicecontext, workOrder.Id.ToString().ToUpper().Trim(), PostOperationts_sharepointfileCreate.WORK_ORDER);
