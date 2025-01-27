@@ -195,6 +195,40 @@ namespace TSIS2.Plugins
                                 }
                             }
                         }
+                        // Only run in dev env and QA
+                        if (localContext.PluginExecutionContext.OrganizationId == new Guid("587ac8c1-470e-4806-a8ad-44df8afcd10f") || localContext.PluginExecutionContext.OrganizationId == new Guid("0a2d7c77-c719-4aeb-97cb-da2325d37795"))
+                        {
+                            var preImage = context.PreEntityImages["PreImage"];
+                            if (target.Contains("statuscode") &&
+                                target.GetAttributeValue<OptionSetValue>("statuscode").Value == 918640002 &&
+                                preImage.Contains("statuscode") &&
+                                preImage.GetAttributeValue<OptionSetValue>("statuscode").Value != 918640002)
+
+                            {
+                                localContext.TracingService.Trace("Work Order Service Task is 100% complete. Starting questionnaire processing.");
+
+                                // Process questionnaire and get question response IDs
+                                var questionResponseIds = Services.QuestionnaireProcessor.ProcessQuestionnaire(
+                                    localContext.OrganizationService,
+                                    target.Id,
+                                    localContext.TracingService
+                                );
+
+                                localContext.TracingService.Trace($"Successfully processed questionnaire. Creating {questionResponseIds.Count} relationships.");
+
+                                // Create the relationship for each question response
+                                foreach (var questionResponseId in questionResponseIds)
+                                {
+                                    var updateQuestionResponse = new Entity("ts_questionresponse", questionResponseId)
+                                    {
+                                        ["ts_msdyn_workorderservicetask"] = new EntityReference("msdyn_workorderservicetask", target.Id)
+                                    };
+                                    localContext.OrganizationService.Update(updateQuestionResponse);
+                                }
+
+                                localContext.TracingService.Trace("Completed creating all question response relationships.");
+                            }
+                        }
                     }
                 }
             }
