@@ -105,7 +105,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid MicrosoftCopilotUser = new Guid("3d110294-4481-42bc-9882-ec2d526aa369");
 		public static Guid NonRelationalDataAppAccess = new Guid("6543ef96-37ab-4add-8c31-6dcd7cfa12ab");
 		public static Guid OfficeCollaborator = new Guid("e8fb3146-7717-ec11-b1b7-000d3af68e17");
-		public static Guid Omnichanneladministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
+		public static Guid OmnichannelAdministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
 		public static Guid Omnichannelagent = new Guid("c30bdbfe-7553-e811-8147-000d3aa39708");
 		public static Guid OmnichannelAPIaccess = new Guid("08593e02-ca6e-ec11-8943-000d3a9d73b9");
 		public static Guid OmnichannelAssignmentAPIaccess = new Guid("dad4c8cd-aab9-ee11-a568-6045bd07894c");
