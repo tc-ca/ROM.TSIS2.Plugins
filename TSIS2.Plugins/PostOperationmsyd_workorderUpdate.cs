@@ -75,6 +75,14 @@ namespace TSIS2.Plugins
                 // we don't (target.Attributes.Contains("ts_region")) because when an update happens to a Work Order, it run's through here several times
                 {
                     IOrganizationService service = localContext.OrganizationService;
+
+                    // Log the system username and Work Order at the start
+                    var systemUser = service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
+                    var WOST = service.Retrieve("msdyn_workorder", context.PrimaryEntityId, new ColumnSet("msdyn_name"));
+                    tracingService.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
+                    tracingService.Trace("Work Order GUID: {0}", context.PrimaryEntityId);
+                    tracingService.Trace("Work Order Name: {0}", WOST.GetAttributeValue<string>("msdyn_name"));
+
                     if (preImageEntity.Contains("ts_region") && postImageEntity.Contains("ts_region"))
                     {
                         var preRegion = preImageEntity["ts_region"] as EntityReference;
