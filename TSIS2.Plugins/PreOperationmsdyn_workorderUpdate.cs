@@ -66,6 +66,13 @@ namespace TSIS2.Plugins
 
                 try
                 {
+                    // Log the system username and Work Order at the start
+                    var systemUser = service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
+                    var WOST = service.Retrieve("msdyn_workorder", context.PrimaryEntityId, new ColumnSet("msdyn_name"));
+                    tracingService.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
+                    tracingService.Trace("Work Order GUID: {0}", context.PrimaryEntityId);
+                    tracingService.Trace("Work Order Name: {0}", WOST.GetAttributeValue<string>("msdyn_name"));
+
                     if (target.LogicalName.Equals(msdyn_workorder.EntityLogicalName))
                     {
                         if (target.Attributes.Contains("ovs_operationid") && target.Attributes["ovs_operationid"] != null)
