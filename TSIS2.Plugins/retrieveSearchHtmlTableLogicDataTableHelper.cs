@@ -273,16 +273,14 @@ namespace TSIS2.Plugins
             Dictionary<string, retrieveSearchHtmlTableDataMappingPreferences> dataTableMapping = new Dictionary<string, retrieveSearchHtmlTableDataMappingPreferences>();
 
             dataTableMapping.Add("WO No.", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_name", false, true, false, false, new retrieveSearchHtmlTableDataMappingPreferences.HyperlinkHelper("msdyn_workorder", "msdyn_workorderid"), "Numéro de Bon de Travail"));
-
+            dataTableMapping.Add("Closed Date", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_timeclosed", true, true, false, false, null, "Date de clôture"));
+            dataTableMapping.Add("# of Findings", new retrieveSearchHtmlTableDataMappingPreferences("ts_numberoffindings", true, true, false, false, null, "Nombre de constatations"));
             dataTableMapping.Add("Stakeholder", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_serviceaccount", true, true, false, false, null, "Intervenant"));
             dataTableMapping.Add("Category", new retrieveSearchHtmlTableDataMappingPreferences("ovs_rational", true, true, false, false, null, "catégorie"));
             dataTableMapping.Add("Site", new retrieveSearchHtmlTableDataMappingPreferences("ts_site", true, true, false, false, null, "Site"));
             dataTableMapping.Add("Activity Type", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_primaryincidenttype", true, true, false, false, null, "Type d’activité"));
             dataTableMapping.Add("Owner", new retrieveSearchHtmlTableDataMappingPreferences("ownerid", true, true, false, false, null, "Propriétaire"));
             dataTableMapping.Add("Region", new retrieveSearchHtmlTableDataMappingPreferences("ts_region", true, true, false, false, null, "Région"));
-
-            dataTableMapping.Add("# of Findings", new retrieveSearchHtmlTableDataMappingPreferences("ts_numberoffindings", true, true, false, false, null, "Nombre de constatations"));
-            dataTableMapping.Add("Closed Date", new retrieveSearchHtmlTableDataMappingPreferences("msdyn_timeclosed", true, true, false, false, null, "Date de clôture"));
             dataTableMapping.Add("Created On", new retrieveSearchHtmlTableDataMappingPreferences("createdon", true, true, false, false, null, "créé le"));
             return dataTableMapping;
         }
