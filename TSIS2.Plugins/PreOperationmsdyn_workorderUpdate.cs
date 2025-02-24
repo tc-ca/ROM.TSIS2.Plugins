@@ -383,10 +383,10 @@ namespace TSIS2.Plugins
                                             tracingService.Trace("Retrieve the operation activity ID record.");
                                             Guid operationActivityId = operationActivityCollection.Entities[0].Id;
 
-                                            Entity operationActivity = service.Retrieve("ts_operationactivity", operationActivityId, new ColumnSet("ts_closedondateoflastworkorder"));
+                                            Entity operationActivity = service.Retrieve("ts_operationactivity", operationActivityId, new ColumnSet("ts_closedondatemostrecentwo"));
 
-                                            tracingService.Trace("Update ts_closedondateoflastworkorder with current date.");
-                                            operationActivity["ts_closedondateoflastworkorder"] = DateTime.UtcNow;
+                                            tracingService.Trace("Update ts_closedondatemostrecentwo with current date.");
+                                            operationActivity["ts_closedondatemostrecentwo"] = DateTime.UtcNow;
 
                                             service.Update(operationActivity);
                                         }
