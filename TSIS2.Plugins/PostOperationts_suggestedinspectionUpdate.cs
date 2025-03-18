@@ -69,13 +69,15 @@ namespace TSIS2.Plugins
             {
                 {
                     IOrganizationService service = localContext.OrganizationService;
-                    //if trip added
-                    if (!preImageEntity.Contains("ts_trip") && postImageEntity.Contains("ts_trip"))
+                    //if trip added or updated
+                    if ((!preImageEntity.Contains("ts_trip") && postImageEntity.Contains("ts_trip")) ||
+                        (preImageEntity.Contains("ts_trip") && postImageEntity.Contains("ts_trip") && preImageEntity.GetAttributeValue<EntityReference>("ts_trip")?.Id != postImageEntity.GetAttributeValue<EntityReference>("ts_trip")?.Id)
+                        )
                     {
                         var theTrip = postImageEntity["ts_trip"] as EntityReference;
                         var tripEnt = service.Retrieve("ts_trip", theTrip.Id, new ColumnSet("ts_estimatedcost", "ts_estimatedtraveltime", "ts_plannedfiscalquarter"));
 
-                        localContext.Trace("Trip added   ");
+                        localContext.Trace("Trip added  or updated.");
                         bool needUpdate = false;
                         Entity updEnt = new Entity("ts_suggestedinspection", postImageEntity.Id);
                         if (tripEnt.Contains("ts_estimatedcost") && (!postImageEntity.Contains("ts_estimatedcost") || postImageEntity["ts_estimatedcost"] != tripEnt["ts_estimatedcost"]))
@@ -118,6 +120,10 @@ namespace TSIS2.Plugins
                             localContext.Trace("Update SuggestedInspection..");
                             service.Update(updEnt);
                         }
+                    }
+                    else
+                    {
+                        localContext.Trace("No trip was added or updated. Exiting plugin.");
                     }
                 }
             }
