@@ -37,6 +37,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ChannelAccess = new Guid("a2cccf01-f964-449c-a827-9b66e03f7fc8");
 		public static Guid Click2CloneAdministrator = new Guid("9bd753ee-41a9-e511-9414-00155d068906");
 		public static Guid Click2CloneUser = new Guid("c65a1216-42a9-e511-9414-00155d068906");
+		public static Guid ContextualAIS2SRole = new Guid("4f9dbfce-f797-40d8-a8ac-902e441e371b");
 		public static Guid CopilotforSalesIntegrationUser = new Guid("15bcda22-775e-4f2c-bdf5-e7c1f39d3919");
 		public static Guid CopilotforServiceAdministrator = new Guid("470a750f-d810-4ee7-a64a-ec002965c1ec");
 		public static Guid CopilotforServiceUser = new Guid("6cdd8165-d5a4-4d98-9be4-680418ea600a");
@@ -58,6 +59,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid DataLakeFolderEntityContributor = new Guid("a0537877-879d-4b70-a391-bb07b94fbba2");
 		public static Guid DataLakeWorkspaceAppAccess = new Guid("edfcbfd2-358f-ea11-a81f-000d3a6eafd3");
 		public static Guid DataProcessingConfigTableAppAccess = new Guid("896a28e5-678d-4fa8-ad59-c606d1aa98ce");
+		public static Guid DataverseasaClusterAppRole = new Guid("5225adeb-859b-42f3-8289-a399e47512d5");
 		public static Guid DataverseSearchRole = new Guid("a0a59a4a-b5a8-4e6f-a094-a866573c17d4");
 		public static Guid DeflectionServiceRole = new Guid("c95980b3-97dc-4762-a037-c15fe02dae8c");
 		public static Guid Delegate = new Guid("10472c33-29a1-eb11-b1ac-000d3ae8bbe0");
@@ -105,7 +107,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid MicrosoftCopilotUser = new Guid("3d110294-4481-42bc-9882-ec2d526aa369");
 		public static Guid NonRelationalDataAppAccess = new Guid("6543ef96-37ab-4add-8c31-6dcd7cfa12ab");
 		public static Guid OfficeCollaborator = new Guid("e8fb3146-7717-ec11-b1b7-000d3af68e17");
-		public static Guid OmnichannelAdministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
+		public static Guid Omnichanneladministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
 		public static Guid Omnichannelagent = new Guid("c30bdbfe-7553-e811-8147-000d3aa39708");
 		public static Guid OmnichannelAPIaccess = new Guid("08593e02-ca6e-ec11-8943-000d3a9d73b9");
 		public static Guid OmnichannelAssignmentAPIaccess = new Guid("dad4c8cd-aab9-ee11-a568-6045bd07894c");
@@ -139,6 +141,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid PurviewLabelRole = new Guid("df3185a3-3141-4361-fb29-6eaa33dd0169");
 		public static Guid ReadOnlyEverything = new Guid("c76ee401-4a26-ee11-9965-0022483c5061");
 		public static Guid RelationshipInsightsAdmin = new Guid("016fd16e-7be7-e611-80d6-00155d204901");
+		public static Guid ReportServiceRole = new Guid("c8f8c510-2421-4d63-965b-91a7e722d6a0");
 		public static Guid ROM20 = new Guid("eed78bb6-bca5-ee11-a568-002248aeebdb");
 		public static Guid ROMAdmin = new Guid("8281365b-0a40-ed11-bba2-0022483d5ee0");
 		public static Guid ROMAvSecPlanner = new Guid("5a6ed00f-94e6-ec11-bb3c-0022483d8865");
