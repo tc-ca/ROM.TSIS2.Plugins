@@ -136,6 +136,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PostOperationmsdyn_workorderservicetaskUpdateTests.cs" />
     <Compile Include="PostOperationts_fileCreateTests.cs" />
     <Compile Include="PostOperationovs_questionnaireCreateTests.cs" />
     <Compile Include="PostOperationts_operationriskassessmentTests.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="PreOperationmsdyn_workorderUpdateTests.cs" />
     <Compile Include="PreOperationts_questionnaireversionUpdateTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestData\QuestionnaireSamples.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="XrmMockupFixture.cs" />
   </ItemGroup>

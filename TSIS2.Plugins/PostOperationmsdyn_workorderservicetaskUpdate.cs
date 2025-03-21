@@ -18,6 +18,7 @@ namespace TSIS2.Plugins
     1,
     IsolationModeEnum.Sandbox,
     Image1Name = "PostImage", Image1Type = ImageTypeEnum.PostImage, Image1Attributes = "msdyn_name,msdyn_workorder",
+    Image2Name = "PreImage", Image2Type = ImageTypeEnum.PreImage, Image2Attributes = "statuscode,ovs_questionnaireresponse",
     Description = "If a Work Order Service Task has been moved to another Work Order, update the associated files with the new Work Order and Case")]
     /// <summary>
     /// PostOperationmsdyn_workorderservicetaskUpdate Plugin.
@@ -25,6 +26,7 @@ namespace TSIS2.Plugins
     public class PostOperationmsdyn_workorderservicetaskUpdate : PluginBase
     {
         private readonly string postImageAlias = "PostImage";
+        private readonly string preImageAlias = "PreImage";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostOperationmsdyn_workorderservicetaskUpdate"/> class.
@@ -195,38 +197,94 @@ namespace TSIS2.Plugins
                                 }
                             }
                         }
+
                         // Only run in dev env and QA
                         if (localContext.PluginExecutionContext.OrganizationId == new Guid("587ac8c1-470e-4806-a8ad-44df8afcd10f") || localContext.PluginExecutionContext.OrganizationId == new Guid("0a2d7c77-c719-4aeb-97cb-da2325d37795"))
                         {
-                            var preImage = context.PreEntityImages["PreImage"];
                             if (target.Contains("statuscode") &&
-                                target.GetAttributeValue<OptionSetValue>("statuscode").Value == 918640002 &&
-                                preImage.Contains("statuscode") &&
-                                preImage.GetAttributeValue<OptionSetValue>("statuscode").Value != 918640002)
-
+                                target.GetAttributeValue<OptionSetValue>("statuscode").Value == 918640002) //  "Complete"
                             {
-                                localContext.TracingService.Trace("Work Order Service Task is 100% complete. Starting questionnaire processing.");
+                                Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains(preImageAlias)) ? 
+                                    context.PreEntityImages[preImageAlias] : null;
 
-                                // Process questionnaire and get question response IDs
-                                var questionResponseIds = Services.QuestionnaireProcessor.ProcessQuestionnaire(
-                                    localContext.OrganizationService,
-                                    target.Id,
-                                    localContext.TracingService
-                                );
+                                // Check previous status
+                                bool isFirstTimeCompletion = preImageEntity?.GetAttributeValue<OptionSetValue>("statuscode")?.Value == 918640004; // Was In Progress
+                                bool isRecompletion = preImageEntity?.GetAttributeValue<OptionSetValue>("statuscode")?.Value == 1; // Was Active
 
-                                localContext.TracingService.Trace($"Successfully processed questionnaire. Creating {questionResponseIds.Count} relationships.");
-
-                                // Create the relationship for each question response
-                                foreach (var questionResponseId in questionResponseIds)
+                                if (isFirstTimeCompletion || isRecompletion)
                                 {
-                                    var updateQuestionResponse = new Entity("ts_questionresponse", questionResponseId)
-                                    {
-                                        ["ts_msdyn_workorderservicetask"] = new EntityReference("msdyn_workorderservicetask", target.Id)
-                                    };
-                                    localContext.OrganizationService.Update(updateQuestionResponse);
-                                }
+                                    localContext.TracingService.Trace("Work Order Service Task is being completed. Starting questionnaire processing.");
+                                    localContext.TracingService.Trace($"First time completion: {isFirstTimeCompletion}, Recompletion: {isRecompletion}");
 
-                                localContext.TracingService.Trace("Completed creating all question response relationships.");
+                                    // For recompletion, check if response has changed
+                                    if (isRecompletion)
+                                    {
+                                        // Retrieve current response JSON
+                                        var wost = localContext.OrganizationService.Retrieve("msdyn_workorderservicetask", target.Id, 
+                                            new ColumnSet("ovs_questionnaireresponse"));
+                                        string currentResponseJson = wost.GetAttributeValue<string>("ovs_questionnaireresponse");
+                                        
+                                        // Get previous response JSON from pre-image
+                                        string previousResponseJson = preImageEntity.GetAttributeValue<string>("ovs_questionnaireresponse");
+                                        
+                                        // Compare current and previous response JSONs
+                                        if (string.Equals(currentResponseJson, previousResponseJson, StringComparison.Ordinal))
+                                        {
+                                            localContext.TracingService.Trace("Questionnaire response hasn't changed. Skipping processing.");
+                                            return; // Skip processing if response is unchanged
+                                        }
+                                        
+                                        localContext.TracingService.Trace("Questionnaire response has changed. Processing updates.");
+                                    }
+
+                                    // Process questionnaire and get question response IDs
+                                    var questionResponseIds = Services.QuestionnaireProcessor.ProcessQuestionnaire(
+                                        localContext.OrganizationService,
+                                        target.Id,
+                                        localContext.TracingService,
+                                        isRecompletion 
+                                    );
+
+                                    localContext.TracingService.Trace($"Successfully processed questionnaire. Creating {questionResponseIds.Count} relationships.");
+
+                                    // Create the relationship for each question response
+                                    foreach (var questionResponseId in questionResponseIds)
+                                    {
+                                        localContext.TracingService.Trace($"Creating relationship for question response {questionResponseId}");
+                                        
+                                        // Get the questionnaire ID from the WOST
+                                        var wost = localContext.OrganizationService.Retrieve("msdyn_workorderservicetask", target.Id, 
+                                            new ColumnSet("ovs_questionnaire"));
+                                        var questionnaireRef = wost.GetAttributeValue<EntityReference>("ovs_questionnaire");
+                                        
+                                        if (questionnaireRef == null)
+                                        {
+                                            localContext.TracingService.Trace("No questionnaire found on WOST");
+                                            continue;
+                                        }
+
+                                        localContext.TracingService.Trace($"Linking to WOST: {target.Id} and Questionnaire: {questionnaireRef.Id}");
+                                        
+                                        var updateQuestionResponse = new Entity("ts_questionresponse", questionResponseId)
+                                        {
+                                            ["ts_msdyn_workorderservicetask"] = new EntityReference("msdyn_workorderservicetask", target.Id),
+                                            ["ts_questionnaire"] = new EntityReference("ovs_questionnaire", questionnaireRef.Id)
+                                        };
+                                        
+                                        try 
+                                        {
+                                            localContext.OrganizationService.Update(updateQuestionResponse);
+                                            localContext.TracingService.Trace($"Successfully updated question response {questionResponseId}");
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            localContext.TracingService.Trace($"Failed to update question response {questionResponseId}: {ex.Message}");
+                                            throw;
+                                        }
+                                    }
+
+                                    localContext.TracingService.Trace("Completed creating all question response relationships.");
+                                }
                             }
                         }
                     }
