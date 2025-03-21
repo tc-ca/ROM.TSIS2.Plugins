@@ -590,32 +590,45 @@ namespace TSIS2.Plugins.Services
                         {
                             var selectedValues = new List<string>();
                             var choices = questionDefinition["choices"] as JArray;
+                            
                             foreach (var value in responseValue)
                             {
                                 string valueStr = value.ToString();
-                                var choice = choices?.FirstOrDefault(c => c["value"]?.ToString() == valueStr);
-                                if (choice != null)
+                                string choiceText = valueStr; // Default to the value itself
+                                
+                                if (choices != null)
                                 {
-                                    // Handle both formats: when 'text' is a complex object or a simple string
-                                    string choiceText;
-                                    var textToken = choice["text"];
-                                    if (textToken.Type == JTokenType.Object)
+                                    // Handle both formats of choices
+                                    // Format 1: Objects with value/text properties
+                                    var choiceObj = choices.FirstOrDefault(c => c.Type == JTokenType.Object && c["value"]?.ToString() == valueStr);
+                                    if (choiceObj != null && choiceObj["text"] != null)
                                     {
-                                        // Handle localized text object with 'default' property
-                                        choiceText = textToken["default"]?.ToString() ?? valueStr;
+                                        var textToken = choiceObj["text"];
+                                        if (textToken.Type == JTokenType.Object)
+                                        {
+                                            // Handle localized text
+                                            choiceText = textToken["default"]?.ToString() ?? valueStr;
+                                        }
+                                        else
+                                        {
+                                            // Handle simple string text
+                                            choiceText = textToken.ToString();
+                                        }
                                     }
                                     else
                                     {
-                                        // Handle simple string text
-                                        choiceText = textToken.ToString();
+                                        // Format 2: Simple strings
+                                        var choiceString = choices.FirstOrDefault(c => c.Type == JTokenType.String && c.ToString() == valueStr);
+                                        if (choiceString != null)
+                                        {
+                                            choiceText = choiceString.ToString();
+                                        }
                                     }
-                                    selectedValues.Add(RemoveHtmlTags(choiceText));
                                 }
-                                else
-                                {
-                                    selectedValues.Add(valueStr);
-                                }
+                                
+                                selectedValues.Add(RemoveHtmlTags(choiceText));
                             }
+                            
                             return string.Join(",", selectedValues);
                         }
                         return responseValue.ToString();
