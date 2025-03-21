@@ -634,14 +634,42 @@ namespace TSIS2.Plugins.Services
 
                                 //Find which column (answer) was selected for this row (e.g.: "Satisfactory", "Not Satisfactory")
                                 var selectedColumnValue = row.Value.ToString();
-                                var columnDisplayText = questionDefinition["columns"]?
-                                    .FirstOrDefault(c => c["value"]?.ToString() == selectedColumnValue)?
-                                    ["text"]?["default"]?.ToString() ?? selectedColumnValue;
+                                
+                                // Look up column display text with proper handling of both text formats
+                                string columnDisplayText = selectedColumnValue;
+                                var columnDef = questionDefinition["columns"]?.FirstOrDefault(c => c["value"]?.ToString() == selectedColumnValue);
+                                if (columnDef != null && columnDef["text"] != null)
+                                {
+                                    var textToken = columnDef["text"];
+                                    if (textToken.Type == JTokenType.Object)
+                                    {
+                                        // Handle localized text object with 'default' property
+                                        columnDisplayText = textToken["default"]?.ToString() ?? selectedColumnValue;
+                                    }
+                                    else
+                                    {
+                                        // Handle simple string text
+                                        columnDisplayText = textToken.ToString();
+                                    }
+                                }
 
-                                // Find the original question text for this row
-                                var rowQuestionText = questionDefinition["rows"]?
-                                    .FirstOrDefault(r => r["value"]?.ToString() == rowName)?
-                                    ["text"]?["default"]?.ToString() ?? rowName;
+                                // Find the original question text for this row with proper handling of both text formats
+                                string rowQuestionText = rowName;
+                                var rowDef = questionDefinition["rows"]?.FirstOrDefault(r => r["value"]?.ToString() == rowName);
+                                if (rowDef != null && rowDef["text"] != null)
+                                {
+                                    var textToken = rowDef["text"];
+                                    if (textToken.Type == JTokenType.Object)
+                                    {
+                                        // Handle localized text object with 'default' property
+                                        rowQuestionText = textToken["default"]?.ToString() ?? rowName;
+                                    }
+                                    else
+                                    {
+                                        // Handle simple string text
+                                        rowQuestionText = textToken.ToString();
+                                    }
+                                }
 
                                 // Special handling for Result rows to avoid redundant responses like "Result: Not Satisfactory", could maybe be applied to all other question and ignore the question text
                                 results.Add(isResultRow 
