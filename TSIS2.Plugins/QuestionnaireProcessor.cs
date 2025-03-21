@@ -596,7 +596,19 @@ namespace TSIS2.Plugins.Services
                                 var choice = choices?.FirstOrDefault(c => c["value"]?.ToString() == valueStr);
                                 if (choice != null)
                                 {
-                                    var choiceText = choice["text"]?["default"]?.ToString() ?? valueStr;
+                                    // Handle both formats: when 'text' is a complex object or a simple string
+                                    string choiceText;
+                                    var textToken = choice["text"];
+                                    if (textToken.Type == JTokenType.Object)
+                                    {
+                                        // Handle localized text object with 'default' property
+                                        choiceText = textToken["default"]?.ToString() ?? valueStr;
+                                    }
+                                    else
+                                    {
+                                        // Handle simple string text
+                                        choiceText = textToken.ToString();
+                                    }
                                     selectedValues.Add(RemoveHtmlTags(choiceText));
                                 }
                                 else
