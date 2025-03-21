@@ -590,20 +590,45 @@ namespace TSIS2.Plugins.Services
                         {
                             var selectedValues = new List<string>();
                             var choices = questionDefinition["choices"] as JArray;
+                            
                             foreach (var value in responseValue)
                             {
                                 string valueStr = value.ToString();
-                                var choice = choices?.FirstOrDefault(c => c["value"]?.ToString() == valueStr);
-                                if (choice != null)
+                                string choiceText = valueStr; // Default to the value itself
+                                
+                                if (choices != null)
                                 {
-                                    var choiceText = choice["text"]?["default"]?.ToString() ?? valueStr;
-                                    selectedValues.Add(RemoveHtmlTags(choiceText));
+                                    // Handle both formats of choices
+                                    // Format 1: Objects with value/text properties
+                                    var choiceObj = choices.FirstOrDefault(c => c.Type == JTokenType.Object && c["value"]?.ToString() == valueStr);
+                                    if (choiceObj != null && choiceObj["text"] != null)
+                                    {
+                                        var textToken = choiceObj["text"];
+                                        if (textToken.Type == JTokenType.Object)
+                                        {
+                                            // Handle localized text
+                                            choiceText = textToken["default"]?.ToString() ?? valueStr;
+                                        }
+                                        else
+                                        {
+                                            // Handle simple string text
+                                            choiceText = textToken.ToString();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Format 2: Simple strings
+                                        var choiceString = choices.FirstOrDefault(c => c.Type == JTokenType.String && c.ToString() == valueStr);
+                                        if (choiceString != null)
+                                        {
+                                            choiceText = choiceString.ToString();
+                                        }
+                                    }
                                 }
-                                else
-                                {
-                                    selectedValues.Add(valueStr);
-                                }
+                                
+                                selectedValues.Add(RemoveHtmlTags(choiceText));
                             }
+                            
                             return string.Join(",", selectedValues);
                         }
                         return responseValue.ToString();
@@ -622,16 +647,58 @@ namespace TSIS2.Plugins.Services
 
                                 //Find which column (answer) was selected for this row (e.g.: "Satisfactory", "Not Satisfactory")
                                 var selectedColumnValue = row.Value.ToString();
-                                var columnDisplayText = questionDefinition["columns"]?
-                                    .FirstOrDefault(c => c["value"]?.ToString() == selectedColumnValue)?
-                                    ["text"]?["default"]?.ToString() ?? selectedColumnValue;
+                                
+                                // Look up column display text with proper handling of both text formats
+                                string columnDisplayText = selectedColumnValue;
+                                var columnDef = questionDefinition["columns"]?.FirstOrDefault(c => c["value"]?.ToString() == selectedColumnValue);
+                                if (columnDef != null && columnDef["text"] != null)
+                                {
+                                    var textToken = columnDef["text"];
+                                    if (textToken.Type == JTokenType.Object)
+                                    {
+                                        // Handle localized text object with 'default' property
+                                        columnDisplayText = textToken["default"]?.ToString() ?? selectedColumnValue;
+                                    }
+                                    else
+                                    {
+                                        // Handle simple string text
+                                        columnDisplayText = textToken.ToString();
+                                    }
+                                }
 
-                                // Find the original question text for this row
-                                var rowQuestionText = questionDefinition["rows"]?
-                                    .FirstOrDefault(r => r["value"]?.ToString() == rowName)?
-                                    ["text"]?["default"]?.ToString() ?? rowName;
+                                // Find the original question text for this row with proper handling of both formats
+                                string rowQuestionText = rowName;
+                                
+                                // Handle two formats of rows array - objects with properties or simple strings
+                                var rowsArray = questionDefinition["rows"] as JArray;
+                                if (rowsArray != null)
+                                {
+                                    // Try to find row by value property first (object format)
+                                    var rowDefObj = rowsArray.FirstOrDefault(r => r.Type == JTokenType.Object && r["value"]?.ToString() == rowName);
+                                    if (rowDefObj != null && rowDefObj["text"] != null)
+                                    {
+                                        var textToken = rowDefObj["text"];
+                                        if (textToken.Type == JTokenType.Object)
+                                        {
+                                            rowQuestionText = textToken["default"]?.ToString() ?? rowName;
+                                        }
+                                        else
+                                        {
+                                            rowQuestionText = textToken.ToString();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        // Try to find row as simple string
+                                        var rowDefString = rowsArray.FirstOrDefault(r => r.Type == JTokenType.String && r.ToString() == rowName);
+                                        if (rowDefString != null)
+                                        {
+                                            rowQuestionText = rowDefString.ToString();
+                                        }
+                                    }
+                                }
 
-                                // Special handling for Result rows to avoid redundant responses like "Result: Not Satisfactory", could maybe be applied to all other question and ignore the question text
+                                // Special handling for Result row to avoid redundant responses like "Result: Not Satisfactory" (When there is only 1 row)
                                 results.Add(isResultRow 
                                     ? RemoveHtmlTags(columnDisplayText)
                                     : $"{RemoveHtmlTags(rowQuestionText)}: {RemoveHtmlTags(columnDisplayText)}");
