@@ -653,25 +653,39 @@ namespace TSIS2.Plugins.Services
                                     }
                                 }
 
-                                // Find the original question text for this row with proper handling of both text formats
+                                // Find the original question text for this row with proper handling of both formats
                                 string rowQuestionText = rowName;
-                                var rowDef = questionDefinition["rows"]?.FirstOrDefault(r => r["value"]?.ToString() == rowName);
-                                if (rowDef != null && rowDef["text"] != null)
+                                
+                                // Handle two formats of rows array - objects with properties or simple strings
+                                var rowsArray = questionDefinition["rows"] as JArray;
+                                if (rowsArray != null)
                                 {
-                                    var textToken = rowDef["text"];
-                                    if (textToken.Type == JTokenType.Object)
+                                    // Try to find row by value property first (object format)
+                                    var rowDefObj = rowsArray.FirstOrDefault(r => r.Type == JTokenType.Object && r["value"]?.ToString() == rowName);
+                                    if (rowDefObj != null && rowDefObj["text"] != null)
                                     {
-                                        // Handle localized text object with 'default' property
-                                        rowQuestionText = textToken["default"]?.ToString() ?? rowName;
+                                        var textToken = rowDefObj["text"];
+                                        if (textToken.Type == JTokenType.Object)
+                                        {
+                                            rowQuestionText = textToken["default"]?.ToString() ?? rowName;
+                                        }
+                                        else
+                                        {
+                                            rowQuestionText = textToken.ToString();
+                                        }
                                     }
                                     else
                                     {
-                                        // Handle simple string text
-                                        rowQuestionText = textToken.ToString();
+                                        // Try to find row as simple string
+                                        var rowDefString = rowsArray.FirstOrDefault(r => r.Type == JTokenType.String && r.ToString() == rowName);
+                                        if (rowDefString != null)
+                                        {
+                                            rowQuestionText = rowDefString.ToString();
+                                        }
                                     }
                                 }
 
-                                // Special handling for Result rows to avoid redundant responses like "Result: Not Satisfactory", could maybe be applied to all other question and ignore the question text
+                                // Special handling for Result row to avoid redundant responses like "Result: Not Satisfactory" (When there is only 1 row)
                                 results.Add(isResultRow 
                                     ? RemoveHtmlTags(columnDisplayText)
                                     : $"{RemoveHtmlTags(rowQuestionText)}: {RemoveHtmlTags(columnDisplayText)}");
