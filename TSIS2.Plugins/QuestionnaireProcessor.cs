@@ -59,7 +59,8 @@ namespace TSIS2.Plugins.Services
             var questionNames = GetAllQuestionNames(definition);
             int questionNumber = 1;
 
-            tracingService.Trace($"Found {questionNames.Count} questions to process: {string.Join(", ", questionNames)} ====");
+            tracingService.Trace($"Found {questionNames.Count} questions to process ====");
+            tracingService.Trace($"{string.Join(", ", questionNames)}");
 
             // If this is a recompletion, fetch existing question responses
             Dictionary<int, Entity> existingResponses = new Dictionary<int, Entity>();
@@ -97,40 +98,38 @@ namespace TSIS2.Plugins.Services
             tracingService.Trace(isRecompletion ? "Starting first pass - updating/creating question responses" : "Starting first pass - creating primary question responses");
             foreach (var questionName in questionNames)
             {
-                tracingService.Trace($"\n=== Processing Question: {questionName} ===");
+                tracingService.Trace($"=== Processing Question: {questionName} ===");
 
                 // Get the response value for the question
                 var responseValue = response.TryGetValue(questionName.Trim(), out JToken value) ? value : null;
 
                 var questionDefinition = FindQuestionDefinition(definition, questionName);
                 
-                // Check for conditional visibility dependency
+                // Check for conditional visibility dependency (finding)
                 var visibleIfDebug = questionDefinition?["visibleIf"]?.ToString();
-                if (!string.IsNullOrEmpty(visibleIfDebug))
-                {
-                    tracingService.Trace($"DEBUG - Question '{questionName}' has visibility dependency on: '{visibleIfDebug}'");
-                }
-
-                if (questionDefinition == null)
-                {
-                    tracingService.Trace($"No definition found for {questionName}, skipping.");
-                    continue;
-                }
 
                 // Check if question has either response value or detail value
                 var detailKey = $"{questionName}-Detail";
                 var hasDetail = response.TryGetValue(detailKey, out JToken detailToken);
                 var hasResponse = responseValue != null;
-                
+
+                bool isFinding = questionName.StartsWith("finding-");
+
                 if (!hasResponse && !hasDetail)
                 {
-                    tracingService.Trace($"DEBUG - Skipping {questionName} - no response or details provided");
+                    tracingService.Trace($"Skipping {questionName} - no response or details provided");
+                    
+                    if (!isFinding)
+                    {
+                        questionNumber++;
+                    }
+                    
                     continue;
                 }
 
                 try
                 {
-                    tracingService.Trace("Processing question: {0}", questionName);
+                    tracingService.Trace("Parsing question: {0}", questionName);
                     string questionType = questionDefinition["type"]?.ToString();
                     
                     string responseText = hasResponse 
@@ -176,6 +175,9 @@ namespace TSIS2.Plugins.Services
                         existingVersion: isUpdate ? existingResponse.GetAttributeValue<int>("ts_version") : 0
                     );
 
+                    tracingService.Trace($"Created questionresponse for {questionName} ->  {wostName} [{questionNumber}]");
+
+
                     // Add to list of processed IDs
                     processedIds.Add(questionResponseId);
                     
@@ -186,6 +188,10 @@ namespace TSIS2.Plugins.Services
                 catch (Exception ex)
                 {
                     tracingService.Trace($"Error processing question {questionName}: {ex.Message}");
+                    if (!isFinding)
+                    {
+                        questionNumber++;
+                    }
                     throw;
                 }
             }
@@ -202,34 +208,34 @@ namespace TSIS2.Plugins.Services
                 // We go through conditional visibility questions to find the parent question and link the findings to it
                 if (!string.IsNullOrEmpty(visibleIf))
                 {
-                    tracingService.Trace($"\nDEBUG - Processing finding relationship for: {questionName}");
-                    tracingService.Trace($"DEBUG - visibleIf condition: {visibleIf}");
+                    //tracingService.Trace($"DEBUG - Processing finding relationship for: {questionName}");
+                    //tracingService.Trace($"DEBUG - visibleIf condition: {visibleIf}");
                     
                     //Get the parent question name from the visibleIf condition
                     var parentQuestionName = ParseParentQuestionName(visibleIf);
 
-                    tracingService.Trace($"DEBUG - Parent question: '{parentQuestionName}'");
-                    tracingService.Trace($"DEBUG - Parent ID exists in map: {questionIdMap.ContainsKey(parentQuestionName)}");
-                    tracingService.Trace($"DEBUG - Current ID exists in map: {questionIdMap.ContainsKey(questionName)}");
+                    //tracingService.Trace($"DEBUG - Parent question: '{parentQuestionName}'");
+                    //tracingService.Trace($"DEBUG - Parent ID exists in map: {questionIdMap.ContainsKey(parentQuestionName)}");
+                    //tracingService.Trace($"DEBUG - Current ID exists in map: {questionIdMap.ContainsKey(questionName)}");
 
                     // If the parent question is not in the map, we skip the relationship linking
                     if (!questionIdMap.ContainsKey(parentQuestionName))
                     {
-                        tracingService.Trace($"DEBUG -  Parent question '{parentQuestionName}' not found in questionIdMap. Available keys: {string.Join(", ", questionIdMap.Keys)}");
+                        //tracingService.Trace($"DEBUG -  Parent question '{parentQuestionName}' not found in questionIdMap. Available keys: {string.Join(", ", questionIdMap.Keys)}");
                     }
 
                     // If the current question is not in the map, we skip the relationship linking
                     if (!questionIdMap.ContainsKey(questionName))
                     {
-                        tracingService.Trace($"DEBUG - Current question '{questionName}' not found in questionIdMap.");
+                        //tracingService.Trace($"DEBUG - Current question '{questionName}' not found in questionIdMap.");
                     }
 
                     // If both the parent and current question are in the map, we can link the finding to the parent question
                     if (questionIdMap.ContainsKey(parentQuestionName) && questionIdMap.ContainsKey(questionName))
                     {
-                        tracingService.Trace($"DEBUG - Linking finding {questionName} to parent question {parentQuestionName}");
-                        tracingService.Trace($"DEBUG - Parent ID: {questionIdMap[parentQuestionName]}");
-                        tracingService.Trace($"DEBUG - Current ID: {questionIdMap[questionName]}");
+                        //tracingService.Trace($"DEBUG - Linking finding {questionName} to parent question {parentQuestionName}");
+                        //tracingService.Trace($"DEBUG - Parent ID: {questionIdMap[parentQuestionName]}");
+                        //tracingService.Trace($"DEBUG - Current ID: {questionIdMap[questionName]}");
 
                         var updateEntity = new Entity("ts_questionresponse")
                         {
@@ -312,7 +318,7 @@ namespace TSIS2.Plugins.Services
             
             if (isUpdate)
             {
-                tracingService.Trace($"Updating question response record: {existingId}");
+                tracingService.Trace($"Updating question response record: {existingId} ({wostName}) {questionNumber})");
                 questionResponse.Id = existingId;
                 
                 // Handle null or 0 version - treat as version 1
@@ -325,7 +331,7 @@ namespace TSIS2.Plugins.Services
                 // Increment version by 1
                 int newVersion = existingVersion + 1;
                 questionResponse["ts_version"] = newVersion;
-                tracingService.Trace($"Incrementing version from {existingVersion} to {newVersion}");
+                //tracingService.Trace($"Incrementing questions version from {existingVersion} to {newVersion}");
                 
                 // Ensure record is active
                 questionResponse["statecode"] = new OptionSetValue(0); // 0 = Active
@@ -338,7 +344,6 @@ namespace TSIS2.Plugins.Services
                 
                 // Initialize version to 1 for new records
                 questionResponse["ts_version"] = 1;
-                tracingService.Trace($"Setting initial version to 1 for new record");
                 
                 // Set as active
                 questionResponse["statecode"] = new OptionSetValue(0); // 0 = Active
@@ -557,13 +562,14 @@ namespace TSIS2.Plugins.Services
         {
             try
             {
+                // Q with no response
                 if (responseValue == null)
                 {
                     tracingService.Trace("Response value is null, returning empty string");
                     return string.Empty;
                 }
 
-                // Findings don't have response text
+                // Findings with no response
                 if (questionType?.ToLower() == "finding")
                 {
                     tracingService.Trace("Question is a finding, returning empty string");
