@@ -7,11 +7,11 @@ namespace TSIS2.Plugins
 {
     [CrmPluginRegistration(
         MessageNameEnum.Create,
-        "ts_wostsupplementaryrecord",
+        "ts_workorderservicetaskworkspace",
         StageEnum.PostOperation,
         ExecutionModeEnum.Synchronous,
         "",
-        "PostOperation.ts_wostsupplementaryrecord.CopyStartDateToTask",
+        "PostOperation.ts_workorderservicetaskworkspace.CopyStartDateToWorkOrderServiceTask",
         1,
         IsolationModeEnum.Sandbox,
         Description = "Copies ts_workorderservicetaskstartdate to the related msdyn_workorderservicetask record after creation.")]
@@ -68,7 +68,7 @@ namespace TSIS2.Plugins
             catch (Exception ex)
             {
                 tracingService.Trace("Exception occurred: {0}", ex.ToString());
-                throw new InvalidPluginExecutionException("An error occurred in the PostOperation_CopyStartDateToTask plugin.", ex);
+                throw new InvalidPluginExecutionException("An error occurred in the PostOperation_CopyStartDateToWorkOrderServiceTask plugin.", ex);
             }
         }
     }
