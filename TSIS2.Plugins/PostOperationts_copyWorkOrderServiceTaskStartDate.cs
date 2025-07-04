@@ -29,12 +29,11 @@ namespace TSIS2.Plugins
 
             try
             {
-                // Ensure we have a target entity
                 if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is Entity target)
                 {
                     tracingService.Trace("Target entity logical name: {0}", target.LogicalName);
 
-                    // Ensure start date is present
+                    // Retrieve the start date
                     DateTime? startDate = target.GetAttributeValue<DateTime?>("ts_workorderservicetaskstartdate");
                     if (startDate == null)
                     {
@@ -42,7 +41,7 @@ namespace TSIS2.Plugins
                         return;
                     }
 
-                    // Ensure the work order service task lookup is present
+                    // Retrieve the Work Order Service Task reference
                     EntityReference workOrderTaskRef = target.GetAttributeValue<EntityReference>("ts_workorderservicetask");
                     if (workOrderTaskRef == null)
                     {
@@ -53,12 +52,14 @@ namespace TSIS2.Plugins
                     tracingService.Trace("Start Date: {0}", startDate.Value);
                     tracingService.Trace("Updating msdyn_workorderservicetask Id: {0}", workOrderTaskRef.Id);
 
-                    // Perform the update
+                    // Update the start date, status reason, and percent complete in a single update for efficiency
                     Entity updateTask = new Entity(workOrderTaskRef.LogicalName, workOrderTaskRef.Id);
                     updateTask["ts_servicetaskstartdate"] = startDate.Value;
-
+                    updateTask["statuscode"] = new OptionSetValue(918640004); // In Progress
+                    updateTask["msdyn_percentcomplete"] = 50.0; // 50%
                     service.Update(updateTask);
-                    tracingService.Trace("Update complete.");
+
+                    tracingService.Trace("Updated start date, status reason to In Progress, and % Complete to 50%.");
                 }
                 else
                 {
@@ -68,7 +69,7 @@ namespace TSIS2.Plugins
             catch (Exception ex)
             {
                 tracingService.Trace("Exception occurred: {0}", ex.ToString());
-                throw new InvalidPluginExecutionException("An error occurred in the PostOperation_CopyStartDateToWorkOrderServiceTask plugin.", ex);
+                throw new InvalidPluginExecutionException("An error occurred in the PostOperation_CopyStartDateToTask plugin.", ex);
             }
         }
     }
