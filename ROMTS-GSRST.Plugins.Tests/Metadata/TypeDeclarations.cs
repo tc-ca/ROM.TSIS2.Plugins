@@ -8,8 +8,10 @@ namespace DG.Tools.XrmMockup {
 		public static Guid DeprecatedMetadataStoreReader = new Guid("d88a1b99-fea8-eb11-8237-000d3a1ae7b4");
 		public static Guid DeprecatedMetadataStoreUpdaterServiceRole = new Guid("4ad10052-b0c3-eb11-b1b7-000d3af64e96");
 		public static Guid ActivityFeeds = new Guid("cb269f84-e19d-e011-b66c-00155db528b6");
+		public static Guid ActivityViewer = new Guid("2a444b11-ab50-42f3-9896-c4cd99cb705f");
 		public static Guid AIBRoles = new Guid("e57bff35-58b4-4725-aee2-40fb18f4c8bd");
 		public static Guid AIBSMLRoles = new Guid("3f199ebd-977e-43e5-abe5-fe865a1f2904");
+		public static Guid AISalesperson = new Guid("12abf4cd-20a9-477c-955d-0c940b3884b9");
 		public static Guid AnalyticsReportAuthor = new Guid("5d654478-ef8d-ec11-b3fe-000d3a5cee94");
 		public static Guid AppDeploymentOrchestrationRole = new Guid("1bb44f6d-15a5-48aa-a2f2-8d2cb0095d2d");
 		public static Guid AppOpener = new Guid("979144c2-989b-41a5-a146-6b3ea4130e8c");
@@ -107,7 +109,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid MicrosoftCopilotUser = new Guid("3d110294-4481-42bc-9882-ec2d526aa369");
 		public static Guid NonRelationalDataAppAccess = new Guid("6543ef96-37ab-4add-8c31-6dcd7cfa12ab");
 		public static Guid OfficeCollaborator = new Guid("e8fb3146-7717-ec11-b1b7-000d3af68e17");
-		public static Guid Omnichanneladministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
+		public static Guid OmnichannelAdministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
 		public static Guid Omnichannelagent = new Guid("c30bdbfe-7553-e811-8147-000d3aa39708");
 		public static Guid OmnichannelAPIaccess = new Guid("08593e02-ca6e-ec11-8943-000d3a9d73b9");
 		public static Guid OmnichannelAssignmentAPIaccess = new Guid("dad4c8cd-aab9-ee11-a568-6045bd07894c");
@@ -159,7 +161,9 @@ namespace DG.Tools.XrmMockup {
 		public static Guid SalesCopilotAdministrator = new Guid("ebbb3fcb-fcd7-4bf8-9a48-7b5a9878e79e");
 		public static Guid SalesCopilotUser = new Guid("50e667f9-14cf-4fc1-8c46-cff71096e9da");
 		public static Guid SalesEnterpriseappaccess = new Guid("cad52a75-568c-e611-80d4-00155d42a122");
+		public static Guid SalesLeadResearchAppUserRole = new Guid("ba60eb02-6cbe-437c-a196-1151a8bd07df");
 		public static Guid SalesManager = new Guid("a9547c3b-1c7f-4820-821f-9fb4fc383d2b");
+		public static Guid SalesResearchManagerReader = new Guid("4ca70f2e-5f10-4ed1-bbbc-90f9bbe29b6b");
 		public static Guid SalesSequenceStatsReportingServiceUser = new Guid("9094f3e2-40e1-491f-b8d9-b621a38f60ef");
 		public static Guid SalesSequenceStatsServiceUser = new Guid("afd66a78-57d5-4bad-a60d-b226b1a8b5d3");
 		public static Guid Salessystemaccess = new Guid("b5b6cb27-47e9-49f7-84bb-f6823fc8461c");
@@ -178,6 +182,8 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ServiceWriter = new Guid("68f2d372-e1a5-4298-9a93-4b39757caf93");
 		public static Guid SharedSmsChannelsRole = new Guid("ff99ba3d-063d-428e-bc39-aa63a13b96e7");
 		public static Guid SolutionChecker = new Guid("e05075eb-9d74-e811-a95c-000d3a1c53e4");
+		public static Guid SuggestedActionRole = new Guid("a1b2c3d4-e5f6-7890-1234-56789abcdef0");
+		public static Guid SuggestedActionS2SRole = new Guid("a543aafd-bd67-463d-9ef6-721bb8e471b1");
 		public static Guid SupportUser = new Guid("54472c33-29a1-eb11-b1ac-000d3ae8bbe0");
 		public static Guid SupportUserCustomAPIRole = new Guid("4a434894-a4a4-48bf-b939-7b6327529e2e");
 		public static Guid SurveyServicesAdministratorDeprecated = new Guid("abce3b01-5697-4973-9d7d-fca48ca84445");
