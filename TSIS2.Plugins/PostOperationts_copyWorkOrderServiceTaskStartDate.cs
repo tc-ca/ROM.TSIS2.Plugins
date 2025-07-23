@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 
 namespace TSIS2.Plugins
@@ -48,6 +46,39 @@ namespace TSIS2.Plugins
                         tracingService.Trace("ts_workorderservicetask reference is null. Plugin exiting.");
                         return;
                     }
+                    // Retrieve the questionnaire response as text
+                    string questionnaireResponseText = target.GetAttributeValue<string>("ts_questionnaireresponse");
+                    bool isMandatory = target.GetAttributeValue<bool>("ts_mandatory");
+                    bool accessControl = target.GetAttributeValue<bool>("ts_accesscontrol");
+                    double? percentComplete = target.GetAttributeValue<double?>("ts_percentcomplete");
+                    OptionSetValue statusCode = target.GetAttributeValue<OptionSetValue>("statuscode");
+                    int? mappedStatusCode = null;
+                    if (statusCode != null)
+                    {
+                        switch (statusCode.Value)
+                        {
+                            case 1: // Active
+                                mappedStatusCode = 1;
+                                break;
+                            case 741130001: // Complete
+                                mappedStatusCode = 918640002;
+                                break;
+                            case 741130002: // In Progress
+                                mappedStatusCode = 918640004;
+                                break;
+                            case 741130003: // New
+                                mappedStatusCode = 918640005;
+                                break;
+                            default:
+                                // Optionally handle unknown status codes
+                                mappedStatusCode = 1; // Default to Active or handle as needed
+                                break;
+                        }
+                    }
+                    EntityReference aocoperationRef = target.GetAttributeValue<EntityReference>("ts_aocoperation");
+                    EntityReference aocstakeholderRef = target.GetAttributeValue<EntityReference>("ts_aocstakeholder");
+                    EntityReference aocoperationtypeRef = target.GetAttributeValue<EntityReference>("ts_aocoperationtype");
+                    EntityReference aocsiteRef = target.GetAttributeValue<EntityReference>("ts_aocsite");
 
                     tracingService.Trace("Start Date: {0}", startDate.Value);
                     tracingService.Trace("Updating msdyn_workorderservicetask Id: {0}", workOrderTaskRef.Id);
@@ -55,8 +86,15 @@ namespace TSIS2.Plugins
                     // Update the start date, status reason, and percent complete in a single update for efficiency
                     Entity updateTask = new Entity(workOrderTaskRef.LogicalName, workOrderTaskRef.Id);
                     updateTask["ts_servicetaskstartdate"] = startDate.Value;
-                    updateTask["statuscode"] = new OptionSetValue(918640004); // In Progress
-                    updateTask["msdyn_percentcomplete"] = 50.0; // 50%
+                    updateTask["statuscode"] = new OptionSetValue(mappedStatusCode.Value);
+                    updateTask["msdyn_percentcomplete"] = percentComplete;
+                    updateTask["ts_mandatory"] = isMandatory;
+                    updateTask["ts_accesscontrol"] = accessControl;
+                    updateTask["ovs_questionnaireresponse"] = questionnaireResponseText;
+                    updateTask["ts_aocoperation"] = aocoperationRef;
+                    updateTask["ts_aocstakeholder"] = aocstakeholderRef;
+                    updateTask["ts_aocoperationtype"] = aocoperationtypeRef;
+                    updateTask["ts_aocsite"] = aocsiteRef;
                     service.Update(updateTask);
 
                     tracingService.Trace("Updated start date, status reason to In Progress, and % Complete to 50%.");
