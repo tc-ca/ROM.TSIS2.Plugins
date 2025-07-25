@@ -69,8 +69,8 @@
     <Reference Include="Microsoft.Xrm.Tooling.Connector, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CrmSdk.XrmTooling.CoreAssembly.9.1.0.51\lib\net462\Microsoft.Xrm.Tooling.Connector.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -82,8 +82,8 @@
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.IdentityModel" />
-    <Reference Include="System.Json, Version=2.0.8.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Json.4.7.1\lib\net461\System.Json.dll</HintPath>
+    <Reference Include="System.Json, Version=4.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Json.4.8.0\lib\net462\System.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http.WebRequest" />
@@ -126,7 +126,14 @@
     <Compile Include="PostOperation_SiteUpdate.cs" />
     <Compile Include="PreOperation_securityincidentUpdate.cs" />
     <Compile Include="PreOperation_TripInspectionDelete.cs" />
-    <Compile Include="QuestionnaireProcessor.cs" />
+    <Compile Include="QuestionnaireExtractor\ILoggingService.cs" />
+    <Compile Include="QuestionnaireExtractor\LoggerAdapter.cs" />
+    <Compile Include="QuestionnaireExtractor\QuestionnaireDefinition.cs" />
+    <Compile Include="QuestionnaireExtractor\QuestionnaireOrchestrator.cs" />
+    <Compile Include="QuestionnaireExtractor\QuestionnaireRepository.cs" />
+    <Compile Include="QuestionnaireExtractor\QuestionnaireResponse.cs" />
+    <Compile Include="QuestionnaireExtractor\QuestionnaireResponseFormatter.cs" />
+    <Compile Include="QuestionnaireExtractor\TracingServiceAdapter.cs" />
     <Compile Include="retrieveSearchHtmlTableDataMappingPreferences.cs" />
     <Compile Include="retrieveSearchHtmlTableLogic.cs" />
     <Compile Include="retrieveSearchHtmlTableLogicDataTableHelper.cs" />
@@ -192,6 +199,7 @@
     <Content Include="XrmContext\XrmContext.xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="bin\coretools\CrmSvcUtil.exe.config" />
     <None Include="bin\coretools\LicenseTerms.docx" />
     <None Include="bin\coretools\SolutionPackager.exe.config" />
