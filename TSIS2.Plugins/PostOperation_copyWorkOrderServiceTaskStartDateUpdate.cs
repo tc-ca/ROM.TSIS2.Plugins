@@ -16,6 +16,7 @@ namespace TSIS2.Plugins
         "PostOperation.ts_workorderservicetaskworkspace.CopyStartDateToWorkOrderServiceTaskOnUpdate",
         1,
         IsolationModeEnum.Sandbox,
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "ts_workorderservicetask,ts_workorderservicetaskstartdate,ts_questionnaireresponse,ts_mandatory,ts_percentcomplete,ts_aocoperation,ts_aocstakeholder,ts_aocoperationtype,ts_aocsite,statuscode",
         Description = "Copies changed fields to the related msdyn_workorderservicetask record on update.")]
     public class PostOperation_CopyStartDateToTaskOnUpdate : IPlugin
     {
@@ -83,8 +84,8 @@ namespace TSIS2.Plugins
                     if (target.Attributes.Contains("ts_percentcomplete"))
                     {
                         double? percentComplete = target.GetAttributeValue<double?>("ts_percentcomplete");
-                        updateTask["ts_percentcomplete"] = percentComplete;
-                        tracingService.Trace("ts_percentcomplete changed. New value: {0}", percentComplete);
+                        updateTask["msdyn_percentcomplete"] = percentComplete;
+                        tracingService.Trace("msdyn_percentcomplete changed. New value: {0}", percentComplete);
                         anyFieldChanged = true;
                     }
                     if (target.Attributes.Contains("ts_aocoperation"))
@@ -156,6 +157,29 @@ namespace TSIS2.Plugins
                     else
                     {
                         tracingService.Trace("No relevant fields changed. No update performed.");
+                    }
+
+                    // copy if all completion fields are set --- Mark as Complete Ribbon Button
+                    double? percentCompleteFinal = target.Attributes.Contains("ts_percentcomplete")
+                        ? target.GetAttributeValue<double?>("ts_percentcomplete")
+                        : preImage.GetAttributeValue<double?>("ts_percentcomplete");
+
+                    OptionSetValue statusCodeFinal = target.Attributes.Contains("statuscode")
+                        ? target.GetAttributeValue<OptionSetValue>("statuscode")
+                        : preImage.GetAttributeValue<OptionSetValue>("statuscode");
+
+                    DateTime? endDateFinal = target.Attributes.Contains("ts_workorderservicetaskenddate")
+                        ? target.GetAttributeValue<DateTime?>("ts_workorderservicetaskenddate")
+                        : preImage.GetAttributeValue<DateTime?>("ts_workorderservicetaskenddate");
+
+                    if (percentCompleteFinal == 100.0 && statusCodeFinal != null && statusCodeFinal.Value == 741130001 && endDateFinal.HasValue)
+                    {
+                        Entity updateTaskComplete = new Entity(workOrderTaskRef.LogicalName, workOrderTaskRef.Id);
+                        updateTaskComplete["msdyn_percentcomplete"] = percentCompleteFinal;
+                        updateTaskComplete["statuscode"] = new OptionSetValue(918640002); // Target's Complete value
+                        updateTaskComplete["ts_servicetaskenddate"] = endDateFinal;
+                        service.Update(updateTaskComplete);
+                        tracingService.Trace("Copied percentcomplete=100, statuscode=Complete, and enddate to msdyn_workorderservicetask.");
                     }
                 }
                 else
