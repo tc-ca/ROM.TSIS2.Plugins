@@ -69,7 +69,7 @@ namespace TSIS2.Plugins
             IPluginExecutionContext context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
 
             // Return if triggered by another plugin. Prevents infinite loop.
-            if (context.Depth > 1)
+            if (context.Depth > 2)
             {
                 tracingService.Trace("Exiting - plugin depth > 1");
                 return;

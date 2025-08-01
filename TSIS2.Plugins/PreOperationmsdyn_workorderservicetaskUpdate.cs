@@ -38,7 +38,7 @@ namespace TSIS2.Plugins
 
             tracingService.Trace("Return if triggered by another plugin. Prevents infinite loop.");
 
-            if (context.Depth > 1)
+            if (context.Depth > 2)
                 return;
 
             tracingService.Trace("The InputParameters collection contains all the data passed in the message request.");
