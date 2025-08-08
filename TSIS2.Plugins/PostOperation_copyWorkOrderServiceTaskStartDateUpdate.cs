@@ -71,7 +71,14 @@ namespace TSIS2.Plugins
                     {
                         string questionnaireResponseText = target.GetAttributeValue<string>("ts_questionnaireresponse");
                         updateTask["ovs_questionnaireresponse"] = questionnaireResponseText;
-                        tracingService.Trace("ts_questionnaireresponse changed. New value: {0}", questionnaireResponseText);
+                        tracingService.Trace("ts_questionnaireresponse changed.");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_questionnairedefinition"))
+                    {
+                        string questionnaireDefinitionText = target.GetAttributeValue<string>("ts_questionnairedefinition");
+                        updateTask["ovs_questionnairedefinition"] = questionnaireDefinitionText;
+                        tracingService.Trace("ts_questionnairedefinition changed.");
                         anyFieldChanged = true;
                     }
                     if (target.Attributes.Contains("ts_mandatory"))
