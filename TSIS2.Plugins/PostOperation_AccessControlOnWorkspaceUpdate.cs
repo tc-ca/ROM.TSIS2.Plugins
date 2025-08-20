@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
+#if !UNITTEST
     [CrmPluginRegistration(
         MessageNameEnum.Associate,
-        "none", // "none" for Associate/Disassociate
+        "none",
         StageEnum.PostOperation,
         ExecutionModeEnum.Synchronous,
-        "", // no filtered attributes here; filter by relationship in code
+        "",
         "TSIS2.Plugins.PostOperation_MirrorWorkspaceUsersToTask_Associate",
         1,
         IsolationModeEnum.Sandbox,
@@ -303,4 +301,5 @@ namespace TSIS2.Plugins
             }
         }
     }
+#endif
 }
