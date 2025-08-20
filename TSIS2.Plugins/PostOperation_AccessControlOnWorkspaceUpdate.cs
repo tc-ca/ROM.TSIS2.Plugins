@@ -7,7 +7,6 @@ using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
-#if !UNITTEST
     [CrmPluginRegistration(
         MessageNameEnum.Associate,
         "none",
@@ -301,5 +300,4 @@ namespace TSIS2.Plugins
             }
         }
     }
-#endif
 }
