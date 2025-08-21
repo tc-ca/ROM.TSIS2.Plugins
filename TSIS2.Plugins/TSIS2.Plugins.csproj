@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -120,6 +120,7 @@
     <Compile Include="PostOperationmsyd_workorderUpdate.cs" />
     <Compile Include="PostOperationts_operationriskassessmentCreate.cs" />
     <Compile Include="PostOperationts_sharepointfileCreate.cs" />
+    <Compile Include="PostOperation_AccessControlOnWorkspaceUpdate.cs" />
     <Compile Include="PostOperation_AccountUpdate.cs" />
     <Compile Include="PostOperation_copyWorkOrderServiceTaskStartDateUpdate.cs" />
     <Compile Include="PostOperation_manytomany_Associate.cs" />

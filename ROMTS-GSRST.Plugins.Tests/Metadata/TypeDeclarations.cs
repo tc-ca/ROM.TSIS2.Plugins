@@ -13,6 +13,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid AIBSMLRoles = new Guid("3f199ebd-977e-43e5-abe5-fe865a1f2904");
 		public static Guid AISalesperson = new Guid("12abf4cd-20a9-477c-955d-0c940b3884b9");
 		public static Guid AnalyticsReportAuthor = new Guid("5d654478-ef8d-ec11-b3fe-000d3a5cee94");
+		public static Guid ApolloServiceRole = new Guid("99b7f9c4-5c1e-4b9a-b756-fdfa137b6f85");
 		public static Guid AppDeploymentOrchestrationRole = new Guid("1bb44f6d-15a5-48aa-a2f2-8d2cb0095d2d");
 		public static Guid AppOpener = new Guid("979144c2-989b-41a5-a146-6b3ea4130e8c");
 		public static Guid AppProfileManagerAdministrator = new Guid("4758a2be-ccd8-ea11-a813-000d3a579805");
@@ -103,6 +104,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid IoTAdministrator = new Guid("5e4a9faa-b260-e611-8106-00155db8820b");
 		public static Guid IoTEndpointUser = new Guid("05f9a03f-5534-4b26-9bba-0726d33c6351");
 		public static Guid KnowledgeManager = new Guid("58306a42-48ec-4293-83be-a0b68ff87f5f");
+		public static Guid KnowledgeQualityService = new Guid("7ca59d1b-b547-f011-877a-6045bd0653f0");
 		public static Guid MarketingManager = new Guid("b701b110-4a7c-44cf-8cc1-c673b35decbe");
 		public static Guid MarketingProfessional = new Guid("34e0e805-c3e7-48f5-aaee-b758b4ef82c7");
 		public static Guid MicrosoftCopilotAdministrator = new Guid("947229e9-e868-45cf-a361-5635eaf35ee2");
@@ -141,6 +143,10 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ProjectBackgroundServicesAppRole = new Guid("209a44f9-636e-40bb-8cb0-67a34459f39a");
 		public static Guid ProjectOwner = new Guid("f9a5a958-d07f-44cd-886d-eb6343309c2a");
 		public static Guid PurviewLabelRole = new Guid("df3185a3-3141-4361-fb29-6eaa33dd0169");
+		public static Guid QualityAdmin = new Guid("a50fc16a-6ae9-ef11-be20-000d3a5c2fe2");
+		public static Guid QualityAutonomousAgent = new Guid("14ecce6a-6be9-ef11-be20-000d3a5c2fe2");
+		public static Guid QualityEvaluator = new Guid("42e1c3d4-68e9-ef11-be20-6045bd0a17bb");
+		public static Guid QualityManager = new Guid("673a2c36-67e9-ef11-be20-000d3a5c2fe2");
 		public static Guid ReadOnlyEverything = new Guid("c76ee401-4a26-ee11-9965-0022483c5061");
 		public static Guid RelationshipInsightsAdmin = new Guid("016fd16e-7be7-e611-80d6-00155d204901");
 		public static Guid ReportServiceRole = new Guid("c8f8c510-2421-4d63-965b-91a7e722d6a0");
