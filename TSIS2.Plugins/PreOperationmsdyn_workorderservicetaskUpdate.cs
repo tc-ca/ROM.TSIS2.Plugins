@@ -132,6 +132,14 @@ namespace TSIS2.Plugins
                                         tracingService.Trace(" Stakeholder is a mandatory field on work order but, just in case, throw an error");
                                         if (workOrder.msdyn_ServiceAccount == null) throw new ArgumentNullException("msdyn_workorder.msdyn_ServiceAccount");
 
+                                        // Determine owner from the related Work Order Service Task Workspace (if any)
+                                        var workspace = serviceContext.ts_WorkOrderServiceTaskWorkspaceSet.FirstOrDefault(ws => ws.ts_WorkOrderServiceTask != null && ws.ts_WorkOrderServiceTask.Id == workOrderServiceTask.Id);
+
+                                        if (workspace != null && workspace.ModifiedBy != null)
+                                        {
+                                            // Owner can be a user or a team
+                                            newIncident.OwnerId = workspace.ModifiedBy;
+                                        }
                                         Guid newIncidentId = service.Create(newIncident);
 
                                         tracingService.Trace("Update the Work Order with the Case");
@@ -299,6 +307,14 @@ namespace TSIS2.Plugins
                                                         }
                                                     }
 
+                                                    // Determine owner from the related Work Order Service Task Workspace (if any)
+                                                    var workspace = serviceContext.ts_WorkOrderServiceTaskWorkspaceSet.FirstOrDefault(ws => ws.ts_WorkOrderServiceTask != null && ws.ts_WorkOrderServiceTask.Id == workOrderServiceTask.Id);
+
+                                                    if (workspace != null && workspace.ModifiedBy != null)
+                                                    {
+                                                        // Owner can be a user or a team
+                                                        newFinding.OwnerId = workspace.ModifiedBy;
+                                                    }
                                                     tracingService.Trace("Create new ovs_finding");
                                                     Guid newFindingId = service.Create(newFinding);
 
