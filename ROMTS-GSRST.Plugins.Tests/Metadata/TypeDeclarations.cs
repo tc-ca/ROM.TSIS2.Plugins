@@ -105,6 +105,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid IoTEndpointUser = new Guid("05f9a03f-5534-4b26-9bba-0726d33c6351");
 		public static Guid KnowledgeManager = new Guid("58306a42-48ec-4293-83be-a0b68ff87f5f");
 		public static Guid KnowledgeQualityService = new Guid("7ca59d1b-b547-f011-877a-6045bd0653f0");
+		public static Guid KnowledgeQualityServiceRole = new Guid("13589093-0aa6-40c1-894d-4486d5dd479f");
 		public static Guid MarketingManager = new Guid("b701b110-4a7c-44cf-8cc1-c673b35decbe");
 		public static Guid MarketingProfessional = new Guid("34e0e805-c3e7-48f5-aaee-b758b4ef82c7");
 		public static Guid MicrosoftCopilotAdministrator = new Guid("947229e9-e868-45cf-a361-5635eaf35ee2");
