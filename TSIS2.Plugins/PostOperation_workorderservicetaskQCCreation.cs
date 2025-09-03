@@ -5,6 +5,16 @@ using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
+    [CrmPluginRegistration(
+        "ts_CreateQualityControlServiceTask",   // Custom API (unique name)
+        "msdyn_workorder",                      // Bound to Work Order (extra check)
+        StageEnum.PostOperation,
+        ExecutionModeEnum.Synchronous,
+        "",
+        "TSIS2.Plugins.PostOperation_workorderservicetaskQCCreation",
+        1,
+        IsolationModeEnum.Sandbox,
+        Description = "Creates a QC Work Order Service Task from the Work Order using the ROM Service Account.")]
     public class PostOperation_workorderservicetaskQCCreation : IPlugin
     {
         // Task Type IDs from your JS (Aviation vs Non-Aviation)
@@ -13,10 +23,9 @@ namespace TSIS2.Plugins
 
         public void Execute(IServiceProvider serviceProvider)
         {
-            Guid serviceAccountId = new Guid("c98f9d75-9ea3-eb11-b1ac-000d3ae8b98c");
             var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
             var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = serviceFactory.CreateOrganizationService(serviceAccountId);
+            var service = serviceFactory.CreateOrganizationService(context.UserId);
             var tracing = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
 
             try
