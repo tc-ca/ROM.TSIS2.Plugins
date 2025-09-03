@@ -17,7 +17,7 @@ namespace TSIS2.Plugins
         Description = "Creates a QC Work Order Service Task from the Work Order using the ROM Service Account.")]
     public class PostOperation_workorderservicetaskQCCreation : IPlugin
     {
-        // Task Type IDs from your JS (Aviation vs Non-Aviation)
+        // Task Type IDs (Aviation vs Non-Aviation)
         private static readonly Guid AviationTaskTypeId = new Guid("931b334c-c55b-ee11-8df0-000d3af4f52a");
         private static readonly Guid NonAviationTaskTypeId = new Guid("765fcc32-7339-ef11-a316-6045bd5f6387");
 
@@ -30,7 +30,7 @@ namespace TSIS2.Plugins
 
             try
             {
-                // Retrieve bound entity or entity reference
+                // Retrieve entity reference (also check bound entity)
                 if (!context.InputParameters.TryGetValue("Target", out var boundObject))
                     throw new InvalidPluginExecutionException("Bound Work Order entity is required.");
 
