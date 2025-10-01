@@ -151,11 +151,31 @@ namespace TSIS2.Plugins
 
                                         tracingService.Trace("Set the Case ID for the Work Order Service Task");
                                         workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, newIncidentId);
+                                        // After setting workOrderServiceTask.ovs_CaseId
+                                        if (workspace != null && workOrderServiceTask.ovs_CaseId != null)
+                                        {
+                                            service.Update(new ts_WorkOrderServiceTaskWorkspace
+                                            {
+                                                Id = workspace.Id,
+                                                crc77_Incident = workOrderServiceTask.ovs_CaseId
+                                            });
+                                        }
                                     }
                                     else
                                     {
                                         tracingService.Trace("Already part of a case, just assign the work order case to the work order service task case");
                                         workOrderServiceTask.ovs_CaseId = workOrder.msdyn_ServiceRequest;
+                                        // After setting workOrderServiceTask.ovs_CaseId
+                                        var workspace = serviceContext.ts_WorkOrderServiceTaskWorkspaceSet.FirstOrDefault(ws => ws.ts_WorkOrderServiceTask != null && ws.ts_WorkOrderServiceTask.Id == workOrderServiceTask.Id);
+
+                                        if (workspace != null && workOrder.msdyn_ServiceRequest != null)
+                                        {
+                                            service.Update(new ts_WorkOrderServiceTaskWorkspace
+                                            {
+                                                Id = workspace.Id,
+                                                crc77_Incident = workOrder.msdyn_ServiceRequest
+                                            });
+                                        }
                                     }
 
                                     tracingService.Trace("loop through each root property in the json object");
