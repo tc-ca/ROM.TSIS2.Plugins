@@ -141,7 +141,16 @@ namespace TSIS2.Plugins
                                             Id = workOrderServiceTask.Id,
                                             ovs_CaseId = workOrder.msdyn_ServiceRequest
                                         });
-
+                                        tracingService.Trace("Update the crc77_Incident column in ts_workorderservicetaskworkspace for this Work Order Service Task.");
+                                        var workspace = serviceContext.ts_WorkOrderServiceTaskWorkspaceSet.FirstOrDefault(ws => ws.ts_WorkOrderServiceTask != null && ws.ts_WorkOrderServiceTask.Id == workOrderServiceTask.Id);
+                                        if (workspace != null)
+                                        {
+                                            service.Update(new ts_WorkOrderServiceTaskWorkspace
+                                            {
+                                                Id = workspace.Id,
+                                                crc77_Incident = workOrder.msdyn_ServiceRequest
+                                            });
+                                        }
                                         tracingService.Trace("Retrieve all files associated with the Work Order service task and update the associated case.");
                                         {
                                             var workOrderServiceTasksFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WOST ", "").Trim() == workOrderServiceTask.msdyn_name).ToList();
@@ -253,6 +262,17 @@ namespace TSIS2.Plugins
                                             Id = workOrderServiceTask.Id,
                                             ovs_CaseId = null
                                         });
+
+                                        tracingService.Trace("Update the crc77_Incident column in ts_workorderservicetaskworkspace to null for this Work Order Service Task.");
+                                        var workspace = serviceContext.ts_WorkOrderServiceTaskWorkspaceSet.FirstOrDefault(ws => ws.ts_WorkOrderServiceTask != null && ws.ts_WorkOrderServiceTask.Id == workOrderServiceTask.Id);
+                                        if (workspace != null)
+                                        {
+                                            service.Update(new ts_WorkOrderServiceTaskWorkspace
+                                            {
+                                                Id = workspace.Id,
+                                                crc77_Incident = null
+                                            });
+                                        }
                                     }
                                     tracingService.Trace("Change the reference to Case in each finding to null.");
                                     foreach (ovs_Finding finding in workOrderFindings)
