@@ -10,11 +10,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TSIS2.Plugins</RootNamespace>
     <AssemblyName>TSIS2.Plugins</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -120,11 +121,13 @@
     <Compile Include="PostOperationmsyd_workorderUpdate.cs" />
     <Compile Include="PostOperationts_operationriskassessmentCreate.cs" />
     <Compile Include="PostOperationts_sharepointfileCreate.cs" />
+    <Compile Include="PostOperationts_unplannedworkorderCreate.cs" />
     <Compile Include="PostOperation_AccessControlOnWorkspaceUpdate.cs" />
     <Compile Include="PostOperation_AccountUpdate.cs" />
     <Compile Include="PostOperation_copyWorkOrderServiceTaskStartDateUpdate.cs" />
     <Compile Include="PostOperation_manytomany_Associate.cs" />
     <Compile Include="PostOperation_SiteUpdate.cs" />
+    <Compile Include="PostOperationts_unplannedworkorderUpdate.cs" />
     <Compile Include="PostOperation_workorderservicetaskQCCreation.cs" />
     <Compile Include="PreOperation_securityincidentUpdate.cs" />
     <Compile Include="PreOperation_TripInspectionDelete.cs" />
