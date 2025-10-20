@@ -112,7 +112,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid MicrosoftCopilotUser = new Guid("3d110294-4481-42bc-9882-ec2d526aa369");
 		public static Guid NonRelationalDataAppAccess = new Guid("6543ef96-37ab-4add-8c31-6dcd7cfa12ab");
 		public static Guid OfficeCollaborator = new Guid("e8fb3146-7717-ec11-b1b7-000d3af68e17");
-		public static Guid OmnichannelAdministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
+		public static Guid Omnichanneladministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
 		public static Guid Omnichannelagent = new Guid("c30bdbfe-7553-e811-8147-000d3aa39708");
 		public static Guid OmnichannelAPIaccess = new Guid("08593e02-ca6e-ec11-8943-000d3a9d73b9");
 		public static Guid OmnichannelAssignmentAPIaccess = new Guid("dad4c8cd-aab9-ee11-a568-6045bd07894c");
@@ -125,6 +125,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid PortalRPServiceRole = new Guid("cc181d27-3ce6-41e8-b0f4-d951496afcfd");
 		public static Guid PowerAppsCheckerServiceRole = new Guid("d6b2bb0d-8b41-41ba-86ee-a0c6e5954b30");
 		public static Guid PowerAutomateAIFlowsApplicationUser = new Guid("84012ef2-00bd-412e-8654-b1e3a90feafc");
+		public static Guid PowerAutomateOperator = new Guid("5575634d-da16-4a50-90a8-cde589bccb32");
 		public static Guid PowerBIEmbeddedAppAccess = new Guid("8278be3d-dd12-4187-aac6-69a0543ebd85");
 		public static Guid PowerBIworkspaceadmin = new Guid("53d935d6-60c8-4315-afe6-fe472cb343be");
 		public static Guid PowerBIworkspacecontributor = new Guid("065a0f7a-7805-4e51-abf7-8f13df4688a8");
@@ -170,7 +171,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid SalesEnterpriseappaccess = new Guid("cad52a75-568c-e611-80d4-00155d42a122");
 		public static Guid SalesLeadResearchAppUserRole = new Guid("ba60eb02-6cbe-437c-a196-1151a8bd07df");
 		public static Guid SalesManager = new Guid("a9547c3b-1c7f-4820-821f-9fb4fc383d2b");
-		public static Guid SalesResearchManagerReader = new Guid("4ca70f2e-5f10-4ed1-bbbc-90f9bbe29b6b");
+		public static Guid SalesResearchAgentReader = new Guid("4ca70f2e-5f10-4ed1-bbbc-90f9bbe29b6b");
 		public static Guid SalesSequenceStatsReportingServiceUser = new Guid("9094f3e2-40e1-491f-b8d9-b621a38f60ef");
 		public static Guid SalesSequenceStatsServiceUser = new Guid("afd66a78-57d5-4bad-a60d-b226b1a8b5d3");
 		public static Guid Salessystemaccess = new Guid("b5b6cb27-47e9-49f7-84bb-f6823fc8461c");
@@ -209,7 +210,6 @@ namespace DG.Tools.XrmMockup {
 		public static Guid TimeEntryUser = new Guid("feae608b-0633-ea11-a81c-000d3ac406c6");
 		public static Guid TourAuthor = new Guid("2d8b17d9-643c-40b1-9f7d-a6ba95063906");
 		public static Guid TourConsumer = new Guid("30db5b2f-b1c6-4892-ba03-5e532ab8534e");
-		public static Guid VAAnalyticsRole = new Guid("89fbbea7-7a4f-43eb-9962-2329f1cf5cff");
 		public static Guid VicePresidentofMarketing = new Guid("c484fc40-a84a-4ad7-9ac5-c62d0421d90b");
 		public static Guid VicePresidentofSales = new Guid("52453e37-163d-4797-a1a2-be1be26ad269");
 		public static Guid VivaSales = new Guid("4ac214a3-e1f8-4574-b807-f33dda6475b3");
