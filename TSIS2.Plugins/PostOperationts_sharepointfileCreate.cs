@@ -16,7 +16,7 @@ namespace TSIS2.Plugins
     "TSIS2.Plugins.PostOperationts_sharepointfileCreate Plugin",
     1,
     IsolationModeEnum.Sandbox,
-    Description = "After a ts_sharepointfile record is created, handle the logic to setup the ts_sharepointgroup")]
+    Description = "After a ts_sharepointfile record is created, handle the logic to setup the ts_sharepointgroup, NOTE: These tables are no longer in use.")]
     public class PostOperationts_sharepointfileCreate : IPlugin
     {
         // Static Variables
