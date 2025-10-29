@@ -124,11 +124,14 @@
     <Compile Include="PostOperationts_unplannedworkorderCreate.cs" />
     <Compile Include="PostOperation_AccessControlOnWorkspaceUpdate.cs" />
     <Compile Include="PostOperation_AccountUpdate.cs" />
+    <Compile Include="PostOperation_ContactSync.cs" />
     <Compile Include="PostOperation_copyWorkOrderServiceTaskStartDateUpdate.cs" />
     <Compile Include="PostOperation_manytomany_Associate.cs" />
+    <Compile Include="PostOperation_OperationSync.cs" />
     <Compile Include="PostOperation_SiteUpdate.cs" />
     <Compile Include="PostOperationts_unplannedworkorderUpdate.cs" />
     <Compile Include="PostOperation_workorderservicetaskQCCreation.cs" />
+    <Compile Include="PostOperation_WorkOrderTimeTrackingSync.cs" />
     <Compile Include="PreOperation_securityincidentUpdate.cs" />
     <Compile Include="PreOperation_TripInspectionDelete.cs" />
     <Compile Include="QuestionnaireExtractor\ILoggingService.cs" />
