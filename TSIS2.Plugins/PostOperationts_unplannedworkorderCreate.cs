@@ -146,6 +146,8 @@ namespace TSIS2.Plugins
                         workOrder["ovs_operationtypeid"] = target.GetAttributeValue<EntityReference>("ts_operationtype");
                         workOrder["msdyn_serviceaccount"] = target.GetAttributeValue<EntityReference>("ts_stakeholder");
                         workOrder["ts_site"] = target.GetAttributeValue<EntityReference>("ts_site");
+                        workOrder["ts_reason"] = target.GetAttributeValue<EntityReference>("ts_reason");
+                        workOrder["ts_workorderjustification"] = target.GetAttributeValue<EntityReference>("ts_workorderjustification");
                         workOrder["ts_state"] = target.GetAttributeValue<OptionSetValue>("ts_state");
                         workOrder["msdyn_worklocation"] = target.GetAttributeValue<OptionSetValue>("ts_worklocation");
                         workOrder["ovs_rational"] = target.GetAttributeValue<EntityReference>("ts_rational");
