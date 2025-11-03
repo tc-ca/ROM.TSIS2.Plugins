@@ -162,6 +162,20 @@ namespace TSIS2.Plugins
                         tracingService.Trace("ts_site changed. New value: {0}", site != null ? site.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
+                    if (target.Attributes.Contains("ts_reason"))
+                    {
+                        EntityReference reason = target.GetAttributeValue<EntityReference>("ts_reason");
+                        updateWorkOrder["ts_reason"] = reason;
+                        tracingService.Trace("ts_reason changed. New value: {0}", reason?.Id.ToString() ?? "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_workorderjustification"))
+                    {
+                        EntityReference workOrderJustification = target.GetAttributeValue<EntityReference>("ts_workorderjustification");
+                        updateWorkOrder["ts_workorderjustification"] = workOrderJustification;
+                        tracingService.Trace("ts_workorderjustification updated. New value: {0}", workOrderJustification?.Id.ToString() ?? "null");
+                        anyFieldChanged = true;
+                    }
                     if (target.Attributes.Contains("ts_state"))
                     {
                         OptionSetValue state = target.GetAttributeValue<OptionSetValue>("ts_state");
