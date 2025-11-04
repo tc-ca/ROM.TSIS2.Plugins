@@ -246,6 +246,155 @@ namespace TSIS2.Plugins
                         tracingService.Trace("ts_country changed. New value: {0}", country != null ? country.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
+                    //start here for 473143
+                    if (target.Attributes.Contains("ts_aircraftclassification"))
+                    {
+                        OptionSetValue aircraftClassification = target.GetAttributeValue<OptionSetValue>("ts_aircraftclassification");
+                        updateWorkOrder["ts_aircraftclassification"] = aircraftClassification;
+                        tracingService.Trace("ts_aircraftclassification changed. New value: {0}", aircraftClassification);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_reportdetails"))
+                    {
+                        string reportDetails = target.GetAttributeValue<string>("ts_reportdetails");
+                        updateWorkOrder["ts_reportdetails"] = reportDetails;
+                        tracingService.Trace("ts_reportdetails changed. New value: {0}", reportDetails);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_operation"))
+                    {
+                        EntityReference operationId = target.GetAttributeValue<EntityReference>("ts_operation");
+                        updateWorkOrder["ovs_operationid"] = operationId;
+                        tracingService.Trace("ovs_operationid changed. New value: {0}", operationId != null ? operationId.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_revisedquarterid"))
+                    {
+                        EntityReference revisedQuarterId = target.GetAttributeValue<EntityReference>("ts_revisedquarterid");
+                        updateWorkOrder["ovs_revisedquarterid"] = revisedQuarterId;
+                        tracingService.Trace("ts_revisedquarterid changed. New value: {0}", revisedQuarterId != null ? revisedQuarterId.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_scheduledquarterjustification"))
+                    {
+                        EntityReference scheduledQuarterJustification = target.GetAttributeValue<EntityReference>("ts_scheduledquarterjustification");
+                        updateWorkOrder["ts_scheduledquarterjustification"] = scheduledQuarterJustification;
+                        tracingService.Trace("ts_scheduledquarterjustification changed. New value: {0}", scheduledQuarterJustification != null ? scheduledQuarterJustification.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_scheduledquarterjustificationcomment"))
+                    {
+                        string justificationComment = target.GetAttributeValue<string>("ts_scheduledquarterjustificationcomment");
+                        updateWorkOrder["ts_justificationcomment"] = justificationComment;
+                        tracingService.Trace("ts_scheduledquarterjustificationcomment changed. New value: {0}", justificationComment);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_details"))
+                    {
+                        string planningComment = target.GetAttributeValue<string>("ts_details");
+                        updateWorkOrder["ts_details"] = planningComment;
+                        tracingService.Trace("ts_details changed. New value: {0}", planningComment);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_instructions"))
+                    {
+                        string instructions = target.GetAttributeValue<string>("ts_instructions");
+                        updateWorkOrder["msdyn_instructions"] = instructions;
+                        tracingService.Trace("ts_instructions changed. New value: {0}", instructions);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_wopreparationtime"))
+                    {
+                        decimal preparationTime = target.GetAttributeValue<decimal>("ts_wopreparationtime");
+                        updateWorkOrder["ts_preparationtime"] = preparationTime;
+                        tracingService.Trace("ts_preparationtime changed. New value: {0}", preparationTime);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_woreportinganddocumentation"))
+                    {
+                        decimal reportingAndDocumentation = target.GetAttributeValue<decimal>("ts_woreportinganddocumentation");
+                        updateWorkOrder["ts_woreportinganddocumentation"] = reportingAndDocumentation;
+                        tracingService.Trace("ts_woreportinganddocumentation changed. New value: {0}", reportingAndDocumentation);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_comments"))
+                    {
+                        string comments = target.GetAttributeValue<string>("ts_comments");
+                        updateWorkOrder["ts_comments"] = comments;
+                        tracingService.Trace("ts_comments changed. New value: {0}", comments);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_overtime"))
+                    {
+                        decimal overTime = target.GetAttributeValue<decimal>("ts_overtime");
+                        updateWorkOrder["ts_overtime"] = overTime;
+                        tracingService.Trace("ts_overtime changed. New value: {0}", overTime);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_woconductingoversight"))
+                    {
+                        decimal conductingOversight = target.GetAttributeValue<decimal>("ts_woconductingoversight");
+                        updateWorkOrder["ts_conductingoversight"] = conductingOversight;
+                        tracingService.Trace("ts_conductingoversight changed. New value: {0}", conductingOversight);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_wotraveltime"))
+                    {
+                        decimal travelTime = target.GetAttributeValue<decimal>("ts_wotraveltime");
+                        updateWorkOrder["ts_traveltime"] = travelTime;
+                        tracingService.Trace("ts_traveltime changed. New value: {0}", travelTime);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_servicerequest"))
+                    {
+                        EntityReference serviceRequest = target.GetAttributeValue<EntityReference>("ts_servicerequest");
+                        updateWorkOrder["msdyn_servicerequest"] = serviceRequest;
+                        tracingService.Trace("msdyn_servicerequest changed. New value: {0}", serviceRequest != null ? serviceRequest.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_securityincident"))
+                    {
+                        EntityReference securityIncident = target.GetAttributeValue<EntityReference>("ts_securityincident");
+                        updateWorkOrder["ts_securityincident"] = securityIncident;
+                        tracingService.Trace("ts_securityincident changed. New value: {0}", securityIncident != null ? securityIncident.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_trip"))
+                    {
+                        EntityReference trip = target.GetAttributeValue<EntityReference>("ts_trip");
+                        updateWorkOrder["ts_trip"] = trip;
+                        tracingService.Trace("ts_trip changed. New value: {0}", trip != null ? trip.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_totalpreparationtime"))
+                    {
+                        decimal totalPreparationTime = target.GetAttributeValue<decimal>("ts_totalpreparationtime");
+                        updateWorkOrder["ts_totalpreparationtime"] = totalPreparationTime;
+                        tracingService.Trace("ts_totalpreparationtime changed. New value: {0}", totalPreparationTime);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_totalrepanddoctime"))
+                    {
+                        decimal totalRepAndDocTime = target.GetAttributeValue<decimal>("ts_totalrepanddoctime");
+                        updateWorkOrder["ts_totalrepanddoctime"] = totalRepAndDocTime;
+                        tracingService.Trace("ts_totalrepanddoctime changed. New value: {0}", totalRepAndDocTime);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_totalconductoversight"))
+                    {
+                        decimal totalConductOversight = target.GetAttributeValue<decimal>("ts_totalconductoversight");
+                        updateWorkOrder["ts_totalconductoversight"] = totalConductOversight;
+                        tracingService.Trace("ts_totalconductoversight changed. New value: {0}", totalConductOversight);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_totaltraveltime"))
+                    {
+                        decimal totaltravelTime = target.GetAttributeValue<decimal>("ts_totaltraveltime");
+                        updateWorkOrder["ts_totaltraveltime"] = totaltravelTime;
+                        tracingService.Trace("ts_totaltraveltime changed. New value: {0}", totaltravelTime);
+                        anyFieldChanged = true;
+                    }
+                    //end here for 473143
                     if (anyFieldChanged)
                     {
                         service.Update(updateWorkOrder);
