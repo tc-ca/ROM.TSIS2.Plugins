@@ -268,6 +268,13 @@ namespace TSIS2.Plugins
                         tracingService.Trace("ovs_operationid changed. New value: {0}", operationId != null ? operationId.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
+                    if (target.Attributes.Contains("ts_cancelledinspectionjustification"))
+                    {
+                        EntityReference cancelledInspectionJustification = target.GetAttributeValue<EntityReference>("ts_cancelledinspectionjustification");
+                        updateWorkOrder["ts_canceledinspectionjustification"] = cancelledInspectionJustification;
+                        tracingService.Trace("ts_cancelledinspectionjustification changed. New value: {0}", cancelledInspectionJustification != null ? cancelledInspectionJustification.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
                     if (target.Attributes.Contains("ts_revisedquarterid"))
                     {
                         EntityReference revisedQuarterId = target.GetAttributeValue<EntityReference>("ts_revisedquarterid");
@@ -392,6 +399,13 @@ namespace TSIS2.Plugins
                         decimal totaltravelTime = target.GetAttributeValue<decimal>("ts_totaltraveltime");
                         updateWorkOrder["ts_totaltraveltime"] = totaltravelTime;
                         tracingService.Trace("ts_totaltraveltime changed. New value: {0}", totaltravelTime);
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_recordstatus"))
+                    {
+                        OptionSetValue recordStatus = target.GetAttributeValue<OptionSetValue>("ts_recordstatus");
+                        updateWorkOrder["msdyn_systemstatus"] = recordStatus;
+                        tracingService.Trace("msdyn_systemstatus changed. New value: {0}", recordStatus?.Value);
                         anyFieldChanged = true;
                     }
                     //end here for 473143
