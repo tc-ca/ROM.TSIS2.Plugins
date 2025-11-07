@@ -60,8 +60,9 @@ namespace TSIS2.Plugins
                             int userLang = RetrieveUserLang(service, context.UserId);
 
                             EntityReference owner = (EntityReference)target.Attributes["ownerid"];
+                            var userBUId = ((EntityReference)(service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("businessunitid"))).Attributes["businessunitid"]).Id;
 
-                            if (owner.LogicalName == "team" && RetrieveLookupName(service, owner, "name").StartsWith("Intermodal") || IsISSOUser(context, service))
+                            if ((owner.LogicalName == "team" && EnvironmentVariableHelper.IsOwnedByISSO(service, owner, tracingService)) || EnvironmentVariableHelper.IsISSOBU(service, userBUId, tracingService))
                             {
                                 string stakeholderAltLangValue = RetrieveAltLangName(service, stakeHolderRef, userLang == 1033 ? "ovs_accountnamefrench" : "ovs_accountnameenglish", "name");
                                 string operationTypeAltLangValue = RetrieveAltLangName(service, operationTypeRef, userLang == 1033 ? "ovs_operationtypenamefrench" : "ovs_operationtypenameenglish", "ovs_name");
@@ -86,20 +87,14 @@ namespace TSIS2.Plugins
             }
         }
 
-        private bool IsISSOUser(IPluginExecutionContext context, IOrganizationService service)
-        {
-            return ((string)service.Retrieve("businessunit", ((EntityReference)(service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("businessunitid"))).Attributes["businessunitid"]).Id, new ColumnSet("name")).Attributes["name"]).StartsWith("Intermodal");
-        }
-
         private void changeOwnerToUserBusinessUnit(IPluginExecutionContext context, IOrganizationService service)
         {
             Guid userId = context.InitiatingUserId;
             Guid userBusinessUnitId = ((EntityReference)(service.Retrieve("systemuser", userId, new ColumnSet("businessunitid"))).Attributes["businessunitid"]).Id;
-            string userBusinessUnitName = (string)service.Retrieve("businessunit", userBusinessUnitId, new ColumnSet("name")).Attributes["name"];
 
-            if (!userBusinessUnitName.StartsWith("Transport"))
+            if (!EnvironmentVariableHelper.IsTCBU(service, userBusinessUnitId))
             {
-                EntityReference teamReference = RetrieveTeamByBusinessUnitName(service, userBusinessUnitName);
+                EntityReference teamReference = EnvironmentVariableHelper.RetrieveTeamByBusinessUnitId(service, userBusinessUnitId);
                 if (teamReference != null)
                 {
                     Entity target = (Entity)context.InputParameters["Target"];
@@ -108,24 +103,6 @@ namespace TSIS2.Plugins
             }
         }
 
-        private EntityReference RetrieveTeamByBusinessUnitName(IOrganizationService service, string businessUnitName)
-        {
-            QueryExpression query = new QueryExpression("team")
-            {
-                ColumnSet = new ColumnSet("teamid"),
-                Criteria =
-                {
-                    Conditions =
-                    {
-                        new ConditionExpression("name", ConditionOperator.Equal, businessUnitName)
-                    }
-                },
-                TopCount = 1
-            };
-
-            EntityCollection result = service.RetrieveMultiple(query);
-            return result.Entities.Count > 0 ? result.Entities[0].ToEntityReference() : null;
-        }
         private string RetrieveLookupName(IOrganizationService service, EntityReference ownerRef, string attributeName)
         {
             try

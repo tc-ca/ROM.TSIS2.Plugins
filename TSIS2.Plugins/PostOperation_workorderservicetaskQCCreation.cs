@@ -92,16 +92,15 @@ namespace TSIS2.Plugins
 
             var opType = service.Retrieve("ovs_operationtype", opTypeRef.Id, new ColumnSet("owningbusinessunit"));
             var buRef = opType.GetAttributeValue<EntityReference>("owningbusinessunit");
-            string name = buRef?.Name;
 
-            if (string.IsNullOrEmpty(name) && buRef != null)
+            if (buRef == null)
             {
-                var bu = service.Retrieve("businessunit", buRef.Id, new ColumnSet("name"));
-                name = bu.GetAttributeValue<string>("name");
+                tracing.Trace("OperationType has no owningbusinessunit.");
+                return false;
             }
 
-            tracing.Trace("OperationType BU Name: {0}", name);
-            return !string.IsNullOrEmpty(name) && name.IndexOf("Aviation", StringComparison.OrdinalIgnoreCase) >= 0;
+            tracing.Trace("OperationType BU ID: {0}", buRef.Id);
+            return EnvironmentVariableHelper.IsAvSecBU(service, buRef.Id, tracing);
         }
     }
 }

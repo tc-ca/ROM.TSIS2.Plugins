@@ -48,11 +48,15 @@ namespace TSIS2.Plugins
 
         protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
         {
-            
             if (localContext == null)
             {
                 throw new InvalidPluginExecutionException("localContext");
             }
+
+            // Obtain the tracing service
+            ITracingService tracingService = localContext.TracingService;
+
+            tracingService.Trace("Tracking Service Started.");
 
             IPluginExecutionContext context = localContext.PluginExecutionContext;
             Entity target = (Entity)context.InputParameters["Target"];
@@ -66,14 +70,20 @@ namespace TSIS2.Plugins
                     target.Attributes.Contains("ts_functionallocationnameenglish") ||
                     target.Attributes.Contains("ts_functionallocationnamefrench"))
                 {
+                    tracingService.Trace("Site name fields have been updated.");
 
                     Guid SiteId = target.GetAttributeValue<Guid>("msdyn_functionallocationid");
                     String NewName = target.GetAttributeValue<String>("ts_functionallocationnameenglish");
                     String NewNameFrench = target.GetAttributeValue<String>("ts_functionallocationnamefrench");
 
+                    tracingService.Trace("Site ID: {0}", SiteId);
+                    tracingService.Trace("New English Name: {0}", NewName);
+                    tracingService.Trace("New French Name: {0}", NewNameFrench);
+
                     using (var serviceContext = new Xrm(localContext.OrganizationService))
                     {
-                        // get the Operations that belong to the Account - retrieve them by the Account ID
+                        tracingService.Trace("Retrieve Operations that belong to the Site.");
+                        // get the Operations that belong to the Site - retrieve them by the Site ID
                         string fetchXml = $@"
                             <fetch>
                             <entity name='ovs_operation'>
@@ -83,9 +93,7 @@ namespace TSIS2.Plugins
                                 <attribute name='ovs_operationid' />
                                 <attribute name='ovs_operationtypeid' />
                                 <attribute name='ts_site' />
-                                <link-entity name='team' to='ownerid' from='teamid' alias='team' link-type='inner'>
-		                            <attribute name='name' alias='owner' />
-		                        </link-entity>
+                                <attribute name='ownerid' />
                                 <filter>
                                   <condition attribute='ts_site' operator='eq' value='{SiteId.ToString()}' />
                                 </filter>
@@ -93,42 +101,54 @@ namespace TSIS2.Plugins
                              </fetch>";
 
                         EntityCollection operations = localContext.OrganizationService.RetrieveMultiple(new FetchExpression(fetchXml));
+                        tracingService.Trace("Found {0} operations associated with Site.", operations.Entities.Count);
                         if (operations.Entities.Count == 0)
                         {
+                            tracingService.Trace("No operations found, exiting.");
                             return;
                         }
                         Entity firstOperation = operations.Entities[0];
+                        string firstOperationName = firstOperation.GetAttributeValue<string>("ts_operationnameenglish") ?? firstOperation.GetAttributeValue<string>("ovs_name") ?? "N/A";
 
-                        // Get the AliasedValue for the attribute "owner"
-                        AliasedValue ownerAliasedValue = firstOperation.GetAttributeValue<AliasedValue>("owner");
-
-                            // Extract the actual value from the AliasedValue
-                        string owner = ownerAliasedValue.Value as string;
-
-                        ////Check if the record belongs to ISSO - if not don't run the code
-                        if (!(owner.StartsWith("Intermodal")))
+                        // Get the owner team reference from the operation
+                        EntityReference ownerTeamRef = firstOperation.GetAttributeValue<EntityReference>("ownerid");
+                        if (ownerTeamRef == null)
                         {
+                            tracingService.Trace("Operation ID: {0}, Name: {1} has no owner, exiting.", firstOperation.Id, firstOperationName);
                             return;
                         }
+
+                        tracingService.Trace("Checking if operation ID: {0}, Name: {1} owner belongs to ISSO.", firstOperation.Id, firstOperationName);
+                        ////Check if the record belongs to ISSO - if not don't run the code
+                        if (!EnvironmentVariableHelper.IsOwnedByISSO(localContext.OrganizationService, ownerTeamRef, tracingService))
+                        {
+                            tracingService.Trace("Operation ID: {0}, Name: {1} owner does not belong to ISSO, exiting.", firstOperation.Id, firstOperationName);
+                            return;
+                        }
+
+                        tracingService.Trace("Operation ID: {0}, Name: {1} owner belongs to ISSO, proceeding with updates.", firstOperation.Id, firstOperationName);
 
 
                         // Loop over the retrieved Operations
                         // Update the Operation name
 
+                        tracingService.Trace("Processing {0} operations for name updates.", operations.Entities.Count);
                         // Go through each related Operation
-
                         foreach (Entity operation in operations.Entities)
                         {
                             // Get the english name of the operation
                             string originalOperationName = operation.GetAttributeValue<string>("ts_operationnameenglish");
-                            string updatedOperationName = "";
-                            string updatedOperationNameFrench = "";
                             if (originalOperationName == null)
                             {
                                 originalOperationName = operation.GetAttributeValue<string>("ovs_name");
                             }
+                            tracingService.Trace("Processing operation ID: {0}, Name: {1}", operation.Id, originalOperationName ?? "N/A");
+                            string updatedOperationName = "";
+                            string updatedOperationNameFrench = "";
+                            
                             if (!(originalOperationName.StartsWith("OP-")))
                             {
+                                tracingService.Trace("Operation name does not start with 'OP-', updating name parts.");
                                 string[] parts = originalOperationName.Split('|');
 
                                 // Logic to update Operation Name goes here
@@ -139,7 +159,7 @@ namespace TSIS2.Plugins
                                     parts[i] = parts[i].Trim();
                                 }
                                 parts[2] = NewName;
-                                updatedOperationName = string.Join("|", parts);
+                                updatedOperationName = string.Join(" | ", parts);
 
                                 // Get the french name of the operation
                                 string originalFrenchOperationName = operation.GetAttributeValue<string>("ts_operationnamefrench");
@@ -149,34 +169,47 @@ namespace TSIS2.Plugins
                                     originalFrenchOperationName = operation.GetAttributeValue<string>("ovs_name");
                                 }
                                 string[] parts_French = originalFrenchOperationName.Split('|');
-                                for (int i = 0; i < parts.Length; i++)
+                                for (int i = 0; i < parts_French.Length; i++)
                                 {
                                     parts_French[i] = parts_French[i].Trim();
                                 }
                                 parts_French[2] = NewNameFrench;
-                                updatedOperationNameFrench = string.Join("|", parts_French);
+                                updatedOperationNameFrench = string.Join(" | ", parts_French);
                                 // Update the Operation Name
                                 operation["ovs_name"] = updatedOperationName;
                                 operation["ts_operationnameenglish"] = updatedOperationName;
                                 operation["ts_operationnamefrench"] = updatedOperationNameFrench;
 
+                                tracingService.Trace("Updated operation ID: {0} name (English): {1}, (French): {2}", operation.Id, updatedOperationName, updatedOperationNameFrench);
+
                                 // Perform the update to the Operation
                                 IOrganizationService service = localContext.OrganizationService;
+                                tracingService.Trace("Updating operation ID: {0}", operation.Id);
                                 service.Update(operation);
+                                tracingService.Trace("Operation ID: {0} updated successfully.", operation.Id);
 
+                            }
+                            else
+                            {
+                                tracingService.Trace("Operation ID: {0}, Name: {1} starts with 'OP-', skipping update.", operation.Id, originalOperationName ?? "N/A");
                             }
 
 
 
                         }
-
-
+                        tracingService.Trace("Finished processing all operations.");
                     }
                 }
-
-                
+                else
+                {
+                    tracingService.Trace("Site name fields were not updated, skipping processing.");
+                }
             }
-            catch (Exception e) { throw new InvalidPluginExecutionException(e.Message); }
+            catch (Exception e)
+            {
+                tracingService.Trace("Error occurred: {0}", e.Message);
+                throw new InvalidPluginExecutionException(e.Message);
+            }
             
         }
             

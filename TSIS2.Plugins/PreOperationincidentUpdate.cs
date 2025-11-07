@@ -84,24 +84,28 @@ namespace TSIS2.Plugins
                         {
                             EntityReference ownerRef = target.GetAttributeValue<EntityReference>("ownerid");
                             tracingService.Trace("Retrieve the owner EntityReference");
-                            Entity owner = service.Retrieve(ownerRef.LogicalName, ownerRef.Id, new ColumnSet("fullname"));
+                            string ownerNameAttribute = ownerRef.LogicalName == "systemuser" ? "fullname" : "name";
+                            Entity owner = service.Retrieve(ownerRef.LogicalName, ownerRef.Id, new ColumnSet(ownerNameAttribute));
                             tracingService.Trace("Retrieve the owner's name using IOrganizationService");
-                            string ownerName = owner.GetAttributeValue<string>("fullname");
+                            string ownerName = owner.GetAttributeValue<string>(ownerNameAttribute);
                             tracingService.Trace("Ownerid is changing to {0} by {1} ", ownerName, systemUser.GetAttributeValue<string>("fullname"));
                             using (var servicecontext = new Xrm(service))
                             {
                                 var currentUser = servicecontext.SystemUserSet.Where(u => u.Id == context.InitiatingUserId).FirstOrDefault();
+                                var currentUserBUId = currentUser.GetAttributeValue<EntityReference>("businessunitid").Id;
                                 var updatedOwnerUser = servicecontext.SystemUserSet.Where(u => u.Id == target.GetAttributeValue<EntityReference>("ownerid").Id).FirstOrDefault();
                                 tracingService.Trace("Initialize variables: currentUser, updatedOwnerUser");
 
                                 if (updatedOwnerUser != null)
                                 {
                                     tracingService.Trace("If updatedOwnerUser is not null then execute");
-                                    if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation"))
+                                    var updatedOwnerUserBUId = updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id;
+
+                                    if (EnvironmentVariableHelper.IsAvSecBU(service, currentUserBUId, tracingService))
                                     {
-                                        tracingService.Trace("If business unit starts with Aviation then execute");
-                                        if (!updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation") ||
-                                        updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Name.Contains("PPP"))
+                                        tracingService.Trace("If business unit is AvSec then execute");
+                                        if (!EnvironmentVariableHelper.IsAvSecBU(service, updatedOwnerUserBUId, tracingService) ||
+                                        EnvironmentVariableHelper.IsAvSecPPPBU(service, updatedOwnerUserBUId))
                                         {
                                             tracingService.Trace("Reassign case error due to business unit mismatch1.");
                                             throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignCaseErrorMsg"));
@@ -109,9 +113,9 @@ namespace TSIS2.Plugins
                                     }
                                     else
                                     {
-                                        tracingService.Trace("Else, start check to see if currentUser businessunitid is not qual to updateOwnerUser businessunitid AND currentUser businessunitid is Transport Canada");
-                                        if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Id != updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id &&
-                                        !currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.Equals("Transport Canada", StringComparison.OrdinalIgnoreCase))
+                                        tracingService.Trace("Else, start check to see if currentUser businessunitid is not equal to updateOwnerUser businessunitid AND currentUser businessunitid is Transport Canada");
+                                        if (currentUserBUId != updatedOwnerUserBUId &&
+                                        !EnvironmentVariableHelper.IsTCBU(service, currentUserBUId))
                                         {
                                             tracingService.Trace("Reassign case error due to business unit mismatch2.");
                                             throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignCaseErrorMsg"));
@@ -122,11 +126,16 @@ namespace TSIS2.Plugins
                                 {
                                     var updatedOwnerTeam = servicecontext.TeamSet.Where(u => u.Id == target.GetAttributeValue<EntityReference>("ownerid").Id).FirstOrDefault();
                                     tracingService.Trace("Initialize variables: updatedOwnerTeam");
-                                    if (updatedOwnerTeam != null && currentUser.GetAttributeValue<EntityReference>("businessunitid").Id != updatedOwnerTeam.GetAttributeValue<EntityReference>("businessunitid").Id &&
-                                    !currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.Equals("Transport Canada", StringComparison.OrdinalIgnoreCase))
+                                    if (updatedOwnerTeam != null)
                                     {
-                                        tracingService.Trace("Reassign case error due to team mismatch.");
-                                        throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignCaseErrorMsg"));
+                                        var updatedOwnerTeamBUId = updatedOwnerTeam.GetAttributeValue<EntityReference>("businessunitid").Id;
+
+                                        if (currentUserBUId != updatedOwnerTeamBUId &&
+                                        !EnvironmentVariableHelper.IsTCBU(service, currentUserBUId))
+                                        {
+                                            tracingService.Trace("Reassign case error due to team mismatch.");
+                                            throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignCaseErrorMsg"));
+                                        }
                                     }
                                 }
 

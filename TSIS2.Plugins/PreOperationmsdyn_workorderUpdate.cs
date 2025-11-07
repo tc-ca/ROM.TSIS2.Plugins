@@ -353,6 +353,7 @@ namespace TSIS2.Plugins
                             using (var servicecontext = new Xrm(service))
                             {
                                 var currentUser = servicecontext.SystemUserSet.Where(u => u.Id == context.InitiatingUserId).FirstOrDefault();
+                                var currentUserBUId = currentUser.GetAttributeValue<EntityReference>("businessunitid").Id;
                                 var updatedOwnerUser = servicecontext.SystemUserSet.Where(u => u.Id == target.GetAttributeValue<EntityReference>("ownerid").Id).FirstOrDefault();
 
                                 if (updatedOwnerUser != null)
@@ -363,18 +364,20 @@ namespace TSIS2.Plugins
                                         tracingService.Trace("If updatedOwnerUser is not dual inspector.");
                                         if (!updatedOwnerUser.GetAttributeValue<bool>("ts_dualinspector"))
                                         {
-                                            if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation"))
+                                            var updatedOwnerUserBUId = updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id;
+
+                                            if (EnvironmentVariableHelper.IsAvSecBU(service, currentUserBUId, tracingService))
                                             {
-                                                if (!updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Name.StartsWith("Aviation") ||
-                                                updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Name.Contains("PPP"))
+                                                if (!EnvironmentVariableHelper.IsAvSecBU(service, updatedOwnerUserBUId, tracingService) ||
+                                                EnvironmentVariableHelper.IsAvSecPPPBU(service, updatedOwnerUserBUId))
                                                 {
                                                     throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
                                                 }
                                             }
                                             else
                                             {
-                                                if (currentUser.GetAttributeValue<EntityReference>("businessunitid").Id != updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id &&
-                                                !currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.Equals("Transport Canada", StringComparison.OrdinalIgnoreCase))
+                                                if (currentUserBUId != updatedOwnerUserBUId &&
+                                                !EnvironmentVariableHelper.IsTCBU(service, currentUserBUId))
                                                 {
                                                     throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
                                                 }
@@ -385,10 +388,15 @@ namespace TSIS2.Plugins
                                 else
                                 {
                                     var updatedOwnerTeam = servicecontext.TeamSet.Where(u => u.Id == target.GetAttributeValue<EntityReference>("ownerid").Id).FirstOrDefault();
-                                    if (updatedOwnerTeam != null && currentUser.GetAttributeValue<EntityReference>("businessunitid").Id != updatedOwnerTeam.GetAttributeValue<EntityReference>("businessunitid").Id &&
-                                    !currentUser.GetAttributeValue<EntityReference>("businessunitid").Name.Equals("Transport Canada", StringComparison.OrdinalIgnoreCase))
+                                    if (updatedOwnerTeam != null)
                                     {
-                                        throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
+                                        var updatedOwnerTeamBUId = updatedOwnerTeam.GetAttributeValue<EntityReference>("businessunitid").Id;
+
+                                        if (currentUserBUId != updatedOwnerTeamBUId &&
+                                        !EnvironmentVariableHelper.IsTCBU(service, currentUserBUId))
+                                        {
+                                            throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
+                                        }
                                     }
                                 }
 
