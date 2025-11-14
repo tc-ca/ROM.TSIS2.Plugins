@@ -57,25 +57,21 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             if (token.Type == JTokenType.Object)
             {
                 JObject obj = (JObject)token;
-                //direct match, check if object is the question we want (name: questioName)
                 if (obj["name"]?.ToString() == questionName)
                 {
                     return obj;
                 }
-                //check elements array
                 if (obj["elements"] != null)
                 {
                     var found = FindElementByName(obj["elements"], questionName);
                     if (found != null) return found;
                 }
-                //check pages array
                 else if (obj["pages"] != null)
                 {
                     var found = FindElementByName(obj["pages"], questionName);
                     if (found != null) return found;
                 }
             }
-            //token is an array (pages/elements or rows/columns)
             else if (token.Type == JTokenType.Array)
             {
                 foreach (var item in token)
@@ -91,7 +87,6 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         {
             var questionNames = new List<string>();
             
-            // Helper function to collect question names recursively
             void CollectNames(JToken token)
             {
                 if (token == null) return;

@@ -89,8 +89,6 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
 
             if (choices != null)
             {
-                // Find the choice that matches the response value.
-                // The choice can be a simple string or a JObject with a 'value' property.
                 var choice = choices.FirstOrDefault(c =>
                 {
                     if (c.Type == JTokenType.Object)
@@ -102,9 +100,6 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
 
                 if (choice != null)
                 {
-                    // The matching choice was found. Now extract its display text.
-                    // If the choice is an object, get its 'text' property.
-                    // If the choice is a string, the value itself is the text.
                     JToken textSource = (choice.Type == JTokenType.Object) ? choice["text"] : choice;
 
                     if (textSource != null)
@@ -112,7 +107,6 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                         string choiceText;
                         if (textSource.Type == JTokenType.Object)
                         {
-                            // Handle localized text: {"default": "English", "fr": "French"}
                             choiceText = textSource["default"]?.ToString() ?? selectedValue;
                         }
                         else
