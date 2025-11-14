@@ -8,7 +8,6 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
 {
     /// <summary>
     /// Handles all direct communication with the CRM database.
-    /// This is the only class that should use IOrganizationService.
     /// </summary>
     public class QuestionnaireRepository
     {
@@ -37,12 +36,14 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             {
                 _logger.Trace($"Retrieving WOST with ID: {wostId}");
                 
-                var wost = _service.Retrieve("msdyn_workorderservicetask",
+                var wost = _service.Retrieve(
+                    "msdyn_workorderservicetask",
                     wostId,
                     new ColumnSet(
                         "msdyn_name",
                         "ovs_questionnaireresponse",
-                        "ovs_questionnairedefinition"
+                        "ovs_questionnairedefinition",
+                        "msdyn_workorder"
                     ));
 
                 _logger.Trace($"Successfully retrieved WOST: {wost.GetAttributeValue<string>("msdyn_name")}");
@@ -175,7 +176,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
 
                 var updateRecord = new Entity("ts_questionresponse", recordId)
                 {
-                    ["ts_answer"] = newResponseJson
+                    ["ts_response"] = newResponseJson
                 };
 
                 _service.Update(updateRecord);

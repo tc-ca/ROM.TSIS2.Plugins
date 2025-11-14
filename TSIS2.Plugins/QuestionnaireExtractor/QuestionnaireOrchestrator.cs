@@ -7,21 +7,19 @@ using System.Linq;
 namespace TSIS2.Plugins.QuestionnaireExtractor
 {
     /// <summary>
-    /// Orchestrates the entire questionnaire processing workflow.
-    /// This class manages the multi-pass process in the correct sequence.
+    /// Orchestrates the questionnaire processing workflow, managing the multi-pass process.
     /// </summary>
     public static class QuestionnaireOrchestrator
     {
         /// <summary>
         /// Processes a single questionnaire for a Work Order Service Task.
-        /// This is the main entry point that maintains backward compatibility.
         /// </summary>
         /// <param name="service">The CRM organization service.</param>
         /// <param name="workOrderServiceTaskId">The ID of the Work Order Service Task.</param>
         /// <param name="questionnaireRef">The questionnaire reference.</param>
         /// <param name="isRecompletion">Whether this is a recompletion.</param>
         /// <param name="simulationMode">Whether to run in simulation mode.</param>
-        /// <param name="logger">The logging service for logging.</param>
+        /// <param name="logger">The logging service.</param>
         /// <returns>A list of created question response IDs.</returns>
         public static List<Guid> ProcessQuestionnaire(IOrganizationService service, Guid workOrderServiceTaskId, EntityReference questionnaireRef, bool isRecompletion, bool simulationMode = false, ILoggingService logger = null)
         {
@@ -57,6 +55,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                 string responseJson = wost.GetAttributeValue<string>("ovs_questionnaireresponse");
                 string definitionJson = wost.GetAttributeValue<string>("ovs_questionnairedefinition");
                 string wostName = wost.GetAttributeValue<string>("msdyn_name");
+                var workOrderRef = wost.GetAttributeValue<EntityReference>("msdyn_workorder");
 
                 if (string.IsNullOrEmpty(responseJson) || string.IsNullOrEmpty(definitionJson))
                 {
@@ -76,9 +75,19 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
 
                 // Step 5: Execute Pass 1 (Create/Update)
                 var (questionIdMap, createdIds, processedIds) = ExecutePass1_CreateUpdate(
-                    repository, formatter, questionnaireResponse, questionnaireDefinition, 
-                    visibleQuestions, wostName, workOrderServiceTaskId, questionnaireRef, 
-                    isRecompletion, simulationMode, existingByNumber, existingByNameAndNumber);
+                    repository,
+                    formatter,
+                    questionnaireResponse,
+                    questionnaireDefinition,
+                    visibleQuestions,
+                    wostName,
+                    workOrderServiceTaskId,
+                    workOrderRef,
+                    questionnaireRef,
+                    isRecompletion,
+                    simulationMode,
+                    existingByNumber,
+                    existingByNameAndNumber);
 
                 questionResponseIds.AddRange(createdIds);
 
@@ -125,11 +134,19 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         /// Executes Pass 1: Create/Update question responses.
         /// </summary>
         private static (Dictionary<string, Guid> questionIdMap, List<Guid> createdIds, HashSet<Guid> processedIds) ExecutePass1_CreateUpdate(
-            QuestionnaireRepository repository, QuestionnaireResponseFormatter formatter, 
-            QuestionnaireResponse response, QuestionnaireDefinition definition, 
-            List<JObject> visibleQuestions, string wostName, Guid workOrderServiceTaskId, 
-            EntityReference questionnaireRef, bool isRecompletion, bool simulationMode,
-            Dictionary<int, Entity> existingByNumber, Dictionary<QuestionnaireRepository.QuestionKey, Entity> existingByNameAndNumber)
+            QuestionnaireRepository repository,
+            QuestionnaireResponseFormatter formatter,
+            QuestionnaireResponse response,
+            QuestionnaireDefinition definition,
+            List<JObject> visibleQuestions,
+            string wostName,
+            Guid workOrderServiceTaskId,
+            EntityReference workOrderRef,
+            EntityReference questionnaireRef,
+            bool isRecompletion,
+            bool simulationMode,
+            Dictionary<int, Entity> existingByNumber,
+            Dictionary<QuestionnaireRepository.QuestionKey, Entity> existingByNameAndNumber)
         {
             var questionIdMap = new Dictionary<string, Guid>();
             var createdIds = new List<Guid>();
@@ -152,8 +169,21 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                     {
                         // Root hidden question - create non-numbered record
                         formatter.Logger.Trace($"Found visible root hidden question '{questionName}'. Processing as a non-numbered record.");
-                        CreateNonNumberedRecord(repository, formatter, response, definition, questionName, wostName, 
-                            workOrderServiceTaskId, questionnaireRef, simulationMode, questionIdMap, createdIds, processedIds, existingByNameAndNumber);
+                        CreateNonNumberedRecord(
+                            repository,
+                            formatter,
+                            response,
+                            definition,
+                            questionName,
+                            wostName,
+                            workOrderServiceTaskId,
+                            workOrderRef,
+                            questionnaireRef,
+                            simulationMode,
+                            questionIdMap,
+                            createdIds,
+                            processedIds,
+                            existingByNameAndNumber);
                     }
                     else
                     {
@@ -210,9 +240,26 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                 }
                 else
                 {
-                    questionResponseId = CreateQuestionResponseRecord(repository, formatter, questionName, titleEn, titleFr, 
-                        responseText, provisionRef, descriptionEn, descriptionFr, commentOrDetails, wostName, 
-                        workOrderServiceTaskId, questionnaireRef, questionNumber, responseValue, false, default, 0);
+                    questionResponseId = CreateQuestionResponseRecord(
+                        repository,
+                        formatter,
+                        questionName,
+                        titleEn,
+                        titleFr,
+                        responseText,
+                        provisionRef,
+                        descriptionEn,
+                        descriptionFr,
+                        commentOrDetails,
+                        wostName,
+                        workOrderServiceTaskId,
+                        workOrderRef,
+                        questionnaireRef,
+                        questionNumber,
+                        responseValue,
+                        false,
+                        default,
+                        0);
                 }
 
                 processedIds.Add(questionResponseId);
@@ -227,10 +274,20 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         /// <summary>
         /// Creates a non-numbered record for root hidden questions.
         /// </summary>
-        private static void CreateNonNumberedRecord(QuestionnaireRepository repository, QuestionnaireResponseFormatter formatter,
-            QuestionnaireResponse response, QuestionnaireDefinition definition, string questionName, string wostName,
-            Guid workOrderServiceTaskId, EntityReference questionnaireRef, bool simulationMode,
-            Dictionary<string, Guid> questionIdMap, List<Guid> createdIds, HashSet<Guid> processedIds,
+        private static void CreateNonNumberedRecord(
+            QuestionnaireRepository repository,
+            QuestionnaireResponseFormatter formatter,
+            QuestionnaireResponse response,
+            QuestionnaireDefinition definition,
+            string questionName,
+            string wostName,
+            Guid workOrderServiceTaskId,
+            EntityReference workOrderRef,
+            EntityReference questionnaireRef,
+            bool simulationMode,
+            Dictionary<string, Guid> questionIdMap,
+            List<Guid> createdIds,
+            HashSet<Guid> processedIds,
             Dictionary<QuestionnaireRepository.QuestionKey, Entity> existingByNameAndNumber)
         {
             var key = new QuestionnaireRepository.QuestionKey(questionName, null);
@@ -263,9 +320,26 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             }
             else
             {
-                questionResponseId = CreateQuestionResponseRecord(repository, formatter, questionName, titleEn, titleFr,
-                    responseText, null, null, null, null, wostName, workOrderServiceTaskId, questionnaireRef,
-                    null, null, false, default, 0);
+                questionResponseId = CreateQuestionResponseRecord(
+                    repository,
+                    formatter,
+                    questionName,
+                    titleEn,
+                    titleFr,
+                    responseText,
+                    null,
+                    null,
+                    null,
+                    null,
+                    wostName,
+                    workOrderServiceTaskId,
+                    workOrderRef,
+                    questionnaireRef,
+                    null,
+                    null,
+                    false,
+                    default,
+                    0);
             }
 
             processedIds.Add(questionResponseId);
@@ -380,7 +454,6 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                 if (simulationMode)
                 {
                     string simJson = new JArray(details).ToString(Newtonsoft.Json.Formatting.None);
-                    // Note: We don't have access to Logger here, so we'll use the repository's tracer
                     continue;
                 }
 
@@ -391,8 +464,6 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                 }
                 catch (Exception)
                 {
-                    // Note: We don't have access to Logger here, so we'll use the repository's tracer
-                    // The repository will handle its own error logging
                 }
             }
         }
@@ -416,11 +487,26 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         /// <summary>
         /// Creates a question response record using the repository.
         /// </summary>
-        private static Guid CreateQuestionResponseRecord(QuestionnaireRepository repository, QuestionnaireResponseFormatter formatter,
-            string questionName, string questionTextEn, string questionTextFr, string responseText,
-            string provisionReference, string provisionTextEn, string provisionTextFr, string details,
-            string wostName, Guid workOrderServiceTaskId, EntityReference questionnaireRef,
-            int? questionNumber, JToken findingObject, bool isUpdate, Guid existingId, int existingVersion)
+        private static Guid CreateQuestionResponseRecord(
+            QuestionnaireRepository repository,
+            QuestionnaireResponseFormatter formatter,
+            string questionName,
+            string questionTextEn,
+            string questionTextFr,
+            string responseText,
+            string provisionReference,
+            string provisionTextEn,
+            string provisionTextFr,
+            string details,
+            string wostName,
+            Guid workOrderServiceTaskId,
+            EntityReference workOrderRef,
+            EntityReference questionnaireRef,
+            int? questionNumber,
+            JToken findingObject,
+            bool isUpdate,
+            Guid existingId,
+            int existingVersion)
         {
             var questionResponse = new Entity("ts_questionresponse");
             
@@ -444,8 +530,13 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                     var name = $"{wostName} [{questionName}]";
                     questionResponse["ts_name"] = name.Length > 100 ? name.Substring(0, 100) : name;
                 }
-                
+
                 questionResponse["ts_msdyn_workorderservicetask"] = new EntityReference("msdyn_workorderservicetask", workOrderServiceTaskId);
+                if (workOrderRef != null)
+                {
+                    // ts_workorder is the lookup to msdyn_workorder on ts_questionresponse
+                    questionResponse["ts_workorder"] = workOrderRef;
+                }
                 questionResponse["ts_questionnaire"] = questionnaireRef;
                 questionResponse["ts_version"] = 1;
                 questionResponse["statecode"] = new OptionSetValue(0); // 0 = Active

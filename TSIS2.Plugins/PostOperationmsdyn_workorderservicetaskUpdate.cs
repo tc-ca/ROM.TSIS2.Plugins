@@ -174,7 +174,6 @@ namespace TSIS2.Plugins
                                 {
                                     tracingService.Trace($"Starting questionnaire processing for WOST: {target.Id}");
 
-                                    // Process questionnaire using the new, self-contained orchestrator.
                                     // It handles creating, updating, and linking the response records in one go.
                                     var questionResponseIds = QuestionnaireOrchestrator.ProcessQuestionnaire(
                                         service,
