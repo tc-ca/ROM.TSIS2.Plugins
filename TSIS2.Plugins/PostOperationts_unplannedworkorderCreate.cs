@@ -54,6 +54,12 @@ namespace TSIS2.Plugins
             {
                 if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is Entity target)
                 {
+                    // Exit plugin when WO Workspace is created from WO [Edit Ribbon Button] because WO already exists.
+                    if (target.Attributes.Contains("ts_skipplugin") && (bool)target.Attributes["ts_skipplugin"] == true)
+                    {
+                        tracingService.Trace("ts_skipplugin is set to true. Exiting plugin.");
+                        return;
+                    }
                     tracingService.Trace("Target entity logical name: {0}", target.LogicalName);
                     if (target.Attributes.Contains("ts_operationtype") || target.Attributes.Contains("ts_region"))
                     {
