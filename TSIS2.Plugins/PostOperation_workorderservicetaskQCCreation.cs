@@ -1,7 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using System;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace TSIS2.Plugins
 {
@@ -55,6 +58,9 @@ namespace TSIS2.Plugins
                 var isAviation = IsAviationByOperationTypeBU(service, workOrderId, tracing);
                 var taskTypeId = isAviation ? AviationTaskTypeId : NonAviationTaskTypeId;
 
+                //User who created the QC Task (not Service Account)
+                var currentUser = context.InitiatingUserId;
+
                 // Create Work Order Service Task
                 var wost = new Entity("msdyn_workorderservicetask");
                 wost["msdyn_workorder"] = new EntityReference("msdyn_workorder", workOrderId);
@@ -62,6 +68,16 @@ namespace TSIS2.Plugins
 
                 var createdId = service.Create(wost);
                 tracing.Trace("Created WOST: {0}", createdId);
+                
+                var workOrder = service.Retrieve("msdyn_workorder",workOrderId,new ColumnSet("ownerid"));
+                EntityReference woOwnerRef = workOrder.GetAttributeValue<EntityReference>("ownerid");
+                Guid workOrderOwnerId = woOwnerRef.Id;
+                //Grant access to user (creator)
+                GrantAccess(service, createdId, currentUser);
+
+                //Grant access to Work Order owner
+                GrantAccess(service, createdId, workOrderOwnerId);        
+
 
             }
             catch (Exception ex)
@@ -101,6 +117,20 @@ namespace TSIS2.Plugins
 
             tracing.Trace("OperationType BU ID: {0}", buRef.Id);
             return EnvironmentVariableHelper.IsAvSecBU(service, buRef.Id, tracing);
+        }
+
+        private void GrantAccess(IOrganizationService service, Guid wostId, Guid userId)
+        {
+            var grantAccessRequest = new GrantAccessRequest
+            {
+                Target = new EntityReference("msdyn_workorderservicetask", wostId),
+                PrincipalAccess = new PrincipalAccess
+                {
+                    Principal = new EntityReference("systemuser", userId),
+                    AccessMask = AccessRights.ReadAccess | AccessRights.WriteAccess
+                }
+            };
+            service.Execute(grantAccessRequest);
         }
     }
 }
