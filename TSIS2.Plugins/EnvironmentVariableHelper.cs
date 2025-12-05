@@ -13,18 +13,24 @@ namespace TSIS2.Plugins
         // Environment Variable Schema Name Constants
         public static class TeamSchemaNames
         {
+            public const string AVIATION_SECURITY = "ts_AviationSecurityTeamGUID";
             public const string AVIATION_SECURITY_DOMESTIC = "ts_AviationSecurityDirectorateDomesticTeamGUID";
             public const string AVIATION_SECURITY_INTERNATIONAL = "ts_AviationSecurityInternationalTeamGUID";
+            public const string AVIATION_SECURITY_INTERNATIONAL_DEV = "ts_AviationSecurityInternationalTeamGUID_DEV";
             public const string AVIATION_SECURITY_DOMESTIC_INSPECTORS = "ts_AviationSecurityDomesticInspectorsTeamGUID";
             public const string AVIATION_SECURITY_INTERNATIONAL_INSPECTORS = "ts_AviationSecurityInternationalInspectorsTeamGUID";
             public const string ISSO_TEAM = "ts_IntermodalSurfaceSecurityOversightISSOTeamGUID";
+            public const string ISSO_TEAM_DEV = "ts_IntermodalSurfaceSecurityOversightISSOTeamGUID_DEV";
             public const string ISSO_INSPECTORS = "ts_IntermodalSurfaceSecurityOversightInspectorsTeamGUID";
+            public const string RAIL_SAFETY = "ts_RailSafetyTeamGUID";
+            public const string RAIL_SAFETY_ADMIN = "ts_ROMRailSafetyAdministratorGUID";
         }
 
         public static class BUSchemaNames
         {
             public const string AVIATION_SECURITY_DOMESTIC = "ts_AviationSecurityDirectorateDomesticBusinessUnitGUID";
             public const string AVIATION_SECURITY_INTERNATIONAL = "ts_AviationSecurityInternationalBusinessUnitGUID";
+            public const string AVIATION_SECURITY_INTERNATIONAL_DEV = "ts_AviationSecurityInternationalBusinessUnitGUID_DEV";
             public const string AVIATION_SECURITY_DIRECTORATE = "ts_AviationSecurityDirectorateBusinessUnitGUID";
             public const string AVIATION_SECURITY_PPP = "ts_AviationSecurityPPPBusinessUnitGUID";
             public const string ISSO = "ts_IntermodalSurfaceSecurityOversightISSOBusinessUnitGUID";
@@ -129,6 +135,7 @@ namespace TSIS2.Plugins
             {
                 BUSchemaNames.AVIATION_SECURITY_DOMESTIC,
                 BUSchemaNames.AVIATION_SECURITY_INTERNATIONAL,
+                BUSchemaNames.AVIATION_SECURITY_INTERNATIONAL_DEV,
                 BUSchemaNames.AVIATION_SECURITY_DIRECTORATE
             }, tracer);
             Trace(tracer, "IsAvSecBU result=" + result);
@@ -161,15 +168,21 @@ namespace TSIS2.Plugins
         {
             return IsInList(service, teamId, new[]
             {
+                TeamSchemaNames.AVIATION_SECURITY,
                 TeamSchemaNames.AVIATION_SECURITY_DOMESTIC,
-                TeamSchemaNames.AVIATION_SECURITY_INTERNATIONAL
+                TeamSchemaNames.AVIATION_SECURITY_INTERNATIONAL,
+                TeamSchemaNames.AVIATION_SECURITY_INTERNATIONAL_DEV
             });
         }
 
         // Check if a Team ID is ISSO Team
         public static bool IsISSOTeam(IOrganizationService service, Guid teamId)
         {
-            return IsInList(service, teamId, new[] { TeamSchemaNames.ISSO_TEAM });
+            return IsInList(service, teamId, new[] 
+            { 
+                TeamSchemaNames.ISSO_TEAM,
+                TeamSchemaNames.ISSO_TEAM_DEV
+            });
         }
 
         // Check if a Team ID is ISSO Inspectors
@@ -260,6 +273,50 @@ namespace TSIS2.Plugins
             return false;
         }
 
+        // Check if owner (EntityReference) is Rail Safety team
+        public static bool IsOwnedByRailSafety(IOrganizationService service, EntityReference owner, ITracingService tracer = null)
+        {
+            if (owner == null)
+            {
+                Trace(tracer, "IsOwnedByRailSafety result=false (owner is null)");
+                return false;
+            }
+
+            Trace(tracer, "IsOwnedByRailSafety owner=" + owner.LogicalName + " id=" + owner.Id);
+
+            if (owner.LogicalName == "team")
+            {
+                bool result = IsOwnedBy(service, owner, new[] { TeamSchemaNames.RAIL_SAFETY });
+                Trace(tracer, "IsOwnedByRailSafety result=" + result + " (team check)");
+                return result;
+            }
+
+            Trace(tracer, "IsOwnedByRailSafety result=false (not a team owner)");
+            return false;
+        }
+
+        // Check if owner (EntityReference) is Rail Safety Administrator team
+        public static bool IsOwnedByRailSafetyAdministrator(IOrganizationService service, EntityReference owner, ITracingService tracer = null)
+        {
+            if (owner == null)
+            {
+                Trace(tracer, "IsOwnedByRailSafetyAdministrator result=false (owner is null)");
+                return false;
+            }
+
+            Trace(tracer, "IsOwnedByRailSafetyAdministrator owner=" + owner.LogicalName + " id=" + owner.Id);
+
+            if (owner.LogicalName == "team")
+            {
+                bool result = IsOwnedBy(service, owner, new[] { TeamSchemaNames.RAIL_SAFETY_ADMIN });
+                Trace(tracer, "IsOwnedByRailSafetyAdministrator result=" + result + " (team check)");
+                return result;
+            }
+
+            Trace(tracer, "IsOwnedByRailSafetyAdministrator result=false (not a team owner)");
+            return false;
+        }
+
         // Generic function to check if owner matches any of the provided environment variable schema names
         public static bool IsOwnedBy(IOrganizationService service, EntityReference owner, string[] schemaNames)
         {
@@ -295,8 +352,10 @@ namespace TSIS2.Plugins
             if (!string.IsNullOrEmpty(guid1)) guids.Add(NormalizeGuid(guid1));
             var guid2 = GetEnvironmentVariableValue(service, BUSchemaNames.AVIATION_SECURITY_INTERNATIONAL);
             if (!string.IsNullOrEmpty(guid2)) guids.Add(NormalizeGuid(guid2));
-            var guid3 = GetEnvironmentVariableValue(service, BUSchemaNames.AVIATION_SECURITY_DIRECTORATE);
+            var guid3 = GetEnvironmentVariableValue(service, BUSchemaNames.AVIATION_SECURITY_INTERNATIONAL_DEV);
             if (!string.IsNullOrEmpty(guid3)) guids.Add(NormalizeGuid(guid3));
+            var guid4 = GetEnvironmentVariableValue(service, BUSchemaNames.AVIATION_SECURITY_DIRECTORATE);
+            if (!string.IsNullOrEmpty(guid4)) guids.Add(NormalizeGuid(guid4));
             return guids;
         }
 
@@ -332,6 +391,10 @@ namespace TSIS2.Plugins
             if (string.IsNullOrEmpty(guid))
             {
                 guid = GetEnvironmentVariableValue(service, BUSchemaNames.AVIATION_SECURITY_INTERNATIONAL);
+            }
+            if (string.IsNullOrEmpty(guid))
+            {
+                guid = GetEnvironmentVariableValue(service, BUSchemaNames.AVIATION_SECURITY_INTERNATIONAL_DEV);
             }
             if (string.IsNullOrEmpty(guid))
             {
