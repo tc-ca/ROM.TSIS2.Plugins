@@ -123,6 +123,7 @@
     <Compile Include="PostOperationts_sharepointfileCreate.cs" />
     <Compile Include="PostOperationts_unplannedworkorderCreate.cs" />
     <Compile Include="PostOperation_AccessControlOnWorkspaceUpdate.cs" />
+    <Compile Include="PostOperation_AccessTeamSync.cs" />
     <Compile Include="PostOperation_AccountUpdate.cs" />
     <Compile Include="PostOperation_ContactSync.cs" />
     <Compile Include="PostOperation_copyWorkOrderServiceTaskStartDateUpdate.cs" />
