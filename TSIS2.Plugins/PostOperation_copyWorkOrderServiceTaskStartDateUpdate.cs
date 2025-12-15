@@ -12,11 +12,11 @@ namespace TSIS2.Plugins
         "ts_workorderservicetaskworkspace",
         StageEnum.PostOperation,
         ExecutionModeEnum.Synchronous,
-        "",
+        "ts_name,ts_tasktype,ts_workorder,statecode,ts_fromoffline,ownerid,ts_location,ts_flightnumber,ts_origin,ts_destination,ts_flightcategory,ts_flighttype,ts_reportdetails,ts_scheduledtime,ts_actualtime,ts_paxonboard,ts_paxboarded,ts_cbonboard,ts_cbloaded,ts_aircraftmark,ts_aircraftmanufacturer,ts_aircraftmodel,ts_aircraftmodelother,ts_brandname,ts_passengerservices,ts_rampservices,ts_cargoservices,ts_cateringservices,ts_groomingservices,ts_securitysearchservices,ts_accesscontrolsecurityservices,ts_othersecurityservices,ts_workorderservicetaskstartdate,ts_questionnaireresponse,ts_questionnairedefinition,ts_mandatory,ts_percentcomplete,ts_aocoperation,ts_aocstakeholder,ts_aocoperationtype,ts_aocsite,ts_accesscontrol,ts_workorderservicetaskenddate,statuscode",
         "PostOperation.ts_workorderservicetaskworkspace.CopyStartDateToWorkOrderServiceTaskOnUpdate",
         1,
         IsolationModeEnum.Sandbox,
-        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "ts_workorderservicetask,ts_workorderservicetaskstartdate,ts_questionnaireresponse,ts_mandatory,ts_percentcomplete,ts_aocoperation,ts_aocstakeholder,ts_aocoperationtype,ts_aocsite,statuscode",
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "ts_workorderservicetask",
         Description = "Copies changed fields to the related msdyn_workorderservicetask record on update.")]
     public class PostOperation_CopyStartDateToTaskOnUpdate : IPlugin
     {
@@ -35,7 +35,6 @@ namespace TSIS2.Plugins
                 {
                     tracingService.Trace("Target entity logical name: {0}", target.LogicalName);
 
-                    // Get Pre-Image
                     if (!context.PreEntityImages.Contains("PreImage") || context.PreEntityImages["PreImage"] == null)
                     {
                         tracingService.Trace("PreImage is not available. Exiting plugin.");
@@ -43,10 +42,7 @@ namespace TSIS2.Plugins
                     }
 
                     Entity preImage = context.PreEntityImages["PreImage"];
-
-                    // Get the related work order service task reference
-                    EntityReference workOrderTaskRef = preImage.GetAttributeValue<EntityReference>("ts_workorderservicetask")
-                        ?? target.GetAttributeValue<EntityReference>("ts_workorderservicetask");
+                    EntityReference workOrderTaskRef = preImage.GetAttributeValue<EntityReference>("ts_workorderservicetask");
 
                     if (workOrderTaskRef == null)
                     {
@@ -59,107 +55,88 @@ namespace TSIS2.Plugins
                     Entity updateTask = new Entity(workOrderTaskRef.LogicalName, workOrderTaskRef.Id);
                     bool anyFieldChanged = false;
 
-                    // Check and update each field if present in Target
-                    if (target.Attributes.Contains("ts_workorderservicetaskstartdate"))
+                    // Helper for direct 1-to-1 field copies
+                    Action<string, string> copyField = (sourceField, destField) =>
                     {
-                        DateTime? newStartDate = target.GetAttributeValue<DateTime?>("ts_workorderservicetaskstartdate");
-                        updateTask["ts_servicetaskstartdate"] = newStartDate;
-                        tracingService.Trace("ts_workorderservicetaskstartdate changed. New value: {0}", newStartDate);
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_questionnaireresponse"))
+                        if (target.Contains(sourceField))
+                        {
+                            updateTask[destField] = target[sourceField];
+                            tracingService.Trace($"Copied '{sourceField}' to '{destField}'.");
+                            anyFieldChanged = true;
+                        }
+                    };
+
+                    // --- Core Fields ---
+                    copyField("ts_name", "msdyn_name");
+                    copyField("ts_tasktype", "msdyn_tasktype");
+                    copyField("ts_workorder", "msdyn_workorder");
+                    copyField("ts_workorderservicetaskstartdate", "ts_servicetaskstartdate");
+                    copyField("ts_workorderservicetaskenddate", "ts_servicetaskenddate");
+                    copyField("ts_percentcomplete", "msdyn_percentcomplete");
+                    copyField("statecode", "statecode");
+                    copyField("ts_mandatory", "ts_mandatory");
+                    copyField("ts_fromoffline", "ts_fromoffline");
+                    copyField("ownerid", "ownerid");
+
+                    // --- Questionnaire Fields ---
+                    copyField("ts_questionnairedefinition", "ovs_questionnairedefinition");
+                    copyField("ts_questionnaireresponse", "ovs_questionnaireresponse");
+                    copyField("ts_accesscontrol", "ts_accesscontrol");
+
+                    // --- Oversight & Flight Fields ---
+                    copyField("ts_location", "ts_location");
+                    copyField("ts_flightnumber", "ts_flightnumber");
+                    copyField("ts_origin", "ts_origin");
+                    copyField("ts_destination", "ts_destination");
+                    copyField("ts_flightcategory", "ts_flightcategory");
+                    copyField("ts_flighttype", "ts_flighttype");
+                    copyField("ts_reportdetails", "ts_reportdetails");
+                    copyField("ts_scheduledtime", "ts_scheduledtime");
+                    copyField("ts_actualtime", "ts_actualtime");
+
+                    // --- Passenger & Cargo Fields ---
+                    copyField("ts_paxonboard", "ts_paxonboard");
+                    copyField("ts_paxboarded", "ts_paxboarded");
+                    copyField("ts_cbonboard", "ts_cbonboard");
+                    copyField("ts_cbloaded", "ts_cbloaded");
+
+                    // --- Aircraft Fields ---
+                    copyField("ts_aircraftmark", "ts_aircraftmark");
+                    copyField("ts_aircraftmanufacturer", "ts_aircraftmanufacturer");
+                    copyField("ts_aircraftmodel", "ts_aircraftmodel");
+                    copyField("ts_aircraftmodelother", "ts_aircraftmodelother");
+                    copyField("ts_brandname", "ts_brandname");
+
+                    // --- AOC Fields ---
+                    copyField("ts_aocoperation", "ts_aocoperation");
+                    copyField("ts_aocstakeholder", "ts_aocstakeholder");
+                    copyField("ts_aocoperationtype", "ts_aocoperationtype");
+                    copyField("ts_aocsite", "ts_aocsite");
+
+                    // --- Service Provider Fields ---
+                    copyField("ts_passengerservices", "ts_passengerservices");
+                    copyField("ts_rampservices", "ts_rampservices");
+                    copyField("ts_cargoservices", "ts_cargoservices");
+                    copyField("ts_cateringservices", "ts_cateringservices");
+                    copyField("ts_groomingservices", "ts_groomingservices");
+                    copyField("ts_securitysearchservices", "ts_securitysearchservices");
+                    copyField("ts_accesscontrolsecurityservices", "ts_accesscontrolsecurityservices");
+                    copyField("ts_othersecurityservices", "ts_othersecurityservices");
+
+                    // --- Fields with Special Logic ---
+                    if (target.Contains("statuscode"))
                     {
-                        string questionnaireResponseText = target.GetAttributeValue<string>("ts_questionnaireresponse");
-                        updateTask["ovs_questionnaireresponse"] = questionnaireResponseText;
-                        tracingService.Trace("ts_questionnaireresponse changed.");
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_questionnairedefinition"))
-                    {
-                        string questionnaireDefinitionText = target.GetAttributeValue<string>("ts_questionnairedefinition");
-                        updateTask["ovs_questionnairedefinition"] = questionnaireDefinitionText;
-                        tracingService.Trace("ts_questionnairedefinition changed.");
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_mandatory"))
-                    {
-                        bool isMandatory = target.GetAttributeValue<bool>("ts_mandatory");
-                        updateTask["ts_mandatory"] = isMandatory;
-                        tracingService.Trace("ts_mandatory changed. New value: {0}", isMandatory);
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_percentcomplete"))
-                    {
-                        double? percentComplete = target.GetAttributeValue<double?>("ts_percentcomplete");
-                        updateTask["msdyn_percentcomplete"] = percentComplete;
-                        tracingService.Trace("msdyn_percentcomplete changed. New value: {0}", percentComplete);
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_aocoperation"))
-                    {
-                        EntityReference aocoperationRef = target.GetAttributeValue<EntityReference>("ts_aocoperation");
-                        updateTask["ts_aocoperation"] = aocoperationRef;
-                        tracingService.Trace("ts_aocoperation changed. New value: {0}", aocoperationRef != null ? aocoperationRef.Id.ToString() : "null");
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_aocstakeholder"))
-                    {
-                        EntityReference aocstakeholderRef = target.GetAttributeValue<EntityReference>("ts_aocstakeholder");
-                        updateTask["ts_aocstakeholder"] = aocstakeholderRef;
-                        tracingService.Trace("ts_aocstakeholder changed. New value: {0}", aocstakeholderRef != null ? aocstakeholderRef.Id.ToString() : "null");
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_aocoperationtype"))
-                    {
-                        EntityReference aocoperationtypeRef = target.GetAttributeValue<EntityReference>("ts_aocoperationtype");
-                        updateTask["ts_aocoperationtype"] = aocoperationtypeRef;
-                        tracingService.Trace("ts_aocoperationtype changed. New value: {0}", aocoperationtypeRef != null ? aocoperationtypeRef.Id.ToString() : "null");
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_aocsite"))
-                    {
-                        EntityReference aocsiteRef = target.GetAttributeValue<EntityReference>("ts_aocsite");
-                        updateTask["ts_aocsite"] = aocsiteRef;
-                        tracingService.Trace("ts_aocsite changed. New value: {0}", aocsiteRef != null ? aocsiteRef.Id.ToString() : "null");
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_accesscontrol"))
-                    {
-                        bool accessControl = target.GetAttributeValue<bool>("ts_accesscontrol");
-                        updateTask["ts_accesscontrol"] = accessControl;
-                        tracingService.Trace("ts_mandatory changed. New value: {0}", accessControl);
-                        anyFieldChanged = true;
-                    }
-                    if( target.Attributes.Contains("ts_workorderservicetaskenddate"))
-                    {
-                        DateTime? endDate = target.GetAttributeValue<DateTime?>("ts_workorderservicetaskenddate");
-                        updateTask["ts_servicetaskenddate"] = endDate;
-                        tracingService.Trace("ts_workorderservicetaskenddate changed. New value: {0}", endDate);
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("statuscode"))
-                    {
-                        OptionSetValue statusCode = target.GetAttributeValue<OptionSetValue>("statuscode");
+                        var statusCode = target.GetAttributeValue<OptionSetValue>("statuscode");
                         int? mappedStatusCode = null;
                         if (statusCode != null)
                         {
                             switch (statusCode.Value)
                             {
-                                case 1: // Active
-                                    mappedStatusCode = 1;
-                                    break;
-                                case 741130001: // Complete
-                                    mappedStatusCode = 918640002;
-                                    break;
-                                case 741130002: // In Progress
-                                    mappedStatusCode = 918640004;
-                                    break;
-                                case 741130003: // New
-                                    mappedStatusCode = 918640005;
-                                    break;
-                                default:
-                                    mappedStatusCode = 1;
-                                    break;
+                                case 1: mappedStatusCode = 1; break; // Active -> Active
+                                case 741130001: mappedStatusCode = 918640002; break; // Complete -> Completed
+                                case 741130002: mappedStatusCode = 918640004; break; // In Progress -> In Progress
+                                case 741130003: mappedStatusCode = 918640005; break; // New -> New
+                                default: mappedStatusCode = 1; break; // Default to Active
                             }
                         }
                         if (mappedStatusCode.HasValue)
@@ -179,7 +156,6 @@ namespace TSIS2.Plugins
                     {
                         tracingService.Trace("No relevant fields changed. No update performed.");
                     }
-
                 }
                 else
                 {
