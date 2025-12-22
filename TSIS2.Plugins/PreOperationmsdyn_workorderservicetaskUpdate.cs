@@ -152,7 +152,7 @@ namespace TSIS2.Plugins
                                         tracingService.Trace("Set the Case ID for the Work Order Service Task");
                                         workOrderServiceTask.ovs_CaseId = new EntityReference(Incident.EntityLogicalName, newIncidentId);
                                         // After setting workOrderServiceTask.ovs_CaseId
-                                        if (workspace != null && workOrderServiceTask.ovs_CaseId != null)
+                                        if (workspace != null && workOrderServiceTask.ovs_CaseId != null && (workspace.crc77_Incident == null || workspace.crc77_Incident.Id != workOrderServiceTask.ovs_CaseId.Id))
                                         {
                                             service.Update(new ts_WorkOrderServiceTaskWorkspace
                                             {
@@ -168,7 +168,7 @@ namespace TSIS2.Plugins
                                         // After setting workOrderServiceTask.ovs_CaseId
                                         var workspace = serviceContext.ts_WorkOrderServiceTaskWorkspaceSet.FirstOrDefault(ws => ws.ts_WorkOrderServiceTask != null && ws.ts_WorkOrderServiceTask.Id == workOrderServiceTask.Id);
 
-                                        if (workspace != null && workOrder.msdyn_ServiceRequest != null)
+                                        if (workspace != null && workOrder.msdyn_ServiceRequest != null && (workspace.crc77_Incident == null || workspace.crc77_Incident.Id != workOrder.msdyn_ServiceRequest.Id))
                                         {
                                             service.Update(new ts_WorkOrderServiceTaskWorkspace
                                             {
