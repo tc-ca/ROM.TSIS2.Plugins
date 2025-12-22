@@ -366,10 +366,10 @@ namespace TSIS2.Plugins
                                         {
                                             var updatedOwnerUserBUId = updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id;
 
-                                            if (EnvironmentVariableHelper.IsAvSecBU(service, currentUserBUId, tracingService))
+                                            if (OrganizationConfig.IsAvSecBU(service, currentUserBUId, tracingService))
                                             {
-                                                if (!EnvironmentVariableHelper.IsAvSecBU(service, updatedOwnerUserBUId, tracingService) ||
-                                                EnvironmentVariableHelper.IsAvSecPPPBU(service, updatedOwnerUserBUId))
+                                                if (!OrganizationConfig.IsAvSecBU(service, updatedOwnerUserBUId, tracingService) ||
+                                                OrganizationConfig.IsAvSecPPPBU(service, updatedOwnerUserBUId))
                                                 {
                                                     throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
                                                 }
@@ -377,7 +377,7 @@ namespace TSIS2.Plugins
                                             else
                                             {
                                                 if (currentUserBUId != updatedOwnerUserBUId &&
-                                                !EnvironmentVariableHelper.IsTCBU(service, currentUserBUId))
+                                                !OrganizationConfig.IsTCBU(service, currentUserBUId))
                                                 {
                                                     throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
                                                 }
@@ -393,7 +393,7 @@ namespace TSIS2.Plugins
                                         var updatedOwnerTeamBUId = updatedOwnerTeam.GetAttributeValue<EntityReference>("businessunitid").Id;
 
                                         if (currentUserBUId != updatedOwnerTeamBUId &&
-                                        !EnvironmentVariableHelper.IsTCBU(service, currentUserBUId))
+                                        !OrganizationConfig.IsTCBU(service, currentUserBUId))
                                         {
                                             throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
                                         }

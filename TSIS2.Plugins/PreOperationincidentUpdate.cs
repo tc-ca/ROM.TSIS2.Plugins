@@ -101,11 +101,11 @@ namespace TSIS2.Plugins
                                     tracingService.Trace("If updatedOwnerUser is not null then execute");
                                     var updatedOwnerUserBUId = updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id;
 
-                                    if (EnvironmentVariableHelper.IsAvSecBU(service, currentUserBUId, tracingService))
+                                    if (OrganizationConfig.IsAvSecBU(service, currentUserBUId, tracingService))
                                     {
                                         tracingService.Trace("If business unit is AvSec then execute");
-                                        if (!EnvironmentVariableHelper.IsAvSecBU(service, updatedOwnerUserBUId, tracingService) ||
-                                        EnvironmentVariableHelper.IsAvSecPPPBU(service, updatedOwnerUserBUId))
+                                        if (!OrganizationConfig.IsAvSecBU(service, updatedOwnerUserBUId, tracingService) ||
+                                        OrganizationConfig.IsAvSecPPPBU(service, updatedOwnerUserBUId))
                                         {
                                             tracingService.Trace("Reassign case error due to business unit mismatch1.");
                                             throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignCaseErrorMsg"));
@@ -115,7 +115,7 @@ namespace TSIS2.Plugins
                                     {
                                         tracingService.Trace("Else, start check to see if currentUser businessunitid is not equal to updateOwnerUser businessunitid AND currentUser businessunitid is Transport Canada");
                                         if (currentUserBUId != updatedOwnerUserBUId &&
-                                        !EnvironmentVariableHelper.IsTCBU(service, currentUserBUId))
+                                        !OrganizationConfig.IsTCBU(service, currentUserBUId))
                                         {
                                             tracingService.Trace("Reassign case error due to business unit mismatch2.");
                                             throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignCaseErrorMsg"));
@@ -131,7 +131,7 @@ namespace TSIS2.Plugins
                                         var updatedOwnerTeamBUId = updatedOwnerTeam.GetAttributeValue<EntityReference>("businessunitid").Id;
 
                                         if (currentUserBUId != updatedOwnerTeamBUId &&
-                                        !EnvironmentVariableHelper.IsTCBU(service, currentUserBUId))
+                                        !OrganizationConfig.IsTCBU(service, currentUserBUId))
                                         {
                                             tracingService.Trace("Reassign case error due to team mismatch.");
                                             throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignCaseErrorMsg"));
