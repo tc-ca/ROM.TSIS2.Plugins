@@ -27,6 +27,12 @@ namespace TSIS2.Plugins
             var service = serviceFactory.CreateOrganizationService(context.UserId);
             var tracingService = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
 
+            if (context.Depth > 1)
+            {
+                tracingService.Trace("Plugin depth is greater than 1. Exiting to prevent recursion.");
+                return;
+            }
+
             tracingService.Trace("Plugin execution started: PostOperation_CopyStartDateToTaskOnUpdate");
 
             try
