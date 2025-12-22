@@ -120,7 +120,7 @@ namespace TSIS2.Plugins
 
                         tracingService.Trace("Checking if operation ID: {0}, Name: {1} owner belongs to ISSO.", firstOperation.Id, firstOperationName);
                         ////Check if the record belongs to ISSO - if not don't run the code
-                        if (!EnvironmentVariableHelper.IsOwnedByISSO(localContext.OrganizationService, ownerTeamRef, tracingService))
+                        if (!OrganizationConfig.IsOwnedByISSO(localContext.OrganizationService, ownerTeamRef, tracingService))
                         {
                             tracingService.Trace("Operation ID: {0}, Name: {1} owner does not belong to ISSO, exiting.", firstOperation.Id, firstOperationName);
                             return;

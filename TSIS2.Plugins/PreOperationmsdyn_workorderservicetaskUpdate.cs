@@ -115,7 +115,7 @@ namespace TSIS2.Plugins
 
                                         tracingService.Trace("do environtment variable check");
                                         //string environmentVariableName = "ts_usenewregiontable";
-                                        //string environmentVariableValue = EnvironmentVariableHelper.GetEnvironmentVariableValue(service, environmentVariableName);
+                                        //string environmentVariableValue = OrganizationConfig.GetEnvironmentVariableValue(service, environmentVariableName);
                                         //if (environmentVariableValue == "yes")
                                         //{
                                         //    //ts_RegionDoNotUsez

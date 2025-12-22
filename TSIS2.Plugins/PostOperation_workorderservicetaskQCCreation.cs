@@ -116,7 +116,7 @@ namespace TSIS2.Plugins
             }
 
             tracing.Trace("OperationType BU ID: {0}", buRef.Id);
-            return EnvironmentVariableHelper.IsAvSecBU(service, buRef.Id, tracing);
+            return OrganizationConfig.IsAvSecBU(service, buRef.Id, tracing);
         }
 
         private void GrantAccess(IOrganizationService service, Guid wostId, Guid userId)
