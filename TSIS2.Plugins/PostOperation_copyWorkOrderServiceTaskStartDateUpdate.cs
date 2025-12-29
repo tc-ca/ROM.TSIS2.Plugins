@@ -61,14 +61,27 @@ namespace TSIS2.Plugins
                     Entity updateTask = new Entity(workOrderTaskRef.LogicalName, workOrderTaskRef.Id);
                     bool anyFieldChanged = false;
 
-                    // Helper for direct 1-to-1 field copies
+                    // Helper for direct 1-to-1 field copies (only if value actually changed)
                     Action<string, string> copyField = (sourceField, destField) =>
                     {
                         if (target.Contains(sourceField))
                         {
-                            updateTask[destField] = target[sourceField];
-                            tracingService.Trace($"Copied '{sourceField}' to '{destField}'.");
-                            anyFieldChanged = true;
+                            var newValue = target[sourceField];
+                            var oldValue = preImage.Contains(sourceField) ? preImage[sourceField] : null;
+
+                            // Compare values - handle nulls and use Equals for proper comparison
+                            bool hasChanged = !Equals(newValue, oldValue);
+
+                            if (hasChanged)
+                            {
+                                updateTask[destField] = newValue;
+                                tracingService.Trace($"Copied '{sourceField}' to '{destField}' (value changed).");
+                                anyFieldChanged = true;
+                            }
+                            else
+                            {
+                                tracingService.Trace($"Skipped '{sourceField}' - value unchanged.");
+                            }
                         }
                     };
 
