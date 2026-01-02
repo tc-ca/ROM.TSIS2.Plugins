@@ -1,33 +1,34 @@
-﻿using Microsoft.Xrm.Sdk;
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Remoting.Contexts;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Services.Description;
 
 namespace TSIS2.Plugins
 {
-    public class TSGlobalAction : IPlugin
+    [CrmPluginRegistration(
+        "ts_TSGlobalAction",
+        "none",
+        StageEnum.PostOperation,
+        ExecutionModeEnum.Synchronous,
+        "",
+        "TSIS2.Plugins.TSGlobalAction Plugin",
+        1,
+        IsolationModeEnum.Sandbox,
+        Description = "Custom action for global operations")]
+    public class TSGlobalAction : PluginBase
     {
         public static string messageName = "ts_TSGlobalAction";
-        public void Execute(IServiceProvider serviceProvider)
+
+        public TSGlobalAction() : base(typeof(TSGlobalAction))
         {
-            // Obtain the tracing service
-            ITracingService tracingService =
-            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
 
-            // Obtain the execution context from the service provider.
-            IPluginExecutionContext context = (IPluginExecutionContext)
-                serviceProvider.GetService(typeof(IPluginExecutionContext));
+        public TSGlobalAction(string unsecure, string secure) : base(typeof(TSGlobalAction))
+        {
+        }
 
-            IOrganizationServiceFactory serviceFactory =
-                    (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-
-            IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            var tracingService = localContext.TracingService;
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
 
             try
             {
@@ -40,7 +41,7 @@ namespace TSIS2.Plugins
                     //string param2 = context.InputParameters["Param2"] as string;
 
 
-                    tracingService.Trace(string.Format("ts_TSGlobalAction: {1}     param1-{0} ", param1, action));
+                    localContext.Trace(string.Format("ts_TSGlobalAction: {1}     param1-{0} ", param1, action));
 
                     string retMessage = "";
                     string retMessage2 = "";
@@ -48,7 +49,7 @@ namespace TSIS2.Plugins
                     {
                         var retTuple = retrieveSearchHtmlTableLogicDataTableHelper.searchMatchingRecords( param1, service, tracingService);
 
-                        tracingService.Trace(" -----------  WO count: " + retTuple.Entities.Count);
+                        localContext.Trace(" -----------  WO count: " + retTuple.Entities.Count);
                         var retObj = retrieveSearchHtmlTableLogicDataTableHelper.ConvertEntityCollectionToHtmlDataTable(retTuple, false, service, lang);
                         retMessage = retObj.Item1;
                         retMessage2 = retObj.Item2;
@@ -56,8 +57,8 @@ namespace TSIS2.Plugins
                     }
 
 
-                    tracingService.Trace(" -----------  RetMsg: " + retMessage);
-                    tracingService.Trace(" -----------  RetMsg2: " + retMessage2);
+                    localContext.Trace(" -----------  RetMsg: " + retMessage);
+                    localContext.Trace(" -----------  RetMsg2: " + retMessage2);
                     context.OutputParameters["result"] = retMessage;
                     context.OutputParameters["result2"] = retMessage2;
                     //context.OutputParameters["RetId"] = "No Guid";
@@ -65,7 +66,8 @@ namespace TSIS2.Plugins
             }
             catch (Exception ex)
             {
-                throw ex;
+                localContext.TraceWithContext("TSGlobalAction Plugin: {0}", ex);
+                throw new Exception(ex.Message);
             }
         }
 

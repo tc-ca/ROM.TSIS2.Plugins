@@ -72,7 +72,7 @@ namespace TSIS2.Plugins
             // Return if triggered by another plugin. Prevents infinite loop.
             if (context.Depth > 2)
             {
-                tracingService.Trace("Exiting - plugin depth > 1");
+                localContext.Trace("Exiting - plugin depth > 1");
                 return;
             }
 
@@ -87,7 +87,7 @@ namespace TSIS2.Plugins
             {
                 if (target.LogicalName.Equals(msdyn_workorderservicetask.EntityLogicalName))
                 {
-                    tracingService.Trace("If Work Order is Updated - Update any associated files with the new Work Order and Case.");
+                    localContext.Trace("If Work Order is Updated - Update any associated files with the new Work Order and Case.");
                     {
                         // Check if msdyn_workorder attribute exists in the update
                         if (target.Attributes.Contains("msdyn_workorder"))
@@ -100,21 +100,21 @@ namespace TSIS2.Plugins
                             if (previousWorkOrder == null || currentWorkOrder == null ||
                                 previousWorkOrder.Id != currentWorkOrder.Id)
                             {
-                                tracingService.Trace("Work Order has changed. Updating associated files.");
+                                localContext.Trace("Work Order has changed. Updating associated files.");
 
                                 using (var serviceContext = new Xrm(service))
                                 {
-                                    tracingService.Trace("Cast the target to the expected entity.");
+                                    localContext.Trace("Cast the target to the expected entity.");
                                     msdyn_workorderservicetask myWorkOrderServiceTask = target.ToEntity<msdyn_workorderservicetask>();
 
-                                    tracingService.Trace("Get the selected Work Order Service Task.");
+                                    localContext.Trace("Get the selected Work Order Service Task.");
                                     var selectedWorkOrderServiceTask = serviceContext.msdyn_workorderservicetaskSet.Where(wost => wost.Id == myWorkOrderServiceTask.Id).FirstOrDefault();
 
-                                    tracingService.Trace("Get the Work Order associated with the Work Order Service Task.");
+                                    localContext.Trace("Get the Work Order associated with the Work Order Service Task.");
                                     var selectedWorkOrder = serviceContext.msdyn_workorderSet
                                         .FirstOrDefault(wo => wo.Id == selectedWorkOrderServiceTask.msdyn_WorkOrder.Id);
 
-                                    tracingService.Trace("Retrieve all the files that are associated with the Work Order Service Task.");
+                                    localContext.Trace("Retrieve all the files that are associated with the Work Order Service Task.");
                                     var allFiles = serviceContext.ts_FileSet.ToList();
                                     var workOrderServiceTaskFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WOST ", "").Trim() == selectedWorkOrderServiceTask.msdyn_name).ToList();
 
@@ -144,8 +144,8 @@ namespace TSIS2.Plugins
 
                             if (isFirstTimeCompletion || isRecompletion)
                             {
-                                tracingService.Trace("Work Order Service Task is being completed. Starting questionnaire processing.");
-                                tracingService.Trace($"First time completion: {isFirstTimeCompletion}, Recompletion: {isRecompletion}");
+                                localContext.Trace("Work Order Service Task is being completed. Starting questionnaire processing.");
+                                localContext.Trace($"First time completion: {isFirstTimeCompletion}, Recompletion: {isRecompletion}");
 
                                 // Create a logger adapter to pass the tracing service to the orchestrator
                                 var logger = new TracingServiceAdapter(tracingService, LogLevel.Info);
@@ -162,17 +162,17 @@ namespace TSIS2.Plugins
 
                                     if (string.Equals(currentResponseJson, previousResponseJson, StringComparison.Ordinal))
                                     {
-                                        tracingService.Trace("Questionnaire response hasn't changed. Skipping processing.");
+                                        localContext.Trace("Questionnaire response hasn't changed. Skipping processing.");
                                         return;
                                     }
-                                    tracingService.Trace("Questionnaire response has changed. Processing updates.");
+                                    localContext.Trace("Questionnaire response has changed. Processing updates.");
                                 }
 
                                 var questionnaireRef = wost.GetAttributeValue<EntityReference>("ovs_questionnaire");
 
                                 if (questionnaireRef != null)
                                 {
-                                    tracingService.Trace($"Starting questionnaire processing for WOST: {target.Id}");
+                                    localContext.Trace($"Starting questionnaire processing for WOST: {target.Id}");
 
                                     // It handles creating, updating, and linking the response records in one go.
                                     var result = QuestionnaireOrchestrator.ProcessQuestionnaire(
@@ -184,11 +184,11 @@ namespace TSIS2.Plugins
                                         logger
                                     );
 
-                                    tracingService.Trace($"Successfully processed questionnaire. Created: {result.CreatedResponseIds.Count}, Updated: {result.UpdatedRecordsCount} (Total Visible: {result.VisibleQuestionCount}).");
+                                    localContext.Trace($"Successfully processed questionnaire. Created: {result.CreatedResponseIds.Count}, Updated: {result.UpdatedRecordsCount} (Total Visible: {result.VisibleQuestionCount}).");
                                 }
                                 else
                                 {
-                                    tracingService.Trace("No questionnaire reference found on WOST. Skipping processing.");
+                                    localContext.Trace("No questionnaire reference found on WOST. Skipping processing.");
                                 }
                             }
                         }
@@ -199,8 +199,8 @@ namespace TSIS2.Plugins
             }
             catch (Exception e)
             {
-                tracingService.Trace("Exception occurred: {0}", e.ToString());
-                throw new InvalidPluginExecutionException(e.Message);
+                localContext.TraceWithContext("Exception: {0}", e.Message);
+                throw new InvalidPluginExecutionException("PostOperationmsdyn_workorderservicetaskUpdate failed.", e);
             }
         }
     }

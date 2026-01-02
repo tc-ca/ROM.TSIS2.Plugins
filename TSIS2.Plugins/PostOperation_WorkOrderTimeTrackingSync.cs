@@ -17,7 +17,7 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "Synchronizes work order time tracking from Unplanned Work Order to Work Order on association.")]
-    public class PostOperation_WorkOrderTimeTrackingSync_Associate : IPlugin
+    public class PostOperation_WorkOrderTimeTrackingSync_Associate : PluginBase
     {
         private const string UnplannedWorkOrderEntity = "ts_unplannedworkorder";
         private const string WorkOrderEntity = "msdyn_workorder";
@@ -32,12 +32,19 @@ namespace TSIS2.Plugins
         // Work Order <-> Work Order Time Tracking M:N relationship schema name to mirror onto
         private const string WorkOrder_TimeTracking_Relationship = "ts_workorder_ts_workordertimetracking_WorkOrder";
 
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperation_WorkOrderTimeTrackingSync_Associate(string unsecure, string secure)
+            : base(typeof(PostOperation_WorkOrderTimeTrackingSync_Associate))
         {
-            var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            var factory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = factory.CreateOrganizationService(context.UserId);
-            var trace = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
+
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+                throw new InvalidPluginExecutionException("localContext");
+
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
+            var trace = localContext.TracingService;
 
             try
             {
@@ -142,15 +149,16 @@ namespace TSIS2.Plugins
                         }
                         else
                         {
-                            trace.Trace("Associate fault for WorkOrder({0}) and TimeTracking({1}): {2}", workOrderRef.Id, timeTrackingRef.Id, ex.Message);
+                            trace.Trace("Associate fault for WorkOrder({0}) and TimeTracking({1}): {2}", workOrderRef.Id, timeTrackingRef.Id, ex);
                             throw;
                         }
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                localContext.TraceWithContext("Exception: {0}", ex.Message);
+                throw new InvalidPluginExecutionException("PostOperation_WorkOrderTimeTrackingSync_Associate failed.", ex);
             }
         }
     }
@@ -165,7 +173,7 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "Synchronizes work order time tracking removal from Unplanned Work Order to Work Order on disassociation.")]
-    public class PostOperation_WorkOrderTimeTrackingSync_Disassociate : IPlugin
+    public class PostOperation_WorkOrderTimeTrackingSync_Disassociate : PluginBase
     {
         private const string UnplannedWorkOrderEntity = "ts_unplannedworkorder";
         private const string WorkOrderEntity = "msdyn_workorder";
@@ -178,12 +186,19 @@ namespace TSIS2.Plugins
         private const string UnplannedWorkOrder_TimeTracking_Relationship = "ts_unplannedworkorder_UnplannedWorkOrder_ts_workordertimetracking";
         private const string WorkOrder_TimeTracking_Relationship = "ts_workorder_ts_workordertimetracking_WorkOrder";
 
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperation_WorkOrderTimeTrackingSync_Disassociate(string unsecure, string secure)
+            : base(typeof(PostOperation_WorkOrderTimeTrackingSync_Disassociate))
         {
-            var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            var factory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = factory.CreateOrganizationService(context.UserId);
-            var trace = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
+
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+                throw new InvalidPluginExecutionException("localContext");
+
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
+            var trace = localContext.TracingService;
 
             try
             {
@@ -288,15 +303,16 @@ namespace TSIS2.Plugins
                         }
                         else
                         {
-                            trace.Trace("Disassociate fault for WorkOrder({0}) and TimeTracking({1}): {2}", workOrderRef.Id, timeTrackingRef.Id, ex.Message);
+                            trace.Trace("Disassociate fault for WorkOrder({0}) and TimeTracking({1}): {2}", workOrderRef.Id, timeTrackingRef.Id, ex);
                             throw;
                         }
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                localContext.TraceWithContext("Exception: {0}", ex.Message);
+                throw new InvalidPluginExecutionException("PostOperation_WorkOrderTimeTrackingSync_Disassociate failed.", ex);
             }
         }
     }
