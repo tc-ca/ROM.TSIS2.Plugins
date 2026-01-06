@@ -275,6 +275,13 @@ namespace TSIS2.Plugins
                         tracingService.Trace("ts_cancelledinspectionjustification changed. New value: {0}", cancelledInspectionJustification != null ? cancelledInspectionJustification.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
+                    if (target.Attributes.Contains("ts_othercancelledjustification"))
+                    {
+                        string otherCancelledInspectionJustification = target.GetAttributeValue<string>("ts_othercancelledjustification");
+                        updateWorkOrder["ts_othercanceledjustification"] = otherCancelledInspectionJustification;
+                        tracingService.Trace("ts_othercancelledjustification changed. New value: {0}", otherCancelledInspectionJustification);
+                        anyFieldChanged = true;
+                    }
                     if (target.Attributes.Contains("ts_revisedquarterid"))
                     {
                         EntityReference revisedQuarterId = target.GetAttributeValue<EntityReference>("ts_revisedquarterid");
