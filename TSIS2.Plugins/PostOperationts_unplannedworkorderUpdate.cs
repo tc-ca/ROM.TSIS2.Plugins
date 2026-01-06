@@ -415,7 +415,13 @@ namespace TSIS2.Plugins
                         tracingService.Trace("msdyn_systemstatus changed. New value: {0}", recordStatus?.Value);
                         anyFieldChanged = true;
                     }
-                    //end here for 473143
+                    if (target.Attributes.Contains("ts_parentworkorder"))
+                    {
+                        EntityReference parentWorkorder = target.GetAttributeValue<EntityReference>("ts_parentworkorder");
+                        updateWorkOrder["msdyn_parentworkorder"] = parentWorkorder;
+                        tracingService.Trace("msdyn_parentworkorder changed. New value: {0}", parentWorkorder != null ? parentWorkorder.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
                     if (anyFieldChanged)
                     {
                         service.Update(updateWorkOrder);
