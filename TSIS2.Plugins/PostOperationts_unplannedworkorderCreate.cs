@@ -143,6 +143,7 @@ namespace TSIS2.Plugins
                         workOrder["msdyn_parentworkorder"] = target.GetAttributeValue<EntityReference>("ts_parentworkorder");
                         workOrder["ovs_fiscalyear"] = target.GetAttributeValue<EntityReference>("ts_plannedfiscalyear");
                         workOrder["ovs_fiscalquarter"] = target.GetAttributeValue<EntityReference>("ts_plannedfiscalquarter");
+                        workOrder["ovs_revisedquarterid"] = target.GetAttributeValue<EntityReference>("ts_revisedquarterid");
 
 
                         localContext.Trace($"Retrieved ts_businessowner: {workOrder.GetAttributeValue<string>("ts_businessowner")}");

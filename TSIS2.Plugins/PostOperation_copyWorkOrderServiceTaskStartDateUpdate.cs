@@ -164,22 +164,28 @@ namespace TSIS2.Plugins
                             anyFieldChanged = true;
                         }
                     }
-
-                    // --- Fields with Special Logic ---
-                    if (target.Contains("statecode"))
+                   if (target.Contains("statuscode"))
                     {
-                        var stateCode = target.GetAttributeValue<OptionSetValue>("statecode");
-                        if (stateCode != null)
+                        var statusCode = target.GetAttributeValue<OptionSetValue>("statuscode");
+                        if (statusCode != null)
                         {
-                            int mappedStateCode;
-                            switch (stateCode.Value)
+                            int mappedStatusCode;
+                            switch (statusCode.Value)
                             {
-                                case 0: mappedStateCode = 0; break;  // Active -> Active
-                                case 1: mappedStateCode = 1; break;  // Inactive -> Inactive
-                                default: mappedStateCode = 0; break; // Default to Active
+                                // Active statecodes
+                                case 1: mappedStatusCode = 1; break;           // Active -> Active
+                                case 741130001: mappedStatusCode = 918640002; break; // Complete -> Completed
+                                case 741130002: mappedStatusCode = 918640004; break; // In Progress -> In Progress
+                                case 741130003: mappedStatusCode = 918640005; break; // New -> New
+
+                                // Inactive statecodes
+                                case 2: mappedStatusCode = 2; break;           // Inactive -> Inactive
+                                case 741130004: mappedStatusCode = 918640003; break; // Closed -> Closed
+
+                                default: mappedStatusCode = 1; break; // Default to Active
                             }
-                            updateTask["statecode"] = new OptionSetValue(mappedStateCode);
-                            localContext.Trace("statecode changed. New mapped value: {0}", mappedStateCode);
+                            updateTask["statuscode"] = new OptionSetValue(mappedStatusCode);
+                            localContext.Trace("statuscode changed. New mapped value: {0}", mappedStatusCode);
                             anyFieldChanged = true;
                         }
                     }
@@ -201,9 +207,8 @@ namespace TSIS2.Plugins
             }
             catch (Exception ex)
             {
-                localContext.TraceWithContext("Exception: {0}", ex.Message);
-                throw new InvalidPluginExecutionException("PostOperation_CopyStartDateToTaskOnUpdate failed.", ex);
+                localContext.Trace("An error occurred: {0}", ex.ToString());
+                throw;
             }
         }
     }
-}
