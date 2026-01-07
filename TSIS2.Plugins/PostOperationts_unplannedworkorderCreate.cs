@@ -169,6 +169,9 @@ namespace TSIS2.Plugins
                         workOrder["ts_securityincident"] = target.GetAttributeValue<EntityReference>("ts_securityincident");
                         workOrder["ts_trip"] = target.GetAttributeValue<EntityReference>("ts_trip");
                         workOrder["msdyn_parentworkorder"] = target.GetAttributeValue<EntityReference>("ts_parentworkorder");
+                        workOrder["ovs_fiscalyear"] = target.GetAttributeValue<EntityReference>("ts_plannedfiscalyear");
+                        workOrder["ovs_fiscalquarter"] = target.GetAttributeValue<EntityReference>("ts_plannedfiscalquarter");
+
 
                         tracingService.Trace($"Retrieved ts_businessowner: {workOrder.GetAttributeValue<string>("ts_businessowner")}");
 

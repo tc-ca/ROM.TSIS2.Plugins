@@ -17,7 +17,7 @@ namespace TSIS2.Plugins
         "PostOperationts_unplannedworkorderUpdate",
         1,
         IsolationModeEnum.Sandbox,
-        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "ts_workorder,ts_workordertype,ts_region,ts_operation,ts_operationtype,ts_stakeholder,ts_site,ts_state,ts_worklocation,ts_rational,ts_businessowner,ts_primaryincidenttype,ts_primaryincidentdescription,ts_primaryincidentestimatedduration,ts_overtimerequired,ownerid,ts_country",
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "ts_workorder,ts_workordertype,ts_region,ts_operation,ts_operationtype,ts_stakeholder,ts_site,ts_state,ts_worklocation,ts_rational,ts_businessowner,ts_primaryincidenttype,ts_primaryincidentdescription,ts_primaryincidentestimatedduration,ts_overtimerequired,ownerid,ts_country, ts_plannedfiscalyear, ts_plannedfiscalquarter",
         Description = "Copies changed fields to the related msdyn_workorder record on update.")]
     public class PostOperationts_unplannedworkorderUpdate : IPlugin
     {
@@ -266,6 +266,20 @@ namespace TSIS2.Plugins
                         EntityReference operationId = target.GetAttributeValue<EntityReference>("ts_operation");
                         updateWorkOrder["ovs_operationid"] = operationId;
                         tracingService.Trace("ovs_operationid changed. New value: {0}", operationId != null ? operationId.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_plannedfiscalyear"))
+                    {
+                        EntityReference plannedFiscalYear = target.GetAttributeValue<EntityReference>("ts_plannedfiscalyear");
+                        updateWorkOrder["ovs_fiscalyear"] = plannedFiscalYear;
+                        tracingService.Trace("ts_plannedfiscalyear changed. New value: {0}", plannedFiscalYear != null ? plannedFiscalYear.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_plannedfiscalquarter"))
+                    {
+                        EntityReference plannedFiscalQuarter = target.GetAttributeValue<EntityReference>("ts_plannedfiscalquarter");
+                        updateWorkOrder["ovs_fiscalquarter"] = plannedFiscalQuarter;
+                        tracingService.Trace("ts_plannedfiscalquarter changed. New value: {0}", plannedFiscalQuarter != null ? plannedFiscalQuarter.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
                     if (target.Attributes.Contains("ts_cancelledinspectionjustification"))
