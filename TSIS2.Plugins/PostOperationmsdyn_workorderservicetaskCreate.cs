@@ -74,18 +74,17 @@ namespace TSIS2.Plugins
             }
 
             IPluginExecutionContext context = localContext.PluginExecutionContext;
-            ITracingService tracingService = localContext.TracingService;
             Entity target = (Entity)context.InputParameters["Target"];
 
             //Entity postImageEntity = (context.PostEntityImages != null && context.PostEntityImages.Contains(this.postImageAlias)) ? context.PostEntityImages[this.postImageAlias] : null;
-            tracingService.Trace("Entering ExecuteCrmPlugin method.");
+            localContext.Trace("Entering ExecuteCrmPlugin method.");
             try
             {
                 // Log the system username at the start
                 var systemUser = localContext.OrganizationService.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
-                tracingService.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
+                localContext.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
 
-                tracingService.Trace("PostOperationmsdyn_workorderservicetaskCreate: Begin.");
+                localContext.Trace("PostOperationmsdyn_workorderservicetaskCreate: Begin.");
                 if (target.LogicalName.Equals(msdyn_workorderservicetask.EntityLogicalName))
                 {
                     if (target.Attributes.Contains("msdyn_tasktype") && target.Attributes["msdyn_tasktype"] != null)
@@ -93,7 +92,7 @@ namespace TSIS2.Plugins
                         EntityReference tasktype = (EntityReference)target.Attributes["msdyn_tasktype"];
                         using (var servicecontext = new Xrm(localContext.OrganizationService))
                         {
-                            tracingService.Trace("Task type found: {0}", tasktype.Id);
+                            localContext.Trace("Task type found: {0}", tasktype.Id);
                             var rclegislations = (from tt in servicecontext.ovs_msdyn_servicetasktype_qm_rclegislationSet
                                                   join le in servicecontext.qm_rclegislationSet
                                                   on tt.qm_rclegislationid.Value equals le.qm_rclegislationId.Value
@@ -120,7 +119,7 @@ namespace TSIS2.Plugins
             }
             catch (Exception e)
             {
-                tracingService.Trace("Exception occurred: {0}", e.ToString());
+                localContext.Trace("Exception occurred: {0}", e.ToString());
                 throw new InvalidPluginExecutionException(e.Message);
             }
         }

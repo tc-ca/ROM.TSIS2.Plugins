@@ -72,37 +72,36 @@ namespace TSIS2.Plugins
             }
 
             IPluginExecutionContext context = localContext.PluginExecutionContext;
-            ITracingService tracingService = localContext.TracingService;
             Entity target = (Entity)context.InputParameters["Target"];
             IOrganizationService service = localContext.OrganizationService;
             //Entity postImageEntity = (context.PostEntityImages != null && context.PostEntityImages.Contains(this.postImageAlias)) ? context.PostEntityImages[this.postImageAlias] : null;
 
             // Retrieve the system username
             var userId = service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
-            tracingService.Trace("PreOperationincidentCreate: Entering ExecuteCrmPlugin method.");
+            localContext.Trace("PreOperationincidentCreate: Entering ExecuteCrmPlugin method.");
 
             try
             {
-                tracingService.Trace("Plugin executed by user: {0}", userId.GetAttributeValue<string>("fullname"));
-                tracingService.Trace("Case GUID: {0}", context.PrimaryEntityId);
-                tracingService.Trace("Case Number: {0}", target.GetAttributeValue<string>("ticketnumber"));
+                localContext.Trace("Plugin executed by user: {0}", userId.GetAttributeValue<string>("fullname"));
+                localContext.Trace("Case GUID: {0}", context.PrimaryEntityId);
+                localContext.Trace("Case Number: {0}", target.GetAttributeValue<string>("ticketnumber"));
                 if (target.LogicalName.Equals(Incident.EntityLogicalName))
                 {
-                    tracingService.Trace("PreOperationincidentCreate: Processing incident entity.");
+                    localContext.Trace("PreOperationincidentCreate: Processing incident entity.");
 
                     if (target.Attributes.Contains("ticketnumber") && target.Attributes["ticketnumber"] != null && (!target.Attributes.Contains("title") || target.Attributes["title"] == null || target.Attributes["title"].ToString().Length <=0))
                     {
-                        tracingService.Trace("PreOperationincidentCreate: Setting title attribute.");
+                        localContext.Trace("PreOperationincidentCreate: Setting title attribute.");
                         target.Attributes["title"] = target.Attributes["ticketnumber"];
                     }
                 }
             }
             catch (Exception e)
             {
-                tracingService.Trace("PreOperationincidentCreate: Exception: {0}", e.ToString());
+                localContext.Trace("PreOperationincidentCreate: Exception: {0}", e.ToString());
                 throw new InvalidPluginExecutionException(e.Message);
             }
-            tracingService.Trace("PreOperationincidentCreate: Exiting ExecuteCrmPlugin method.");
+            localContext.Trace("PreOperationincidentCreate: Exiting ExecuteCrmPlugin method.");
         }
     }
 }

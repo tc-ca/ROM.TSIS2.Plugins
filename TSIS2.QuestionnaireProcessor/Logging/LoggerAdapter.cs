@@ -1,7 +1,6 @@
 using System;
-using System.Configuration;
 
-namespace TSIS2.Plugins.QuestionnaireExtractor
+namespace TSIS2.Plugins.QuestionnaireProcessor
 {
     /// <summary>
     /// Adapter that implements ILoggingService for standalone applications with console output.
@@ -14,34 +13,8 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
 
         public LoggerAdapter()
         {
-            // Read log level from configuration
-            _currentLogLevel = GetLogLevelFromConfig();
-            _simulationMode = false; // Default simulation mode
-        }
-
-        /// <summary>
-        /// Gets the log level from configuration.
-        /// </summary>
-        /// <returns>The configured log level, or Info as default.</returns>
-        private LogLevel GetLogLevelFromConfig()
-        {
-            try
-            {
-                string configLogLevel = ConfigurationManager.AppSettings["LogLevel"];
-                if (!string.IsNullOrEmpty(configLogLevel))
-                {
-                    if (Enum.TryParse(configLogLevel, true, out LogLevel level))
-                    {
-                        return level;
-                    }
-                }
-            }
-            catch
-            {
-                // If we can't read from config, use default
-            }
-            
-            return LogLevel.Info; // Default fallback
+            _currentLogLevel = LogLevel.Info;
+            _simulationMode = false;
         }
 
         public void SetLogLevel(LogLevel level)
@@ -49,14 +22,16 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             _currentLogLevel = level;
         }
 
+        public bool VerboseMode => _currentLogLevel >= LogLevel.Verbose;
+
         public void SetSimulationMode(bool simulationMode)
         {
             _simulationMode = simulationMode;
         }
 
-        public void Trace(string message) => LogIfEnabled(LogLevel.Info, message);
+        public void Trace(string message) => LogIfEnabled(LogLevel.Verbose, message);
 
-        public void Trace(string format, params object[] args) => LogIfEnabled(LogLevel.Info, string.Format(format, args));
+        public void Trace(string format, params object[] args) => LogIfEnabled(LogLevel.Verbose, string.Format(format, args));
 
         public void Error(string message) => LogIfEnabled(LogLevel.Error, $"ERROR: {message}");
 
@@ -70,16 +45,16 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
 
         public void Debug(string message) => LogIfEnabled(LogLevel.Debug, message);
 
-        /// <summary>
-        /// Logs the message only if the specified level is at or below the current log level.
-        /// </summary>
-        /// <param name="level">The log level of the message.</param>
-        /// <param name="message">The message to log.</param>
+        public void TraceErrorWithDebugInfo(string basicMessage, string detailedMessage)
+        {
+            Error(basicMessage);
+            Debug(detailedMessage);
+        }
+
         private void LogIfEnabled(LogLevel level, string message)
         {
             if (level <= _currentLogLevel || level == LogLevel.Processing)
             {
-                // Add level-specific formatting
                 switch (level)
                 {
                     case LogLevel.Error:
@@ -107,4 +82,4 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             }
         }
     }
-} 
+}

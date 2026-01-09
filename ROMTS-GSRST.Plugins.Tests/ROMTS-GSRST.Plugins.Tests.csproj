@@ -150,7 +150,14 @@
     <Compile Include="PreOperationmsdyn_workorderUpdateTests.cs" />
     <Compile Include="PreOperationts_questionnaireversionUpdateTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestData\QuestionnaireSamples.cs" />
+    <Compile Include="QuestionnaireProcessorTests\QuestionnaireFormatterTest.cs" />
+    <Compile Include="QuestionnaireProcessorTests\QuestionnaireComprehensiveFormatterTests.cs" />
+    <Compile Include="QuestionnaireProcessorTests\QuestionnaireIntegrationScenarioTests.cs" />
+    <Compile Include="QuestionnaireProcessorTests\QuestionnaireDefinitionTests.cs" />
+    <Compile Include="QuestionnaireProcessorTests\QuestionnaireResponseTests.cs" />
+    <Compile Include="QuestionnaireProcessorTests\QuestionnaireRecompletionLogicTests.cs" />
+    <Compile Include="QuestionnaireProcessorTests\TestData\QuestionnaireSamples.cs" />
+    <Compile Include="QuestionnaireProcessorTests\TestLoggingAdapter.cs" />
     <Compile Include="UnitTestBase.cs" />
     <Compile Include="XrmMockupFixture.cs" />
   </ItemGroup>
@@ -257,6 +264,13 @@
       <Project>{0373c222-426a-4518-940c-b886b1ae7111}</Project>
       <Name>TSIS2.Plugins</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TSIS2.QuestionnaireProcessor\TSIS2.QuestionnaireProcessor.csproj">
+      <Project>{ffe6c835-8f57-420a-b592-78d7ffa2550e}</Project>
+      <Name>TSIS2.QuestionnaireProcessor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Configuration\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

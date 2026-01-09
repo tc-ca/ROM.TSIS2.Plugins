@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
@@ -17,17 +17,16 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "After an Entity Risk is created, setup the many-to-many relationship")]
-    public class PostOperationts_entityriskCreate : IPlugin
+    public class PostOperationts_entityriskCreate : PluginBase
     {
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperationts_entityriskCreate() : base(typeof(PostOperationts_entityriskCreate))
         {
-            // Obtain the tracing service
-            ITracingService tracingService =
-            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
 
-            // Obtain the execution context from the service provider.
-            IPluginExecutionContext context = (IPluginExecutionContext)
-                serviceProvider.GetService(typeof(IPluginExecutionContext));
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
 
             // The InputParameters collection contains all the data passed in the message request.
             if (context.InputParameters.Contains("Target") &&
@@ -35,24 +34,14 @@ namespace TSIS2.Plugins
             {
                 // Obtain the target entity from the input parameters.
                 Entity target = (Entity)context.InputParameters["Target"];
-
-                // Obtain the preimage entity
-                Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
-
-                // Obtain the organization service reference which you will need for
-                // web service calls.
-                IOrganizationServiceFactory serviceFactory =
-                    (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-                IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
-
                 try
                 {
                     if (target.LogicalName.Equals(ts_EntityRisk.EntityLogicalName))
                     {
                         ts_EntityRisk myEntityRisk = target.ToEntity<ts_EntityRisk>();
 
-                        tracingService.Trace("Entering the PostOperationts_entityriskCreate method.");
-                        tracingService.Trace("Check if ts_entityname and ts_entityid are populated.");
+                        localContext.Trace("Entering the PostOperationts_entityriskCreate method.");
+                        localContext.Trace("Check if ts_entityname and ts_entityid are populated.");
 
                         /*  
                          *  Check if ts_entityname and ts_entityid are populated.  If they are then create the many-to-many relationship record
@@ -65,9 +54,9 @@ namespace TSIS2.Plugins
                                 {
                                     var selectedTable = "";
                                     var relationshipName = "";
-                                    tracingService.Trace("Determine what table is selected");
+                                    localContext.Trace("Determine what table is selected");
 
-                                    switch(myEntityRisk.ts_EntityName)
+                                    switch (myEntityRisk.ts_EntityName)
                                     {
                                         case ts_EntityRisk_ts_EntityName.ActivityType:
                                             selectedTable = "msdyn_incidenttypeid";
@@ -99,12 +88,12 @@ namespace TSIS2.Plugins
 
                                     if (String.IsNullOrWhiteSpace(selectedTable))
                                     {
-                                        tracingService.Trace("selectedTable does not have a value");
+                                        localContext.Trace("selectedTable does not have a value");
                                         throw new InvalidPluginExecutionException(
                                         $"The selectedTable value is not set because the ts_EntityName '{myEntityRisk.ts_EntityName}' does not match any known cases.");
                                     }
 
-                                    tracingService.Trace("Create the Associated Request");
+                                    localContext.Trace("Create the Associated Request");
                                     AssociateRequest associateRequest = new AssociateRequest
                                     {
                                         Target = myEntityRisk.ToEntityReference(),
@@ -115,33 +104,20 @@ namespace TSIS2.Plugins
                                         Relationship = new Relationship(relationshipName)
                                     };
 
-                                    tracingService.Trace("Create the many-to-many record");
+                                    localContext.Trace("Create the many-to-many record");
                                     service.Execute(associateRequest);
 
-                                    tracingService.Trace("Exiting the PostOperationts_entityriskCreate method.");
+                                    localContext.Trace("Exiting the PostOperationts_entityriskCreate method.");
                                 }
                             }
                         }
 
                     }
                 }
-                catch (InvalidPluginExecutionException ex)
+                catch (Exception e)
                 {
-                    tracingService.Trace("PostOperationts_entityriskCreate Error: {0}", ex.Message);
-                    tracingService.Trace("STACK TRACE: {0}", ex.StackTrace);
-
-                    // Rethrow to surface it in Dataverse
-                    throw;
-                }
-                catch (Exception ex)
-                {
-                    tracingService.Trace("PostOperationts_entityriskCreate Plugin: {0}", ex.ToString());
-                    tracingService.Trace($"MESSAGE: {ex.Message}");
-                    tracingService.Trace($"STACK TRACE: {ex.StackTrace}");
-                    tracingService.Trace($"INNER EXCEPTION: {ex.InnerException?.Message}");
-                    tracingService.Trace($"SOURCE: {ex.Source}");
-
-                    throw;
+                    localContext.Trace("PostOperationts_entityriskCreate Plugin: {0}", e);
+                    throw new InvalidPluginExecutionException("PostOperationts_entityriskCreate failed.", e);
                 }
             }
         }

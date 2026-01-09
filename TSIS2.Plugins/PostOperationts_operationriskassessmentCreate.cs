@@ -19,17 +19,16 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "After Operation Risk Assessment created, populate Risk Criteria Responses and Discretionary Score Responses")]
-    public class PostOperationts_operationriskassessmentCreate : IPlugin
+    public class PostOperationts_operationriskassessmentCreate : PluginBase
     {
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperationts_operationriskassessmentCreate() : base(typeof(PostOperationts_operationriskassessmentCreate))
         {
-            // Obtain the tracing service
-            ITracingService tracingService =
-            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
 
-            // Obtain the execution context from the service provider.
-            IPluginExecutionContext context = (IPluginExecutionContext)
-                serviceProvider.GetService(typeof(IPluginExecutionContext));
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
 
             // The InputParameters collection contains all the data passed in the message request.
             if (context.InputParameters.Contains("Target") &&
@@ -40,12 +39,6 @@ namespace TSIS2.Plugins
 
                 // Obtain the preimage entity
                 Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
-
-                // Obtain the organization service reference which you will need for
-                // web service calls.
-                IOrganizationServiceFactory serviceFactory =
-                    (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-                IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
 
                 try
                 {
@@ -157,7 +150,7 @@ namespace TSIS2.Plugins
                                         }
                                         catch (JsonReaderException)
                                         {
-                                            tracingService.Trace($"PostOperationts_operationriskassessmentCreate: Invalid JSON format for operationRiskAssessment {operationRiskAssessment.Id.ToString()} ts_RiskCriteriaOptionsImport value:   {operationRiskAssessment.ts_RiskCriteriaOptionsImport}");
+                                            localContext.Trace($"PostOperationts_operationriskassessmentCreate: Invalid JSON format for operationRiskAssessment {operationRiskAssessment.Id.ToString()} ts_RiskCriteriaOptionsImport value:   {operationRiskAssessment.ts_RiskCriteriaOptionsImport}");
                                         }
                                     }
                                 }
@@ -209,14 +202,14 @@ namespace TSIS2.Plugins
                     }
                     else
                     {
-                        tracingService.Trace("PostOperationts_operationriskassessmentCreate Plugin: {0}", ex.ToString());
+                        localContext.Trace("PostOperationts_operationriskassessmentCreate Plugin: {0}", ex.ToString());
                         throw;
                     }
                 }
                 catch (Exception ex)
                 {
-                    tracingService.Trace("PostOperationts_operationriskassessmentCreate Plugin: {0}", ex.ToString());
-                    throw;
+                    localContext.TraceWithContext("PostOperationts_operationriskassessmentCreate Plugin: {0}", ex.ToString());
+                    throw new InvalidPluginExecutionException("PostOperationts_operationriskassessmentCreate failed.", ex);
                 }
             }
         }

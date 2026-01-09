@@ -16,17 +16,23 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "After File created, automatically give the requested team(s) access to the uploaded file")]
-    public class PostOperationts_fileCreate : IPlugin
+    public class PostOperationts_fileCreate : PluginBase
     {
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperationts_fileCreate(string unsecure, string secure)
+            : base(typeof(PostOperationts_fileCreate))
         {
-            // Obtain the tracing service
-            ITracingService tracingService =
-            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
+
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
 
             // Obtain the execution context from the service provider.
-            IPluginExecutionContext context = (IPluginExecutionContext)
-                serviceProvider.GetService(typeof(IPluginExecutionContext));
+            IPluginExecutionContext context = localContext.PluginExecutionContext;
 
             // The InputParameters collection contains all the data passed in the message request.
             if (context.InputParameters.Contains("Target") &&
@@ -40,16 +46,14 @@ namespace TSIS2.Plugins
 
                 // Obtain the organization service reference which you will need for
                 // web service calls.
-                IOrganizationServiceFactory serviceFactory =
-                    (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-                IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
+                IOrganizationService service = localContext.OrganizationService;
 
                 try
                 {
                     if (target.LogicalName.Equals(ts_File.EntityLogicalName))
                     {
                         ts_File myFile = target.ToEntity<ts_File>();
-                        
+
                         /*  
                          *  Check if the new file record is related to a Work Order Service Task
                          *  If it is, then get the Work Order that is related to the Work Order Service Task
@@ -248,14 +252,14 @@ namespace TSIS2.Plugins
                     }
                     else
                     {
-                        tracingService.Trace("PostOperationts_fileCreate Plugin: {0}", ex.ToString());
-                        throw;
+                        localContext.TraceWithContext("PostOperationts_fileCreate Plugin: {0}", ex.ToString());
+                        throw new InvalidPluginExecutionException("PostOperationts_fileCreate failed.", ex);
                     }
                 }
                 catch (Exception ex)
                 {
-                    tracingService.Trace("PostOperationts_fileCreate Plugin: {0}", ex.ToString());
-                    throw;
+                    localContext.TraceWithContext("PostOperationts_fileCreate Plugin: {0}", ex.ToString());
+                    throw new InvalidPluginExecutionException("PostOperationts_fileCreate failed.", ex);
                 }
             }
         }    
