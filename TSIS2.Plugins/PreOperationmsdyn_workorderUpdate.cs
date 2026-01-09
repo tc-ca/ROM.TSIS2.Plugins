@@ -34,6 +34,7 @@ namespace TSIS2.Plugins
     /// </summary>    
     public class PreOperationmsdyn_workorderUpdate : IPlugin
     {
+        private const string ROM_SERVICE = "- ROM Service / Service GSR";
         public void Execute(IServiceProvider serviceProvider)
         {
             // Obtain the tracing service
@@ -349,10 +350,20 @@ namespace TSIS2.Plugins
                         }
                         if (target.Attributes.Contains("ownerid") && target.GetAttributeValue<EntityReference>("ownerid").Id != context.InitiatingUserId)
                         {
-                            tracingService.Trace("Ownerid is changing to {0} by {1} ", target.GetAttributeValue<EntityReference>("ownerid").Id, context.InitiatingUserId);
                             using (var servicecontext = new Xrm(service))
                             {
                                 var currentUser = servicecontext.SystemUserSet.Where(u => u.Id == context.InitiatingUserId).FirstOrDefault();
+                                var currentUserFullName = currentUser.GetAttributeValue<string>("fullname");
+
+                                // If the plugin was triggered by the ROM service account,
+                                // resolve the "real" user from the related Unplanned Work Order
+                                if (string.Equals(currentUserFullName, ROM_SERVICE, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    EntityReference oldOwnerRef = preImageEntity?.GetAttributeValue<EntityReference>("ownerid");
+                                    currentUser = servicecontext.SystemUserSet.FirstOrDefault(u => u.Id == oldOwnerRef.Id);
+                                }
+                                tracingService.Trace("Ownerid is changing to {0} by currentUser {1}",target.GetAttributeValue<EntityReference>("ownerid")?.Id,currentUser?.Id);
+
                                 var currentUserBUId = currentUser.GetAttributeValue<EntityReference>("businessunitid").Id;
                                 var updatedOwnerUser = servicecontext.SystemUserSet.Where(u => u.Id == target.GetAttributeValue<EntityReference>("ownerid").Id).FirstOrDefault();
 
