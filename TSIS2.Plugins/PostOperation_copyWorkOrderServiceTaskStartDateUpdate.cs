@@ -164,7 +164,7 @@ namespace TSIS2.Plugins
                             anyFieldChanged = true;
                         }
                     }
-                   if (target.Contains("statuscode"))
+                    if (target.Contains("statuscode"))
                     {
                         var statusCode = target.GetAttributeValue<OptionSetValue>("statuscode");
                         if (statusCode != null)
@@ -212,3 +212,4 @@ namespace TSIS2.Plugins
             }
         }
     }
+}
