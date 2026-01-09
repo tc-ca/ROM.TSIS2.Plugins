@@ -28,7 +28,6 @@ namespace TSIS2.Plugins
     "TSIS2.Plugins.PreOperationmsdyn_workorderUpdate Plugin",
     1,
     IsolationModeEnum.Sandbox,
-    Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "ownerid",
     Description = "On Work Order Update, populate the Regulated Entity into the Billing Account using the selected Operation")]
     /// <summary>
     /// PreOperationmsdyn_workorderUpdate Plugin.
