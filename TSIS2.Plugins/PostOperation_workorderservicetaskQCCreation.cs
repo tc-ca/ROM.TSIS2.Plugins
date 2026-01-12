@@ -65,20 +65,10 @@ namespace TSIS2.Plugins
                 var wost = new Entity("msdyn_workorderservicetask");
                 wost["msdyn_workorder"] = new EntityReference("msdyn_workorder", workOrderId);
                 wost["msdyn_tasktype"] = new EntityReference("msdyn_servicetasktype", taskTypeId);
+                wost["ownerid"] = new EntityReference("systemuser", currentUser);
 
                 var createdId = service.Create(wost);
                 tracing.Trace("Created WOST: {0}", createdId);
-                
-                var workOrder = service.Retrieve("msdyn_workorder",workOrderId,new ColumnSet("ownerid"));
-                EntityReference woOwnerRef = workOrder.GetAttributeValue<EntityReference>("ownerid");
-                Guid workOrderOwnerId = woOwnerRef.Id;
-                //Grant access to user (creator)
-                GrantAccess(service, createdId, currentUser);
-
-                //Grant access to Work Order owner
-                GrantAccess(service, createdId, workOrderOwnerId);        
-
-
             }
             catch (Exception ex)
             {
@@ -117,20 +107,6 @@ namespace TSIS2.Plugins
 
             tracing.Trace("OperationType BU ID: {0}", buRef.Id);
             return OrganizationConfig.IsAvSecBU(service, buRef.Id, tracing);
-        }
-
-        private void GrantAccess(IOrganizationService service, Guid wostId, Guid userId)
-        {
-            var grantAccessRequest = new GrantAccessRequest
-            {
-                Target = new EntityReference("msdyn_workorderservicetask", wostId),
-                PrincipalAccess = new PrincipalAccess
-                {
-                    Principal = new EntityReference("systemuser", userId),
-                    AccessMask = AccessRights.ReadAccess | AccessRights.WriteAccess
-                }
-            };
-            service.Execute(grantAccessRequest);
         }
     }
 }
