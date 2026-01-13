@@ -9,11 +9,12 @@
 //     Runtime Version:4.0.30319.1
 // </auto-generated>
 
+using Microsoft.Crm.Sdk.Messages;
+using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Query;
 using System;
 using System.Linq;
 using System.Web.Services.Description;
-using Microsoft.Xrm.Sdk;
-using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
@@ -34,6 +35,8 @@ namespace TSIS2.Plugins
     public class PostOperationmsdyn_workorderservicetaskCreate : PluginBase
     {
         //private readonly string postImageAlias = "PostImage";
+        private const string ROM_SERVICE = "- ROM Service / Service GSR";
+        private const string QC_TASKTYPE_GUID = "931b334c-c55b-ee11-8df0-000d3af4f52a";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PostOperationmsdyn_workorderservicetaskCreate"/> class.
@@ -86,6 +89,73 @@ namespace TSIS2.Plugins
                 tracingService.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
 
                 tracingService.Trace("PostOperationmsdyn_workorderservicetaskCreate: Begin.");
+
+                if (string.Equals(systemUser.GetAttributeValue<string>("fullname"), ROM_SERVICE, StringComparison.OrdinalIgnoreCase))
+                {
+
+                    if (target.Attributes.Contains("msdyn_workorder") && target["msdyn_workorder"] != null && target.Attributes.Contains("msdyn_tasktype") && target["msdyn_tasktype"] != null)
+                    {
+                        EntityReference tasktype = (EntityReference)target["msdyn_tasktype"];
+
+                        if (tasktype.Id != Guid.Parse(QC_TASKTYPE_GUID))
+                        {
+                            tracingService.Trace("Task type is not QC, processing WOST.");
+                            var workOrderRef = target.GetAttributeValue<EntityReference>("msdyn_workorder");
+
+                            tracingService.Trace("WOST is linked to Work Order. Id: {0}", workOrderRef.Id);
+
+                            var workOrder = localContext.OrganizationService.Retrieve("msdyn_workorder", workOrderRef.Id, new ColumnSet("ownerid"));
+
+                            if (workOrder.Contains("ownerid") && workOrder["ownerid"] != null)
+                            {
+                                var woOwner = workOrder.GetAttributeValue<EntityReference>("ownerid");
+
+                                target["ownerid"] = woOwner;
+
+                                tracingService.Trace("Updating Work Order Service Task owner.");
+                                localContext.OrganizationService.Update(target);
+
+
+                                tracingService.Trace("Retrieving Work Order Incidents for Work Order.");
+
+                                var incidentQuery = new QueryExpression("msdyn_workorderincident")
+                                {
+                                    ColumnSet = new ColumnSet("msdyn_workorderincidentid", "ownerid"),
+                                    Criteria ={Conditions ={new ConditionExpression("msdyn_workorder",ConditionOperator.Equal, workOrderRef.Id)}}
+                                };
+
+                                var incidents = localContext.OrganizationService.RetrieveMultiple(incidentQuery);
+
+                                foreach (var incident in incidents.Entities)
+                                {
+                                    tracingService.Trace(
+                                        "Assigning Incident {0} owner to WO owner {1}.",
+                                        incident.Id,
+                                        woOwner.Id);
+
+                                    var assignRequest = new AssignRequest
+                                    {
+                                        Target = incident.ToEntityReference(),
+                                        Assignee = woOwner
+                                    };
+
+                                    localContext.OrganizationService.Execute(assignRequest);
+
+                                }
+                                // Trace after update
+                                tracingService.Trace("Work Order Service Task update complete.");
+                            }
+                            else
+                            {
+                                tracingService.Trace("Work Order has no ownerid (unexpected).");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        tracingService.Trace("WOST does not contain msdyn_workorder lookup.");
+                    }
+                }
                 if (target.LogicalName.Equals(msdyn_workorderservicetask.EntityLogicalName))
                 {
                     if (target.Attributes.Contains("msdyn_tasktype") && target.Attributes["msdyn_tasktype"] != null)
