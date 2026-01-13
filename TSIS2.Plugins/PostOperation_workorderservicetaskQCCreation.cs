@@ -1,10 +1,6 @@
-﻿using Microsoft.Crm.Sdk.Messages;
-using Microsoft.Xrm.Sdk;
+﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using System;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace TSIS2.Plugins
 {
@@ -24,6 +20,7 @@ namespace TSIS2.Plugins
         private static readonly Guid AviationTaskTypeId = new Guid("931b334c-c55b-ee11-8df0-000d3af4f52a");
         private static readonly Guid NonAviationTaskTypeId = new Guid("765fcc32-7339-ef11-a316-6045bd5f6387");
 
+        private const string QC_WOST_NAME = "Quality Control(QC) Review";
         public void Execute(IServiceProvider serviceProvider)
         {
             var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
@@ -66,6 +63,7 @@ namespace TSIS2.Plugins
                 wost["msdyn_workorder"] = new EntityReference("msdyn_workorder", workOrderId);
                 wost["msdyn_tasktype"] = new EntityReference("msdyn_servicetasktype", taskTypeId);
                 wost["ownerid"] = new EntityReference("systemuser", currentUser);
+                wost["msdyn_name"] = QC_WOST_NAME;
 
                 var createdId = service.Create(wost);
                 tracing.Trace("Created WOST: {0}", createdId);
