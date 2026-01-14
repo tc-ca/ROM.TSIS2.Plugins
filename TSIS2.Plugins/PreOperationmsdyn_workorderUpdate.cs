@@ -354,13 +354,27 @@ namespace TSIS2.Plugins
                                 var currentUserFullName = currentUser.GetAttributeValue<string>("fullname");
 
                                 // If the plugin was triggered by the ROM service account,
-                                // resolve the "real" user from the related Unplanned Work Order
+                                // we cannot rely on context.UserId / InitiatingUserId.
+                                // Instead, resolve the "real" user from the related Unplanned Work Order.
                                 if (string.Equals(currentUserFullName, ROM_SERVICE, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    EntityReference oldOwnerRef = preImageEntity?.GetAttributeValue<EntityReference>("ownerid");
-                                    currentUser = servicecontext.SystemUserSet.FirstOrDefault(u => u.Id == oldOwnerRef.Id);
+                                    // Query the related Unplanned Work Order to determine
+                                    // who last modified it (used here as the effective user)
+                                    var query = new QueryExpression("ts_unplannedworkorder")
+                                    {
+                                        ColumnSet = new ColumnSet("modifiedby"),
+                                        TopCount = 1
+                                    };
+
+                                    query.Criteria.AddCondition("ts_workorder",ConditionOperator.Equal,context.PrimaryEntityId);
+
+                                    var unplannedWO = service.RetrieveMultiple(query).Entities.FirstOrDefault();
+
+                                    var modifiedByRef = unplannedWO.GetAttributeValue<EntityReference>("modifiedby");
+
+                                    currentUser = servicecontext.SystemUserSet.FirstOrDefault(u => u.Id == modifiedByRef.Id);
                                 }
-                                tracingService.Trace("Ownerid is changing to {0} by currentUser {1}",target.GetAttributeValue<EntityReference>("ownerid")?.Id,currentUser?.Id);
+                                localContext.Trace("Ownerid is changing to {0} by currentUser {1}",target.GetAttributeValue<EntityReference>("ownerid")?.Id,currentUser?.Id);
 
                                 var currentUserBUId = currentUser.GetAttributeValue<EntityReference>("businessunitid").Id;
                                 var updatedOwnerUser = servicecontext.SystemUserSet.Where(u => u.Id == target.GetAttributeValue<EntityReference>("ownerid").Id).FirstOrDefault();

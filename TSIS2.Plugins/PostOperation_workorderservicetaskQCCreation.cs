@@ -1,4 +1,3 @@
-using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using System;
@@ -20,7 +19,7 @@ namespace TSIS2.Plugins
         // Task Type IDs (Aviation vs Non-Aviation)
         private static readonly Guid AviationTaskTypeId = new Guid("931b334c-c55b-ee11-8df0-000d3af4f52a");
         private static readonly Guid NonAviationTaskTypeId = new Guid("765fcc32-7339-ef11-a316-6045bd5f6387");
-
+        private const string QC_WOST_NAME = "Quality Control(QC) Review";
         public PostOperation_workorderservicetaskQCCreation(string unsecure, string secure)
             : base(typeof(PostOperation_workorderservicetaskQCCreation))
         {
@@ -71,18 +70,11 @@ namespace TSIS2.Plugins
                 Entity wost = new Entity("msdyn_workorderservicetask");
                 wost["msdyn_workorder"] = new EntityReference("msdyn_workorder", workOrderId);
                 wost["msdyn_tasktype"] = new EntityReference("msdyn_servicetasktype", taskTypeId);
+                wost["ownerid"] = new EntityReference("systemuser", currentUser);
+                wost["msdyn_name"] = QC_WOST_NAME;
 
                 Guid createdId = service.Create(wost);
                 tracing.Trace("Created WOST: {0}", createdId);
-
-                Entity workOrder = service.Retrieve("msdyn_workorder", workOrderId, new ColumnSet("ownerid"));
-                EntityReference woOwnerRef = workOrder.GetAttributeValue<EntityReference>("ownerid");
-                Guid workOrderOwnerId = woOwnerRef.Id;
-                //Grant access to user (creator)
-                GrantAccess(service, createdId, currentUser);
-
-                //Grant access to Work Order owner
-                GrantAccess(service, createdId, workOrderOwnerId);
             }
             catch (Exception ex)
             {
@@ -121,20 +113,6 @@ namespace TSIS2.Plugins
 
             tracing.Trace("OperationType BU ID: {0}", buRef.Id);
             return OrganizationConfig.IsAvSecBU(service, buRef.Id, tracing);
-        }
-
-        private void GrantAccess(IOrganizationService service, Guid wostId, Guid userId)
-        {
-            var grantAccessRequest = new GrantAccessRequest
-            {
-                Target = new EntityReference("msdyn_workorderservicetask", wostId),
-                PrincipalAccess = new PrincipalAccess
-                {
-                    Principal = new EntityReference("systemuser", userId),
-                    AccessMask = AccessRights.ReadAccess | AccessRights.WriteAccess
-                }
-            };
-            service.Execute(grantAccessRequest);
         }
     }
 }
