@@ -17,7 +17,7 @@ namespace TSIS2.Plugins
     1,
     IsolationModeEnum.Sandbox,
     Description = "After a ts_sharepointfile record is created, handle the logic to setup the ts_sharepointgroup, NOTE: These tables are no longer in use.")]
-    public class PostOperationts_sharepointfileCreate : IPlugin
+    public class PostOperationts_sharepointfileCreate : PluginBase
     {
         // Static Variables
         public static string CASE = "Case";
@@ -37,15 +37,20 @@ namespace TSIS2.Plugins
         public static string WORK_ORDER_SERVICE_TASK = "Work Order Service Task";
         public static string WORK_ORDER_SERVICE_TASK_FR = "Tâche de service de l'ordre de travail";
 
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperationts_sharepointfileCreate(string unsecure, string secure)
+            : base(typeof(PostOperationts_sharepointfileCreate))
         {
-            // Obtain the tracing service
-            ITracingService tracingService =
-            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
 
-            // Obtain the execution context from the service provider.
-            IPluginExecutionContext context = (IPluginExecutionContext)
-                serviceProvider.GetService(typeof(IPluginExecutionContext));
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            IPluginExecutionContext context = localContext.PluginExecutionContext;
+            IOrganizationService service = localContext.OrganizationService;
 
             // The InputParameters collection contains all the data passed in the message request.
             if (context.InputParameters.Contains("Target") &&
@@ -57,19 +62,12 @@ namespace TSIS2.Plugins
                 // Obtain the preimage entity
                 Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
 
-                // Obtain the organization service reference which you will need for
-                // web service calls.
-                IOrganizationServiceFactory serviceFactory =
-                    (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-                IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
-
                 try
                 {
                     if (target.LogicalName.Equals(ts_SharePointFile.EntityLogicalName))
                     {
                         ts_SharePointFile mySharePointFile = target.ToEntity<ts_SharePointFile>();
                         var mySharePointFileGroup = mySharePointFile.ts_SharePointFileGroup;
-
 
                         // check if we are working with a Case, Work Order, or Work Order Service Task
                         if (mySharePointFile.ts_TableName == CASE ||
@@ -160,7 +158,6 @@ namespace TSIS2.Plugins
                                     }
                                 }
                             }
-
 
                             // Work Order Service Task
                             if (sharePointFileTableName == WORK_ORDER_SERVICE_TASK)
@@ -318,8 +315,8 @@ namespace TSIS2.Plugins
                 }
                 catch (Exception ex)
                 {
-                    tracingService.Trace("PostOperationts_fileCreate Plugin: {0}", ex.ToString());
-                    throw;
+                    localContext.TraceWithContext("PostOperationts_fileCreate Plugin: {0}", ex.ToString());
+                    throw new InvalidPluginExecutionException("PostOperationts_sharepointfileCreate failed.", ex);
                 }
             }
         }
@@ -519,7 +516,7 @@ namespace TSIS2.Plugins
                                                 <condition attribute='msdyn_workorderid' operator='eq' value='{workOrderId.ToString()}' />
                                             </filter>
                                             </entity>
-                                        </fetch>                                                
+                                        </fetch>                                    
             ";
 
             var myWorkOrderEntityCollection = serviceContext.RetrieveMultiple(new FetchExpression(ownerFetchXML));

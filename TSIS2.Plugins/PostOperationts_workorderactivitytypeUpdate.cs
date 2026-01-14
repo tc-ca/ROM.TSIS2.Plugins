@@ -138,7 +138,8 @@ namespace TSIS2.Plugins
             }
             catch (Exception e)
             {
-                throw new InvalidPluginExecutionException(e.Message);
+               localContext.TraceWithContext("Exception: {0}", e.Message);
+               throw new InvalidPluginExecutionException("PostOperationts_workorderactivitytypeUpdate failed.", e);
             }
         }
     }

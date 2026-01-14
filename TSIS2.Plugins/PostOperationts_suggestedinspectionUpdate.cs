@@ -26,9 +26,8 @@ namespace TSIS2.Plugins
     Description = "Happens after the Suggested Inspection has been updated")]
     public class PostOperationts_suggestedinspectionUpdate : PluginBase
     {
-        private readonly string postImageAlias = "PostImage";
         public PostOperationts_suggestedinspectionUpdate(string unsecure, string secure)
-            : base(typeof(PostOperationmsdyn_workorderUpdate))
+            : base(typeof(PostOperationts_suggestedinspectionUpdate))
         {
 
             //if (secure != null && !secure.Equals(string.Empty))
@@ -129,7 +128,8 @@ namespace TSIS2.Plugins
             }
             catch (Exception e)
             {
-                throw new InvalidPluginExecutionException(e.Message);
+                localContext.TraceWithContext("Exception: {0}", e.Message);
+                throw new InvalidPluginExecutionException("PostOperationts_suggestedinspectionUpdate failed.", e);
             }
         }
     }

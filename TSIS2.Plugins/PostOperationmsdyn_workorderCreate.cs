@@ -22,9 +22,8 @@ namespace TSIS2.Plugins
 
     public class PostOperationmsdyn_workorderCreate : PluginBase
     {
-        private readonly string postImageAlias = "PostImage";
         public PostOperationmsdyn_workorderCreate(string unsecure, string secure)
-            : base(typeof(PostOperationmsdyn_workorderUpdate))
+            : base(typeof(PostOperationmsdyn_workorderCreate))
         {
 
         }
@@ -51,9 +50,8 @@ namespace TSIS2.Plugins
             }
 
             IPluginExecutionContext context = localContext.PluginExecutionContext;
-            ITracingService tracingService = localContext.TracingService;
             Entity target = (Entity)context.InputParameters["Target"];
-            tracingService.Trace("Entering ExecuteCrmPlugin method.");
+            localContext.Trace("Entering ExecuteCrmPlugin method.");
 
             try
             {
@@ -64,15 +62,15 @@ namespace TSIS2.Plugins
 
                     using (var serviceContext = new Xrm(localContext.OrganizationService))
                     {
-                        tracingService.Trace("Determine if the region is set to International.");
+                        localContext.Trace("Determine if the region is set to International.");
                         var selectedRegion = target.Attributes["ts_region"] as EntityReference;
 
                         if (selectedRegion != null && selectedRegion.Id.Equals( new Guid("3bf0fa88-150f-eb11-a813-000d3af3a7a7")))
                         {
-                            tracingService.Trace("Setting business owner to International.");
+                            localContext.Trace("Setting business owner to International.");
                             target.Attributes["ts_businessowner"] = "AvSec International";
 
-                            tracingService.Trace("Perform the update to the Work Order.");
+                            localContext.Trace("Perform the update to the Work Order.");
                             IOrganizationService service = localContext.OrganizationService;
                             
                             service.Update(target);
@@ -81,7 +79,7 @@ namespace TSIS2.Plugins
                         }
                         else
                         {
-                            tracingService.Trace("Selected region is not International, checking operation type.");
+                            localContext.Trace("Selected region is not International, checking operation type.");
                             // find out what business owns the Work Order
                             string fetchXML = $@"
                                 <fetch xmlns:generator='MarkMpn.SQL4CDS'>
@@ -104,7 +102,7 @@ namespace TSIS2.Plugins
 
                             if (businessNameCollection.Entities.Count == 0)
                             {
-                                tracingService.Trace("No business owner found for work order ID. Exit out if no results.");
+                                localContext.Trace("No business owner found for work order ID. Exit out if no results.");
                                 return;
                             }
 
@@ -112,14 +110,14 @@ namespace TSIS2.Plugins
                             {
                                 if (workOrder["OwnerName"] is AliasedValue aliasedValue)
                                 {
-                                    tracingService.Trace("Cast the AliasedValue to string (or the appropriate type).");
+                                    localContext.Trace("Cast the AliasedValue to string (or the appropriate type).");
                                     ownerName = aliasedValue.Value as string;
                                 }
 
-                                tracingService.Trace("Set the Business Owner Label.");
+                                localContext.Trace("Set the Business Owner Label.");
                                 workOrder["ts_businessowner"] = ownerName;
 
-                                tracingService.Trace("Perform the update to the Work Order.");
+                                localContext.Trace("Perform the update to the Work Order.");
                                 IOrganizationService service = localContext.OrganizationService;
                                 service.Update(workOrder);
                             }
@@ -129,8 +127,8 @@ namespace TSIS2.Plugins
             }
             catch (Exception e)
             {
-                tracingService.Trace("Exception occurred: {0}");
-                throw new InvalidPluginExecutionException(e.Message);
+                localContext.TraceWithContext("Exception: {0}", e.Message);
+                throw new InvalidPluginExecutionException("PostOperationmsdyn_workorderCreate failed.", e);
             }
         }
     }

@@ -24,20 +24,28 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "Synchronizes Access Team users from Unplanned Work Order to Work Order when a user is added.")]
-    public class PostOperation_SyncAccessTeam_AddUser_UnplannedWorkOrder_to_WorkOrder : IPlugin
+    public class PostOperation_SyncAccessTeam_AddUser_UnplannedWorkOrder_to_WorkOrder : PluginBase
     {
         private const string UnplannedWorkOrderEntity = "ts_unplannedworkorder";
         private const string UnplannedWorkOrder_WorkOrderLookup = "ts_workorder";
         private const string WorkOrderTeamTemplateId = "bddf1d45-706d-ec11-8f8e-0022483da5aa";
 
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperation_SyncAccessTeam_AddUser_UnplannedWorkOrder_to_WorkOrder(string unsecure, string secure)
+            : base(typeof(PostOperation_SyncAccessTeam_AddUser_UnplannedWorkOrder_to_WorkOrder))
         {
-            var tracer = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
-            var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = serviceFactory.CreateOrganizationService(context.UserId);
+        }
 
-            tracer.Trace("PostOperation_SyncAccessTeam_AddUser_WO_UnplannedWO started.");
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
+
+            localContext.Trace("PostOperation_SyncAccessTeam_AddUser_WO_UnplannedWO started.");
 
             try
             {
@@ -53,13 +61,13 @@ namespace TSIS2.Plugins
                 if (!context.InputParameters.Contains("TeamTemplate") || !(context.InputParameters["TeamTemplate"] is EntityReference teamTemplate))
                     throw new InvalidPluginExecutionException("TeamTemplate parameter is required.");
 
-                tracer.Trace($"SystemUser: {systemUserId}");
-                tracer.Trace($"Record: {record.LogicalName} {record.Id}");
-                tracer.Trace($"TeamTemplate: {teamTemplate.Id}");
+                localContext.Trace($"SystemUser: {systemUserId}");
+                localContext.Trace($"Record: {record.LogicalName} {record.Id}");
+                localContext.Trace($"TeamTemplate: {teamTemplate.Id}");
 
                 if (record.LogicalName == UnplannedWorkOrderEntity)
                 {
-                    tracer.Trace("Unplanned Work Order detected. Adding user to 2 teams.");
+                    localContext.Trace("Unplanned Work Order detected. Adding user to 2 teams.");
 
 
                     // Create AddUserToRecordTeam request for Unplanned Work Order
@@ -70,7 +78,7 @@ namespace TSIS2.Plugins
                         ["TeamTemplateId"] = teamTemplate.Id   // Template passed by custom API
                     };
                     service.Execute(upwoRequest);
-                    tracer.Trace("Added to Unplanned Work Order access team.");
+                    localContext.Trace("Added to Unplanned Work Order access team.");
 
                     var unplanned = service.Retrieve(record.LogicalName, record.Id, new ColumnSet(UnplannedWorkOrder_WorkOrderLookup));
 
@@ -78,7 +86,7 @@ namespace TSIS2.Plugins
                         throw new InvalidPluginExecutionException("Unplanned Work Order missing required Work Order lookup.");
 
                     var workOrderRef = unplanned.GetAttributeValue<EntityReference>(UnplannedWorkOrder_WorkOrderLookup);
-                    tracer.Trace($"Related Work Order: {workOrderRef.Id}");
+                    localContext.Trace($"Related Work Order: {workOrderRef.Id}");
 
                     // Create AddUserToRecordTeam request for Work Order
                     var woRequest = new OrganizationRequest("AddUserToRecordTeam")
@@ -89,20 +97,20 @@ namespace TSIS2.Plugins
                     };
                     service.Execute(woRequest);
 
-                    tracer.Trace("Added to related Work Order access team.");
+                    localContext.Trace("Added to related Work Order access team.");
                 }
                 else
                 {
-                    tracer.Trace("Unsupported entity type. No action taken.");
+                    localContext.Trace("Unsupported entity type. No action taken.");
                 }
             }
             catch (Exception ex)
             {
-                tracer.Trace($"Exception: {ex}");
+                localContext.TraceWithContext($"Exception: {ex}");
                 throw new InvalidPluginExecutionException("PostOperation_SyncAccessTeam_AddUser_UnplannedWorkOrder_to_WorkOrder failed.", ex);
             }
 
-            tracer.Trace("PostOperation_SyncAccessTeam_AddUser_UnplannedWorkOrder_to_WorkOrder finished.");
+            localContext.Trace("PostOperation_SyncAccessTeam_AddUser_UnplannedWorkOrder_to_WorkOrder finished.");
         }
     }
 
@@ -119,20 +127,28 @@ namespace TSIS2.Plugins
         "TSIS2.Plugins.PostOperation_SyncAccessTeam_RemoveUser_UnplannedWorkOrder_to_WorkOrder",
         1,
         IsolationModeEnum.Sandbox)]
-    public class PostOperation_SyncAccessTeam_RemoveUser_UnplannedWorkOrder_to_WorkOrder : IPlugin
+    public class PostOperation_SyncAccessTeam_RemoveUser_UnplannedWorkOrder_to_WorkOrder : PluginBase
     {
         private const string UnplannedWorkOrderEntity = "ts_unplannedworkorder";
         private const string WorkOrderLookup = "ts_workorder";
         private const string WorkOrderTeamTemplateId = "bddf1d45-706d-ec11-8f8e-0022483da5aa";
 
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperation_SyncAccessTeam_RemoveUser_UnplannedWorkOrder_to_WorkOrder(string unsecure, string secure)
+            : base(typeof(PostOperation_SyncAccessTeam_RemoveUser_UnplannedWorkOrder_to_WorkOrder))
         {
-            var trace = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
-            var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = serviceFactory.CreateOrganizationService(context.UserId);
+        }
 
-            trace.Trace("=== RemoveUser plugin STARTED ===");
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
+
+            localContext.Trace("=== RemoveUser plugin STARTED ===");
 
             try
             {
@@ -141,7 +157,7 @@ namespace TSIS2.Plugins
                     !context.InputParameters.Contains("Record") ||
                     !context.InputParameters.Contains("TeamTemplateId"))
                 {
-                    trace.Trace("Missing required parameters. EXIT.");
+                    localContext.Trace("Missing required parameters. EXIT.");
                     return;
                 }
 
@@ -149,15 +165,15 @@ namespace TSIS2.Plugins
                 var recordRef = (EntityReference)context.InputParameters["Record"];
                 var templateId = (Guid)context.InputParameters["TeamTemplateId"];
 
-                trace.Trace("Parameters received:");
-                trace.Trace($" - UserId = {userId}");
-                trace.Trace($" - Record = {recordRef.LogicalName} ({recordRef.Id})");
-                trace.Trace($" - TeamTemplateId = {templateId}");
+                localContext.Trace("Parameters received:");
+                localContext.Trace($" - UserId = {userId}");
+                localContext.Trace($" - Record = {recordRef.LogicalName} ({recordRef.Id})");
+                localContext.Trace($" - TeamTemplateId = {templateId}");
 
                 // Ensure plugin only runs when removing user from UNPLANNED WORK ORDER team
                 if (recordRef.LogicalName != UnplannedWorkOrderEntity)
                 {
-                    trace.Trace($"Record is of type {recordRef.LogicalName}. Sync only applies to ts_unplannedworkorder. EXIT.");
+                    localContext.Trace($"Record is of type {recordRef.LogicalName}. Sync only applies to ts_unplannedworkorder. EXIT.");
                     return;
                 }
 
@@ -168,7 +184,7 @@ namespace TSIS2.Plugins
                 var woRef = unplanned.GetAttributeValue<EntityReference>(WorkOrderLookup);
                 if (woRef != null)
                 {
-                    trace.Trace($"Linked Work Order found: {woRef.LogicalName} ({woRef.Id})");
+                    localContext.Trace($"Linked Work Order found: {woRef.LogicalName} ({woRef.Id})");
 
                     // Remove user from Work Order team
                     var removeFromWO = new OrganizationRequest("RemoveUserFromRecordTeam")
@@ -179,13 +195,17 @@ namespace TSIS2.Plugins
                     };
                     service.Execute(removeFromWO);
 
-                    trace.Trace("User removed from Work Order access team.");
+                    localContext.Trace("User removed from Work Order access team.");
                 }
             }
             catch (Exception ex)
             {
-                trace.Trace("ERROR: " + ex);
-                throw;
+                localContext.TraceWithContext($"Exception: {ex}");
+                throw new InvalidPluginExecutionException("PostOperation_SyncAccessTeam_RemoveUser_UnplannedWorkOrder_to_WorkOrder failed.", ex);
+            }
+            finally
+            {
+                localContext.Trace("PostOperation_SyncAccessTeam_RemoveUser_UnplannedWorkOrder_to_WorkOrder finished.");
             }
         }
     }

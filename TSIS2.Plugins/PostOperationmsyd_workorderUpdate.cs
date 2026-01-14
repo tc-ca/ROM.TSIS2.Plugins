@@ -26,7 +26,6 @@ namespace TSIS2.Plugins
     Description = "Happens after the Work Order has been updated")]
     public class PostOperationmsdyn_workorderUpdate : PluginBase
     {
-        private readonly string postImageAlias = "PostImage";
         public PostOperationmsdyn_workorderUpdate(string unsecure, string secure)
             : base(typeof(PostOperationmsdyn_workorderUpdate))
         {
@@ -59,10 +58,9 @@ namespace TSIS2.Plugins
             }
 
             IPluginExecutionContext context = localContext.PluginExecutionContext;
-            ITracingService tracingService = localContext.TracingService;
             Entity target = (Entity)context.InputParameters["Target"];
 
-            tracingService.Trace("Obtain the images for the entity.");
+            localContext.Trace("Obtain the images for the entity.");
             Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
             Entity postImageEntity = (context.PostEntityImages != null && context.PostEntityImages.Contains("PostImage")) ? context.PostEntityImages["PostImage"] : null;
 
@@ -71,7 +69,7 @@ namespace TSIS2.Plugins
 
             try
             {
-                tracingService.Trace("Check if the region has changed.");
+                localContext.Trace("Check if the region has changed.");
                 // we don't (target.Attributes.Contains("ts_region")) because when an update happens to a Work Order, it run's through here several times
                 {
                     IOrganizationService service = localContext.OrganizationService;
@@ -79,9 +77,9 @@ namespace TSIS2.Plugins
                     // Log the system username and Work Order at the start
                     var systemUser = service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
                     var WOST = service.Retrieve("msdyn_workorder", context.PrimaryEntityId, new ColumnSet("msdyn_name"));
-                    tracingService.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
-                    tracingService.Trace("Work Order GUID: {0}", context.PrimaryEntityId);
-                    tracingService.Trace("Work Order Name: {0}", WOST.GetAttributeValue<string>("msdyn_name"));
+                    localContext.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
+                    localContext.Trace("Work Order GUID: {0}", context.PrimaryEntityId);
+                    localContext.Trace("Work Order Name: {0}", WOST.GetAttributeValue<string>("msdyn_name"));
 
                     if (preImageEntity.Contains("ts_region") && postImageEntity.Contains("ts_region"))
                     {
@@ -92,15 +90,15 @@ namespace TSIS2.Plugins
                         {
                             if (preRegion.Id.Equals(new Guid(internationalGuid)) && postRegion.Id.Equals(new Guid(internationalGuid)))
                             {
-                                tracingService.Trace("If the Region is already set to International, exit the Plugin. Prevents infinite loop.");
+                                localContext.Trace("If the Region is already set to International, exit the Plugin. Prevents infinite loop.");
                                 return;
                             }
                             else if (postRegion.Id.Equals(new Guid(internationalGuid)))
                             {
-                                tracingService.Trace("If the Region is set to International, set the owner label to International.");
+                                localContext.Trace("If the Region is set to International, set the owner label to International.");
                                 target.Attributes["ts_businessowner"] = "AvSec International";
 
-                                tracingService.Trace("Perform the update to the Work Order.");
+                                localContext.Trace("Perform the update to the Work Order.");
                                 service.Update(target);
                                 return;
                             }
@@ -110,7 +108,7 @@ namespace TSIS2.Plugins
                     if (preImageEntity.Contains("ts_trip") && !postImageEntity.Contains("ts_trip") && !target.Contains("ts_ignoreupdate"))
                     {
                         //if trip got removed PBI-372064, remove WO from Trip Inspection -> ts_tripinspection
-                        tracingService.Trace("If trip got removed, then remove WO from Trip Inspection.");
+                        localContext.Trace("If trip got removed, then remove WO from Trip Inspection.");
                         var tripId = preImageEntity.GetAttributeValue<EntityReference>("ts_trip").Id;
                         localContext.Trace("Trip removed: " + tripId.ToString());
 
@@ -130,7 +128,7 @@ namespace TSIS2.Plugins
                     else if (!preImageEntity.Contains("ts_trip") && postImageEntity.Contains("ts_trip") && !target.Contains("ts_ignoreupdate"))
                     {
                         //if trip got removed PBI-372064, remove WO from Trip Inspection -> ts_tripinspection
-                        tracingService.Trace("If trip got removed, then remove WO from ts_tripinspection.");
+                        localContext.Trace("If trip got removed, then remove WO from ts_tripinspection.");
                         var tripId = postImageEntity.GetAttributeValue<EntityReference>("ts_trip").Id;
                         localContext.Trace("Trip added: " + tripId.ToString());
 
@@ -152,7 +150,7 @@ namespace TSIS2.Plugins
                     }
                 }
 
-                tracingService.Trace("Check if an operation type was updated.");
+                localContext.Trace("Check if an operation type was updated.");
                 // we don't (target.Attributes.Contains("ovs_operationtype")) because when an update happens to a Work Order, it run's through here several times
                 {
                     string workOrderId = target.Id.ToString();
@@ -160,7 +158,7 @@ namespace TSIS2.Plugins
 
                     using (var serviceContext = new Xrm(localContext.OrganizationService))
                     {
-                        tracingService.Trace("Determine what business owns the Work Order.");
+                        localContext.Trace("Determine what business owns the Work Order.");
                         string fetchXML = $@"
                             <fetch xmlns:generator='MarkMpn.SQL4CDS'>
                                 <entity name='msdyn_workorder'>
@@ -182,7 +180,7 @@ namespace TSIS2.Plugins
 
                         if (businessNameCollection.Entities.Count == 0)
                         {
-                            tracingService.Trace("Exit out if there are no results.");
+                            localContext.Trace("Exit out if there are no results.");
                             return;
                         }
 
@@ -190,12 +188,12 @@ namespace TSIS2.Plugins
                         {
                             if (workOrder["OwnerName"] is AliasedValue aliasedValue)
                             {
-                                tracingService.Trace("Cast the AliasedValue to string (or the appropriate type).");
+                                localContext.Trace("Cast the AliasedValue to string (or the appropriate type).");
                                 ownerName = aliasedValue.Value as string;
 
                                 if (preImageEntity.Contains("ts_businessowner"))
                                 {
-                                    tracingService.Trace("If ts_businessowner is already set to the value of ownerName, exit the Plugin.");
+                                    localContext.Trace("If ts_businessowner is already set to the value of ownerName, exit the Plugin.");
                                     // we do this to prevent an infinite loop from happening
                                     var preBusinessOwner = preImageEntity.Attributes["ts_businessowner"];
 
@@ -206,10 +204,10 @@ namespace TSIS2.Plugins
                                 }
 
                             }
-                            tracingService.Trace("Set the Business Owner Label.");
+                            localContext.Trace("Set the Business Owner Label.");
                             workOrder["ts_businessowner"] = ownerName;
 
-                            tracingService.Trace("Perform the update to the Work Order.");
+                            localContext.Trace("Perform the update to the Work Order.");
                             IOrganizationService service = localContext.OrganizationService;
                             service.Update(workOrder);
                             return;
@@ -219,8 +217,8 @@ namespace TSIS2.Plugins
             }
             catch (Exception e)
             {
-                tracingService.Trace("Exception occurred: {0}");
-                throw new InvalidPluginExecutionException(e.Message);
+                localContext.TraceWithContext("Exception: {0}", e.Message);
+                throw new InvalidPluginExecutionException("PostOperationmsyd_workorderUpdate failed.", e);
             }
         }
     }

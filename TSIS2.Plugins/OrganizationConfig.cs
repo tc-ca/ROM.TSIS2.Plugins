@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xrm.Sdk;
@@ -218,7 +218,7 @@ namespace TSIS2.Plugins
         {
             if (entityRef == null) return null;
             // Removed per-instance cache as we are now static and stateless.
-
+            
             try
             {
                 var entity = service.Retrieve(entityRef.LogicalName, entityRef.Id, new ColumnSet("businessunitid"));

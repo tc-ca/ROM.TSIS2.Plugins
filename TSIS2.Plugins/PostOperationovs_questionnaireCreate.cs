@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Microsoft.Crm.Sdk.Messages;
 using Microsoft.Xrm.Sdk;
 
@@ -16,33 +15,28 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "After Questionnaire created, automatically create one Questionnaire Version")]
-    public class PostOperationovs_questionnaireCreate : IPlugin
+    public class PostOperationovs_questionnaireCreate : PluginBase
     {
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperationovs_questionnaireCreate(string unsecure, string secure)
+            : base(typeof(PostOperationovs_questionnaireCreate))
         {
-            // Obtain the tracing service
-            ITracingService tracingService =
-            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
 
-            // Obtain the execution context from the service provider.
-            IPluginExecutionContext context = (IPluginExecutionContext)
-                serviceProvider.GetService(typeof(IPluginExecutionContext));
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            IPluginExecutionContext context = localContext.PluginExecutionContext;
+            IOrganizationService service = localContext.OrganizationService;
 
             // The InputParameters collection contains all the data passed in the message request.
-            if (context.InputParameters.Contains("Target") &&
-                context.InputParameters["Target"] is Entity)
+            if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is Entity)
             {
                 // Obtain the target entity from the input parameters.
                 Entity target = (Entity)context.InputParameters["Target"];
-
-                // Obtain the preimage entity
-                Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
-
-                // Obtain the organization service reference which you will need for
-                // web service calls.
-                IOrganizationServiceFactory serviceFactory =
-                    (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-                IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
 
                 try
                 {
@@ -74,7 +68,8 @@ namespace TSIS2.Plugins
                             Target = questionnaire.ToEntityReference(),
                             FieldName = "ts_numberofversions"
                         };
-                        CalculateRollupFieldResponse calculateRollupFieldResponse = (CalculateRollupFieldResponse)service.Execute(calculateRollupFieldRequest);
+                        CalculateRollupFieldResponse calculateRollupFieldResponse =
+                            (CalculateRollupFieldResponse)service.Execute(calculateRollupFieldRequest);
                     }
                 }
                 catch (NotImplementedException ex)
@@ -83,16 +78,17 @@ namespace TSIS2.Plugins
                     if (ex.Source == "XrmMockup365" && ex.Message == "No implementation for expression operator 'Count'")
                     {
                         // continue
-                    } else
+                    }
+                    else
                     {
-                        tracingService.Trace("PostOperationovs_questionnaireCreate Plugin: {0}", ex.ToString());
-                        throw;
+                        localContext.Trace($"PostOperationovs_questionnaireCreate Plugin: {ex}");
+                        throw new InvalidPluginExecutionException("PostOperationovs_questionnaireCreate failed", ex);
                     }
                 }
                 catch (Exception ex)
                 {
-                    tracingService.Trace("PostOperationovs_questionnaireCreate Plugin: {0}", ex.ToString());
-                    throw;
+                    localContext.Trace($"PostOperationovs_questionnaireCreate Plugin: {ex}");
+                    throw new InvalidPluginExecutionException("PostOperationovs_questionnaireCreate failed", ex);
                 }
             }
         }

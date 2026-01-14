@@ -1,10 +1,11 @@
-using Microsoft.Xrm.Sdk;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Net;
+using Newtonsoft.Json.Linq;
 
-namespace TSIS2.Plugins.QuestionnaireExtractor
+namespace TSIS2.Plugins.QuestionnaireProcessor
 {
     /// <summary>
     /// Handles the complex task of converting raw JSON answers into human-readable text.
@@ -13,7 +14,6 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
     public class QuestionnaireResponseFormatter
     {
         private readonly ILoggingService _logger;
-
         /// <summary>
         /// Initializes a new instance of the QuestionnaireResponseFormatter class.
         /// </summary>
@@ -66,7 +66,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
 
                     default:
                         // This covers primitive types like boolean, string (for text questions), integer, float.
-                        return RemoveHtmlTags(CleanupEscapedCharacters(responseValue.ToString()));
+                        return RemoveHtmlTags(responseValue.ToString());
                 }
             }
             catch (Exception ex)
@@ -74,7 +74,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                 _logger.Error($"Failed processing response value: {responseValue?.ToString() ?? "null"}" +
                           $" of type {responseValue?.Type.ToString() ?? "null"}" +
                           $" for question type {questionType ?? "null"}" +
-                          $" - Error: {ex.Message}");
+                          $" - Error: {ex}");
                 throw;
             }
         }
@@ -114,12 +114,12 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                             // Handle simple string text
                             choiceText = textSource.ToString();
                         }
-                        return RemoveHtmlTags(CleanupEscapedCharacters(choiceText));
+                        return RemoveHtmlTags(choiceText);
                     }
                 }
             }
             // Fallback to the value itself if no matching choice text is found.
-            return RemoveHtmlTags(CleanupEscapedCharacters(selectedValue));
+            return RemoveHtmlTags(selectedValue);
         }
 
         /// <summary>
@@ -131,12 +131,12 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             {
                 var selectedValues = new List<string>();
                 var choices = questionDefinition["choices"] as JArray;
-                
+
                 foreach (var value in responseValue)
                 {
                     string valueStr = value.ToString();
                     string choiceText = valueStr; // Default to the value itself
-                    
+
                     if (choices != null)
                     {
                         // Handle both formats of choices
@@ -166,10 +166,10 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                             }
                         }
                     }
-                    
-                    selectedValues.Add(RemoveHtmlTags(CleanupEscapedCharacters(choiceText)));
+
+                    selectedValues.Add(RemoveHtmlTags(choiceText));
                 }
-                
+
                 return string.Join(",", selectedValues);
             }
             return CleanupEscapedCharacters(responseValue.ToString());
@@ -183,20 +183,19 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             if (responseValue.Type == JTokenType.Object)
             {
                 var results = new List<string>();
-                
+
                 foreach (JProperty item in responseValue.Children())
                 {
                     string itemName = item.Name;
                     string itemValue = item.Value?.ToString() ?? string.Empty;
-                    
-                    // Clean up the item name and value
-                    string cleanItemName = RemoveHtmlTags(CleanupEscapedCharacters(itemName));
-                    string cleanItemValue = RemoveHtmlTags(CleanupEscapedCharacters(itemValue));
-                    
+
+                    string cleanItemName = RemoveHtmlTags(itemName);
+                    string cleanItemValue = RemoveHtmlTags(itemValue);
+
                     string quotedItemName = NeedsQuoting(cleanItemName) ? $"\"{cleanItemName}\"" : cleanItemName;
                     results.Add($"{quotedItemName}: \"{cleanItemValue}\"");
                 }
-                
+
                 return string.Join("; ", results);
             }
             return CleanupEscapedCharacters(responseValue.ToString());
@@ -210,7 +209,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             if (responseValue.Type == JTokenType.Object)
             {
                 var results = new List<string>();
-                
+
                 foreach (JProperty row in responseValue.Children())
                 {
                     // Matrix response format: "RowQuestion.AnswerColumn"
@@ -220,7 +219,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
 
                     // Find which column (answer) was selected for this row (e.g.: "Satisfactory", "Not Satisfactory")
                     var selectedColumnValue = row.Value.ToString();
-                    
+
                     // Look up column display text with proper handling of both text formats
                     string columnDisplayText = selectedColumnValue;
                     var columnDef = questionDefinition["columns"]?.FirstOrDefault(c => c.Type == JTokenType.Object && c["value"]?.ToString() == selectedColumnValue);
@@ -241,7 +240,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
 
                     // Find the original question text for this row with proper handling of both formats
                     string rowQuestionText = rowName;
-                    
+
                     // Handle two formats of rows array - objects with properties or simple strings
                     var rowsArray = questionDefinition["rows"] as JArray;
                     if (rowsArray != null)
@@ -274,19 +273,19 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                     // Special handling for Result row to avoid redundant responses like "Result: Not Satisfactory" (When there is only 1 row)
                     if (isResultRow)
                     {
-                        results.Add($"\"{RemoveHtmlTags(CleanupEscapedCharacters(columnDisplayText))}\"");
+                        results.Add($"\"{RemoveHtmlTags(columnDisplayText)}\"");
                     }
                     else
                     {
-                        string cleanRowText = RemoveHtmlTags(CleanupEscapedCharacters(rowQuestionText));
-                        string cleanColumnText = RemoveHtmlTags(CleanupEscapedCharacters(columnDisplayText));
-                        
+                        string cleanRowText = RemoveHtmlTags(rowQuestionText);
+                        string cleanColumnText = RemoveHtmlTags(columnDisplayText);
+
                         // Add quotes around field names for Power BI compatibility
                         string quotedRowText = NeedsQuoting(cleanRowText) ? $"\"{cleanRowText}\"" : cleanRowText;
                         results.Add($"{quotedRowText}: \"{cleanColumnText}\"");
                     }
                 }
-                
+
                 return string.Join("; ", results);
             }
             return CleanupEscapedCharacters(responseValue.ToString());
@@ -296,13 +295,20 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         /// Finds the comment associated with a multipletext question by looking for the next comment question in the definition.
         /// </summary>
         /// <param name="definition">The questionnaire definition.</param>
-        /// <param name="multipletextQuestionName">The name of the multipletext question.</param>
+        /// <param name="questionDefinition">The question definition object.</param>
         /// <param name="response">The questionnaire response.</param>
         /// <returns>The comment text if found, null otherwise.</returns>
-        public string FindMultipletextComment(QuestionnaireDefinition definition, string multipletextQuestionName, QuestionnaireResponse response)
+        public string FindMultipletextComment(QuestionnaireDefinition definition, JObject questionDefinition, QuestionnaireResponse response)
         {
             try
             {
+                string multipletextQuestionName = questionDefinition["name"]?.ToString();
+                if (string.IsNullOrEmpty(multipletextQuestionName))
+                {
+                    _logger.Trace("Question definition does not have a valid name.");
+                    return null;
+                }
+
                 // Find all elements in the definition
                 var allElements = new List<JToken>();
                 var pages = definition.Definition["pages"] as JArray;
@@ -342,7 +348,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                     string elementType = element["type"]?.ToString();
                     string elementName = element["name"]?.ToString();
 
-                    if (string.Equals(elementType, "comment", StringComparison.OrdinalIgnoreCase) && 
+                    if (string.Equals(elementType, "comment", StringComparison.OrdinalIgnoreCase) &&
                         !string.IsNullOrEmpty(elementName))
                     {
                         // Found a comment question, check if it has a response value
@@ -357,9 +363,9 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                         }
                         break; // Stop at the first comment question found, even if it's empty
                     }
-                    
+
                     // Stop looking if we hit another question type that's not a comment
-                    if (!string.IsNullOrEmpty(elementType) && 
+                    if (!string.IsNullOrEmpty(elementType) &&
                         !string.Equals(elementType, "comment", StringComparison.OrdinalIgnoreCase))
                     {
                         break;
@@ -370,7 +376,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             }
             catch (Exception ex)
             {
-                _logger.Error($"Error finding multipletext comment for {multipletextQuestionName}: {ex.Message}");
+                _logger.Error($"Error finding multipletext comment: {ex}");
                 return null;
             }
         }
@@ -383,75 +389,97 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             if (string.IsNullOrEmpty(input))
                 return input;
 
-            // Strip invalid XML characters that can cause CRM API errors.
-            // This removes non-printable control characters (like 0x02) that are not valid in XML.
-            input = System.Text.RegularExpressions.Regex.Replace(input, @"[\x00-\x08\x0B\x0C\x0E-\x1F]", string.Empty);
+            // 1) Remove invalid XML control chars (CRM-safe)
+            input = Regex.Replace(input, @"[\x00-\x08\x0B\x0C\x0E-\x1F]", string.Empty);
 
-            // First, remove the "ite...m[digit]" pattern
-            input = System.Text.RegularExpressions.Regex.Replace(input, @"^ite(.+?)m\d$", "$1", System.Text.RegularExpressions.RegexOptions.Singleline);
+            // 2) Normalize REAL whitespace first (this fixes your newline issue)
+            input = input
+                .Replace("\r\n", " ")
+                .Replace("\n", " ")
+                .Replace("\r", " ")
+                .Replace("\t", " ");
 
-            // Replace <br> tags with new lines
-            input = System.Text.RegularExpressions.Regex.Replace(input, "<br\\s*/?>", "\n", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            // 3) Normalize JSON-escaped sequences (in case input is still escaped)
+            input = input
+                .Replace("\\r\\n", " ")
+                .Replace("\\n", " ")
+                .Replace("\\r", " ")
+                .Replace("\\t", " ")
+                .Replace("\\\"", "\"")
+                .Replace("\\>", ">")
+                .Replace("\\<", "<")
+                .Replace("\\&", "&")
+                .Replace("\\\\", "\\");
 
-            // Remove other HTML tags (e.g., <p>, <span>) but not < or > used as operators
-            var withoutTags = System.Text.RegularExpressions.Regex.Replace(input, @"</?\w+((\s+\w+(\s*=\s*(?:"".*?""|'.*?'|[^'"">\s]+))?)+\s*|\s*)/?>", string.Empty);
-            
-            // Replace multiple consecutive spaces with a single space, but preserve newlines
-            withoutTags = System.Text.RegularExpressions.Regex.Replace(withoutTags, " {2,}", " ");
+            // 4) Remove the "ite...m[digit]" pattern you had
+            input = Regex.Replace(input, @"^ite(.+?)m\d$", "$1", RegexOptions.Singleline);
 
-            // Replace common HTML entities
-            return withoutTags
-                // Space and basic punctuation
-                .Replace("&nbsp;", " ")
-                .Replace("&rsquo;", "'")
-                .Replace("&lsquo;", "'")
-                .Replace("&ndash;", "–")
-                .Replace("&mdash;", "—")
-                .Replace("&amp;", "&")
-                .Replace("&lt;", "<")
-                .Replace("&gt;", ">")
-                .Replace("&quot;", "\"")
-                .Replace("&#39;", "'")
-                // Mathematical symbols
-                .Replace("&ge;", ">=")
-                .Replace("&le;", "<=")
-                .Replace("&ne;", "!=")
-                .Replace("&plusmn;", "±")
-                .Replace("&times;", "×")
-                .Replace("&divide;", "÷")
-                // French specific characters
-                .Replace("&eacute;", "é")
-                .Replace("&egrave;", "è")
-                .Replace("&agrave;", "à")
-                .Replace("&ecirc;", "ê")
-                .Replace("&ucirc;", "û")
-                .Replace("&icirc;", "î")
-                .Replace("&ocirc;", "ô")
-                .Replace("&acirc;", "â")
-                .Replace("&ccedil;", "ç")
-                .Replace("&euml;", "ë")
-                .Replace("&iuml;", "ï")
-                .Replace("&uuml;", "ü")
-                .Trim(); // Remove leading/trailing spaces
+            // 5) Convert <br> to space (keep single-line output)
+            input = Regex.Replace(input, "<br\\s*/?>", " ", RegexOptions.IgnoreCase);
+
+            // 6) Strip ONLY real HTML tags.
+            // IMPORTANT: Avoid killing operator text like "x < y > z" by only matching typical tag names.
+            // This removes things like <p>...</p>, <span ...>, </div>, etc.
+            input = Regex.Replace(
+                input,
+                @"</?\s*[A-Za-z][A-Za-z0-9:-]*(\s+[^<>]*?)?\s*/?\s*>",
+                string.Empty,
+                RegexOptions.Singleline
+            );
+
+            // 7) Decode HTML entities AFTER removing tags
+            input = WebUtility.HtmlDecode(input);
+
+            // 8) Normalize typography/symbols - keep smart quotes as-is to avoid JSON escaping issues
+            // Smart quotes (" " ' ') are left unchanged so they don't become regular quotes that need escaping
+            input = input
+                .Replace('–', '-')
+                .Replace('—', '-')
+                .Replace("≠", "!=")
+                .Replace("≥", ">=")
+                .Replace("≤", "<=")
+                .Replace("±", "+/-")
+                .Replace("×", "*")
+                .Replace("÷", "/");
+
+            // 9) Remove invisible / zero-width / BOM markers (your test data includes these)
+            input = Regex.Replace(input, @"[\u200B-\u200F\u2060\uFEFF\uFFFC]", string.Empty);
+
+            // 10) Normalize NBSP and collapse whitespace
+            input = input.Replace("\u00A0", " ");
+            input = Regex.Replace(input, @"\s{2,}", " ").Trim();
+
+            return input;
         }
 
         /// <summary>
         /// Cleans up escaped characters that are artifacts of JSON escaping.
+        /// Handles common escape sequences without double-escaping backslashes.
         /// </summary>
         private string CleanupEscapedCharacters(string input)
         {
             if (string.IsNullOrEmpty(input))
                 return input;
-            
-            // Remove leading backslashes that are artifacts of JSON escaping
-            // This handles cases like "\>" becoming ">"
+
+            // Normalize ALL newlines and tabs first
+            input = input
+                .Replace("\r\n", " ")
+                .Replace("\n", " ")
+                .Replace("\r", " ")
+                .Replace("\t", " ");
+
+            // Then handle escaped sequences
             return input
+                .Replace("\\n", " ")
+                .Replace("\\r", " ")
+                .Replace("\\t", " ")
+                .Replace("\\\"", "\"")
                 .Replace("\\>", ">")
                 .Replace("\\<", "<")
                 .Replace("\\&", "&")
-                .Replace("\\\"", "\"")
-                .Replace("\\'", "'");
+                .Replace("\\\\", "\\");
         }
+
 
         /// <summary>
         /// Determines if text needs to be quoted for Power BI compatibility.
@@ -460,16 +488,16 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         {
             if (string.IsNullOrEmpty(text))
                 return false;
-                
+
             // Add quotes if the text contains spaces, commas, colons, semicolons, or special characters
-            return text.Contains(" ") || 
-                   text.Contains(",") || 
-                   text.Contains(":") || 
-                   text.Contains(";") || 
-                   text.Contains("/") || 
-                   text.Contains("\\") || 
+            return text.Contains(" ") ||
+                   text.Contains(",") ||
+                   text.Contains(":") ||
+                   text.Contains(";") ||
+                   text.Contains("/") ||
+                   text.Contains("\\") ||
                    text.Contains("\"") ||
                    text.Contains("'");
         }
     }
-} 
+}
