@@ -408,6 +408,37 @@ namespace TSIS2.Plugins
                         tracingService.Trace("msdyn_parentworkorder changed. New value: {0}", parentWorkorder != null ? parentWorkorder.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
+                    if (target.Attributes.Contains("ts_tradename"))
+                    {
+                        var tradename = target.GetAttributeValue<EntityReference>("ts_tradename");
+                        updateWorkOrder["ts_tradenameid"] = tradename;
+                        tracingService.Trace("ts_tradenameid changed. New value: {0}", tradename != null ? tradename.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+
+                    if (target.Attributes.Contains("ts_functionallocation"))
+                    {
+                        var funcLoc = target.GetAttributeValue<EntityReference>("ts_functionallocation");
+                        updateWorkOrder["msdyn_functionallocation"] = funcLoc;
+                        tracingService.Trace("msdyn_functionallocation changed. New value: {0}", funcLoc != null ? funcLoc.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+
+                    if (target.Attributes.Contains("ts_subsubsite"))
+                    {
+                        var subSubSite = target.GetAttributeValue<EntityReference>("ts_subsubsite");
+                        updateWorkOrder["ts_subsubsite"] = subSubSite;
+                        tracingService.Trace("ts_subsubsite changed. New value: {0}", subSubSite != null ? subSubSite.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+
+                    if (target.Attributes.Contains("ts_contact"))
+                    {
+                        var contact = target.GetAttributeValue<EntityReference>("ts_contact");
+                        updateWorkOrder["ts_contact"] = contact;
+                        tracingService.Trace("ts_contact changed. New value: {0}", contact != null ? contact.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
                     if (anyFieldChanged)
                     {
                         service.Update(updateWorkOrder);
