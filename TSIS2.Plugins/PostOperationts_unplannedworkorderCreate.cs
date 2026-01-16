@@ -150,8 +150,13 @@ namespace TSIS2.Plugins
                         workOrder["msdyn_workordertype"] = target.GetAttributeValue<EntityReference>("ts_workordertype");
                         workOrder["ts_region"] = target.GetAttributeValue<EntityReference>("ts_region");
                         workOrder["ovs_operationtypeid"] = target.GetAttributeValue<EntityReference>("ts_operationtype");
+                        workOrder["ts_aircraftclassification"] = target.GetAttributeValue<OptionSetValue>("ts_aircraftclassification"); //1
+                        workOrder["ts_tradenameid"] = target.GetAttributeValue<EntityReference>("ts_tradename"); //2
                         workOrder["msdyn_serviceaccount"] = target.GetAttributeValue<EntityReference>("ts_stakeholder");
+                        workOrder["ts_contact"] = target.GetAttributeValue<EntityReference>("ts_contact"); //0
                         workOrder["ts_site"] = target.GetAttributeValue<EntityReference>("ts_site");
+                        workOrder["msdyn_functionallocation"] = target.GetAttributeValue<EntityReference>("ts_functionallocation"); //3
+                        workOrder["ts_subsubsite"] = target.GetAttributeValue<EntityReference>("ts_subsubsite"); //4
                         workOrder["ts_reason"] = target.GetAttributeValue<EntityReference>("ts_reason");
                         workOrder["ts_workorderjustification"] = target.GetAttributeValue<EntityReference>("ts_workorderjustification");
                         workOrder["ts_state"] = target.GetAttributeValue<OptionSetValue>("ts_state");
@@ -162,6 +167,7 @@ namespace TSIS2.Plugins
                         workOrder["msdyn_primaryincidentdescription"] = target.GetAttributeValue<string>("ts_primaryincidentdescription");
                         workOrder["msdyn_primaryincidentestimatedduration"] = target.GetAttributeValue<int>("ts_primaryincidentestimatedduration");
                         workOrder["ts_overtimerequired"] = target.GetAttributeValue<bool>("ts_overtimerequired");
+                        workOrder["ts_reportdetails"] = target.GetAttributeValue<string>("ts_reportdetails");
                         workOrder["ownerid"] = target.GetAttributeValue<EntityReference>("ownerid");
                         workOrder["ts_country"] = target.GetAttributeValue<EntityReference>("ts_country");
                         workOrder["ovs_operationid"] = target.GetAttributeValue<EntityReference>("ts_operation");
@@ -172,7 +178,19 @@ namespace TSIS2.Plugins
                         workOrder["ovs_fiscalyear"] = target.GetAttributeValue<EntityReference>("ts_plannedfiscalyear");
                         workOrder["ovs_fiscalquarter"] = target.GetAttributeValue<EntityReference>("ts_plannedfiscalquarter");
                         workOrder["ovs_revisedquarterid"] = target.GetAttributeValue<EntityReference>("ts_revisedquarterid");
-
+                        workOrder["ts_canceledinspectionjustification"] = target.GetAttributeValue<EntityReference>("ts_cancelledinspectionjustification");
+                        workOrder["ts_othercanceledjustification"] = target.GetAttributeValue<string>("ts_othercancelledjustification");
+                        workOrder["ts_scheduledquarterjustification"] = target.GetAttributeValue<EntityReference>("ts_scheduledquarterjustification");
+                        workOrder["ts_justificationcomment"] = target.GetAttributeValue<string>("ts_scheduledquarterjustificationcomment");
+                        workOrder["ts_details"] = target.GetAttributeValue<string>("ts_details");
+                        workOrder["msdyn_instructions"] = target.GetAttributeValue<string>("ts_instructions");
+                        workOrder["ts_preparationtime"] = target.GetAttributeValue<decimal>("ts_wopreparationtime");
+                        workOrder["ts_woreportinganddocumentation"] = target.GetAttributeValue<decimal>("ts_woreportinganddocumentation");
+                        workOrder["ts_comments"] = target.GetAttributeValue<string>("ts_comments");
+                        workOrder["ts_overtime"] = target.GetAttributeValue<decimal>("ts_overtime");
+                        workOrder["ts_conductingoversight"] = target.GetAttributeValue<decimal>("ts_woconductingoversight");
+                        workOrder["ts_traveltime"] = target.GetAttributeValue<decimal>("ts_wotraveltime");
+                        workOrder["msdyn_systemstatus"] = target.GetAttributeValue<OptionSetValue>("ts_recordstatus");
 
                         tracingService.Trace($"Retrieved ts_businessowner: {workOrder.GetAttributeValue<string>("ts_businessowner")}");
 

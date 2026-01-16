@@ -394,34 +394,6 @@ namespace TSIS2.Plugins
                         tracingService.Trace("ts_trip changed. New value: {0}", trip != null ? trip.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
-                    if (target.Attributes.Contains("ts_totalpreparationtime"))
-                    {
-                        decimal totalPreparationTime = target.GetAttributeValue<decimal>("ts_totalpreparationtime");
-                        updateWorkOrder["ts_totalpreparationtime"] = totalPreparationTime;
-                        tracingService.Trace("ts_totalpreparationtime changed. New value: {0}", totalPreparationTime);
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_totalrepanddoctime"))
-                    {
-                        decimal totalRepAndDocTime = target.GetAttributeValue<decimal>("ts_totalrepanddoctime");
-                        updateWorkOrder["ts_totalrepanddoctime"] = totalRepAndDocTime;
-                        tracingService.Trace("ts_totalrepanddoctime changed. New value: {0}", totalRepAndDocTime);
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_totalconductoversight"))
-                    {
-                        decimal totalConductOversight = target.GetAttributeValue<decimal>("ts_totalconductoversight");
-                        updateWorkOrder["ts_totalconductoversight"] = totalConductOversight;
-                        tracingService.Trace("ts_totalconductoversight changed. New value: {0}", totalConductOversight);
-                        anyFieldChanged = true;
-                    }
-                    if (target.Attributes.Contains("ts_totaltraveltime"))
-                    {
-                        decimal totaltravelTime = target.GetAttributeValue<decimal>("ts_totaltraveltime");
-                        updateWorkOrder["ts_totaltraveltime"] = totaltravelTime;
-                        tracingService.Trace("ts_totaltraveltime changed. New value: {0}", totaltravelTime);
-                        anyFieldChanged = true;
-                    }
                     if (target.Attributes.Contains("ts_recordstatus"))
                     {
                         OptionSetValue recordStatus = target.GetAttributeValue<OptionSetValue>("ts_recordstatus");
@@ -434,6 +406,37 @@ namespace TSIS2.Plugins
                         EntityReference parentWorkorder = target.GetAttributeValue<EntityReference>("ts_parentworkorder");
                         updateWorkOrder["msdyn_parentworkorder"] = parentWorkorder;
                         tracingService.Trace("msdyn_parentworkorder changed. New value: {0}", parentWorkorder != null ? parentWorkorder.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_tradename"))
+                    {
+                        var tradename = target.GetAttributeValue<EntityReference>("ts_tradename");
+                        updateWorkOrder["ts_tradenameid"] = tradename;
+                        tracingService.Trace("ts_tradenameid changed. New value: {0}", tradename != null ? tradename.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+
+                    if (target.Attributes.Contains("ts_functionallocation"))
+                    {
+                        var funcLoc = target.GetAttributeValue<EntityReference>("ts_functionallocation");
+                        updateWorkOrder["msdyn_functionallocation"] = funcLoc;
+                        tracingService.Trace("msdyn_functionallocation changed. New value: {0}", funcLoc != null ? funcLoc.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+
+                    if (target.Attributes.Contains("ts_subsubsite"))
+                    {
+                        var subSubSite = target.GetAttributeValue<EntityReference>("ts_subsubsite");
+                        updateWorkOrder["ts_subsubsite"] = subSubSite;
+                        tracingService.Trace("ts_subsubsite changed. New value: {0}", subSubSite != null ? subSubSite.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+
+                    if (target.Attributes.Contains("ts_contact"))
+                    {
+                        var contact = target.GetAttributeValue<EntityReference>("ts_contact");
+                        updateWorkOrder["ts_contact"] = contact;
+                        tracingService.Trace("ts_contact changed. New value: {0}", contact != null ? contact.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
                     if (anyFieldChanged)
