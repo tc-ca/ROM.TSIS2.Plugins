@@ -372,9 +372,18 @@ namespace TSIS2.Plugins
 
                                     var unplannedWO = service.RetrieveMultiple(query).Entities.FirstOrDefault();
 
-                                    var modifiedByRef = unplannedWO.GetAttributeValue<EntityReference>("modifiedby");
+                                    if (unplannedWO == null)
+                                    {
+                                        tracingService.Trace("No related Unplanned Work Order found for WO Id={0}", context.PrimaryEntityId);
+                                    }
+                                    else
+                                    {
+                                        tracingService.Trace("Found Unplanned WO Id={0}", unplannedWO.Id);
 
-                                    currentUser = servicecontext.SystemUserSet.FirstOrDefault(u => u.Id == modifiedByRef.Id);
+                                        var modifiedByRef = unplannedWO.GetAttributeValue<EntityReference>("modifiedby");
+
+                                        currentUser = servicecontext.SystemUserSet.FirstOrDefault(u => u.Id == modifiedByRef.Id);
+                                    }
                                 }
                                 tracingService.Trace("Ownerid is changing to {0} by currentUser {1}",target.GetAttributeValue<EntityReference>("ownerid")?.Id,currentUser?.Id);
 
