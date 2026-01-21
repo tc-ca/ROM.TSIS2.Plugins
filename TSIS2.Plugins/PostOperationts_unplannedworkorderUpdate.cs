@@ -439,6 +439,13 @@ namespace TSIS2.Plugins
                         tracingService.Trace("ts_contact changed. New value: {0}", contact != null ? contact.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
+                    if (target.Attributes.Contains("ts_accountableteam"))
+                    {
+                        var accountableteam = target.GetAttributeValue<EntityReference>("ts_accountableteam");
+                        updateWorkOrder["ts_accountableteam"] = accountableteam;
+                        tracingService.Trace("ts_accountableteam changed. New value: {0}", accountableteam != null ? accountableteam.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
                     if (anyFieldChanged)
                     {
                         service.Update(updateWorkOrder);
