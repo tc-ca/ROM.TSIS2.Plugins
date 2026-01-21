@@ -191,6 +191,7 @@ namespace TSIS2.Plugins
                         workOrder["ts_conductingoversight"] = target.GetAttributeValue<decimal>("ts_woconductingoversight");
                         workOrder["ts_traveltime"] = target.GetAttributeValue<decimal>("ts_wotraveltime");
                         workOrder["msdyn_systemstatus"] = target.GetAttributeValue<OptionSetValue>("ts_recordstatus");
+                        workOrder["ts_accountableteam"] = target.GetAttributeValue<EntityReference>("ts_accountableteam");
 
                         tracingService.Trace($"Retrieved ts_businessowner: {workOrder.GetAttributeValue<string>("ts_businessowner")}");
 
