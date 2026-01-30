@@ -1,10 +1,10 @@
-using Microsoft.Xrm.Sdk;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xrm.Sdk;
+using Newtonsoft.Json.Linq;
 
-namespace TSIS2.Plugins.QuestionnaireExtractor
+namespace TSIS2.Plugins.QuestionnaireProcessor
 {
     /// <summary>
     /// Represents a questionnaire response with methods to access and validate response data.
@@ -14,16 +14,8 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         private readonly JObject _response;
         private readonly ILoggingService _logger;
 
-        /// <summary>
-        /// Gets the raw response data.
-        /// </summary>
         public JObject Response => _response;
 
-        /// <summary>
-        /// Initializes a new instance of the QuestionnaireResponse class.
-        /// </summary>
-        /// <param name="responseJson">The JSON response data.</param>
-        /// <param name="logger">The logging service for logging.</param>
         public QuestionnaireResponse(string responseJson, ILoggingService logger = null)
         {
             if (string.IsNullOrEmpty(responseJson))
@@ -37,83 +29,45 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             _logger = logger ?? new LoggerAdapter();
         }
 
-        /// <summary>
-        /// Gets the response value for a specific question.
-        /// </summary>
-        /// <param name="questionName">The name of the question to retrieve.</param>
-        /// <returns>The JToken containing the response value, or null if not found.</returns>
         public JToken GetValue(string questionName)
         {
+            if (string.IsNullOrEmpty(questionName))
+                return null;
+
             return _response.TryGetValue(questionName.Trim(), out JToken value) ? value : null;
         }
 
-        /// <summary>
-        /// Checks if a question has a response value.
-        /// </summary>
-        /// <param name="questionName">The name of the question to check.</param>
-        /// <returns>True if the question has a response, false otherwise.</returns>
         public bool HasValue(string questionName)
         {
+            if (string.IsNullOrEmpty(questionName))
+                return false;
+
             return _response.ContainsKey(questionName.Trim());
         }
 
-        /// <summary>
-        /// Gets the response value for a specific question as a string.
-        /// </summary>
-        /// <param name="questionName">The name of the question to retrieve.</param>
-        /// <returns>The response as a string, or null if not found.</returns>
         public string GetStringValue(string questionName)
         {
-            var value = GetValue(questionName);
-            return value?.ToString();
+            return GetValue(questionName)?.ToString();
         }
 
-        /// <summary>
-        /// Gets the response value for a specific question as a boolean.
-        /// </summary>
-        /// <param name="questionName">The name of the question to retrieve.</param>
-        /// <returns>The response as a boolean, or null if not found or not a boolean.</returns>
         public bool? GetBooleanValue(string questionName)
         {
             var value = GetValue(questionName);
-            if (value?.Type == JTokenType.Boolean)
-            {
-                return value.ToObject<bool>();
-            }
-            return null;
+            return value?.Type == JTokenType.Boolean ? value.ToObject<bool>() : (bool?)null;
         }
 
-        /// <summary>
-        /// Gets the response value for a specific question as an array of strings.
-        /// </summary>
-        /// <param name="questionName">The name of the question to retrieve.</param>
-        /// <returns>The response as an array of strings, or null if not found or not an array.</returns>
         public string[] GetArrayValue(string questionName)
         {
             var value = GetValue(questionName);
-            if (value?.Type == JTokenType.Array)
-            {
-                return value.Select(v => v.ToString()).ToArray();
-            }
-            return null;
+            return value?.Type == JTokenType.Array ? value.Select(v => v.ToString()).ToArray() : null;
         }
 
-        /// <summary>
-        /// Gets the response value for a specific question as a JObject.
-        /// </summary>
-        /// <param name="questionName">The name of the question to retrieve.</param>
-        /// <returns>The response as a JObject, or null if not found or not an object.</returns>
         public JObject GetObjectValue(string questionName)
         {
             var value = GetValue(questionName);
             return value?.Type == JTokenType.Object ? (JObject)value : null;
         }
 
-        /// <summary>
-        /// Gets the detail value for a specific question (e.g., "questionName-Detail").
-        /// </summary>
-        /// <param name="questionName">The name of the question to retrieve details for.</param>
-        /// <returns>The detail value as a string, or null if not found.</returns>
         public string GetDetailValue(string questionName)
         {
             var detailKey = $"{questionName}-Detail";
@@ -154,10 +108,6 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                 .ToList();
         }
 
-        /// <summary>
-        /// Checks if the response is empty (no questions answered).
-        /// </summary>
-        /// <returns>True if no questions have responses, false otherwise.</returns>
         public bool IsEmpty()
         {
             return !_response.Properties().Any();
@@ -182,16 +132,16 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         {
             if (questionNames.Count == 0)
                 return "No questions found in definition";
-            
+
             int questionsWithData = 0;
             foreach (var questionName in questionNames)
             {
                 if (HasValue(questionName) || HasDetailValue(questionName))
                     questionsWithData++;
             }
-            
-            return questionsWithData == 0 
-                ? "All questions have empty responses" 
+
+            return questionsWithData == 0
+                ? "All questions have empty responses"
                 : "Questions had data but processing failed";
         }
 
@@ -203,34 +153,15 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         /// <returns>The comment text if found, null otherwise.</returns>
         public string FindMultipletextComment(QuestionnaireDefinition definition, string multipletextQuestionName)
         {
+            if (definition == null || string.IsNullOrEmpty(multipletextQuestionName))
+                return null;
+
             try
             {
-                // Find all elements in the definition
-                var allElements = new List<JToken>();
-                var pages = definition.Definition["pages"] as JArray;
-                if (pages != null)
-                {
-                    foreach (var page in pages)
-                    {
-                        var elements = page["elements"] as JArray;
-                        if (elements != null)
-                        {
-                            allElements.AddRange(elements);
-                        }
-                    }
-                }
+                // Use the definition's GetAllQuestionNames which properly handles nested elements (panels, containers)
+                var allQuestions = definition.GetAllQuestionNames();
 
-                // Find the index of the multipletext question
-                int multipletextIndex = -1;
-                for (int i = 0; i < allElements.Count; i++)
-                {
-                    if (allElements[i]["name"]?.ToString() == multipletextQuestionName)
-                    {
-                        multipletextIndex = i;
-                        break;
-                    }
-                }
-
+                int multipletextIndex = allQuestions.IndexOf(multipletextQuestionName);
                 if (multipletextIndex == -1)
                 {
                     _logger.Debug($"Multipletext question {multipletextQuestionName} not found in definition");
@@ -238,14 +169,13 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                 }
 
                 // Look for the next comment question after the multipletext question
-                for (int i = multipletextIndex + 1; i < allElements.Count; i++)
+                for (int i = multipletextIndex + 1; i < allQuestions.Count; i++)
                 {
-                    var element = allElements[i];
-                    string elementType = element["type"]?.ToString();
-                    string elementName = element["name"]?.ToString();
+                    string elementName = allQuestions[i];
+                    var questionDef = definition.FindQuestionDefinition(elementName);
+                    string elementType = questionDef?["type"]?.ToString();
 
-                    if (string.Equals(elementType, "comment", StringComparison.OrdinalIgnoreCase) && 
-                        !string.IsNullOrEmpty(elementName))
+                    if (string.Equals(elementType, "comment", StringComparison.OrdinalIgnoreCase))
                     {
                         // Found a comment question, check if it has a response value
                         if (HasValue(elementName))
@@ -253,15 +183,15 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                             string commentText = GetStringValue(elementName);
                             if (!string.IsNullOrEmpty(commentText))
                             {
-                                _logger.Debug($"Found comment for multipletext {multipletextQuestionName}: {elementName} = {commentText}");
+                                _logger.Debug($"Found comment for multipletext {multipletextQuestionName}: {elementName}");
                                 return commentText;
                             }
                         }
                         break; // Stop at the first comment question found, even if it's empty
                     }
-                    
+
                     // Stop looking if we hit another question type that's not a comment
-                    if (!string.IsNullOrEmpty(elementType) && 
+                    if (!string.IsNullOrEmpty(elementType) &&
                         !string.Equals(elementType, "comment", StringComparison.OrdinalIgnoreCase))
                     {
                         break;
@@ -272,9 +202,9 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             }
             catch (Exception ex)
             {
-                _logger.Debug($"Error finding multipletext comment for {multipletextQuestionName}: {ex.Message}");
+                _logger.Debug($"Error finding multipletext comment for {multipletextQuestionName}: {ex}");
                 return null;
             }
         }
     }
-} 
+}
