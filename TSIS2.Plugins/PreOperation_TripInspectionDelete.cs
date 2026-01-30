@@ -1,11 +1,6 @@
-﻿using Microsoft.Xrm.Sdk;
+﻿using System;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Security;
 
 namespace TSIS2.Plugins
 {
@@ -17,23 +12,30 @@ namespace TSIS2.Plugins
        "",
        "TSIS2.Plugins.PreOperation_TripInspectionDelete Plugin",
        1,
-       IsolationModeEnum.Sandbox,       
+       IsolationModeEnum.Sandbox,
        Description = "Happens before the Trip Inspection has been deleted")]
-    public class PreOperation_TripInspectionDelete : IPlugin
+    public class PreOperation_TripInspectionDelete : PluginBase
     {
-        public void Execute(IServiceProvider serviceProvider)
+        public PreOperation_TripInspectionDelete(string unsecure, string secure)
+            : base(typeof(PreOperation_TripInspectionDelete))
         {
-            IPluginExecutionContext context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            ITracingService tracingService =
-            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
 
-            IOrganizationServiceFactory serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            IPluginExecutionContext context = localContext.PluginExecutionContext;
+            IOrganizationService service = localContext.OrganizationService;
 
             if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is EntityReference)
             {
                 EntityReference entityRef = (EntityReference)context.InputParameters["Target"];
-                if (context.MessageName.ToLower() != "delete" || entityRef.LogicalName.ToLower() != "ts_tripinspection")
+                if (!string.Equals(context.MessageName, "Delete", StringComparison.OrdinalIgnoreCase) ||
+                    !string.Equals(entityRef.LogicalName, "ts_tripinspection", StringComparison.OrdinalIgnoreCase))
                 {
                     return;
                 }
@@ -45,7 +47,7 @@ namespace TSIS2.Plugins
                         Entity woEnt = service.Retrieve("msdyn_workorder", inspectEnt.GetAttributeValue<EntityReference>("ts_inspection").Id, new ColumnSet("ts_trip"));
                         if (woEnt.Contains("ts_trip"))
                         {
-                            tracingService.Trace("Remove trip from WO: " + woEnt.GetAttributeValue<EntityReference>("ts_trip").Id.ToString());
+                            localContext.Trace("Remove trip from WO: " + woEnt.GetAttributeValue<EntityReference>("ts_trip").Id.ToString());
                             var tripId = woEnt.GetAttributeValue<EntityReference>("ts_trip").Id;
                             if (tripId == inspectEnt.GetAttributeValue<EntityReference>("ts_trip").Id)
                             {
@@ -61,9 +63,10 @@ namespace TSIS2.Plugins
                     //service.Delete(entityRef.LogicalName, entityRef.Id);
 
                 }
-                catch (Exception ex)
+                catch (Exception e)
                 {
-                    throw new InvalidPluginExecutionException($"An error occurred in the TripInspectionDelete Plugin: {ex.Message}");
+                    localContext.Trace("TripInspectionDelete Plugin: {0}", e);
+                    throw new InvalidPluginExecutionException($"An error occurred in the TripInspectionDelete Plugin: {e}");
                 }
             }
         }

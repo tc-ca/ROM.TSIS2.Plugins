@@ -77,17 +77,87 @@ namespace TSIS2.Plugins
                     return;
                 }
 
+                TracingService.Trace(message);
+            }
+
+            /// <summary>
+            /// Writes a formatted trace message to the CRM trace log.
+            /// </summary>
+            /// <param name="format">Composite format string.</param>
+            /// <param name="args">Format arguments.</param>
+            internal void Trace(string format, params object[] args)
+            {
+                if (string.IsNullOrWhiteSpace(format))
+                {
+                    return;
+                }
+
+                if (args == null || args.Length == 0)
+                {
+                    Trace(format);
+                    return;
+                }
+
+                try
+                {
+                    Trace(string.Format(CultureInfo.InvariantCulture, format, args));
+                }
+                catch (FormatException ex)
+                {
+                    Trace($"{format} [Trace format error: {ex.Message}]");
+                }
+            }
+
+            /// <summary>
+            /// Writes a trace message to the CRM trace log, appending Correlation Id and Initiating User when available.
+            /// </summary>
+            /// <param name="message">Message name to trace.</param>
+            internal void TraceWithContext(string message)
+            {
+                if (string.IsNullOrWhiteSpace(message) || TracingService == null)
+                {
+                    return;
+                }
+
                 if (PluginExecutionContext == null)
                 {
                     TracingService.Trace(message);
+                    return;
                 }
-                else
+
+                TracingService.Trace(
+                    "{0}, Correlation Id: {1}, Initiating User: {2}",
+                    message,
+                    PluginExecutionContext.CorrelationId,
+                    PluginExecutionContext.InitiatingUserId);
+            }
+
+            /// <summary>
+            /// Writes a formatted trace message to the CRM trace log, appending Correlation Id and Initiating User when available.
+            /// </summary>
+            /// <param name="format">Composite format string.</param>
+            /// <param name="args">Format arguments.</param>
+            internal void TraceWithContext(string format, params object[] args)
+            {
+                if (string.IsNullOrWhiteSpace(format))
                 {
-                    TracingService.Trace(
-                        "{0}, Correlation Id: {1}, Initiating User: {2}",
-                        message,
-                        PluginExecutionContext.CorrelationId,
-                        PluginExecutionContext.InitiatingUserId);
+                    return;
+                }
+
+                if (args == null || args.Length == 0)
+                {
+                    TraceWithContext(format);
+                    return;
+                }
+
+                try
+                {
+                    TraceWithContext(string.Format(CultureInfo.InvariantCulture, format, args));
+                }
+                catch (FormatException ex)
+                {
+                    // Never let bad formatting break the plugin execution.
+                    TraceWithContext($"{format} [Trace format error: {ex.Message}]");
                 }
             }
         }
@@ -141,7 +211,7 @@ namespace TSIS2.Plugins
             // Construct the local plug-in context.
             LocalPluginContext localcontext = new LocalPluginContext(serviceProvider, RunAsSystem);
 
-            localcontext.Trace(string.Format(CultureInfo.InvariantCulture, "Entered {0}.Execute()", this.ChildClassName));
+            localcontext.TraceWithContext(string.Format(CultureInfo.InvariantCulture, "Entered {0}.Execute()", this.ChildClassName));
 
             try
             {
@@ -153,14 +223,14 @@ namespace TSIS2.Plugins
             }
             catch (FaultException<OrganizationServiceFault> e)
             {
-                localcontext.Trace(string.Format(CultureInfo.InvariantCulture, "Exception: {0}", e.ToString()));
+                localcontext.TraceWithContext(string.Format(CultureInfo.InvariantCulture, "Exception: {0}", e.ToString()));
 
                 // Handle the exception.
                 throw new InvalidPluginExecutionException("OrganizationServiceFault", e);
             }
             finally
             {
-                localcontext.Trace(string.Format(CultureInfo.InvariantCulture, "Exiting {0}.Execute()", this.ChildClassName));
+                localcontext.TraceWithContext(string.Format(CultureInfo.InvariantCulture, "Exiting {0}.Execute()", this.ChildClassName));
             }
         }
 

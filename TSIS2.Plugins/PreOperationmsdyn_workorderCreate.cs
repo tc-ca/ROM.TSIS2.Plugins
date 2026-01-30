@@ -128,8 +128,8 @@ namespace TSIS2.Plugins
             }
             catch (Exception e)
             {
-                tracingService.Trace("Exception: {0}", e.ToString());
-                throw new InvalidPluginExecutionException(e.Message);
+                localContext.TraceWithContext("Exception occurred: {0}", e);
+                throw new InvalidPluginExecutionException("PreOperationmsdyn_workorderCreate failed.", e);
             }
         }
     }

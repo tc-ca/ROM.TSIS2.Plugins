@@ -1,10 +1,10 @@
-using Microsoft.Xrm.Sdk;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json.Linq;
 
-namespace TSIS2.Plugins.QuestionnaireExtractor
+namespace TSIS2.Plugins.QuestionnaireProcessor
 {
     /// <summary>
     /// Represents a questionnaire definition with methods to parse and access question metadata.
@@ -12,8 +12,14 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
     /// </summary>
     public class QuestionnaireDefinition
     {
+        // Precompiled regexes
+        private static readonly Regex ParentQuestionNameRegex = new Regex(@"\{([^}.]+)", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Regex VisibleIfConditionRegex = new Regex(@"\{([^}]+)\}\s*(?<op>anyof|contains|strarequals|equals|=)\s*(?<val>\[[^\]]*\]|'[^']*'|true|false)", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        private static readonly Regex AnyOfValuesRegex = new Regex(@"'([^']*)'", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
         private readonly JObject _definition;
         private readonly ILoggingService _logger;
+        private readonly Dictionary<string, JObject> _questionMap;
 
         public JObject Definition => _definition;
 
@@ -25,6 +31,10 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             }
             _definition = JObject.Parse(definitionJson);
             _logger = logger ?? new LoggerAdapter();
+
+            // Build O(1) lookup map (case-insensitive)
+            _questionMap = new Dictionary<string, JObject>(StringComparer.OrdinalIgnoreCase);
+            PopulateQuestionMap(_definition);
         }
 
         /// <summary>
@@ -41,52 +51,72 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             {
                 var parts = questionName.Split('.');
                 string parentName = parts[0];
-                var parentQuestion = FindElementByName(_definition, parentName);
-                if (parentQuestion != null && parentQuestion["type"]?.ToString() == "matrix")
+
+                if (_questionMap.TryGetValue(parentName, out var parentQuestion))
                 {
-                    return parentQuestion;
+                    if (parentQuestion["type"]?.ToString() == "matrix")
+                    {
+                        return parentQuestion;
+                    }
                 }
             }
-            return FindElementByName(_definition, questionName);
+
+            if (_questionMap.TryGetValue(questionName, out var definition))
+            {
+                return definition;
+            }
+
+            _logger.Warning($"Question definition not found for '{questionName}'.");
+            return null;
         }
 
-        private JToken FindElementByName(JToken token, string questionName)
+        /// <summary>
+        /// Recursively populates the dictionary with question definitions by name.
+        /// Mimics the traversal logic of the original FindElementByName method.
+        /// </summary>
+        private void PopulateQuestionMap(JToken token)
         {
-            if (token == null)
-                return null;
+            if (token == null) return;
+
             if (token.Type == JTokenType.Object)
             {
                 JObject obj = (JObject)token;
-                if (obj["name"]?.ToString() == questionName)
+                string name = obj["name"]?.ToString();
+
+                if (!string.IsNullOrEmpty(name))
                 {
-                    return obj;
+                    if (_questionMap.ContainsKey(name))
+                    {
+                        _logger.Warning($"Duplicate question name in definition: '{name}'. First wins.");
+                    }
+                    else
+                    {
+                        _questionMap[name] = obj;
+                    }
                 }
+
                 if (obj["elements"] != null)
                 {
-                    var found = FindElementByName(obj["elements"], questionName);
-                    if (found != null) return found;
+                    PopulateQuestionMap(obj["elements"]);
                 }
                 else if (obj["pages"] != null)
                 {
-                    var found = FindElementByName(obj["pages"], questionName);
-                    if (found != null) return found;
+                    PopulateQuestionMap(obj["pages"]);
                 }
             }
             else if (token.Type == JTokenType.Array)
             {
                 foreach (var item in token)
                 {
-                    var found = FindElementByName(item, questionName);
-                    if (found != null) return found;
+                    PopulateQuestionMap(item);
                 }
             }
-            return null;
         }
 
         public List<string> GetAllQuestionNames()
         {
             var questionNames = new List<string>();
-            
+
             void CollectNames(JToken token)
             {
                 if (token == null) return;
@@ -101,7 +131,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                     {
                         questionNames.Add(name);
                     }
-                    
+
                     if (obj["pages"] != null)
                     {
                         foreach (var child in obj["pages"])
@@ -140,9 +170,14 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
             return token.ToString();
         }
 
+        /// <summary>
+        /// Extracts the parent question name from a visibleIf expression
+        /// (e.g. "{MatrixName.RowName} = 'Not Met'" → "MatrixName")
+        /// to establish a parent–child relationship between questions.
+        /// </summary>
         public static string ParseParentQuestionName(string visibleIf)
         {
-            var match = System.Text.RegularExpressions.Regex.Match(visibleIf, @"\{([^}.]+)");
+            var match = ParentQuestionNameRegex.Match(visibleIf);
             var result = match.Success ? match.Groups[1].Value.Trim() : string.Empty;
             return result;
         }
@@ -202,7 +237,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         {
             if (string.IsNullOrEmpty(visibleIf))
                 return false;
-            
+
             var orConditions = visibleIf.Split(new[] { " or " }, StringSplitOptions.None);
             foreach (var condition in orConditions)
             {
@@ -218,7 +253,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         {
             if (string.IsNullOrEmpty(condition)) return false;
 
-            var match = System.Text.RegularExpressions.Regex.Match(condition, @"\{([^}]+)\}\s*(?<op>anyof|contains|strarequals|equals|=)\s*(?<val>\[[^\]]*\]|'[^']*'|true|false)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+            var match = VisibleIfConditionRegex.Match(condition);
 
             if (!match.Success)
             {
@@ -243,17 +278,35 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                         _logger.Debug($"'anyof' condition failed for '{questionName}': response was not an array.");
                         return false;
                     }
+
                     var expectedValues = new HashSet<string>();
-                    var valueMatches = System.Text.RegularExpressions.Regex.Matches(valStr, @"'([^']*)'");
-                    foreach (System.Text.RegularExpressions.Match valueMatch in valueMatches)
+
+                    // Attempt to parse valStr as JSON array
+                    try
                     {
-                        expectedValues.Add(valueMatch.Groups[1].Value);
+                        var jsonArray = JArray.Parse(valStr.Replace("'", "\""));
+                        foreach (var value in jsonArray)
+                        {
+                            expectedValues.Add(value.ToString());
+                        }
                     }
+                    catch (Exception)
+                    {
+                        // Fallback to manual parsing if JSON parsing fails
+                        _logger.Debug($"Failed to parse 'anyof' values as JSON. Falling back to manual parsing for '{valStr}'.");
+                        var valueMatches = AnyOfValuesRegex.Matches(valStr);
+                        foreach (Match valueMatch in valueMatches)
+                        {
+                            expectedValues.Add(valueMatch.Groups[1].Value);
+                        }
+                    }
+
                     if (!expectedValues.Any())
                     {
                         _logger.Debug($"'anyof' condition for '{questionName}' has no values to check against in '{valStr}'.");
                         return false;
                     }
+
                     foreach (var value in responseValue)
                     {
                         if (expectedValues.Contains(value.ToString()))
@@ -279,7 +332,7 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
                     {
                         if (responseValue.Type == JTokenType.Array && valStr.StartsWith("[") && valStr.EndsWith("]"))
                         {
-                            var valueMatch = System.Text.RegularExpressions.Regex.Match(valStr, @"\['([^']*)'\]");
+                            var valueMatch = AnyOfValuesRegex.Match(valStr);
                             if (valueMatch.Success)
                             {
                                 string expectedValueInArray = valueMatch.Groups[1].Value;
