@@ -1,6 +1,4 @@
-using System;
-
-namespace TSIS2.Plugins.QuestionnaireExtractor
+namespace TSIS2.Plugins.QuestionnaireProcessor
 {
     /// <summary>
     /// Log levels in ascending order of verbosity.
@@ -36,5 +34,18 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         void Verbose(string message);
 
         void Debug(string message);
+
+        /// <summary>
+        /// Logs an error with additional debug information. 
+        /// The basic message is shown at Error level, detailed info is logged at Debug level.
+        /// </summary>
+        /// <param name="basicMessage">The basic error message to show at Error level.</param>
+        /// <param name="detailedMessage">Detailed error information for debugging.</param>
+        void TraceErrorWithDebugInfo(string basicMessage, string detailedMessage);
+
+        /// <summary>
+        /// Gets a value indicating whether the logger is operating in verbose mode.
+        /// </summary>
+        bool VerboseMode { get; }
     }
-} 
+}
