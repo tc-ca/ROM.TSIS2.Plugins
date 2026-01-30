@@ -75,36 +75,36 @@ namespace TSIS2.Plugins
             ITracingService tracingService = localContext.TracingService;
             Entity target = (Entity)context.InputParameters["Target"];
 
-            tracingService.Trace("Entering ExecuteCrmPlugin method.");
+            localContext.Trace("Entering ExecuteCrmPlugin method.");
             try
             {
                 if (target.LogicalName.Equals(msdyn_workorder.EntityLogicalName))
                 {
-                    tracingService.Trace("Set Category to Planned if making the Work Order from the Planning Module.");
+                    localContext.Trace("Set Category to Planned if making the Work Order from the Planning Module.");
                     if (context.ParentContext != null &&
                         context.ParentContext.InputParameters != null &&
                         context.ParentContext.InputParameters.ContainsKey("x-ms-app-name") &&
                         context.ParentContext.InputParameters["x-ms-app-name"] != null &&
                         context.ParentContext.InputParameters["x-ms-app-name"].ToString() == "ts_OversightPlanningModule")
                     {
-                        tracingService.Trace("Setting Category to Planned.");
+                        localContext.Trace("Setting Category to Planned.");
                         target.Attributes["ovs_rational"] = new EntityReference(ovs_TYRational.EntityLogicalName, new Guid("994c3ec1-c104-eb11-a813-000d3af3a7a7")); //Planned
                     }
-                    tracingService.Trace("Set State to Committed if making the Work Order from the ROM application.");
+                    localContext.Trace("Set State to Committed if making the Work Order from the ROM application.");
                     if (context.ParentContext != null &&
                         context.ParentContext.InputParameters != null &&
                         context.ParentContext.InputParameters.ContainsKey("x-ms-app-name") &&
                         context.ParentContext.InputParameters["x-ms-app-name"] != null &&
                         context.ParentContext.InputParameters["x-ms-app-name"].ToString() == "ovs_ROM")
                     {
-                        tracingService.Trace("Setting State to Committed.");
+                        localContext.Trace("Setting State to Committed.");
                         target.Attributes["ts_state"] = new OptionSetValue(717750001); //Committed
                     }
 
                     if (target.Attributes.Contains("ovs_operationid") && target.Attributes["ovs_operationid"] != null)
                     {
                         EntityReference operation = (EntityReference)target.Attributes["ovs_operationid"];
-                        tracingService.Trace("Fetching regulated entity for operation ID: {0}", operation.Id);
+                        localContext.Trace("Fetching regulated entity for operation ID: {0}", operation.Id);
                         using (var servicecontext = new Xrm(localContext.OrganizationService))
                         {
                             var regulatedentity = (from tt in servicecontext.ovs_operationSet
@@ -115,10 +115,10 @@ namespace TSIS2.Plugins
                                                    }).FirstOrDefault();
                             if (regulatedentity != null)
                             {
-                                tracingService.Trace("Regulated entity found.");
+                                localContext.Trace("Regulated entity found.");
                                 if (regulatedentity.ts_stakeholder != null && regulatedentity.ts_stakeholder.Id != null)
                                 {
-                                    tracingService.Trace("Setting msdyn_billingaccount to stakeholder ID: {0}", regulatedentity.ts_stakeholder.Id);
+                                    localContext.Trace("Setting msdyn_billingaccount to stakeholder ID: {0}", regulatedentity.ts_stakeholder.Id);
                                     target.Attributes["msdyn_billingaccount"] = regulatedentity.ts_stakeholder;
                                 }
                             }

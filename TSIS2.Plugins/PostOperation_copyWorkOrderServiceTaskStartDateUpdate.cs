@@ -8,7 +8,7 @@ namespace TSIS2.Plugins
         MessageNameEnum.Update,
         "ts_workorderservicetaskworkspace",
         StageEnum.PostOperation,
-        ExecutionModeEnum.Synchronous,
+        ExecutionModeEnum.Asynchronous,
         "ts_name,ts_tasktype,ts_workorder,statecode,ts_fromoffline,ownerid,ts_location,ts_flightnumber,ts_origin,ts_destination,ts_flightcategory,ts_flighttype,ts_reportdetails,ts_scheduledtime,ts_actualtime,ts_paxonboard,ts_paxboarded,ts_cbonboard,ts_cbloaded,ts_aircraftmark,ts_aircraftmanufacturer,ts_aircraftmodel,ts_aircraftmodelother,ts_brandname,ts_passengerservices,ts_rampservices,ts_cargoservices,ts_cateringservices,ts_groomingservices,ts_securitysearchservices,ts_accesscontrolsecurityservices,ts_othersecurityservices,ts_workorderservicetaskstartdate,ts_questionnaireresponse,ts_questionnairedefinition,ts_mandatory,ts_percentcomplete,ts_aocoperation,ts_aocstakeholder,ts_aocoperationtype,ts_aocsite,ts_accesscontrol,ts_workorderservicetaskenddate,statuscode",
         "PostOperation.ts_workorderservicetaskworkspace.CopyStartDateToWorkOrderServiceTaskOnUpdate",
         1,
@@ -164,22 +164,28 @@ namespace TSIS2.Plugins
                             anyFieldChanged = true;
                         }
                     }
-
-                    // --- Fields with Special Logic ---
-                    if (target.Contains("statecode"))
+                    if (target.Contains("statuscode"))
                     {
-                        var stateCode = target.GetAttributeValue<OptionSetValue>("statecode");
-                        if (stateCode != null)
+                        var statusCode = target.GetAttributeValue<OptionSetValue>("statuscode");
+                        if (statusCode != null)
                         {
-                            int mappedStateCode;
-                            switch (stateCode.Value)
+                            int mappedStatusCode;
+                            switch (statusCode.Value)
                             {
-                                case 0: mappedStateCode = 0; break;  // Active -> Active
-                                case 1: mappedStateCode = 1; break;  // Inactive -> Inactive
-                                default: mappedStateCode = 0; break; // Default to Active
+                                // Active statecodes
+                                case 1: mappedStatusCode = 1; break;           // Active -> Active
+                                case 741130001: mappedStatusCode = 918640002; break; // Complete -> Completed
+                                case 741130002: mappedStatusCode = 918640004; break; // In Progress -> In Progress
+                                case 741130003: mappedStatusCode = 918640005; break; // New -> New
+
+                                // Inactive statecodes
+                                case 2: mappedStatusCode = 2; break;           // Inactive -> Inactive
+                                case 741130004: mappedStatusCode = 918640003; break; // Closed -> Closed
+
+                                default: mappedStatusCode = 1; break; // Default to Active
                             }
-                            updateTask["statecode"] = new OptionSetValue(mappedStateCode);
-                            localContext.Trace("statecode changed. New mapped value: {0}", mappedStateCode);
+                            updateTask["statuscode"] = new OptionSetValue(mappedStatusCode);
+                            localContext.Trace("statuscode changed. New mapped value: {0}", mappedStatusCode);
                             anyFieldChanged = true;
                         }
                     }
@@ -201,8 +207,8 @@ namespace TSIS2.Plugins
             }
             catch (Exception ex)
             {
-                localContext.TraceWithContext("Exception: {0}", ex.Message);
-                throw new InvalidPluginExecutionException("PostOperation_CopyStartDateToTaskOnUpdate failed.", ex);
+                localContext.Trace("An error occurred: {0}", ex.ToString());
+                throw;
             }
         }
     }

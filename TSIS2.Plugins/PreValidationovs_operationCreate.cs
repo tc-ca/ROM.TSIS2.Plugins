@@ -32,7 +32,6 @@ namespace TSIS2.Plugins
             }
 
             IPluginExecutionContext context = localContext.PluginExecutionContext;
-            ITracingService tracingService = localContext.TracingService;
             IOrganizationService service = localContext.OrganizationService;
 
             if (context.Depth > 1)
@@ -65,21 +64,21 @@ namespace TSIS2.Plugins
                         int userLang = RetrieveUserLang(service, context.UserId);
                         var userBUId = context.BusinessUnitId;
 
-                        bool isISSOOwner = owner.LogicalName == "team" && OrganizationConfig.IsOwnedByISSO(service, owner, tracingService);
-                        bool isUserInISSOBU = OrganizationConfig.IsISSOBU(service, userBUId, tracingService);
+                        bool isISSOOwner = owner.LogicalName == "team" && OrganizationConfig.IsOwnedByISSO(service, owner, localContext.TracingService);
+                        bool isUserInISSOBU = OrganizationConfig.IsISSOBU(service, userBUId, localContext.TracingService);
                         bool shouldRenameForISSO = isISSOOwner || isUserInISSOBU;
 
                         string ownerDisplay = $"{owner.LogicalName}:{owner.Id}" + (!string.IsNullOrEmpty(owner.Name) ? $" ; {owner.Name}" : "");
 
                         if (shouldRenameForISSO)
                         {
-                            string stakeholderAltLangValue = RetrieveAltLangName(service, stakeholderRef, userLang == 1033 ? "ovs_accountnamefrench" : "ovs_accountnameenglish", "name", tracingService);
-                            string operationTypeAltLangValue = RetrieveAltLangName(service, operationTypeRef, userLang == 1033 ? "ovs_operationtypenamefrench" : "ovs_operationtypenameenglish", "ovs_name", tracingService);
-                            string siteAltLangValue = RetrieveAltLangName(service, siteRef, userLang == 1033 ? "ts_functionallocationnamefrench" : "ts_functionallocationnameenglish", "msdyn_name", tracingService);
+                            string stakeholderAltLangValue = RetrieveAltLangName(service, stakeholderRef, userLang == 1033 ? "ovs_accountnamefrench" : "ovs_accountnameenglish", "name", localContext);
+                            string operationTypeAltLangValue = RetrieveAltLangName(service, operationTypeRef, userLang == 1033 ? "ovs_operationtypenamefrench" : "ovs_operationtypenameenglish", "ovs_name", localContext);
+                            string siteAltLangValue = RetrieveAltLangName(service, siteRef, userLang == 1033 ? "ts_functionallocationnamefrench" : "ts_functionallocationnameenglish", "msdyn_name", localContext);
 
-                            string stakeholderName = RetrieveLookupName(service, stakeholderRef, "name", tracingService);
-                            string operationTypeName = RetrieveLookupName(service, operationTypeRef, "ovs_name", tracingService);
-                            string siteName = RetrieveLookupName(service, siteRef, "msdyn_name", tracingService);
+                            string stakeholderName = RetrieveLookupName(service, stakeholderRef, "name", localContext);
+                            string operationTypeName = RetrieveLookupName(service, operationTypeRef, "ovs_name", localContext);
+                            string siteName = RetrieveLookupName(service, siteRef, "msdyn_name", localContext);
 
                             string newName = $"{stakeholderName} | {operationTypeName} | {siteName}";
                             target.Attributes["ovs_name"] = newName;
@@ -103,14 +102,13 @@ namespace TSIS2.Plugins
             if (localContext == null) throw new ArgumentNullException(nameof(localContext));
 
             var service = localContext.OrganizationService;
-            var tracingService = localContext.TracingService;
             var context = localContext.PluginExecutionContext;
 
             const string PREFIX = "OWNER (OP TYPE BU)";
 
             if (operationTypeRef == null)
             {
-                tracingService?.Trace($"{PREFIX}: ✖ missingOperationTypeRef");
+                localContext.Trace($"{PREFIX}: ✖ missingOperationTypeRef");
                 return;
             }
 
@@ -122,22 +120,22 @@ namespace TSIS2.Plugins
             }
             catch (Exception ex)
             {
-                tracingService?.Trace($"{PREFIX}: ✖ retrieveOpTypeFailed opTypeId={operationTypeRef.Id} ex={ex}");
+                localContext.Trace($"{PREFIX}: ✖ retrieveOpTypeFailed opTypeId={operationTypeRef.Id} ex={ex}");
                 return;
             }
 
             var opTypeOwner = opType.GetAttributeValue<EntityReference>("ownerid");
             if (opTypeOwner == null)
             {
-                tracingService?.Trace($"{PREFIX}: ✖ opTypeHasNoOwner opTypeId={operationTypeRef.Id}");
+                localContext.Trace($"{PREFIX}: ✖ opTypeHasNoOwner opTypeId={operationTypeRef.Id}");
                 return;
             }
 
             // 2) Resolve BU from op type owner
-            var buId = OrganizationConfig.TryGetBusinessUnitId(service, opTypeOwner, tracingService);
+            var buId = OrganizationConfig.TryGetBusinessUnitId(service, opTypeOwner, localContext.TracingService);
             if (!buId.HasValue)
             {
-                tracingService?.Trace($"{PREFIX}: ✖ couldNotResolveBU opTypeOwner={opTypeOwner.LogicalName}:{opTypeOwner.Id}");
+                localContext.Trace($"{PREFIX}: ✖ couldNotResolveBU opTypeOwner={opTypeOwner.LogicalName}:{opTypeOwner.Id}");
                 return;
             }
 
@@ -145,7 +143,7 @@ namespace TSIS2.Plugins
             var teamRef = OrganizationConfig.GetTeamByBusinessUnitId(service, buId.Value);
             if (teamRef == null)
             {
-                tracingService?.Trace($"{PREFIX}: ✖ noTeamForBU buId={buId.Value} opTypeId={operationTypeRef.Id}");
+                localContext.Trace($"{PREFIX}: ✖ noTeamForBU buId={buId.Value} opTypeId={operationTypeRef.Id}");
                 return;
             }
 
@@ -162,7 +160,7 @@ namespace TSIS2.Plugins
         }
 
 
-        private string RetrieveLookupName(IOrganizationService service, EntityReference lookupRef, string attributeName, ITracingService tracingService)
+        private string RetrieveLookupName(IOrganizationService service, EntityReference lookupRef, string attributeName, LocalPluginContext localContext)
         {
             if (lookupRef == null) return "Unknown";
 
@@ -176,37 +174,37 @@ namespace TSIS2.Plugins
             catch (Exception ex)
             {
                 // Log to tracer and return a fallback instead of crashing the whole save
-                tracingService?.Trace($"Error retrieving {attributeName}: {ex}");
+                localContext.Trace($"Error retrieving {attributeName}: {ex}");
                 return "Error";
             }
         }
 
-        private string RetrieveAltLangName(IOrganizationService service, EntityReference entityRef, string alternateLangLookupName, string LookupName, ITracingService tracingService)
+        private string RetrieveAltLangName(IOrganizationService service, EntityReference entityRef, string alternateLangLookupName, string LookupName, LocalPluginContext localContext)
         {
             if (entityRef == null)
             {
-                tracingService?.Trace($"RetrieveAltLangName: null entityRef, returning fallback");
+                localContext.Trace($"RetrieveAltLangName: null entityRef, returning fallback");
                 return "N/A";
             }
 
             try
             {
-                string alternateLangName = RetrieveLookupName(service, entityRef, alternateLangLookupName, tracingService);
+                string alternateLangName = RetrieveLookupName(service, entityRef, alternateLangLookupName, localContext);
 
                 if (string.IsNullOrEmpty(alternateLangName) || alternateLangName == "Error" || alternateLangName == "Unknown")
                 {
-                    tracingService?.Trace($"RetrieveAltLangName: alternateLang empty/error, falling back to primary language");
-                    return RetrieveLookupName(service, entityRef, LookupName, tracingService);
+                    localContext.Trace($"RetrieveAltLangName: alternateLang empty/error, falling back to primary language");
+                    return RetrieveLookupName(service, entityRef, LookupName, localContext);
                 }
 
                 return alternateLangName;
             }
             catch (Exception ex)
             {
-                tracingService.Trace($"RetrieveAltLangName: exception for {entityRef?.LogicalName}:{entityRef?.Id}, falling back to primary: {ex}");
+                localContext.Trace($"RetrieveAltLangName: exception for {entityRef?.LogicalName}:{entityRef?.Id}, falling back to primary: {ex}");
                 try
                 {
-                    return RetrieveLookupName(service, entityRef, LookupName, tracingService);
+                    return RetrieveLookupName(service, entityRef, LookupName, localContext);
                 }
                 catch
                 {
