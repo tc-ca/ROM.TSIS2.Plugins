@@ -273,14 +273,14 @@ namespace TSIS2.Plugins
                     {
                         EntityReference plannedFiscalYear = target.GetAttributeValue<EntityReference>("ts_plannedfiscalyear");
                         updateWorkOrder["ovs_fiscalyear"] = plannedFiscalYear;
-                        tracingService.Trace("ts_plannedfiscalyear changed. New value: {0}", plannedFiscalYear != null ? plannedFiscalYear.Id.ToString() : "null");
+                        localContext.Trace("ts_plannedfiscalyear changed. New value: {0}", plannedFiscalYear != null ? plannedFiscalYear.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
                     if (target.Attributes.Contains("ts_plannedfiscalquarter"))
                     {
                         EntityReference plannedFiscalQuarter = target.GetAttributeValue<EntityReference>("ts_plannedfiscalquarter");
                         updateWorkOrder["ovs_fiscalquarter"] = plannedFiscalQuarter;
-                        tracingService.Trace("ts_plannedfiscalquarter changed. New value: {0}", plannedFiscalQuarter != null ? plannedFiscalQuarter.Id.ToString() : "null");
+                        localContext.Trace("ts_plannedfiscalquarter changed. New value: {0}", plannedFiscalQuarter != null ? plannedFiscalQuarter.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
                     if (target.Attributes.Contains("ts_cancelledinspectionjustification"))
@@ -294,7 +294,7 @@ namespace TSIS2.Plugins
                     {
                         string otherCancelledInspectionJustification = target.GetAttributeValue<string>("ts_othercancelledjustification");
                         updateWorkOrder["ts_othercanceledjustification"] = otherCancelledInspectionJustification;
-                        tracingService.Trace("ts_othercancelledjustification changed. New value: {0}", otherCancelledInspectionJustification);
+                        localContext.Trace("ts_othercancelledjustification changed. New value: {0}", otherCancelledInspectionJustification);
                         anyFieldChanged = true;
                     }
                     if (target.Attributes.Contains("ts_revisedquarterid"))
@@ -434,7 +434,7 @@ namespace TSIS2.Plugins
                     {
                         EntityReference parentWorkorder = target.GetAttributeValue<EntityReference>("ts_parentworkorder");
                         updateWorkOrder["msdyn_parentworkorder"] = parentWorkorder;
-                        tracingService.Trace("msdyn_parentworkorder changed. New value: {0}", parentWorkorder != null ? parentWorkorder.Id.ToString() : "null");
+                        localContext.Trace("msdyn_parentworkorder changed. New value: {0}", parentWorkorder != null ? parentWorkorder.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
                     if (anyFieldChanged)

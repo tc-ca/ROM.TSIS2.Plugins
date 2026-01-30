@@ -160,36 +160,26 @@ namespace TSIS2.Plugins
                                 default: mappedStateCode = 0; break; // Default to Active
                             }
                             updateTask["statecode"] = new OptionSetValue(mappedStateCode);
-                            tracingService.Trace("statecode changed. New mapped value: {0}", mappedStateCode);
+                            localContext.Trace("statecode changed. New mapped value: {0}", mappedStateCode);
                             anyFieldChanged = true;
                         }
                     }
 
-                    if (target.Contains("statuscode"))
+                    // --- Fields with Special Logic ---
+                    if (target.Contains("statecode"))
                     {
-                        var statusCode = target.GetAttributeValue<OptionSetValue>("statuscode");
-                        if (statusCode != null)
+                        var stateCode = target.GetAttributeValue<OptionSetValue>("statecode");
+                        if (stateCode != null)
                         {
-                            int mappedStatusCode;
-                            switch (statusCode.Value)
+                            int mappedStateCode;
+                            switch (stateCode.Value)
                             {
-                                // Active statecodes
-                                case 1: mappedStatusCode = 1; break;           // Active -> Active
-                                case 741130001: mappedStatusCode = 918640002; break; // Complete -> Completed
-                                case 741130002: mappedStatusCode = 918640004; break; // In Progress -> In Progress
-                                case 741130003: mappedStatusCode = 918640005; break; // New -> New
-
-                                // Inactive statecodes
-                                case 2: mappedStatusCode = 2; break;           // Inactive -> Inactive
-                                case 741130004: mappedStatusCode = 918640003; break; // Closed -> Closed
-
-                                default: mappedStatusCode = 1; break; // Default to Active
+                                case 0: mappedStateCode = 0; break;  // Active -> Active
+                                case 1: mappedStateCode = 1; break;  // Inactive -> Inactive
+                                default: mappedStateCode = 0; break; // Default to Active
                             }
-                        }
-                        if (mappedStatusCode.HasValue)
-                        {
-                            updateTask["statuscode"] = new OptionSetValue(mappedStatusCode.Value);
-                            localContext.Trace("statuscode changed. New mapped value: {0}", mappedStatusCode.Value);
+                            updateTask["statecode"] = new OptionSetValue(mappedStateCode);
+                            localContext.Trace("statecode changed. New mapped value: {0}", mappedStateCode);
                             anyFieldChanged = true;
                         }
                     }
