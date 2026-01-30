@@ -8,7 +8,7 @@ namespace TSIS2.Plugins
         MessageNameEnum.Update,
         "ts_workorderservicetaskworkspace",
         StageEnum.PostOperation,
-        ExecutionModeEnum.Synchronous,
+        ExecutionModeEnum.Asynchronous,
         "ts_name,ts_tasktype,ts_workorder,statecode,ts_fromoffline,ownerid,ts_location,ts_flightnumber,ts_origin,ts_destination,ts_flightcategory,ts_flighttype,ts_reportdetails,ts_scheduledtime,ts_actualtime,ts_paxonboard,ts_paxboarded,ts_cbonboard,ts_cbloaded,ts_aircraftmark,ts_aircraftmanufacturer,ts_aircraftmodel,ts_aircraftmodelother,ts_brandname,ts_passengerservices,ts_rampservices,ts_cargoservices,ts_cateringservices,ts_groomingservices,ts_securitysearchservices,ts_accesscontrolsecurityservices,ts_othersecurityservices,ts_workorderservicetaskstartdate,ts_questionnaireresponse,ts_questionnairedefinition,ts_mandatory,ts_percentcomplete,ts_aocoperation,ts_aocstakeholder,ts_aocoperationtype,ts_aocsite,ts_accesscontrol,ts_workorderservicetaskenddate,statuscode",
         "PostOperation.ts_workorderservicetaskworkspace.CopyStartDateToWorkOrderServiceTaskOnUpdate",
         1,
