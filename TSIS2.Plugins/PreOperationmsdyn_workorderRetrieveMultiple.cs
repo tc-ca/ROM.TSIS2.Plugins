@@ -6,7 +6,6 @@ using System.Xml.Linq;
 
 namespace TSIS2.Plugins
 {
-
     [CrmPluginRegistration(
     MessageNameEnum.RetrieveMultiple,
     "msdyn_workorder",
@@ -17,33 +16,26 @@ namespace TSIS2.Plugins
     1,
     IsolationModeEnum.Sandbox,
     Description = "Filter the Active Work Orders view ")]
-    /// <summary>
-    /// PreOperationincidentUpdate Plugin.
-    /// </summary>    
-    public class PreOperationmsdyn_workorderRetrieveMultiple : IPlugin
+    public class PreOperationmsdyn_workorderRetrieveMultiple : PluginBase
     {
-        private IOrganizationService service;
-        public void Execute(IServiceProvider serviceProvider)
+        public PreOperationmsdyn_workorderRetrieveMultiple(string unsecure, string secure)
+            : base(typeof(PreOperationmsdyn_workorderRetrieveMultiple))
         {
-            // Obtain the tracing service
-            ITracingService tracingService =
-            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
 
-            // Obtain the execution context from the service provider.
-            IPluginExecutionContext context = (IPluginExecutionContext)
-                serviceProvider.GetService(typeof(IPluginExecutionContext));
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
 
+            IPluginExecutionContext context = localContext.PluginExecutionContext;
+            IOrganizationService service = localContext.OrganizationService;
 
-            // The InputParameters collection contains all the data passed in the message request.
             if (context.InputParameters.Contains("Query") &&
                 context.InputParameters["Query"] is FetchExpression)
             {
-                // Obtain the organization service reference which you will need for
-                // web service calls.
-                IOrganizationServiceFactory serviceFactory =
-                    (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-                service = serviceFactory.CreateOrganizationService(context.UserId);
-
                 try
                 {
                     FetchExpression objFetchExpression = (FetchExpression)context.InputParameters["Query"];
@@ -57,8 +49,6 @@ namespace TSIS2.Plugins
                                     select c;
 
                     Guid userId = context.InitiatingUserId;
-
-
 
                     if (condition.Count() > 0 && !IsUserSystemAdministrator(context.UserId, service))
                     {
@@ -129,14 +119,13 @@ namespace TSIS2.Plugins
                                 objFetchExpression.Query = fetchXmlDoc.ToString();
                             }
                         }
-                    } 
+                    }
                 }
-                
                 catch (Exception e)
                 {
-                    throw new InvalidPluginExecutionException(e.Message);
+                    localContext.TraceWithContext("Exception: {0}", e.Message);     
+                    throw new InvalidPluginExecutionException("PreOperationmsdyn_workorderRetrieveMultiple failed.", e);
                 }
-
             }
         }
 
@@ -162,5 +151,4 @@ namespace TSIS2.Plugins
             return result.Entities.Count > 0;
         }
     }
-
 }

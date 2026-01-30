@@ -1,4 +1,5 @@
-﻿using Microsoft.Xrm.Sdk;
+using Microsoft.Crm.Sdk.Messages;
+using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using System;
 
@@ -14,24 +15,32 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "Creates a QC Work Order Service Task from the Work Order using the ROM Service Account.")]
-    public class PostOperation_workorderservicetaskQCCreation : IPlugin
+    public class PostOperation_workorderservicetaskQCCreation : PluginBase
     {
         // Task Type IDs (Aviation vs Non-Aviation)
         private static readonly Guid AviationTaskTypeId = new Guid("931b334c-c55b-ee11-8df0-000d3af4f52a");
         private static readonly Guid NonAviationTaskTypeId = new Guid("765fcc32-7339-ef11-a316-6045bd5f6387");
 
-        private const string QC_WOST_NAME = "Quality Control(QC) Review";
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperation_workorderservicetaskQCCreation(string unsecure, string secure)
+            : base(typeof(PostOperation_workorderservicetaskQCCreation))
         {
-            var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = serviceFactory.CreateOrganizationService(context.UserId);
-            var tracing = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
+
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            IPluginExecutionContext context = localContext.PluginExecutionContext;
+            IOrganizationService service = localContext.OrganizationService;
+            ITracingService tracing = localContext.TracingService;
 
             try
             {
                 // Retrieve entity reference (also check bound entity)
-                if (!context.InputParameters.TryGetValue("Target", out var boundObject))
+                if (!context.InputParameters.TryGetValue("Target", out object boundObject))
                     throw new InvalidPluginExecutionException("Bound Work Order entity is required.");
 
                 Guid workOrderId;
@@ -52,26 +61,33 @@ namespace TSIS2.Plugins
                 }
 
                 // Decide Aviation by OperationType.owningbusinessunit.name
-                var isAviation = IsAviationByOperationTypeBU(service, workOrderId, tracing);
-                var taskTypeId = isAviation ? AviationTaskTypeId : NonAviationTaskTypeId;
+                bool isAviation = IsAviationByOperationTypeBU(service, workOrderId, tracing);
+                Guid taskTypeId = isAviation ? AviationTaskTypeId : NonAviationTaskTypeId;
 
                 //User who created the QC Task (not Service Account)
-                var currentUser = context.InitiatingUserId;
+                Guid currentUser = context.InitiatingUserId;
 
                 // Create Work Order Service Task
-                var wost = new Entity("msdyn_workorderservicetask");
+                Entity wost = new Entity("msdyn_workorderservicetask");
                 wost["msdyn_workorder"] = new EntityReference("msdyn_workorder", workOrderId);
                 wost["msdyn_tasktype"] = new EntityReference("msdyn_servicetasktype", taskTypeId);
-                wost["ownerid"] = new EntityReference("systemuser", currentUser);
-                wost["msdyn_name"] = QC_WOST_NAME;
 
-                var createdId = service.Create(wost);
+                Guid createdId = service.Create(wost);
                 tracing.Trace("Created WOST: {0}", createdId);
+
+                Entity workOrder = service.Retrieve("msdyn_workorder", workOrderId, new ColumnSet("ownerid"));
+                EntityReference woOwnerRef = workOrder.GetAttributeValue<EntityReference>("ownerid");
+                Guid workOrderOwnerId = woOwnerRef.Id;
+                //Grant access to user (creator)
+                GrantAccess(service, createdId, currentUser);
+
+                //Grant access to Work Order owner
+                GrantAccess(service, createdId, workOrderOwnerId);
             }
             catch (Exception ex)
             {
-                tracing.Trace("CreateQualityControlServiceTask error: {0}", ex);
-                throw;
+                localContext.TraceWithContext("Exception: {0}", ex.Message);
+                throw new InvalidPluginExecutionException("PostOperation_workorderservicetaskQCCreation failed.", ex);
             }
         }
 
@@ -105,6 +121,20 @@ namespace TSIS2.Plugins
 
             tracing.Trace("OperationType BU ID: {0}", buRef.Id);
             return OrganizationConfig.IsAvSecBU(service, buRef.Id, tracing);
+        }
+
+        private void GrantAccess(IOrganizationService service, Guid wostId, Guid userId)
+        {
+            var grantAccessRequest = new GrantAccessRequest
+            {
+                Target = new EntityReference("msdyn_workorderservicetask", wostId),
+                PrincipalAccess = new PrincipalAccess
+                {
+                    Principal = new EntityReference("systemuser", userId),
+                    AccessMask = AccessRights.ReadAccess | AccessRights.WriteAccess
+                }
+            };
+            service.Execute(grantAccessRequest);
         }
     }
 }

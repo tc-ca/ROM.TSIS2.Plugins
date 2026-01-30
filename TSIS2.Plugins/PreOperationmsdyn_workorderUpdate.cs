@@ -1,4 +1,4 @@
-﻿// <copyright file="PreOperationmsdyn_workorderUpdate.cs" company="">PreOperationmsdyn_workorderUpdate
+// <copyright file="PreOperationmsdyn_workorderUpdate.cs" company="">PreOperationmsdyn_workorderUpdate
 // Copyright (c) 2018 All Rights Reserved
 // </copyright>
 // <author>Hong Liu</author>
@@ -18,7 +18,6 @@ using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins
 {
-
     [CrmPluginRegistration(
     MessageNameEnum.Update,
     "msdyn_workorder",
@@ -32,47 +31,44 @@ namespace TSIS2.Plugins
     /// <summary>
     /// PreOperationmsdyn_workorderUpdate Plugin.
     /// </summary>    
-    public class PreOperationmsdyn_workorderUpdate : IPlugin
+    public class PreOperationmsdyn_workorderUpdate : PluginBase
     {
-        private const string ROM_SERVICE = "- ROM Service / Service GSR";
-        public void Execute(IServiceProvider serviceProvider)
+        public PreOperationmsdyn_workorderUpdate(string unsecure, string secure)
+            : base(typeof(PreOperationmsdyn_workorderUpdate))
         {
-            // Obtain the tracing service
-            ITracingService tracingService =
-            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
 
-            tracingService.Trace("Tracking Service Started.");
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
 
-            // Obtain the execution context from the service provider.
-            IPluginExecutionContext context = (IPluginExecutionContext)
-                serviceProvider.GetService(typeof(IPluginExecutionContext));
+            var tracingService = localContext.TracingService;
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
 
-            tracingService.Trace("The InputParameters collection contains all the data passed in the message request.");
+            localContext.Trace("The InputParameters collection contains all the data passed in the message request.");
 
             if (context.InputParameters.Contains("Target") &&
                 context.InputParameters["Target"] is Entity)
             {
-
-                tracingService.Trace("Obtain the target entity from the input parameters.");
+                localContext.Trace("Obtain the target entity from the input parameters.");
                 Entity target = (Entity)context.InputParameters["Target"];
 
-                tracingService.Trace("Obtain the preimage entity.");
+                localContext.Trace("Obtain the preimage entity.");
                 Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
 
-
-                tracingService.Trace("Obtain the organization service reference which is needed for web service calls.");
-                IOrganizationServiceFactory serviceFactory =
-                    (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-                IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
 
                 try
                 {
                     // Log the system username and Work Order at the start
                     var systemUser = service.Retrieve("systemuser", context.InitiatingUserId, new ColumnSet("fullname"));
                     var WOST = service.Retrieve("msdyn_workorder", context.PrimaryEntityId, new ColumnSet("msdyn_name"));
-                    tracingService.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
-                    tracingService.Trace("Work Order GUID: {0}", context.PrimaryEntityId);
-                    tracingService.Trace("Work Order Name: {0}", WOST.GetAttributeValue<string>("msdyn_name"));
+                    localContext.Trace("Plugin executed by user: {0}", systemUser.GetAttributeValue<string>("fullname"));
+                    localContext.Trace("Work Order GUID: {0}", context.PrimaryEntityId);
+                    localContext.Trace("Work Order Name: {0}", WOST.GetAttributeValue<string>("msdyn_name"));
 
                     if (target.LogicalName.Equals(msdyn_workorder.EntityLogicalName))
                     {
@@ -97,23 +93,23 @@ namespace TSIS2.Plugins
                             }
                         }
 
-                        tracingService.Trace("If Case \"msdyn_servicerequest\" is updated.");
+                        localContext.Trace("If Case \"msdyn_servicerequest\" is updated.");
                         if (target.Attributes.Contains("msdyn_servicerequest"))
                         {
                             using (var serviceContext = new Xrm(service))
                             {
-                                tracingService.Trace("Cast the target to the expected entity.");
+                                localContext.Trace("Cast the target to the expected entity.");
                                 msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
 
-                                tracingService.Trace("Retrieve all findings associated to the current Work Order.");
+                                localContext.Trace("Retrieve all findings associated to the current Work Order.");
                                 var workOrderFindings = serviceContext.ovs_FindingSet.Where(f => f.ts_WorkOrder.Id == workOrder.Id).ToList();
 
-                                tracingService.Trace("Retrieve all Work Order Service Tasks associated to the current Work Order.");
+                                localContext.Trace("Retrieve all Work Order Service Tasks associated to the current Work Order.");
                                 var workOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(f => f.msdyn_WorkOrder.Id == workOrder.Id).ToList();
 
                                 if (workOrder.msdyn_ServiceRequest != null)
                                 {
-                                    tracingService.Trace("Retrieve all files associated with the Work Order and update the associated case.");
+                                    localContext.Trace("Retrieve all files associated with the Work Order and update the associated case.");
                                     var allFiles = serviceContext.ts_FileSet.ToList();
                                     {
                                         var myWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
@@ -122,7 +118,7 @@ namespace TSIS2.Plugins
                                         {
                                             var workOrderFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WO ", "").Trim() == myWorkOrder.msdyn_name).ToList();
 
-                                            tracingService.Trace("Update the case for each associated file.");
+                                            localContext.Trace("Update the case for each associated file.");
                                             foreach (var workOrderFile in workOrderFiles)
                                             {
                                                 service.Update(new ts_File
@@ -134,7 +130,7 @@ namespace TSIS2.Plugins
                                         }
                                     }
 
-                                    tracingService.Trace("Change the reference to Case in each Work Order Service Task to the Work Order's new case.");
+                                    localContext.Trace("Change the reference to Case in each Work Order Service Task to the Work Order's new case.");
                                     foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
                                         service.Update(new msdyn_workorderservicetask
@@ -142,7 +138,7 @@ namespace TSIS2.Plugins
                                             Id = workOrderServiceTask.Id,
                                             ovs_CaseId = workOrder.msdyn_ServiceRequest
                                         });
-                                        tracingService.Trace("Update the crc77_Incident column in ts_workorderservicetaskworkspace for this Work Order Service Task.");
+                                        localContext.Trace("Update the crc77_Incident column in ts_workorderservicetaskworkspace for this Work Order Service Task.");
                                         var workspace = serviceContext.ts_WorkOrderServiceTaskWorkspaceSet.FirstOrDefault(ws => ws.ts_WorkOrderServiceTask != null && ws.ts_WorkOrderServiceTask.Id == workOrderServiceTask.Id);
                                         if (workspace != null)
                                         {
@@ -152,11 +148,11 @@ namespace TSIS2.Plugins
                                                 crc77_Incident = workOrder.msdyn_ServiceRequest
                                             });
                                         }
-                                        tracingService.Trace("Retrieve all files associated with the Work Order service task and update the associated case.");
+                                        localContext.Trace("Retrieve all files associated with the Work Order service task and update the associated case.");
                                         {
                                             var workOrderServiceTasksFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WOST ", "").Trim() == workOrderServiceTask.msdyn_name).ToList();
 
-                                            tracingService.Trace("Update the case for each associated file.");
+                                            localContext.Trace("Update the case for each associated file.");
                                             foreach (var workOrderServiceTasksFile in workOrderServiceTasksFiles)
                                             {
                                                 service.Update(new ts_File
@@ -168,7 +164,7 @@ namespace TSIS2.Plugins
                                         }
                                     }
 
-                                    tracingService.Trace("Change the reference to Case in each finding to the Work Order's new case.");
+                                    localContext.Trace("Change the reference to Case in each finding to the Work Order's new case.");
                                     foreach (ovs_Finding finding in workOrderFindings)
                                     {
                                         service.Update(new ovs_Finding
@@ -180,7 +176,7 @@ namespace TSIS2.Plugins
                                 }
                                 else
                                 {
-                                    tracingService.Trace("Change the reference to Case in each Work Order Service Task to null.");
+                                    localContext.Trace("Change the reference to Case in each Work Order Service Task to null.");
                                     foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
                                         service.Update(new msdyn_workorderservicetask
@@ -189,7 +185,7 @@ namespace TSIS2.Plugins
                                             ovs_CaseId = null
                                         });
 
-                                        tracingService.Trace("Update the crc77_Incident column in ts_workorderservicetaskworkspace to null for this Work Order Service Task.");
+                                        localContext.Trace("Update the crc77_Incident column in ts_workorderservicetaskworkspace to null for this Work Order Service Task.");
                                         var workspace = serviceContext.ts_WorkOrderServiceTaskWorkspaceSet.FirstOrDefault(ws => ws.ts_WorkOrderServiceTask != null && ws.ts_WorkOrderServiceTask.Id == workOrderServiceTask.Id);
                                         if (workspace != null)
                                         {
@@ -200,7 +196,7 @@ namespace TSIS2.Plugins
                                             });
                                         }
                                     }
-                                    tracingService.Trace("Change the reference to Case in each finding to null.");
+                                    localContext.Trace("Change the reference to Case in each finding to null.");
                                     foreach (ovs_Finding finding in workOrderFindings)
                                     {
                                         service.Update(new ovs_Finding
@@ -216,18 +212,18 @@ namespace TSIS2.Plugins
                         {
                             using (var serviceContext = new Xrm(service))
                             {
-                                tracingService.Trace("Cast the target to the expected entity.");
+                                localContext.Trace("Cast the target to the expected entity.");
                                 msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
 
                                 msdyn_workorder oldWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
 
-                                tracingService.Trace("Proceed only if the Work Order has new Activity Type and there was one prior to the update.");
+                                localContext.Trace("Proceed only if the Work Order has new Activity Type and there was one prior to the update.");
                                 if (workOrder.msdyn_PrimaryIncidentType != null && oldWorkOrder != null && oldWorkOrder.msdyn_PrimaryIncidentType != null)
                                 {
-                                    tracingService.Trace("Retrieve all Work Order Service Tasks associated to the current work order.");
+                                    localContext.Trace("Retrieve all Work Order Service Tasks associated to the current work order.");
                                     var workOrderServiceTasks = serviceContext.msdyn_workorderservicetaskSet.Where(f => (f.msdyn_WorkOrder.Id == workOrder.Id)).ToList();
 
-                                    tracingService.Trace("Change the reference to Task Type in each New Work Order Service Task to the Work Order's Task Type.");
+                                    localContext.Trace("Change the reference to Task Type in each New Work Order Service Task to the Work Order's Task Type.");
                                     foreach (msdyn_workorderservicetask workOrderServiceTask in workOrderServiceTasks)
                                     {
                                         if (workOrderServiceTask.statuscode == msdyn_workorderservicetask_statuscode.New)
@@ -244,10 +240,10 @@ namespace TSIS2.Plugins
                                     var incidentTypeServiceTasks = serviceContext.msdyn_incidenttypeservicetaskSet.Where(f => f.msdyn_IncidentType.Id == workOrder.msdyn_PrimaryIncidentType.Id).ToList();
                                     var workOrderName = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault().msdyn_name;
 
-                                    tracingService.Trace("Set the prefix to be at the 200 level for work order service tasks.");
+                                    localContext.Trace("Set the prefix to be at the 200 level for work order service tasks.");
                                     var prefix = workOrderName.Replace("300-", "200-");
 
-                                    tracingService.Trace("If there are previous work order service tasks, suffix = count + 1 else 1.");
+                                    localContext.Trace("If there are previous work order service tasks, suffix = count + 1 else 1.");
                                     var suffix = (workOrderServiceTasks != null) ? workOrderServiceTasks.Count() + 1 : 1;
 
 
@@ -269,13 +265,13 @@ namespace TSIS2.Plugins
                         {
                             using (var serviceContext = new Xrm(service))
                             {
-                                tracingService.Trace("Cast the target to the expected entity.");
+                                localContext.Trace("Cast the target to the expected entity.");
                                 msdyn_workorder workOrder = target.ToEntity<msdyn_workorder>();
                                 if (workOrder.msdyn_SystemStatus == msdyn_wosystemstatus.Closed)
                                 {
                                     msdyn_workorder oldWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
 
-                                    tracingService.Trace("Update the closed values only if either are null.");
+                                    localContext.Trace("Update the closed values only if either are null.");
                                     if (oldWorkOrder != null && context.InitiatingUserId != null && (oldWorkOrder.msdyn_TimeClosed == null || oldWorkOrder.msdyn_ClosedBy == null))
                                     {
                                         target["msdyn_timeclosed"] = DateTime.UtcNow;
@@ -283,7 +279,7 @@ namespace TSIS2.Plugins
 
                                     }
 
-                                    tracingService.Trace("Check if there are any related Operation Activities.");
+                                    localContext.Trace("Check if there are any related Operation Activities.");
                                     string workOrderId = target.Id.ToString();
 
                                     Guid workOrderGuid = new Guid(workOrderId);
@@ -326,12 +322,12 @@ namespace TSIS2.Plugins
 
                                         else
                                         {
-                                            tracingService.Trace("Retrieve the operation activity ID record.");
+                                            localContext.Trace("Retrieve the operation activity ID record.");
                                             Guid operationActivityId = operationActivityCollection.Entities[0].Id;
 
                                             Entity operationActivity = service.Retrieve("ts_operationactivity", operationActivityId, new ColumnSet("ts_closedondatemostrecentwo"));
 
-                                            tracingService.Trace("Update ts_closedondatemostrecentwo with current date.");
+                                            localContext.Trace("Update ts_closedondatemostrecentwo with current date.");
                                             operationActivity["ts_closedondatemostrecentwo"] = DateTime.UtcNow;
 
                                             service.Update(operationActivity);
@@ -350,52 +346,19 @@ namespace TSIS2.Plugins
                         }
                         if (target.Attributes.Contains("ownerid") && target.GetAttributeValue<EntityReference>("ownerid").Id != context.InitiatingUserId)
                         {
+                            localContext.Trace("Ownerid is changing to {0} by {1} ", target.GetAttributeValue<EntityReference>("ownerid").Id, context.InitiatingUserId);
                             using (var servicecontext = new Xrm(service))
                             {
                                 var currentUser = servicecontext.SystemUserSet.Where(u => u.Id == context.InitiatingUserId).FirstOrDefault();
-                                var currentUserFullName = currentUser.GetAttributeValue<string>("fullname");
-
-                                // If the plugin was triggered by the ROM service account,
-                                // we cannot rely on context.UserId / InitiatingUserId.
-                                // Instead, resolve the "real" user from the related Unplanned Work Order.
-                                if (string.Equals(currentUserFullName, ROM_SERVICE, StringComparison.OrdinalIgnoreCase))
-                                {
-                                    // Query the related Unplanned Work Order to determine
-                                    // who last modified it (used here as the effective user)
-                                    var query = new QueryExpression("ts_unplannedworkorder")
-                                    {
-                                        ColumnSet = new ColumnSet("modifiedby"),
-                                        TopCount = 1
-                                    };
-
-                                    query.Criteria.AddCondition("ts_workorder",ConditionOperator.Equal,context.PrimaryEntityId);
-
-                                    var unplannedWO = service.RetrieveMultiple(query).Entities.FirstOrDefault();
-
-                                    if (unplannedWO == null)
-                                    {
-                                        tracingService.Trace("No related Unplanned Work Order found for WO Id={0}", context.PrimaryEntityId);
-                                    }
-                                    else
-                                    {
-                                        tracingService.Trace("Found Unplanned WO Id={0}", unplannedWO.Id);
-
-                                        var modifiedByRef = unplannedWO.GetAttributeValue<EntityReference>("modifiedby");
-
-                                        currentUser = servicecontext.SystemUserSet.FirstOrDefault(u => u.Id == modifiedByRef.Id);
-                                    }
-                                }
-                                tracingService.Trace("Ownerid is changing to {0} by currentUser {1}",target.GetAttributeValue<EntityReference>("ownerid")?.Id,currentUser?.Id);
-
                                 var currentUserBUId = currentUser.GetAttributeValue<EntityReference>("businessunitid").Id;
                                 var updatedOwnerUser = servicecontext.SystemUserSet.Where(u => u.Id == target.GetAttributeValue<EntityReference>("ownerid").Id).FirstOrDefault();
 
                                 if (updatedOwnerUser != null)
                                 {
-                                    tracingService.Trace("If currentUser is not dual inspector.");
+                                    localContext.Trace("If currentUser is not dual inspector.");
                                     if (!currentUser.GetAttributeValue<bool>("ts_dualinspector"))
                                     {
-                                        tracingService.Trace("If updatedOwnerUser is not dual inspector.");
+                                        localContext.Trace("If updatedOwnerUser is not dual inspector.");
                                         if (!updatedOwnerUser.GetAttributeValue<bool>("ts_dualinspector"))
                                         {
                                             var updatedOwnerUserBUId = updatedOwnerUser.GetAttributeValue<EntityReference>("businessunitid").Id;
@@ -403,7 +366,7 @@ namespace TSIS2.Plugins
                                             if (OrganizationConfig.IsAvSecBU(service, currentUserBUId, tracingService))
                                             {
                                                 if (!OrganizationConfig.IsAvSecBU(service, updatedOwnerUserBUId, tracingService) ||
-                                                OrganizationConfig.IsAvSecPPPBU(service, updatedOwnerUserBUId))
+                                                OrganizationConfig.IsAvSecPPPBU(service, updatedOwnerUserBUId, tracingService))
                                                 {
                                                     throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
                                                 }
@@ -411,7 +374,7 @@ namespace TSIS2.Plugins
                                             else
                                             {
                                                 if (currentUserBUId != updatedOwnerUserBUId &&
-                                                !OrganizationConfig.IsTCBU(service, currentUserBUId))
+                                                !OrganizationConfig.IsTCBU(service, currentUserBUId, tracingService))
                                                 {
                                                     throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
                                                 }
@@ -427,7 +390,7 @@ namespace TSIS2.Plugins
                                         var updatedOwnerTeamBUId = updatedOwnerTeam.GetAttributeValue<EntityReference>("businessunitid").Id;
 
                                         if (currentUserBUId != updatedOwnerTeamBUId &&
-                                        !OrganizationConfig.IsTCBU(service, currentUserBUId))
+                                        !OrganizationConfig.IsTCBU(service, currentUserBUId, tracingService))
                                         {
                                             throw new InvalidPluginExecutionException(LocalizationHelper.GetMessage(tracingService, service, ResourceFile, "ReassignWorkOrderErrorMsg"));
                                         }
@@ -464,9 +427,9 @@ namespace TSIS2.Plugins
                 }
                 catch (Exception e)
                 {
-                    throw new InvalidPluginExecutionException(e.Message);
+                    localContext.Trace("PreOperationmsdyn_workorderUpdate Plugin: {0}", e);
+                    throw new InvalidPluginExecutionException("PreOperationmsdyn_workorderUpdate failed.", e);
                 }
-
             }
         }
     }
