@@ -17,7 +17,7 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "Mirrors workspace-user associations onto task-user relationship.")]
-    public class PostOperation_MirrorWorkspaceUsersToTask_Associate : IPlugin
+    public class PostOperation_MirrorWorkspaceUsersToTask_Associate : PluginBase
     {
         private const string WorkspaceEntity = "ts_workorderservicetaskworkspace";
         private const string TaskEntity = "msdyn_workorderservicetask";
@@ -32,34 +32,42 @@ namespace TSIS2.Plugins
         // Task <-> User M:N relationship schema name to mirror onto
         private const string Task_User_Relationship = "ts_msdyn_workorderservicetask_systemuser";
 
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperation_MirrorWorkspaceUsersToTask_Associate(string unsecure, string secure)
+            : base(typeof(PostOperation_MirrorWorkspaceUsersToTask_Associate))
         {
-            var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            var factory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = factory.CreateOrganizationService(context.UserId);
-            var trace = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
+
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
 
             try
             {
-                trace.Trace("Mirror Associate start. CorrelationId={0}, Depth={1}", context.CorrelationId, context.Depth);
+                localContext.Trace("Mirror Associate start. CorrelationId={0}, Depth={1}", context.CorrelationId, context.Depth);
 
                 // Guard: avoid recursion
                 if (context.Depth > 1)
                 {
-                    trace.Trace("Depth > 1 detected. Exiting to prevent recursion.");
+                    localContext.Trace("Depth > 1 detected. Exiting to prevent recursion.");
                     return;
                 }
 
                 if (!(context.InputParameters.Contains("Relationship") &&
                       context.InputParameters["Relationship"] is Relationship relationship))
                 {
-                    trace.Trace("Missing Relationship parameter. Exiting.");
+                    localContext.Trace("Missing Relationship parameter. Exiting.");
                     return;
                 }
 
                 if (!string.Equals(relationship.SchemaName, Workspace_User_Relationship, StringComparison.OrdinalIgnoreCase))
                 {
-                    trace.Trace("Relationship {0} does not match expected {1}. Exiting.",
+                    localContext.Trace("Relationship {0} does not match expected {1}. Exiting.",
                         relationship.SchemaName, Workspace_User_Relationship);
                     return;
                 }
@@ -67,7 +75,7 @@ namespace TSIS2.Plugins
                 if (!(context.InputParameters.Contains("Target") &&
                       context.InputParameters["Target"] is EntityReference target))
                 {
-                    trace.Trace("Missing Target parameter. Exiting.");
+                    localContext.Trace("Missing Target parameter. Exiting.");
                     return;
                 }
 
@@ -75,7 +83,7 @@ namespace TSIS2.Plugins
                       context.InputParameters["RelatedEntities"] is EntityReferenceCollection relatedEntities) ||
                     relatedEntities.Count == 0)
                 {
-                    trace.Trace("Missing RelatedEntities parameter. Exiting.");
+                    localContext.Trace("Missing RelatedEntities parameter. Exiting.");
                     return;
                 }
 
@@ -101,7 +109,7 @@ namespace TSIS2.Plugins
 
                 if (workspaceRef == null || userRefs.Count == 0)
                 {
-                    trace.Trace("Could not resolve workspace and user(s) from the association. Exiting.");
+                    localContext.Trace("Could not resolve workspace and user(s) from the association. Exiting.");
                     return;
                 }
 
@@ -110,7 +118,7 @@ namespace TSIS2.Plugins
                 var taskRef = workspace.GetAttributeValue<EntityReference>(Workspace_TaskLookup);
                 if (taskRef == null)
                 {
-                    trace.Trace("Workspace {0} does not have {1} populated. Exiting.", workspaceRef.Id, Workspace_TaskLookup);
+                    localContext.Trace("Workspace {0} does not have {1} populated. Exiting.", workspaceRef.Id, Workspace_TaskLookup);
                     return;
                 }
 
@@ -129,7 +137,7 @@ namespace TSIS2.Plugins
                         };
 
                         service.Execute(associate);
-                        trace.Trace("Mirrored association Task({0}) <-> User({1}) via relationship {2}.",
+                        localContext.Trace("Mirrored association Task({0}) <-> User({1}) via relationship {2}.",
                             taskRef.Id, userRef.Id, Task_User_Relationship);
                     }
                     catch (FaultException<OrganizationServiceFault> ex)
@@ -138,11 +146,11 @@ namespace TSIS2.Plugins
                         if (msg.IndexOf("already associated", StringComparison.OrdinalIgnoreCase) >= 0 ||
                             msg.IndexOf("duplicate", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
-                            trace.Trace("Association already exists for Task({0}) and User({1}); ignoring.", taskRef.Id, userRef.Id);
+                            localContext.Trace("Association already exists for Task({0}) and User({1}); ignoring.", taskRef.Id, userRef.Id);
                         }
                         else
                         {
-                            trace.Trace("Associate fault for Task({0}) and User({1}): {2}", taskRef.Id, userRef.Id, ex.Message);
+                            localContext.Trace("Associate fault for Task({0}) and User({1}): {2}", taskRef.Id, userRef.Id, ex);
                             throw;
                         }
                     }
@@ -165,7 +173,7 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "Mirrors workspace-user disassociations by removing task-user links.")]
-    public class PostOperation_MirrorWorkspaceUsersToTask_Disassociate : IPlugin
+    public class PostOperation_MirrorWorkspaceUsersToTask_Disassociate : PluginBase
     {
         private const string WorkspaceEntity = "ts_workorderservicetaskworkspace";
         private const string TaskEntity = "msdyn_workorderservicetask";
@@ -178,34 +186,43 @@ namespace TSIS2.Plugins
         private const string Workspace_User_Relationship = "ts_WorkOrderServiceTaskWorkspace_SystemUser_SystemUser";
         private const string Task_User_Relationship = "ts_msdyn_workorderservicetask_systemuser";
 
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperation_MirrorWorkspaceUsersToTask_Disassociate(string unsecure, string secure)
+            : base(typeof(PostOperation_MirrorWorkspaceUsersToTask_Disassociate))
         {
-            var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            var factory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = factory.CreateOrganizationService(context.UserId);
-            var trace = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
+
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
+            var trace = localContext.TracingService;
 
             try
             {
-                trace.Trace("Mirror Disassociate start. CorrelationId={0}, Depth={1}", context.CorrelationId, context.Depth);
+                localContext.Trace("Mirror Disassociate start. CorrelationId={0}, Depth={1}", context.CorrelationId, context.Depth);
 
                 // Guard: avoid recursion
                 if (context.Depth > 1)
                 {
-                    trace.Trace("Depth > 1 detected. Exiting to prevent recursion.");
+                    localContext.Trace("Depth > 1 detected. Exiting to prevent recursion.");
                     return;
                 }
 
                 if (!(context.InputParameters.Contains("Relationship") &&
                       context.InputParameters["Relationship"] is Relationship relationship))
                 {
-                    trace.Trace("Missing Relationship parameter. Exiting.");
+                    localContext.Trace("Missing Relationship parameter. Exiting.");
                     return;
                 }
 
                 if (!string.Equals(relationship.SchemaName, Workspace_User_Relationship, StringComparison.OrdinalIgnoreCase))
                 {
-                    trace.Trace("Relationship {0} does not match expected {1}. Exiting.",
+                    localContext.Trace("Relationship {0} does not match expected {1}. Exiting.",
                         relationship.SchemaName, Workspace_User_Relationship);
                     return;
                 }
@@ -213,7 +230,7 @@ namespace TSIS2.Plugins
                 if (!(context.InputParameters.Contains("Target") &&
                       context.InputParameters["Target"] is EntityReference target))
                 {
-                    trace.Trace("Missing Target parameter. Exiting.");
+                    localContext.Trace("Missing Target parameter. Exiting.");
                     return;
                 }
 
@@ -221,7 +238,7 @@ namespace TSIS2.Plugins
                       context.InputParameters["RelatedEntities"] is EntityReferenceCollection relatedEntities) ||
                     relatedEntities.Count == 0)
                 {
-                    trace.Trace("Missing RelatedEntities parameter. Exiting.");
+                    localContext.Trace("Missing RelatedEntities parameter. Exiting.");
                     return;
                 }
 
@@ -247,7 +264,7 @@ namespace TSIS2.Plugins
 
                 if (workspaceRef == null || userRefs.Count == 0)
                 {
-                    trace.Trace("Could not resolve workspace and user(s) from the disassociation. Exiting.");
+                    localContext.Trace("Could not resolve workspace and user(s) from the disassociation. Exiting.");
                     return;
                 }
 
@@ -256,7 +273,7 @@ namespace TSIS2.Plugins
                 var taskRef = workspace.GetAttributeValue<EntityReference>(Workspace_TaskLookup);
                 if (taskRef == null)
                 {
-                    trace.Trace("Workspace {0} does not have {1} populated. Exiting.", workspaceRef.Id, Workspace_TaskLookup);
+                    localContext.Trace("Workspace {0} does not have {1} populated. Exiting.", workspaceRef.Id, Workspace_TaskLookup);
                     return;
                 }
 
@@ -275,7 +292,7 @@ namespace TSIS2.Plugins
                         };
 
                         service.Execute(disassociate);
-                        trace.Trace("Mirrored disassociation Task({0}) !- User({1}) via relationship {2}.",
+                        localContext.Trace("Mirrored disassociation Task({0}) !- User({1}) via relationship {2}.",
                             taskRef.Id, userRef.Id, Task_User_Relationship);
                     }
                     catch (FaultException<OrganizationServiceFault> ex)
@@ -284,11 +301,11 @@ namespace TSIS2.Plugins
                         if (msg.IndexOf("does not exist", StringComparison.OrdinalIgnoreCase) >= 0 ||
                             msg.IndexOf("not associated", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
-                            trace.Trace("No existing association Task({0}) !- User({1}); ignoring.", taskRef.Id, userRef.Id);
+                            localContext.Trace("No existing association Task({0}) !- User({1}); ignoring.", taskRef.Id, userRef.Id);
                         }
                         else
                         {
-                            trace.Trace("Disassociate fault for Task({0}) and User({1}): {2}", taskRef.Id, userRef.Id, ex.Message);
+                            localContext.Trace("Disassociate fault for Task({0}) and User({1}): {2}", taskRef.Id, userRef.Id, ex);
                             throw;
                         }
                     }

@@ -30,17 +30,23 @@ namespace TSIS2.Plugins
     /// <summary>
     /// PreOperationts_questionnaireversionUpdate Plugin.
     /// </summary>    
-    public class PreOperationts_questionnaireversionUpdate : IPlugin
+    public class PreOperationts_questionnaireversionUpdate : PluginBase
     {
-        public void Execute(IServiceProvider serviceProvider)
+        public PreOperationts_questionnaireversionUpdate(string unsecure, string secure)
+            : base(typeof(PreOperationts_questionnaireversionUpdate))
         {
-            // Obtain the tracing service
-            ITracingService tracingService =
-            (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
 
-            // Obtain the execution context from the service provider.
-            IPluginExecutionContext context = (IPluginExecutionContext)
-                serviceProvider.GetService(typeof(IPluginExecutionContext));
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            IPluginExecutionContext context = localContext.PluginExecutionContext;
+            ITracingService tracingService = localContext.TracingService;
+            IOrganizationService service = localContext.OrganizationService;
 
             // The InputParameters collection contains all the data passed in the message request.
             if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is Entity)
@@ -50,11 +56,6 @@ namespace TSIS2.Plugins
 
                 // Obtain the preimage entity
                 Entity preImageEntity = (context.PreEntityImages != null && context.PreEntityImages.Contains("PreImage")) ? context.PreEntityImages["PreImage"] : null;
-
-                // Obtain the organization service reference which you will need for
-                // web service calls.
-                IOrganizationServiceFactory serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-                IOrganizationService service = serviceFactory.CreateOrganizationService(context.UserId);
 
                 try
                 {
@@ -113,6 +114,7 @@ namespace TSIS2.Plugins
                 }
                 catch (Exception e)
                 {
+                    localContext.TraceWithContext("PreOperationts_questionnaireversionUpdate Plugin: {0}", e);
                     throw new InvalidPluginExecutionException(e.Message);
                 }
             }

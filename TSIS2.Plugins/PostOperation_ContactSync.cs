@@ -17,7 +17,7 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "Synchronizes contacts from Unplanned Work Order to Work Order on association.")]
-    public class PostOperation_ContactSync_Associate : IPlugin
+    public class PostOperation_ContactSync_Associate : PluginBase
     {
         private const string UnplannedWorkOrderEntity = "ts_unplannedworkorder";
         private const string WorkOrderEntity = "msdyn_workorder";
@@ -32,34 +32,42 @@ namespace TSIS2.Plugins
         // Work Order <-> Contact M:N relationship schema name to mirror onto
         private const string WorkOrder_Contact_Relationship = "ts_Contact_msdyn_workorder_msdyn_workorder";
 
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperation_ContactSync_Associate(string unsecure, string secure)
+            : base(typeof(PostOperation_ContactSync_Associate))
         {
-            var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            var factory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = factory.CreateOrganizationService(context.UserId);
-            var trace = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
+
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
 
             try
             {
-                trace.Trace("Contact Associate sync start. CorrelationId={0}, Depth={1}", context.CorrelationId, context.Depth);
+                localContext.Trace("Contact Associate sync start. CorrelationId={0}, Depth={1}", context.CorrelationId, context.Depth);
 
                 // Guard: avoid recursion
                 if (context.Depth > 1)
                 {
-                    trace.Trace("Depth > 1 detected. Exiting to prevent recursion.");
+                    localContext.Trace("Depth > 1 detected. Exiting to prevent recursion.");
                     return;
                 }
 
                 if (!(context.InputParameters.Contains("Relationship") &&
                       context.InputParameters["Relationship"] is Relationship relationship))
                 {
-                    trace.Trace("Missing Relationship parameter. Exiting.");
+                    localContext.Trace("Missing Relationship parameter. Exiting.");
                     return;
                 }
 
                 if (!string.Equals(relationship.SchemaName, UnplannedWorkOrder_Contact_Relationship, StringComparison.OrdinalIgnoreCase))
                 {
-                    trace.Trace("Relationship {0} does not match expected {1}. Exiting.",
+                    localContext.Trace("Relationship {0} does not match expected {1}. Exiting.",
                         relationship.SchemaName, UnplannedWorkOrder_Contact_Relationship);
                     return;
                 }
@@ -67,7 +75,7 @@ namespace TSIS2.Plugins
                 if (!(context.InputParameters.Contains("Target") &&
                       context.InputParameters["Target"] is EntityReference target))
                 {
-                    trace.Trace("Missing Target parameter. Exiting.");
+                    localContext.Trace("Missing Target parameter. Exiting.");
                     return;
                 }
 
@@ -75,7 +83,7 @@ namespace TSIS2.Plugins
                       context.InputParameters["RelatedEntities"] is EntityReferenceCollection relatedEntities) ||
                     relatedEntities.Count == 0)
                 {
-                    trace.Trace("Missing RelatedEntities parameter. Exiting.");
+                    localContext.Trace("Missing RelatedEntities parameter. Exiting.");
                     return;
                 }
 
@@ -101,7 +109,7 @@ namespace TSIS2.Plugins
 
                 if (unplannedWorkOrderRef == null || contactRefs.Count == 0)
                 {
-                    trace.Trace("Could not resolve unplanned work order and contact(s) from the association. Exiting.");
+                    localContext.Trace("Could not resolve unplanned work order and contact(s) from the association. Exiting.");
                     return;
                 }
 
@@ -110,7 +118,7 @@ namespace TSIS2.Plugins
                 var workOrderRef = unplannedWorkOrder.GetAttributeValue<EntityReference>(UnplannedWorkOrder_WorkOrderLookup);
                 if (workOrderRef == null)
                 {
-                    trace.Trace("Unplanned Work Order {0} does not have {1} populated. Exiting.", unplannedWorkOrderRef.Id, UnplannedWorkOrder_WorkOrderLookup);
+                    localContext.Trace("Unplanned Work Order {0} does not have {1} populated. Exiting.", unplannedWorkOrderRef.Id, UnplannedWorkOrder_WorkOrderLookup);
                     return;
                 }
 
@@ -129,7 +137,7 @@ namespace TSIS2.Plugins
                         };
 
                         service.Execute(associate);
-                        trace.Trace("Mirrored association WorkOrder({0}) <-> Contact({1}) via relationship {2}.",
+                        localContext.Trace("Mirrored association WorkOrder({0}) <-> Contact({1}) via relationship {2}.",
                             workOrderRef.Id, contactRef.Id, WorkOrder_Contact_Relationship);
                     }
                     catch (FaultException<OrganizationServiceFault> ex)
@@ -138,19 +146,20 @@ namespace TSIS2.Plugins
                         if (msg.IndexOf("already associated", StringComparison.OrdinalIgnoreCase) >= 0 ||
                             msg.IndexOf("duplicate", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
-                            trace.Trace("Association already exists for WorkOrder({0}) and Contact({1}); ignoring.", workOrderRef.Id, contactRef.Id);
+                            localContext.Trace("Association already exists for WorkOrder({0}) and Contact({1}); ignoring.", workOrderRef.Id, contactRef.Id);
                         }
                         else
                         {
-                            trace.Trace("Associate fault for WorkOrder({0}) and Contact({1}): {2}", workOrderRef.Id, contactRef.Id, ex.Message);
+                            localContext.Trace("Associate fault for WorkOrder({0}) and Contact({1}): {2}", workOrderRef.Id, contactRef.Id, ex);
                             throw;
                         }
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                localContext.TraceWithContext("Exception: {0}", ex.Message);
+                throw new InvalidPluginExecutionException("PostOperation_ContactSync_Associate failed.", ex);
             }
         }
     }
@@ -165,7 +174,7 @@ namespace TSIS2.Plugins
         1,
         IsolationModeEnum.Sandbox,
         Description = "Synchronizes contact removal from Unplanned Work Order to Work Order on disassociation.")]
-    public class PostOperation_ContactSync_Disassociate : IPlugin
+    public class PostOperation_ContactSync_Disassociate : PluginBase
     {
         private const string UnplannedWorkOrderEntity = "ts_unplannedworkorder";
         private const string WorkOrderEntity = "msdyn_workorder";
@@ -178,34 +187,42 @@ namespace TSIS2.Plugins
         private const string UnplannedWorkOrder_Contact_Relationship = "ts_Contact_ts_unplannedworkorder_ts_unplannedworkorder";
         private const string WorkOrder_Contact_Relationship = "ts_Contact_msdyn_workorder_msdyn_workorder";
 
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperation_ContactSync_Disassociate(string unsecure, string secure)
+            : base(typeof(PostOperation_ContactSync_Disassociate))
         {
-            var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            var factory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = factory.CreateOrganizationService(context.UserId);
-            var trace = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
+
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
 
             try
             {
-                trace.Trace("Contact Disassociate sync start. CorrelationId={0}, Depth={1}", context.CorrelationId, context.Depth);
+                localContext.Trace("Contact Disassociate sync start. CorrelationId={0}, Depth={1}", context.CorrelationId, context.Depth);
 
                 // Guard: avoid recursion
                 if (context.Depth > 1)
                 {
-                    trace.Trace("Depth > 1 detected. Exiting to prevent recursion.");
+                    localContext.Trace("Depth > 1 detected. Exiting to prevent recursion.");
                     return;
                 }
 
                 if (!(context.InputParameters.Contains("Relationship") &&
                       context.InputParameters["Relationship"] is Relationship relationship))
                 {
-                    trace.Trace("Missing Relationship parameter. Exiting.");
+                    localContext.Trace("Missing Relationship parameter. Exiting.");
                     return;
                 }
 
                 if (!string.Equals(relationship.SchemaName, UnplannedWorkOrder_Contact_Relationship, StringComparison.OrdinalIgnoreCase))
                 {
-                    trace.Trace("Relationship {0} does not match expected {1}. Exiting.",
+                    localContext.Trace("Relationship {0} does not match expected {1}. Exiting.",
                         relationship.SchemaName, UnplannedWorkOrder_Contact_Relationship);
                     return;
                 }
@@ -213,7 +230,7 @@ namespace TSIS2.Plugins
                 if (!(context.InputParameters.Contains("Target") &&
                       context.InputParameters["Target"] is EntityReference target))
                 {
-                    trace.Trace("Missing Target parameter. Exiting.");
+                    localContext.Trace("Missing Target parameter. Exiting.");
                     return;
                 }
 
@@ -221,7 +238,7 @@ namespace TSIS2.Plugins
                       context.InputParameters["RelatedEntities"] is EntityReferenceCollection relatedEntities) ||
                     relatedEntities.Count == 0)
                 {
-                    trace.Trace("Missing RelatedEntities parameter. Exiting.");
+                    localContext.Trace("Missing RelatedEntities parameter. Exiting.");
                     return;
                 }
 
@@ -247,7 +264,7 @@ namespace TSIS2.Plugins
 
                 if (unplannedWorkOrderRef == null || contactRefs.Count == 0)
                 {
-                    trace.Trace("Could not resolve unplanned work order and contact(s) from the disassociation. Exiting.");
+                    localContext.Trace("Could not resolve unplanned work order and contact(s) from the disassociation. Exiting.");
                     return;
                 }
 
@@ -256,7 +273,7 @@ namespace TSIS2.Plugins
                 var workOrderRef = unplannedWorkOrder.GetAttributeValue<EntityReference>(UnplannedWorkOrder_WorkOrderLookup);
                 if (workOrderRef == null)
                 {
-                    trace.Trace("Unplanned Work Order {0} does not have {1} populated. Exiting.", unplannedWorkOrderRef.Id, UnplannedWorkOrder_WorkOrderLookup);
+                    localContext.Trace("Unplanned Work Order {0} does not have {1} populated. Exiting.", unplannedWorkOrderRef.Id, UnplannedWorkOrder_WorkOrderLookup);
                     return;
                 }
 
@@ -275,7 +292,7 @@ namespace TSIS2.Plugins
                         };
 
                         service.Execute(disassociate);
-                        trace.Trace("Mirrored disassociation WorkOrder({0}) !- Contact({1}) via relationship {2}.",
+                        localContext.Trace("Mirrored disassociation WorkOrder({0}) !- Contact({1}) via relationship {2}.",
                             workOrderRef.Id, contactRef.Id, WorkOrder_Contact_Relationship);
                     }
                     catch (FaultException<OrganizationServiceFault> ex)
@@ -284,19 +301,20 @@ namespace TSIS2.Plugins
                         if (msg.IndexOf("does not exist", StringComparison.OrdinalIgnoreCase) >= 0 ||
                             msg.IndexOf("not associated", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
-                            trace.Trace("No existing association WorkOrder({0}) !- Contact({1}); ignoring.", workOrderRef.Id, contactRef.Id);
+                            localContext.Trace("No existing association WorkOrder({0}) !- Contact({1}); ignoring.", workOrderRef.Id, contactRef.Id);
                         }
                         else
                         {
-                            trace.Trace("Disassociate fault for WorkOrder({0}) and Contact({1}): {2}", workOrderRef.Id, contactRef.Id, ex.Message);
+                            localContext.Trace("Disassociate fault for WorkOrder({0}) and Contact({1}): {2}", workOrderRef.Id, contactRef.Id, ex);
                             throw;
                         }
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                throw;
+                localContext.TraceWithContext("Exception: {0}", ex.Message);
+                throw new InvalidPluginExecutionException("PostOperation_ContactSync_Disassociate failed.", ex);
             }
         }
     }
