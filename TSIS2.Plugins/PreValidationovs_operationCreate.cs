@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 
@@ -37,7 +37,7 @@ namespace TSIS2.Plugins
 
             if (context.Depth > 1)
             {
-                tracingService.Trace("[OperationCreate] Exiting due to Depth > 1");
+                localContext.Trace("[OperationCreate] Exiting due to Depth > 1");
                 return;
             }
 
@@ -58,7 +58,7 @@ namespace TSIS2.Plugins
 
                         if (owner == null || stakeholderRef == null || siteRef == null || operationTypeRef == null || string.IsNullOrEmpty(name))
                         {
-                            tracingService.Trace("Missing required attributes; skipping processing");
+                            localContext.Trace("Missing required attributes; skipping processing");
                             return;
                         }
 
@@ -203,7 +203,7 @@ namespace TSIS2.Plugins
             }
             catch (Exception ex)
             {
-                tracingService?.Trace($"RetrieveAltLangName: exception for {entityRef?.LogicalName}:{entityRef?.Id}, falling back to primary: {ex}");
+                tracingService.Trace($"RetrieveAltLangName: exception for {entityRef?.LogicalName}:{entityRef?.Id}, falling back to primary: {ex}");
                 try
                 {
                     return RetrieveLookupName(service, entityRef, LookupName, tracingService);

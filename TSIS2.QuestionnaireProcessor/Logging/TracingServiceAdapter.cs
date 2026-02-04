@@ -1,7 +1,7 @@
-using Microsoft.Xrm.Sdk;
 using System;
+using Microsoft.Xrm.Sdk;
 
-namespace TSIS2.Plugins.QuestionnaireExtractor
+namespace TSIS2.Plugins.QuestionnaireProcessor
 {
     /// <summary>
     /// Adapter that wraps ITracingService to implement ILoggingService for Dynamics 365 plugins.
@@ -11,12 +11,13 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
     {
         private readonly ITracingService _tracingService;
         private readonly LogLevel _minLogLevel;
-
         public TracingServiceAdapter(ITracingService tracingService, LogLevel minLogLevel = LogLevel.Info)
         {
             _tracingService = tracingService ?? throw new ArgumentNullException(nameof(tracingService));
             _minLogLevel = minLogLevel;
         }
+
+        public bool VerboseMode => _minLogLevel >= LogLevel.Verbose;
 
         public void Trace(string message) => LogIfEnabled(LogLevel.Info, message);
 
@@ -33,16 +34,15 @@ namespace TSIS2.Plugins.QuestionnaireExtractor
         public void Verbose(string message) => LogIfEnabled(LogLevel.Verbose, $"VERBOSE: {message}");
 
         public void Debug(string message) => LogIfEnabled(LogLevel.Debug, $"DEBUG: {message}");
-
-        /// <summary>
-        /// Logs the message only if the specified level is at or below the minimum log level.
-        /// </summary>
-        /// <param name="level">The log level of the message.</param>
-        /// <param name="message">The message to log.</param>
+        public void TraceErrorWithDebugInfo(string basicMessage, string detailedMessage)
+        {
+            Error(basicMessage);
+            Debug(detailedMessage);
+        }
         private void LogIfEnabled(LogLevel level, string message)
         {
             if (level <= _minLogLevel)
                 _tracingService.Trace(message);
         }
     }
-} 
+}

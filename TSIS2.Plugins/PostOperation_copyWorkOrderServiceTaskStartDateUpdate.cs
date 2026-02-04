@@ -18,39 +18,47 @@ namespace TSIS2.Plugins
         IsolationModeEnum.Sandbox,
         Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "ts_workorderservicetask",
         Description = "Copies changed fields to the related msdyn_workorderservicetask record on update.")]
-    public class PostOperation_CopyStartDateToTaskOnUpdate : IPlugin
+    public class PostOperation_CopyStartDateToTaskOnUpdate : PluginBase
     {
-        public void Execute(IServiceProvider serviceProvider)
+        public PostOperation_CopyStartDateToTaskOnUpdate(string unsecure, string secure)
+            : base(typeof(PostOperation_CopyStartDateToTaskOnUpdate))
         {
-            var context = (IPluginExecutionContext)serviceProvider.GetService(typeof(IPluginExecutionContext));
-            var serviceFactory = (IOrganizationServiceFactory)serviceProvider.GetService(typeof(IOrganizationServiceFactory));
-            var service = serviceFactory.CreateOrganizationService(context.UserId);
-            var tracingService = (ITracingService)serviceProvider.GetService(typeof(ITracingService));
+        }
+
+        protected override void ExecuteCrmPlugin(LocalPluginContext localContext)
+        {
+            if (localContext == null)
+            {
+                throw new InvalidPluginExecutionException("localContext");
+            }
+
+            var context = localContext.PluginExecutionContext;
+            var service = localContext.OrganizationService;
 
             // Check for the internal update flag from PreOperationmsdyn_workorderUpdate (case update) to prevent recursion
             if (context.SharedVariables.Contains("InternalUpdate"))
             {
-                tracingService.Trace("Exiting plugin to prevent recursion from an internal update.");
+                localContext.Trace("Exiting plugin to prevent recursion from an internal update.");
                 return;
             }
 
             if (context.Depth > 1)
             {
-                tracingService.Trace("Plugin depth is greater than 1. Exiting to prevent recursion.");
+                localContext.Trace("Plugin depth is greater than 1. Exiting to prevent recursion.");
                 return;
             }
 
-            tracingService.Trace("Plugin execution started: PostOperation_CopyStartDateToTaskOnUpdate");
+            localContext.Trace("Plugin execution started: PostOperation_CopyStartDateToTaskOnUpdate");
 
             try
             {
                 if (context.InputParameters.Contains("Target") && context.InputParameters["Target"] is Entity target)
                 {
-                    tracingService.Trace("Target entity logical name: {0}", target.LogicalName);
+                    localContext.Trace("Target entity logical name: {0}", target.LogicalName);
 
                     if (!context.PreEntityImages.Contains("PreImage") || context.PreEntityImages["PreImage"] == null)
                     {
-                        tracingService.Trace("PreImage is not available. Exiting plugin.");
+                        localContext.Trace("PreImage is not available. Exiting plugin.");
                         return;
                     }
 
@@ -59,11 +67,11 @@ namespace TSIS2.Plugins
 
                     if (workOrderTaskRef == null)
                     {
-                        tracingService.Trace("ts_workorderservicetask reference is null. Exiting plugin.");
+                        localContext.Trace("ts_workorderservicetask reference is null. Exiting plugin.");
                         return;
                     }
 
-                    tracingService.Trace("Updating msdyn_workorderservicetask Id: {0}", workOrderTaskRef.Id);
+                    localContext.Trace("Updating msdyn_workorderservicetask Id: {0}", workOrderTaskRef.Id);
 
                     Entity updateTask = new Entity(workOrderTaskRef.LogicalName, workOrderTaskRef.Id);
                     bool anyFieldChanged = false;
@@ -82,12 +90,12 @@ namespace TSIS2.Plugins
                             if (hasChanged)
                             {
                                 updateTask[destField] = newValue;
-                                tracingService.Trace($"Copied '{sourceField}' to '{destField}' (value changed).");
+                                localContext.Trace($"Copied '{sourceField}' to '{destField}' (value changed).");
                                 anyFieldChanged = true;
                             }
                             else
                             {
-                                tracingService.Trace($"Skipped '{sourceField}' - value unchanged.");
+                                localContext.Trace($"Skipped '{sourceField}' - value unchanged.");
                             }
                         }
                     };
@@ -162,7 +170,7 @@ namespace TSIS2.Plugins
                                 default: mappedStateCode = 0; break; // Default to Active
                             }
                             updateTask["statecode"] = new OptionSetValue(mappedStateCode);
-                            tracingService.Trace("statecode changed. New mapped value: {0}", mappedStateCode);
+                            localContext.Trace("statecode changed. New mapped value: {0}", mappedStateCode);
                             anyFieldChanged = true;
                         }
                     }
@@ -188,7 +196,7 @@ namespace TSIS2.Plugins
                                 default: mappedStatusCode = 1; break; // Default to Active
                             }
                             updateTask["statuscode"] = new OptionSetValue(mappedStatusCode);
-                            tracingService.Trace("statuscode changed. New mapped value: {0}", mappedStatusCode);
+                            localContext.Trace("statuscode changed. New mapped value: {0}", mappedStatusCode);
                             anyFieldChanged = true;
                         }
                     }
@@ -196,22 +204,22 @@ namespace TSIS2.Plugins
                     if (anyFieldChanged)
                     {
                         service.Update(updateTask);
-                        tracingService.Trace("Updated msdyn_workorderservicetask with changed fields.");
+                        localContext.Trace("Updated msdyn_workorderservicetask with changed fields.");
                     }
                     else
                     {
-                        tracingService.Trace("No relevant fields changed. No update performed.");
+                        localContext.Trace("No relevant fields changed. No update performed.");
                     }
                 }
                 else
                 {
-                    tracingService.Trace("No target entity found. Exiting plugin.");
+                    localContext.Trace("No target entity found. Exiting plugin.");
                 }
             }
             catch (Exception ex)
             {
-                tracingService.Trace("An error occurred: {0}", ex.ToString());
-                throw;
+                localContext.TraceWithContext("Exception: {0}", ex.Message);
+                throw new InvalidPluginExecutionException("PostOperation_CopyStartDateToTaskOnUpdate failed.", ex);
             }
         }
     }

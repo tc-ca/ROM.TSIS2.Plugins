@@ -37,7 +37,7 @@
 //                    _output.WriteLine("Definition JSON is valid");
 //                }
 //                catch (Exception ex) {
-//                    _output.WriteLine($"Definition JSON is invalid: {ex.Message}");
+//                    _output.WriteLine($"Definition JSON is invalid: {ex}");
 //                    throw new Exception("Invalid Definition JSON", ex);
 //                }
 
@@ -46,7 +46,7 @@
 //                    _output.WriteLine("Response JSON is valid");
 //                }
 //                catch (Exception ex) {
-//                    _output.WriteLine($"Response JSON is invalid: {ex.Message}");
+//                    _output.WriteLine($"Response JSON is invalid: {ex}");
 //                    _output.WriteLine($"Response JSON content: {responseJson}");
 //                    throw new Exception("Invalid Response JSON", ex);
 //                }
@@ -161,8 +161,7 @@
 //            }
 //            catch (Exception ex)
 //            {
-//                _output.WriteLine($"TEST FAILED: {ex.Message}");
-//                _output.WriteLine($"STACK TRACE: {ex.StackTrace}");
+//                _output.WriteLine($"TEST FAILED: {ex}");
 //                throw;
 //            }
 //        }
@@ -195,7 +194,7 @@
 //            catch (Exception ex)
 //            {
 //                // Fallback in case formatting fails
-//                _output.WriteLine($"[TRACE ERROR] {format} - Error: {ex.Message}");
+//                _output.WriteLine($"[TRACE ERROR] {format} - Error: {ex}");
 //            }
 //        }
 //    }
