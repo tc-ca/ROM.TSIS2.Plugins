@@ -95,7 +95,7 @@ namespace TSIS2.Plugins
                             }
                         }
 
-                        tracingService.Trace("If Case \"msdyn_servicerequest\" is updated.");
+                        localContext.Trace("If Case \"msdyn_servicerequest\" is updated.");
                         if (target.Attributes.Contains("msdyn_servicerequest"))
                         {
                             using (var serviceContext = new Xrm(service))
@@ -111,16 +111,22 @@ namespace TSIS2.Plugins
 
                                 if (workOrder.msdyn_ServiceRequest != null)
                                 {
-                                    localContext.Trace("Retrieve all files associated with the Work Order and update the associated case.");
-                                    var allFiles = serviceContext.ts_FileSet.ToList();
+                                    tracingService.Trace("Retrieve all files associated with the Work Order and update the associated case.");
+                                    var myWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
                                     {
-                                        var myWorkOrder = serviceContext.msdyn_workorderSet.Where(wo => wo.Id == workOrder.Id).FirstOrDefault();
-                                        
                                         if (myWorkOrder != null)
                                         {
-                                            var workOrderFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WO ", "").Trim() == myWorkOrder.msdyn_name).ToList();
+                                            // Filter files directly in the query instead of loading all files
+                                            var workOrderFormId = "WO " + myWorkOrder.msdyn_name;
+                                            var workOrderFormIdTrimmed = myWorkOrder.msdyn_name;
 
-                                            localContext.Trace("Update the case for each associated file.");
+                                            var workOrderFiles = serviceContext.ts_FileSet
+                                                .Where(f => f.ts_formintegrationid != null &&
+                                                           (f.ts_formintegrationid == workOrderFormId ||
+                                                            f.ts_formintegrationid == workOrderFormIdTrimmed))
+                                                .ToList();
+
+                                            tracingService.Trace("Update the case for each associated file. Found {0} files.", workOrderFiles.Count);
                                             foreach (var workOrderFile in workOrderFiles)
                                             {
                                                 service.Update(new ts_File
@@ -144,17 +150,21 @@ namespace TSIS2.Plugins
                                         var workspace = serviceContext.ts_WorkOrderServiceTaskWorkspaceSet.FirstOrDefault(ws => ws.ts_WorkOrderServiceTask != null && ws.ts_WorkOrderServiceTask.Id == workOrderServiceTask.Id);
                                         if (workspace != null)
                                         {
+                                            // Set a flag in the shared variables to signal that this update is internal
+                                            context.SharedVariables["InternalUpdate"] = true;
                                             service.Update(new ts_WorkOrderServiceTaskWorkspace
                                             {
                                                 Id = workspace.Id,
                                                 crc77_Incident = workOrder.msdyn_ServiceRequest
                                             });
                                         }
-                                        localContext.Trace("Retrieve all files associated with the Work Order service task and update the associated case.");
+                                        tracingService.Trace("Retrieve all files associated with the Work Order service task and update the associated case.");
+                                        var wostFormId = "WOST " + workOrderServiceTask.msdyn_name;
+                                        var wostFormIdTrimmed = workOrderServiceTask.msdyn_name;
                                         {
-                                            var workOrderServiceTasksFiles = allFiles.Where(f => f.ts_formintegrationid != null && f.ts_formintegrationid.Replace("WOST ", "").Trim() == workOrderServiceTask.msdyn_name).ToList();
+                                            var workOrderServiceTasksFiles = serviceContext.ts_FileSet.Where(f => f.ts_formintegrationid != null &&(f.ts_formintegrationid == wostFormId ||f.ts_formintegrationid == wostFormIdTrimmed)).ToList();
 
-                                            localContext.Trace("Update the case for each associated file.");
+                                            tracingService.Trace("Update the case for each associated file. Found {0} files.", workOrderServiceTasksFiles.Count);
                                             foreach (var workOrderServiceTasksFile in workOrderServiceTasksFiles)
                                             {
                                                 service.Update(new ts_File
@@ -191,6 +201,8 @@ namespace TSIS2.Plugins
                                         var workspace = serviceContext.ts_WorkOrderServiceTaskWorkspaceSet.FirstOrDefault(ws => ws.ts_WorkOrderServiceTask != null && ws.ts_WorkOrderServiceTask.Id == workOrderServiceTask.Id);
                                         if (workspace != null)
                                         {
+                                            // Set a flag in the shared variables to signal that this update is internal
+                                            context.SharedVariables["InternalUpdate"] = true;
                                             service.Update(new ts_WorkOrderServiceTaskWorkspace
                                             {
                                                 Id = workspace.Id,
