@@ -15,6 +15,9 @@ pool:
   - visualstudio
 
 steps:
+- checkout: self
+  lfs: true
+  
 - task: NuGetToolInstaller@1
   inputs:
     versionSpec: 
