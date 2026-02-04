@@ -234,6 +234,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\ILRepack.2.0.18\build\ILRepack.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.2.0.18\build\ILRepack.props'))" />
   </Target>
+  <PropertyGroup>
+    <ILRepack>$(MSBuildThisFileDirectory)..\packages\ILRepack.2.0.18\tools\ILRepack.exe</ILRepack>
+  </PropertyGroup>
   <Target Name="AfterBuild">
     <ItemGroup>
       <InputAssemblies Include="$(TargetPath)" />
