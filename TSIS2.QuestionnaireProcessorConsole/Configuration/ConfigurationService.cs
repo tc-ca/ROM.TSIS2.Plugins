@@ -21,6 +21,7 @@ public class ConfigurationService
     public bool SimulationMode { get; private set; } = false;
     public string LogLevel { get; private set; } = "Info";
     public bool ProcessWostsFromFile { get; private set; } = false;
+    public string WostIdsFileName { get; private set; } = "wost_ids.txt";
     public List<string> WostIdsFromFile { get; private set; } = new List<string>();
     public bool BackfillWorkOrderRefs { get; private set; } = false;
     public List<Guid> SpecificWostIds { get; private set; } = new List<Guid>();

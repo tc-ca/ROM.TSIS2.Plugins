@@ -167,8 +167,8 @@ namespace TSIS2.QuestionnaireProcessorConsole
 
                     if (config.ProcessWostsFromFile)
                     {
-                        logger.Info("[FILE] Processing WOSTs from file first...");
-                        var wostIds = processor.LoadWostIdsFromFile();
+                        logger.Info($"[FILE] Processing WOSTs from file '{config.WostIdsFileName}' first...");
+                        var wostIds = processor.LoadWostIdsFromFile(config.WostIdsFileName);
 
                         if (wostIds.Count > 0)
                         {
