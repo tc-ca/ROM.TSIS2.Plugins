@@ -186,10 +186,15 @@ namespace TSIS2.Plugins
             }
             catch (Exception ex)
             {
-                tracingService.Trace($"ERROR in ProcessReadyForMerge (Plugin wrapper): {ex.Message}");
+                tracingService.Trace($"ERROR in ProcessReadyForMerge: {ex.Message}");
                 
-                // Ensure status is Error if not already
-                // (Optimistically assuming service handled it, but good to double check or just trace)
+                // Update job status to ERROR
+                Entity errorJob = new Entity("ts_workorderexportjob", jobId);
+                errorJob["statuscode"] = new OptionSetValue(STATUS_ERROR);
+                errorJob["ts_errormessage"] = $"Merge Processing Failed: {ex.Message}\nStack: {ex.StackTrace}";
+                service.Update(errorJob);
+                
+                throw; // Re-throw to ensure plugin execution is marked as failed
             }
         }
 

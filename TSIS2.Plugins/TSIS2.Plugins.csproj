@@ -303,6 +303,14 @@
       <InputAssemblies Include="$(TargetDir)System.Json.dll" />
       <InputAssemblies Include="$(TargetDir)TSIS2.Plugins.dll" />
       <InputAssemblies Include="$(TargetDir)TSIS2.QuestionnaireProcessor.dll" />
+      <!-- PdfSharp for PDF merging -->
+      <InputAssemblies Include="$(TargetDir)PdfSharp.dll" />
+      <InputAssemblies Include="$(TargetDir)PdfSharp.Charting.dll" />
+      <InputAssemblies Include="$(TargetDir)PdfSharp.Quality.dll" />
+      <InputAssemblies Include="$(TargetDir)PdfSharp.Shared.dll" />
+      <InputAssemblies Include="$(TargetDir)PdfSharp.System.dll" />
+      <!-- PdfSharp dependencies -->
+      <InputAssemblies Include="$(TargetDir)Microsoft.Extensions.Logging.Abstractions.dll" />
     </ItemGroup>
     <ItemGroup>
       <KeyFile Include="$(ProjectDir)TSIS2.Plugins.Key.snk" />
