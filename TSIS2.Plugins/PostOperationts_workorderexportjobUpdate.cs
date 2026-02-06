@@ -38,6 +38,25 @@ namespace TSIS2.Plugins
         private const int STATUS_COMPLETED = 741130006; // ZIP created
         private const int STATUS_ERROR = 741130007; //Error occurred
 
+        // Storage Configuration
+        /// <summary>
+        /// Controls where the final ZIP is stored:
+        /// - false (default): ZIP saved as Dataverse Note/Annotation attached to the job
+        /// - true: ZIP saved directly to the ts_finalexportzip File Column on the job record
+        /// 
+        /// When true (File Storage mode):
+        /// - Final ZIP is uploaded to the ts_finalexportzip file column using Dataverse File APIs
+        /// - ALL intermediate annotations (Survey PDFs, Main PDFs, Merged PDFs) are deleted after successful upload
+        /// - More efficient for storage and reduces database size
+        /// - Supports larger files (up to Dataverse File Column limits ~128MB default)
+        /// 
+        /// When false (Annotation mode):
+        /// - Final ZIP is saved as a Note/Annotation
+        /// - Intermediate PDFs are still cleaned up, but final ZIP Note is preserved
+        /// - Compatible with older Dataverse instances that might not support File Columns
+        /// </summary>
+        private const bool USE_FILE_STORAGE = true; // true = ts_finalexportzip file column, false = annotation
+
         public PostOperationts_workorderexportjobUpdate(string unsecure, string secure)
             : base(typeof(PostOperationts_workorderexportjobUpdate))
         {
@@ -182,7 +201,7 @@ namespace TSIS2.Plugins
                 var exportService = new WorkOrderExportService(service, tracingService);
                 
                 // Orchestrate the Merge and Zip process
-                exportService.ProcessMergeAndZip(jobId, workOrderIds);
+                exportService.ProcessMergeAndZip(jobId, workOrderIds, USE_FILE_STORAGE);
             }
             catch (Exception ex)
             {
