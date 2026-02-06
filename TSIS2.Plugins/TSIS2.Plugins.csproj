@@ -54,8 +54,8 @@
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=8.0.0.2, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.8.0.2\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=8.0.0.3, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.8.0.3\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.8.0.0\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.IdentityModel.Clients.ActiveDirectory, Version=3.19.8.16603, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.Clients.ActiveDirectory.3.19.8\lib\net45\Microsoft.IdentityModel.Clients.ActiveDirectory.dll</HintPath>
@@ -303,6 +303,14 @@
       <InputAssemblies Include="$(TargetDir)System.Json.dll" />
       <InputAssemblies Include="$(TargetDir)TSIS2.Plugins.dll" />
       <InputAssemblies Include="$(TargetDir)TSIS2.QuestionnaireProcessor.dll" />
+      <!-- PdfSharp for PDF merging -->
+      <InputAssemblies Include="$(TargetDir)PdfSharp.dll" />
+      <InputAssemblies Include="$(TargetDir)PdfSharp.Charting.dll" />
+      <InputAssemblies Include="$(TargetDir)PdfSharp.Quality.dll" />
+      <InputAssemblies Include="$(TargetDir)PdfSharp.Shared.dll" />
+      <InputAssemblies Include="$(TargetDir)PdfSharp.System.dll" />
+      <!-- PdfSharp dependencies -->
+      <InputAssemblies Include="$(TargetDir)Microsoft.Extensions.Logging.Abstractions.dll" />
     </ItemGroup>
     <ItemGroup>
       <KeyFile Include="$(ProjectDir)TSIS2.Plugins.Key.snk" />

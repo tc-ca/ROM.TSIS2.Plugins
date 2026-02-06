@@ -40,9 +40,13 @@ namespace TSIS2.Plugins.WorkOrderExport
         /// merges them into a single PDF per Work Order, and then creates a ZIP archive of all merged PDFs.
         /// Update the Job status upon completion or error.
         /// </summary>
-        public void ProcessMergeAndZip(Guid jobId, List<Guid> workOrderIds)
+        /// <param name="jobId">The Work Order Export Job ID</param>
+        /// <param name="workOrderIds">List of Work Order IDs to process</param>
+        /// <param name="useFileStorage">If true, saves ZIP to ts_finalexportzip file column; if false, saves as annotation</param>
+        public void ProcessMergeAndZip(Guid jobId, List<Guid> workOrderIds, bool useFileStorage = false)
         {
             _tracingService.Trace($"Starting Export Job Processing (Merge) for Job: {jobId}");
+            _tracingService.Trace($"Storage mode: {(useFileStorage ? "File Column" : "Annotation")}");
 
             try
             {
@@ -96,9 +100,23 @@ namespace TSIS2.Plugins.WorkOrderExport
                 _tracingService.Trace($"ZIP created successfully. Size={zipBytes.Length} bytes");
 
                 string zipFileName = $"WorkOrderExport_{jobId}.zip";
-                CreateAnnotation(jobId, zipFileName, "application/zip", zipBytes);
 
-                // 5. Update Status to Completed
+                // 5. Save ZIP based on storage mode
+                if (useFileStorage)
+                {
+                    _tracingService.Trace("Using File Storage mode for final ZIP");
+                    SaveZipToFileColumn(jobId, zipBytes, zipFileName);
+                }
+                else
+                {
+                    _tracingService.Trace("Using Annotation mode for final ZIP");
+                    CreateAnnotation(jobId, zipFileName, "application/zip", zipBytes);
+                }
+
+                // 6. Cleanup intermediate annotations (Survey, Main, Merged PDFs)
+                DeleteIntermediateAnnotations(jobId, workOrderIds, useFileStorage);
+
+                // 7. Update Status to Completed
                 _tracingService.Trace($"Updating statuscode to COMPLETED ({STATUS_COMPLETED})");
                 Entity updateJob = new Entity("ts_workorderexportjob", jobId);
                 updateJob["statuscode"] = new OptionSetValue(STATUS_COMPLETED);
@@ -111,6 +129,16 @@ namespace TSIS2.Plugins.WorkOrderExport
             {
                 _tracingService.Trace($"ERROR during ReadyForMerge processing. JobId={jobId}");
                 _tracingService.Trace($"Job Failed: {ex.Message}");
+
+                // Cleanup intermediate artifacts on failure
+                try
+                {
+                    DeleteIntermediateAnnotations(jobId, workOrderIds, useFileStorage);
+                }
+                catch (Exception cleanupEx)
+                {
+                    _tracingService.Trace($"Warning: Cleanup failed during error handling: {cleanupEx.Message}");
+                }
 
                 Entity errorJob = new Entity("ts_workorderexportjob", jobId);
                 errorJob["statuscode"] = new OptionSetValue(STATUS_ERROR);
@@ -125,6 +153,14 @@ namespace TSIS2.Plugins.WorkOrderExport
                 // Let's rethrow to be safe for Console App debugging.
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Backward-compatible overload that defaults to annotation storage mode
+        /// </summary>
+        public void ProcessMergeAndZip(Guid jobId, List<Guid> workOrderIds)
+        {
+            ProcessMergeAndZip(jobId, workOrderIds, useFileStorage: false);
         }
 
         private (string FileName, byte[] Content)? RetrieveAnnotation(Guid objectId, string exactFileName)
@@ -574,6 +610,156 @@ namespace TSIS2.Plugins.WorkOrderExport
 
                 _tracingService.Trace($"ZIP archive created successfully. Size: {ms.Length} bytes");
                 return ms.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Saves ZIP file directly to the ts_finalexportzip file column using Dataverse File APIs
+        /// </summary>
+        private void SaveZipToFileColumn(Guid jobId, byte[] zipBytes, string fileName)
+        {
+            _tracingService.Trace($"Saving ZIP to file column for job {jobId}, size: {zipBytes.Length} bytes");
+
+            try
+            {
+                // Step 1: Initialize the file upload
+                var initRequest = new OrganizationRequest("InitializeFileBlocksUpload");
+                initRequest["Target"] = new EntityReference("ts_workorderexportjob", jobId);
+                initRequest["FileAttributeName"] = "ts_finalexportzip";
+                initRequest["FileName"] = fileName;
+
+                var initResponse = _service.Execute(initRequest);
+                string fileId = initResponse["FileContinuationToken"].ToString();
+
+                _tracingService.Trace($"File upload initialized with ID: {fileId}");
+
+                // Step 2: Upload the file content in blocks
+                // For files under 4MB, we can upload in a single block
+                const int blockSize = 4 * 1024 * 1024; // 4MB chunks
+                int totalBlocks = (int)Math.Ceiling((double)zipBytes.Length / blockSize);
+
+                for (int blockNumber = 1; blockNumber <= totalBlocks; blockNumber++)
+                {
+                    int offset = (blockNumber - 1) * blockSize;
+                    int length = Math.Min(blockSize, zipBytes.Length - offset);
+
+                    byte[] blockData = new byte[length];
+                    Array.Copy(zipBytes, offset, blockData, 0, length);
+
+                    var uploadRequest = new OrganizationRequest("UploadBlock");
+                    uploadRequest["FileContinuationToken"] = fileId;
+                    uploadRequest["BlockId"] = Convert.ToBase64String(BitConverter.GetBytes(blockNumber));
+                    uploadRequest["BlockData"] = blockData;
+
+                    _service.Execute(uploadRequest);
+
+                    _tracingService.Trace($"Uploaded block {blockNumber}/{totalBlocks} ({length} bytes)");
+                }
+
+                // Step 3: Commit the upload
+                var commitRequest = new OrganizationRequest("CommitFileBlocksUpload");
+                commitRequest["FileContinuationToken"] = fileId;
+                commitRequest["BlockList"] = GetBlockList(totalBlocks);
+                commitRequest["FileName"] = fileName;
+                commitRequest["MimeType"] = "application/zip";
+
+                _service.Execute(commitRequest);
+
+                _tracingService.Trace("File upload committed successfully");
+            }
+            catch (Exception ex)
+            {
+                _tracingService.Trace($"Error saving ZIP to file column: {ex.Message}");
+                throw new InvalidPluginExecutionException($"Failed to save ZIP to file column: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Generates the block list for file upload commit
+        /// </summary>
+        private string[] GetBlockList(int totalBlocks)
+        {
+            var blockList = new string[totalBlocks];
+            for (int i = 1; i <= totalBlocks; i++)
+            {
+                blockList[i - 1] = Convert.ToBase64String(BitConverter.GetBytes(i));
+            }
+            return blockList;
+        }
+
+        /// <summary>
+        /// Deletes all intermediate PDF annotations (Survey, Main, Merged) from the job record
+        /// </summary>
+        private void DeleteIntermediateAnnotations(Guid jobId, List<Guid> workOrderIds, bool useFileStorage)
+        {
+            _tracingService.Trace($"Starting cleanup of intermediate annotations for job {jobId}");
+
+            try
+            {
+                // Query all annotations attached to the job
+                var query = new QueryExpression("annotation")
+                {
+                    ColumnSet = new ColumnSet("annotationid", "filename"),
+                    Criteria = new FilterExpression
+                    {
+                        Conditions =
+                        {
+                            new ConditionExpression("objectid", ConditionOperator.Equal, jobId),
+                            new ConditionExpression("isdocument", ConditionOperator.Equal, true)
+                        }
+                    }
+                };
+
+                var results = _service.RetrieveMultiple(query);
+                int deletedCount = 0;
+
+                foreach (var note in results.Entities)
+                {
+                    string fileName = note.GetAttributeValue<string>("filename") ?? string.Empty;
+                    bool shouldDelete = false;
+
+                    // Delete Survey PDFs
+                    if (fileName.Contains("_SURVEY_") && fileName.EndsWith(".pdf"))
+                    {
+                        shouldDelete = true;
+                    }
+                    // Delete Main PDFs
+                    else if (fileName.Contains("_MAIN.pdf"))
+                    {
+                        shouldDelete = true;
+                    }
+                    // Delete Merged PDFs
+                    else if (fileName.Contains("_MERGED.pdf"))
+                    {
+                        shouldDelete = true;
+                    }
+                    // If using file storage, also delete ZIP annotations (keep only file column)
+                    else if (useFileStorage && fileName.StartsWith("WorkOrderExport_") && fileName.EndsWith(".zip"))
+                    {
+                        shouldDelete = true;
+                    }
+
+                    if (shouldDelete)
+                    {
+                        try
+                        {
+                            _service.Delete("annotation", note.Id);
+                            deletedCount++;
+                            _tracingService.Trace($"Deleted annotation: {fileName}");
+                        }
+                        catch (Exception ex)
+                        {
+                            _tracingService.Trace($"Warning: Failed to delete annotation {fileName}: {ex.Message}");
+                        }
+                    }
+                }
+
+                _tracingService.Trace($"Cleanup completed. Deleted {deletedCount} intermediate annotations.");
+            }
+            catch (Exception ex)
+            {
+                _tracingService.Trace($"Error during annotation cleanup: {ex.Message}");
+                // Don't throw - cleanup failure shouldn't fail the entire process
             }
         }
 

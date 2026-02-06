@@ -78,7 +78,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="README_ARCHITECTURE.md" />
     <None Include="TSIS2.QuestionnaireProcessor.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
