@@ -127,6 +127,7 @@ namespace TSIS2.Plugins.WorkOrderExport
                 return;
             }
 
+            DeleteExistingZipAnnotations(jobId);
             CreateAnnotation(jobId, zipFileName, "application/zip", zipBytes);
         }
 
@@ -852,6 +853,47 @@ namespace TSIS2.Plugins.WorkOrderExport
             {
                 _tracingService.Trace($"Error during annotation cleanup: {ex.Message}");
                 // Don't throw - cleanup failure shouldn't fail the entire process
+            }
+        }
+
+        /// <summary>
+        /// Removes existing ZIP notes so note-mode final artifact behaves like overwrite.
+        /// </summary>
+        private void DeleteExistingZipAnnotations(Guid jobId)
+        {
+            try
+            {
+                var query = new QueryExpression("annotation")
+                {
+                    ColumnSet = new ColumnSet("annotationid", "filename"),
+                    Criteria = new FilterExpression
+                    {
+                        Conditions =
+                        {
+                            new ConditionExpression("objectid", ConditionOperator.Equal, jobId),
+                            new ConditionExpression("isdocument", ConditionOperator.Equal, true),
+                            new ConditionExpression("filename", ConditionOperator.Like, "%.zip")
+                        }
+                    }
+                };
+
+                var existingZipNotes = _service.RetrieveMultiple(query);
+                foreach (var note in existingZipNotes.Entities)
+                {
+                    try
+                    {
+                        _service.Delete("annotation", note.Id);
+                    }
+                    catch (Exception ex)
+                    {
+                        var fileName = note.GetAttributeValue<string>("filename") ?? note.Id.ToString();
+                        _tracingService.Trace($"Warning: Failed to delete existing ZIP note {fileName}: {ex.Message}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _tracingService.Trace($"Warning: Failed to query existing ZIP notes for overwrite behavior: {ex.Message}");
             }
         }
 

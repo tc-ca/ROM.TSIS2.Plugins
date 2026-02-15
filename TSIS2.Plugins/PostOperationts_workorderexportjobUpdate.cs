@@ -239,10 +239,8 @@ namespace TSIS2.Plugins
                     inProgress["ts_progressmessage"] = "ZIP worker: preparing final ZIP.";
                     service.Update(inProgress);
 
-                    if (!exportService.IsFinalZipPresent(jobId, USE_FILE_STORAGE))
-                    {
-                        exportService.CreateAndPersistFinalZip(jobId, workOrderIds, USE_FILE_STORAGE);
-                    }
+                    // Always recreate final ZIP for this run so restart semantics are overwrite/replace.
+                    exportService.CreateAndPersistFinalZip(jobId, workOrderIds, USE_FILE_STORAGE);
 
                     // Strict gate: do not leave ZIP stage until final ZIP presence is confirmed.
                     if (!exportService.IsFinalZipPresent(jobId, USE_FILE_STORAGE))
