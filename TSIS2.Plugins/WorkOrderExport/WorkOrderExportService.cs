@@ -5,7 +5,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using PdfSharp.Pdf;
@@ -19,11 +18,7 @@ namespace TSIS2.Plugins.WorkOrderExport
     /// </summary>
     public class WorkOrderExportService
     {
-        // StatusCode Values for ts_workorderexportjob
-        private const int STATUS_COMPLETED = 741130006; // ZIP created
-        private const int STATUS_ERROR = 741130007;
         private const int ERROR_MESSAGE_MAX_LENGTH = 4000;
-        private const int PREEMPTIVE_TIMEOUT_SECONDS = 105; // keep margin under sandbox hard timeout
 
         private readonly IOrganizationService _service;
         private readonly ITracingService _tracingService;
@@ -38,160 +33,124 @@ namespace TSIS2.Plugins.WorkOrderExport
             _testMode = testMode;
         }
 
-        /// <summary>
-        /// Orchestrates the retrieval of MAIN and SURVEY PDFs for the given Work Orders, 
-        /// merges them into a single PDF per Work Order, and then creates a ZIP archive of all merged PDFs.
-        /// Update the Job status upon completion or error.
-        /// </summary>
-        /// <param name="jobId">The Work Order Export Job ID</param>
-        /// <param name="workOrderIds">List of Work Order IDs to process</param>
-        /// <param name="useFileStorage">If true, saves ZIP to ts_finalexportzip file column; if false, saves as annotation</param>
-        public void ProcessMergeAndZip(Guid jobId, List<Guid> workOrderIds, bool useFileStorage = false)
+        public int ProcessMergeBatch(Guid jobId, List<Guid> workOrderIds, int nextMergeIndex, int batchSize)
         {
-            string jobName = TryGetJobName(jobId);
-            string jobContext = BuildJobContext(jobId, jobName);
-            var stopwatch = Stopwatch.StartNew();
+            if (workOrderIds == null) throw new ArgumentNullException(nameof(workOrderIds));
+            if (batchSize <= 0) throw new ArgumentOutOfRangeException(nameof(batchSize), "Batch size must be greater than zero.");
 
-            _tracingService.Trace($"Starting Export Job Processing (Merge). {jobContext}");
-            _tracingService.Trace($"Storage mode: {(useFileStorage ? "File Column" : "Annotation")}");
-
-            try
+            int safeStart = Math.Max(0, nextMergeIndex);
+            if (safeStart >= workOrderIds.Count)
             {
-                UpdateHeartbeat(jobId, "Starting merge + ZIP...");
-                _tracingService.Trace($"WorkOrder count={workOrderIds.Count}");
+                return safeStart;
+            }
 
-                // 3. Process Work Orders (Merge PDFs)
-                var pdfMerger = new PdfSharpMerger();
+            int upperExclusive = Math.Min(workOrderIds.Count, safeStart + batchSize);
+            var pdfMerger = new PdfSharpMerger();
 
-                List<(string FileName, byte[] Content)> mergedPdfs = new List<(string, byte[])>();
-                var usedZipEntryNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                int mergeIndex = 0;
+            for (int i = safeStart; i < upperExclusive; i++)
+            {
+                Guid woId = workOrderIds[i];
+                string mergedAnnotationFileName = $"WO_{woId}_MERGED.pdf";
 
-                foreach (var woId in workOrderIds)
+                var mainPdf = RetrieveAnnotation(jobId, $"WO_{woId}_MAIN.pdf");
+                if (mainPdf == null)
                 {
-                    mergeIndex++;
-                    ThrowIfNearTimeout(stopwatch, $"before merging work order {mergeIndex}/{workOrderIds.Count} ({woId})");
-                    UpdateHeartbeat(jobId, $"Merge + ZIP: merging work order {mergeIndex}/{workOrderIds.Count} ({woId})");
-                    _tracingService.Trace($"[WO:{woId}] Starting merge sequence.");
+                    throw new InvalidPluginExecutionException($"Missing MAIN PDF for Work Order {woId}. Expected file pattern: WO_{woId}_MAIN.pdf attached to Job.");
+                }
 
-                    // A. Retrieve MAIN PDF
-                    var mainPdf = RetrieveAnnotation(jobId, $"WO_{woId}_MAIN.pdf");
+                var surveyPdfs = RetrieveSurveyPdfs(jobId, woId);
+                List<byte[]> pdfsToMerge = new List<byte[]> { mainPdf.Value.Content };
+                pdfsToMerge.AddRange(surveyPdfs.Select(s => s.Content));
 
-                    if (mainPdf == null)
+                // Validate merge in-memory during merge worker, but don't persist merged notes.
+                // Persisting large merged PDFs as annotation can exceed sandbox gRPC message size.
+                byte[] mergedBytes = pdfMerger.Merge(pdfsToMerge);
+                _tracingService.Trace($"[WO:{woId}] Merge worker completed in-memory merge. Size={mergedBytes.Length} bytes. Target note={mergedAnnotationFileName}");
+            }
+
+            return upperExclusive;
+        }
+
+        public bool IsFinalZipPresent(Guid jobId, bool useFileStorage)
+        {
+            if (useFileStorage)
+            {
+                var job = _service.Retrieve("ts_workorderexportjob", jobId, new ColumnSet("ts_finalexportzip_name"));
+                string fileName = (job.GetAttributeValue<string>("ts_finalexportzip_name") ?? string.Empty).Trim();
+                return !string.IsNullOrWhiteSpace(fileName);
+            }
+
+            var query = new QueryExpression("annotation")
+            {
+                ColumnSet = new ColumnSet("annotationid", "documentbody"),
+                Criteria = new FilterExpression
+                {
+                    Conditions =
                     {
-                        // Fail if main PDF is missing
-                        throw new InvalidPluginExecutionException($"Missing MAIN PDF for Work Order {woId}. Expected file pattern: WO_{woId}_MAIN.pdf attached to Job.");
+                        new ConditionExpression("objectid", ConditionOperator.Equal, jobId),
+                        new ConditionExpression("isdocument", ConditionOperator.Equal, true),
+                        new ConditionExpression("filename", ConditionOperator.Like, "%.zip")
                     }
+                },
+                TopCount = 1
+            };
 
-                    _tracingService.Trace($"[WO:{woId}] MAIN PDF found.");
+            var notes = _service.RetrieveMultiple(query);
+            if (notes.Entities.Count == 0) return false;
 
-                    // B. Retrieve SURVEY PDFs
-                    var surveyPdfs = RetrieveSurveyPdfs(jobId, woId);
-
-                    _tracingService.Trace($"[WO:{woId}] Survey PDFs count={surveyPdfs.Count}");
-
-                    // C. Merge
-                    List<byte[]> pdfsToMerge = new List<byte[]> { mainPdf.Value.Content };
-                    pdfsToMerge.AddRange(surveyPdfs.Select(s => s.Content));
-
-                    _tracingService.Trace($"Merging {pdfsToMerge.Count} PDFs for WO {woId}");
-                    byte[] mergedBytes = pdfMerger.Merge(pdfsToMerge);
-                    ThrowIfNearTimeout(stopwatch, $"after merging work order {mergeIndex}/{workOrderIds.Count} ({woId})");
-
-                    _tracingService.Trace($"[WO:{woId}] Merge completed. Size={mergedBytes.Length} bytes");
-
-                    // D. Attach merged PDF to Job (internal name for deterministic cleanup)
-                    string mergedAnnotationFileName = $"WO_{woId}_MERGED.pdf";
-                    CreateAnnotation(jobId, mergedAnnotationFileName, "application/pdf", mergedBytes);
-
-                    // E. ZIP entry name: user-friendly and without _MERGED suffix
-                    string zipEntryFileName = BuildZipEntryPdfFileName(woId, usedZipEntryNames);
-                    mergedPdfs.Add((zipEntryFileName, mergedBytes));
-                }
-
-                // 4. Create ZIP
-                ThrowIfNearTimeout(stopwatch, "before zip creation");
-                UpdateHeartbeat(jobId, "Merge + ZIP: creating ZIP...");
-                _tracingService.Trace($"Zipping {mergedPdfs.Count} files...");
-                byte[] zipBytes = CreateZip(mergedPdfs);
-                ThrowIfNearTimeout(stopwatch, "after zip creation");
-
-                _tracingService.Trace($"ZIP created successfully. Size={zipBytes.Length} bytes");
-
-                string zipFileName = $"WorkOrder-Export-{DateTime.UtcNow:yyyy-MM-dd_HHmm}.zip";
-
-                // 5. Save ZIP based on storage mode
-                if (useFileStorage)
-                {
-                    ThrowIfNearTimeout(stopwatch, "before file-column upload");
-                    UpdateHeartbeat(jobId, "Merge + ZIP: uploading ZIP...");
-                    _tracingService.Trace("Using File Storage mode for final ZIP");
-                    SaveZipToFileColumn(jobId, zipBytes, zipFileName);
-                }
-                else
-                {
-                    ThrowIfNearTimeout(stopwatch, "before zip note creation");
-                    UpdateHeartbeat(jobId, "Merge + ZIP: saving ZIP note...");
-                    _tracingService.Trace("Using Annotation mode for final ZIP");
-                    CreateAnnotation(jobId, zipFileName, "application/zip", zipBytes);
-                }
-
-                // 6. Cleanup intermediate annotations (Survey, Main, Merged PDFs)
-                ThrowIfNearTimeout(stopwatch, "before cleanup");
-                UpdateHeartbeat(jobId, "Merge + ZIP: cleaning up temporary files...");
-                DeleteIntermediateAnnotations(jobId, workOrderIds, useFileStorage);
-                ThrowIfNearTimeout(stopwatch, "after cleanup");
-
-                // 7. Update Status to Completed
-                _tracingService.Trace($"Updating statuscode to COMPLETED ({STATUS_COMPLETED})");
-                Entity updateJob = new Entity("ts_workorderexportjob", jobId);
-                updateJob["statuscode"] = new OptionSetValue(STATUS_COMPLETED);
-                updateJob["ts_errormessage"] = string.Empty; // Clear errors
-                _service.Update(updateJob);
-
-                _tracingService.Trace("Job Completed Successfully.");
-            }
-            catch (Exception ex)
-            {
-                _tracingService.Trace($"ERROR during ReadyForMerge processing. {jobContext}. Message={ex.Message}");
-
-                // Cleanup intermediate artifacts on failure
-                try
-                {
-                    DeleteIntermediateAnnotations(jobId, workOrderIds, useFileStorage);
-                }
-                catch (Exception cleanupEx)
-                {
-                    _tracingService.Trace($"Warning: Cleanup failed during error handling: {cleanupEx.Message}");
-                }
-
-                Entity errorJob = new Entity("ts_workorderexportjob", jobId);
-                errorJob["statuscode"] = new OptionSetValue(STATUS_ERROR);
-                errorJob["ts_lastheartbeat"] = DateTime.UtcNow;
-                errorJob["ts_errormessage"] = TruncateForErrorField(BuildMergeFailureMessage(ex));
-                _service.Update(errorJob);
-
-                // Rethrow if you want the caller to know (like in Console App), 
-                // but usually we swallow in async plugins. 
-                // However, for Shared Service, let's rethrow so the caller can handle/log if needed,
-                // or just rely on the job update.
-                // Since we updated the Job to Error, we can swallow or rethrow. 
-                // Let's rethrow to be safe for Console App debugging.
-                throw;
-            }
+            string body = notes.Entities[0].GetAttributeValue<string>("documentbody");
+            return !string.IsNullOrWhiteSpace(body);
         }
 
-        private void ThrowIfNearTimeout(Stopwatch stopwatch, string step)
+        public void CreateAndPersistFinalZip(Guid jobId, List<Guid> workOrderIds, bool useFileStorage)
         {
-            if (stopwatch == null) return;
-            if (stopwatch.Elapsed.TotalSeconds < PREEMPTIVE_TIMEOUT_SECONDS) return;
+            if (workOrderIds == null) throw new ArgumentNullException(nameof(workOrderIds));
 
-            throw new TimeoutException(
-                $"Merge + ZIP exceeded safe runtime at step '{step}' (~{Math.Round(stopwatch.Elapsed.TotalSeconds)}s). " +
-                "The job was stopped before plugin timeout. Please retry with fewer work orders or without problematic records.");
+            List<(string FileName, byte[] Content)> mergedPdfs = new List<(string FileName, byte[] Content)>();
+            var usedZipEntryNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var woId in workOrderIds)
+            {
+                var mergedPdf = RetrieveAnnotation(jobId, $"WO_{woId}_MERGED.pdf");
+                byte[] mergedBytes = mergedPdf?.Content ?? BuildMergedPdfForWorkOrder(jobId, woId);
+
+                string zipEntryFileName = BuildZipEntryPdfFileName(woId, usedZipEntryNames);
+                mergedPdfs.Add((zipEntryFileName, mergedBytes));
+            }
+
+            byte[] zipBytes = CreateZip(mergedPdfs);
+            string zipFileName = $"WorkOrder-Export-{DateTime.UtcNow:yyyy-MM-dd_HHmm}.zip";
+
+            if (useFileStorage)
+            {
+                SaveZipToFileColumn(jobId, zipBytes, zipFileName);
+                return;
+            }
+
+            CreateAnnotation(jobId, zipFileName, "application/zip", zipBytes);
         }
 
-        private void UpdateHeartbeat(Guid jobId, string progressMessage)
+        private byte[] BuildMergedPdfForWorkOrder(Guid jobId, Guid workOrderId)
+        {
+            var mainPdf = RetrieveAnnotation(jobId, $"WO_{workOrderId}_MAIN.pdf");
+            if (mainPdf == null)
+            {
+                throw new InvalidPluginExecutionException($"Missing MAIN PDF for Work Order {workOrderId}. Expected file pattern: WO_{workOrderId}_MAIN.pdf attached to Job.");
+            }
+
+            var surveyPdfs = RetrieveSurveyPdfs(jobId, workOrderId);
+            List<byte[]> pdfsToMerge = new List<byte[]> { mainPdf.Value.Content };
+            pdfsToMerge.AddRange(surveyPdfs.Select(s => s.Content));
+
+            return new PdfSharpMerger().Merge(pdfsToMerge);
+        }
+
+        public void CleanupIntermediateArtifacts(Guid jobId, bool useFileStorage)
+        {
+            DeleteIntermediateAnnotations(jobId, useFileStorage);
+        }
+
+        public void UpdateHeartbeat(Guid jobId, string progressMessage)
         {
             try
             {
@@ -204,26 +163,6 @@ namespace TSIS2.Plugins.WorkOrderExport
             {
                 _tracingService.Trace($"Warning: failed to update heartbeat/progress for job {jobId}. Message={ex.Message}");
             }
-        }
-
-        private string BuildMergeFailureMessage(Exception ex)
-        {
-            if (ex is TimeoutException)
-            {
-                return TruncateForErrorField(
-                    $"Merge processing timed out before completion. {ex.Message} " +
-                    "Please retry the export. If this continues, retry with fewer work orders or without problematic records.");
-            }
-
-            return TruncateForErrorField($"Processing Failed: {ex.Message}\nStack: {ex.StackTrace}");
-        }
-
-        /// <summary>
-        /// Backward-compatible overload that defaults to annotation storage mode
-        /// </summary>
-        public void ProcessMergeAndZip(Guid jobId, List<Guid> workOrderIds)
-        {
-            ProcessMergeAndZip(jobId, workOrderIds, useFileStorage: false);
         }
 
         private string TryGetJobName(Guid jobId)
@@ -310,10 +249,12 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private List<(string FileName, byte[] Content)> RetrieveSurveyPdfs(Guid jobId, Guid workOrderId)
         {
-            // Fetch all SURVEY PDFs for this WO
+            // IMPORTANT: do not bulk-retrieve documentbody here.
+            // Large note payloads can exceed sandbox message size when returned in a single RetrieveMultiple.
+            // Fetch lightweight metadata first, then retrieve each note body individually.
             var query = new QueryExpression("annotation")
             {
-                ColumnSet = new ColumnSet("filename", "documentbody"),
+                ColumnSet = new ColumnSet("annotationid", "filename"),
                 Criteria = new FilterExpression
                 {
                     Conditions =
@@ -333,7 +274,7 @@ namespace TSIS2.Plugins.WorkOrderExport
             var ordered = results.Entities
                 .Select(n => new
                 {
-                    Note = n,
+                    NoteId = n.Id,
                     FileName = n.GetAttributeValue<string>("filename") ?? string.Empty,
                     WostId = ExtractWostGuidFromFilename(n.GetAttributeValue<string>("filename"))
                 })
@@ -343,7 +284,7 @@ namespace TSIS2.Plugins.WorkOrderExport
             var pdfs = new List<(string FileName, byte[] Content)>();
             foreach (var item in ordered)
             {
-                var body = item.Note.GetAttributeValue<string>("documentbody");
+                var body = RetrieveAnnotationBody(item.NoteId);
                 if (string.IsNullOrEmpty(body))
                 {
                     _tracingService.Trace($"Warning: Survey PDF {item.FileName} has empty documentbody. Skipping.");
@@ -360,6 +301,20 @@ namespace TSIS2.Plugins.WorkOrderExport
             }
 
             return pdfs;
+        }
+
+        private string RetrieveAnnotationBody(Guid annotationId)
+        {
+            try
+            {
+                var note = _service.Retrieve("annotation", annotationId, new ColumnSet("documentbody"));
+                return note.GetAttributeValue<string>("documentbody");
+            }
+            catch (Exception ex)
+            {
+                _tracingService.Trace($"Warning: Failed to retrieve annotation body for note {annotationId}: {ex.Message}");
+                return null;
+            }
         }
 
         private static Guid ExtractWostGuidFromFilename(string filename)
@@ -827,7 +782,7 @@ namespace TSIS2.Plugins.WorkOrderExport
         /// <summary>
         /// Deletes all intermediate PDF annotations (Survey, Main, Merged) from the job record
         /// </summary>
-        private void DeleteIntermediateAnnotations(Guid jobId, List<Guid> workOrderIds, bool useFileStorage)
+        private void DeleteIntermediateAnnotations(Guid jobId, bool useFileStorage)
         {
             _tracingService.Trace($"Starting cleanup of intermediate annotations for job {jobId}");
 
