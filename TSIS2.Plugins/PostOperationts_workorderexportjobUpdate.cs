@@ -200,7 +200,7 @@ namespace TSIS2.Plugins
                 var jobEntity = service.Retrieve(
                     "ts_workorderexportjob",
                     jobId,
-                    new ColumnSet("ts_surveypayloadjson", "ts_nextmergeindex"));
+                    new ColumnSet("ts_surveypayloadjson", "ts_nextmergeindex", "ts_doneunits", "ts_totalunits"));
 
                 string surveyPayload = jobEntity.GetAttributeValue<string>("ts_surveypayloadjson");
                 List<Guid> workOrderIds = ParsePayload(surveyPayload, tracingService);
@@ -210,6 +210,9 @@ namespace TSIS2.Plugins
                 }
 
                 var exportService = new WorkOrderExportService(service, tracingService);
+                int currentDoneUnits = jobEntity.GetAttributeValue<int?>("ts_doneunits") ?? 0;
+                int totalUnits = jobEntity.GetAttributeValue<int?>("ts_totalunits") ?? 0;
+                int doneUnitsUpperBound = totalUnits > 0 ? totalUnits : int.MaxValue;
 
                 if (currentStatus == STATUS_READY_FOR_MERGE || currentStatus == STATUS_MERGE_IN_PROGRESS)
                 {
@@ -218,9 +221,12 @@ namespace TSIS2.Plugins
 
                     int nextIndex = exportService.ProcessMergeBatch(jobId, workOrderIds, nextMergeIndex, MERGE_BATCH_SIZE);
                     bool mergeDone = nextIndex >= workOrderIds.Count;
+                    int mergeUnitsProcessed = Math.Max(0, nextIndex - nextMergeIndex);
+                    int updatedDoneUnits = Math.Min(doneUnitsUpperBound, currentDoneUnits + mergeUnitsProcessed);
 
                     var update = new Entity("ts_workorderexportjob", jobId);
                     update["ts_nextmergeindex"] = nextIndex;
+                    update["ts_doneunits"] = updatedDoneUnits;
                     update["ts_lastheartbeat"] = DateTime.UtcNow;
                     update["ts_progressmessage"] = mergeDone
                         ? "Merge worker completed all work orders. Ready for ZIP."
@@ -256,6 +262,7 @@ namespace TSIS2.Plugins
 
                     var readyForCleanup = new Entity("ts_workorderexportjob", jobId);
                     readyForCleanup["statuscode"] = new OptionSetValue(STATUS_READY_FOR_CLEANUP);
+                    readyForCleanup["ts_doneunits"] = Math.Min(doneUnitsUpperBound, currentDoneUnits + 1);
                     readyForCleanup["ts_lastheartbeat"] = DateTime.UtcNow;
                     readyForCleanup["ts_progressmessage"] = "ZIP worker completed. Ready for cleanup.";
                     readyForCleanup["ts_errormessage"] = string.Empty;
