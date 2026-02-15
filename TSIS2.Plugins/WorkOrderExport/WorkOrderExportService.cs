@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
 using PdfSharp.Pdf;
@@ -21,6 +22,8 @@ namespace TSIS2.Plugins.WorkOrderExport
         // StatusCode Values for ts_workorderexportjob
         private const int STATUS_COMPLETED = 741130006; // ZIP created
         private const int STATUS_ERROR = 741130007;
+        private const int ERROR_MESSAGE_MAX_LENGTH = 4000;
+        private const int PREEMPTIVE_TIMEOUT_SECONDS = 105; // keep margin under sandbox hard timeout
 
         private readonly IOrganizationService _service;
         private readonly ITracingService _tracingService;
@@ -45,20 +48,30 @@ namespace TSIS2.Plugins.WorkOrderExport
         /// <param name="useFileStorage">If true, saves ZIP to ts_finalexportzip file column; if false, saves as annotation</param>
         public void ProcessMergeAndZip(Guid jobId, List<Guid> workOrderIds, bool useFileStorage = false)
         {
-            _tracingService.Trace($"Starting Export Job Processing (Merge) for Job: {jobId}");
+            string jobName = TryGetJobName(jobId);
+            string jobContext = BuildJobContext(jobId, jobName);
+            var stopwatch = Stopwatch.StartNew();
+
+            _tracingService.Trace($"Starting Export Job Processing (Merge). {jobContext}");
             _tracingService.Trace($"Storage mode: {(useFileStorage ? "File Column" : "Annotation")}");
 
             try
             {
+                UpdateHeartbeat(jobId, "Starting merge + ZIP...");
                 _tracingService.Trace($"WorkOrder count={workOrderIds.Count}");
 
                 // 3. Process Work Orders (Merge PDFs)
                 var pdfMerger = new PdfSharpMerger();
 
                 List<(string FileName, byte[] Content)> mergedPdfs = new List<(string, byte[])>();
+                var usedZipEntryNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                int mergeIndex = 0;
 
                 foreach (var woId in workOrderIds)
                 {
+                    mergeIndex++;
+                    ThrowIfNearTimeout(stopwatch, $"before merging work order {mergeIndex}/{workOrderIds.Count} ({woId})");
+                    UpdateHeartbeat(jobId, $"Merge + ZIP: merging work order {mergeIndex}/{workOrderIds.Count} ({woId})");
                     _tracingService.Trace($"[WO:{woId}] Starting merge sequence.");
 
                     // A. Retrieve MAIN PDF
@@ -83,38 +96,51 @@ namespace TSIS2.Plugins.WorkOrderExport
 
                     _tracingService.Trace($"Merging {pdfsToMerge.Count} PDFs for WO {woId}");
                     byte[] mergedBytes = pdfMerger.Merge(pdfsToMerge);
+                    ThrowIfNearTimeout(stopwatch, $"after merging work order {mergeIndex}/{workOrderIds.Count} ({woId})");
 
                     _tracingService.Trace($"[WO:{woId}] Merge completed. Size={mergedBytes.Length} bytes");
 
-                    // D. Attach Merged PDF to Job
-                    string mergedFileName = $"WO_{woId}_MERGED.pdf";
-                    CreateAnnotation(jobId, mergedFileName, "application/pdf", mergedBytes);
+                    // D. Attach merged PDF to Job (internal name for deterministic cleanup)
+                    string mergedAnnotationFileName = $"WO_{woId}_MERGED.pdf";
+                    CreateAnnotation(jobId, mergedAnnotationFileName, "application/pdf", mergedBytes);
 
-                    mergedPdfs.Add((mergedFileName, mergedBytes));
+                    // E. ZIP entry name: user-friendly and without _MERGED suffix
+                    string zipEntryFileName = BuildZipEntryPdfFileName(woId, usedZipEntryNames);
+                    mergedPdfs.Add((zipEntryFileName, mergedBytes));
                 }
 
                 // 4. Create ZIP
+                ThrowIfNearTimeout(stopwatch, "before zip creation");
+                UpdateHeartbeat(jobId, "Merge + ZIP: creating ZIP...");
                 _tracingService.Trace($"Zipping {mergedPdfs.Count} files...");
                 byte[] zipBytes = CreateZip(mergedPdfs);
+                ThrowIfNearTimeout(stopwatch, "after zip creation");
 
                 _tracingService.Trace($"ZIP created successfully. Size={zipBytes.Length} bytes");
 
-                string zipFileName = $"WorkOrderExport_{jobId}.zip";
+                string zipFileName = $"WorkOrder-Export-{DateTime.UtcNow:yyyy-MM-dd_HHmm}.zip";
 
                 // 5. Save ZIP based on storage mode
                 if (useFileStorage)
                 {
+                    ThrowIfNearTimeout(stopwatch, "before file-column upload");
+                    UpdateHeartbeat(jobId, "Merge + ZIP: uploading ZIP...");
                     _tracingService.Trace("Using File Storage mode for final ZIP");
                     SaveZipToFileColumn(jobId, zipBytes, zipFileName);
                 }
                 else
                 {
+                    ThrowIfNearTimeout(stopwatch, "before zip note creation");
+                    UpdateHeartbeat(jobId, "Merge + ZIP: saving ZIP note...");
                     _tracingService.Trace("Using Annotation mode for final ZIP");
                     CreateAnnotation(jobId, zipFileName, "application/zip", zipBytes);
                 }
 
                 // 6. Cleanup intermediate annotations (Survey, Main, Merged PDFs)
+                ThrowIfNearTimeout(stopwatch, "before cleanup");
+                UpdateHeartbeat(jobId, "Merge + ZIP: cleaning up temporary files...");
                 DeleteIntermediateAnnotations(jobId, workOrderIds, useFileStorage);
+                ThrowIfNearTimeout(stopwatch, "after cleanup");
 
                 // 7. Update Status to Completed
                 _tracingService.Trace($"Updating statuscode to COMPLETED ({STATUS_COMPLETED})");
@@ -127,8 +153,7 @@ namespace TSIS2.Plugins.WorkOrderExport
             }
             catch (Exception ex)
             {
-                _tracingService.Trace($"ERROR during ReadyForMerge processing. JobId={jobId}");
-                _tracingService.Trace($"Job Failed: {ex.Message}");
+                _tracingService.Trace($"ERROR during ReadyForMerge processing. {jobContext}. Message={ex.Message}");
 
                 // Cleanup intermediate artifacts on failure
                 try
@@ -142,7 +167,8 @@ namespace TSIS2.Plugins.WorkOrderExport
 
                 Entity errorJob = new Entity("ts_workorderexportjob", jobId);
                 errorJob["statuscode"] = new OptionSetValue(STATUS_ERROR);
-                errorJob["ts_errormessage"] = $"Processing Failed: {ex.Message}\nStack: {ex.StackTrace}";
+                errorJob["ts_lastheartbeat"] = DateTime.UtcNow;
+                errorJob["ts_errormessage"] = TruncateForErrorField(BuildMergeFailureMessage(ex));
                 _service.Update(errorJob);
 
                 // Rethrow if you want the caller to know (like in Console App), 
@@ -155,12 +181,88 @@ namespace TSIS2.Plugins.WorkOrderExport
             }
         }
 
+        private void ThrowIfNearTimeout(Stopwatch stopwatch, string step)
+        {
+            if (stopwatch == null) return;
+            if (stopwatch.Elapsed.TotalSeconds < PREEMPTIVE_TIMEOUT_SECONDS) return;
+
+            throw new TimeoutException(
+                $"Merge + ZIP exceeded safe runtime at step '{step}' (~{Math.Round(stopwatch.Elapsed.TotalSeconds)}s). " +
+                "The job was stopped before plugin timeout. Please retry with fewer work orders or without problematic records.");
+        }
+
+        private void UpdateHeartbeat(Guid jobId, string progressMessage)
+        {
+            try
+            {
+                var update = new Entity("ts_workorderexportjob", jobId);
+                update["ts_progressmessage"] = progressMessage;
+                update["ts_lastheartbeat"] = DateTime.UtcNow;
+                _service.Update(update);
+            }
+            catch (Exception ex)
+            {
+                _tracingService.Trace($"Warning: failed to update heartbeat/progress for job {jobId}. Message={ex.Message}");
+            }
+        }
+
+        private string BuildMergeFailureMessage(Exception ex)
+        {
+            if (ex is TimeoutException)
+            {
+                return TruncateForErrorField(
+                    $"Merge processing timed out before completion. {ex.Message} " +
+                    "Please retry the export. If this continues, retry with fewer work orders or without problematic records.");
+            }
+
+            return TruncateForErrorField($"Processing Failed: {ex.Message}\nStack: {ex.StackTrace}");
+        }
+
         /// <summary>
         /// Backward-compatible overload that defaults to annotation storage mode
         /// </summary>
         public void ProcessMergeAndZip(Guid jobId, List<Guid> workOrderIds)
         {
             ProcessMergeAndZip(jobId, workOrderIds, useFileStorage: false);
+        }
+
+        private string TryGetJobName(Guid jobId)
+        {
+            try
+            {
+                var job = _service.Retrieve("ts_workorderexportjob", jobId, new ColumnSet("ts_name"));
+                return job.GetAttributeValue<string>("ts_name");
+            }
+            catch (Exception ex)
+            {
+                _tracingService.Trace($"Warning: Failed to read export job name for jobId={jobId}. Message={ex.Message}");
+                return null;
+            }
+        }
+
+        private static string BuildJobContext(Guid jobId, string jobName)
+        {
+            return string.IsNullOrWhiteSpace(jobName)
+                ? $"jobId={jobId}, jobName=<not available>"
+                : $"jobId={jobId}, jobName='{jobName}'";
+        }
+
+        private string TruncateForErrorField(string message)
+        {
+            string safeMessage = message ?? string.Empty;
+            int maxLength = ERROR_MESSAGE_MAX_LENGTH;
+
+            if (safeMessage.Length <= maxLength)
+            {
+                return safeMessage;
+            }
+
+            const string suffix = " ...[truncated]";
+            int keepLength = Math.Max(0, maxLength - suffix.Length);
+            string truncated = safeMessage.Substring(0, keepLength) + suffix;
+
+            _tracingService.Trace($"ts_errormessage exceeded max length {maxLength}. Message was truncated.");
+            return truncated;
         }
 
         private (string FileName, byte[] Content)? RetrieveAnnotation(Guid objectId, string exactFileName)
@@ -542,6 +644,41 @@ namespace TSIS2.Plugins.WorkOrderExport
             return SanitizeFileName(raw);
         }
 
+        private string BuildZipEntryPdfFileName(Guid workOrderId, ISet<string> usedNames)
+        {
+            string workOrderName = string.Empty;
+            try
+            {
+                var wo = _service.Retrieve("msdyn_workorder", workOrderId, new ColumnSet("msdyn_name"));
+                workOrderName = (wo.GetAttributeValue<string>("msdyn_name") ?? string.Empty).Trim();
+            }
+            catch (Exception ex)
+            {
+                _tracingService.Trace($"Warning: Failed to read work order name for {workOrderId}: {ex.Message}");
+            }
+
+            string baseName = string.IsNullOrWhiteSpace(workOrderName)
+                ? $"WO_{workOrderId}"
+                : $"WO_{workOrderName}";
+
+            baseName = SanitizeFileName(baseName);
+            if (string.IsNullOrWhiteSpace(baseName))
+            {
+                baseName = $"WO_{workOrderId}";
+            }
+
+            string candidate = $"{baseName}.pdf";
+            int suffix = 2;
+            while (usedNames.Contains(candidate))
+            {
+                candidate = $"{baseName}_{suffix}.pdf";
+                suffix++;
+            }
+
+            usedNames.Add(candidate);
+            return candidate;
+        }
+
         private string SanitizeFileName(string fileName)
         {
             string invalidChars = new string(Path.GetInvalidFileNameChars());
@@ -734,7 +871,7 @@ namespace TSIS2.Plugins.WorkOrderExport
                         shouldDelete = true;
                     }
                     // If using file storage, also delete ZIP annotations (keep only file column)
-                    else if (useFileStorage && fileName.StartsWith("WorkOrderExport_") && fileName.EndsWith(".zip"))
+                    else if (useFileStorage && fileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
                     {
                         shouldDelete = true;
                     }

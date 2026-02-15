@@ -37,6 +37,7 @@ namespace TSIS2.Plugins
         private const int STATUS_READY_FOR_MERGE = 741130005; // MAIN PDFs exist → C# merge
         private const int STATUS_COMPLETED = 741130006; // ZIP created
         private const int STATUS_ERROR = 741130007; //Error occurred
+        private const int ERROR_MESSAGE_MAX_LENGTH = 4000;
 
         // Storage Configuration
         /// <summary>
@@ -119,7 +120,9 @@ namespace TSIS2.Plugins
         private void ProcessReadyForServer(IOrganizationService service, ITracingService tracingService, IPluginExecutionContext context, Entity postImage)
         {
             Guid jobId = context.PrimaryEntityId;
-            tracingService.Trace($"Starting Ready For Server Processing for Job: {jobId}");
+            string jobName = postImage.GetAttributeValue<string>("ts_name");
+            string jobContext = BuildJobContext(jobId, jobName);
+            tracingService.Trace($"Starting Ready For Server Processing. {jobContext}");
 
             try
             {
@@ -169,10 +172,12 @@ namespace TSIS2.Plugins
             }
             catch (Exception ex)
             {
-                tracingService.Trace($"ERROR in Ready For Server: {ex.Message}");
+                tracingService.Trace($"ERROR in Ready For Server. {jobContext}. Message={ex.Message}");
                 Entity errorJob = new Entity("ts_workorderexportjob", jobId);
                 errorJob["statuscode"] = new OptionSetValue(STATUS_ERROR);
-                errorJob["ts_errormessage"] = $"Server Processing Failed: {ex.Message}\nStack: {ex.StackTrace}";
+                errorJob["ts_errormessage"] = TruncateForErrorField(
+                    tracingService,
+                    $"Server Processing Failed: {ex.Message}\nStack: {ex.StackTrace}");
                 service.Update(errorJob);
             }
         }
@@ -181,8 +186,9 @@ namespace TSIS2.Plugins
         {
             Guid jobId = context.PrimaryEntityId;
             string jobName = postImage.GetAttributeValue<string>("ts_name");
+            string jobContext = BuildJobContext(jobId, jobName);
 
-            tracingService.Trace($"Starting Export Job Processing (Merge) for Job: {jobId} ({jobName})");
+            tracingService.Trace($"Starting Export Job Processing (Merge). {jobContext}");
 
             try
             {
@@ -205,16 +211,45 @@ namespace TSIS2.Plugins
             }
             catch (Exception ex)
             {
-                tracingService.Trace($"ERROR in ProcessReadyForMerge: {ex.Message}");
+                tracingService.Trace($"ERROR in ProcessReadyForMerge. {jobContext}. Message={ex.Message}");
                 
                 // Update job status to ERROR
                 Entity errorJob = new Entity("ts_workorderexportjob", jobId);
                 errorJob["statuscode"] = new OptionSetValue(STATUS_ERROR);
-                errorJob["ts_errormessage"] = $"Merge Processing Failed: {ex.Message}\nStack: {ex.StackTrace}";
+                errorJob["ts_errormessage"] = TruncateForErrorField(
+                    tracingService,
+                    $"Merge Processing Failed: {ex.Message}\nStack: {ex.StackTrace}");
                 service.Update(errorJob);
-                
-                throw; // Re-throw to ensure plugin execution is marked as failed
+
+                // Do not rethrow here; preserving the Error status on the job is more important
+                // than surfacing a plugin failure after we already persisted the failure details.
+                return;
             }
+        }
+
+        private static string BuildJobContext(Guid jobId, string jobName)
+        {
+            return string.IsNullOrWhiteSpace(jobName)
+                ? $"jobId={jobId}, jobName=<not available>"
+                : $"jobId={jobId}, jobName='{jobName}'";
+        }
+
+        private static string TruncateForErrorField(ITracingService tracingService, string message)
+        {
+            string safeMessage = message ?? string.Empty;
+            int maxLength = ERROR_MESSAGE_MAX_LENGTH;
+
+            if (safeMessage.Length <= maxLength)
+            {
+                return safeMessage;
+            }
+
+            const string suffix = " ...[truncated]";
+            int keepLength = Math.Max(0, maxLength - suffix.Length);
+            string truncated = safeMessage.Substring(0, keepLength) + suffix;
+
+            tracingService.Trace($"ts_errormessage exceeded max length {maxLength}. Message was truncated.");
+            return truncated;
         }
 
         private List<Guid> ParsePayload(string json, ITracingService trace)
