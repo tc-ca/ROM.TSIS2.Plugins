@@ -5,7 +5,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Workflow.Runtime.Tracking;
 using TSIS2.Plugins.WorkOrderExport;
 
 namespace TSIS2.Plugins
@@ -37,6 +36,13 @@ namespace TSIS2.Plugins
         private const int STATUS_READY_FOR_MERGE = 741130005; // MAIN PDFs exist → C# merge
         private const int STATUS_COMPLETED = 741130006; // ZIP created
         private const int STATUS_ERROR = 741130007; //Error occurred
+        private const int STATUS_MERGE_IN_PROGRESS = 741130008;
+        private const int STATUS_READY_FOR_ZIP = 741130009;
+        private const int STATUS_ZIP_IN_PROGRESS = 741130010;
+        private const int STATUS_READY_FOR_CLEANUP = 741130011;
+        private const int STATUS_CLEANUP_IN_PROGRESS = 741130012;
+        private const int ERROR_MESSAGE_MAX_LENGTH = 4000;
+        private const int MERGE_BATCH_SIZE = 5;
 
         // Storage Configuration
         /// <summary>
@@ -70,13 +76,6 @@ namespace TSIS2.Plugins
             var service = localContext.OrganizationService;
             var tracingService = localContext.TracingService;
 
-            // HARD recursion guard
-            if (context.Depth > 1)
-            {
-                localContext.Trace($"Exiting due to recursion guard. Depth={context.Depth}");
-                return;
-            }
-
             // 1. Trigger Validation
             if (context.MessageName != "Update" || context.PrimaryEntityName != "ts_workorderexportjob")
             {
@@ -102,6 +101,14 @@ namespace TSIS2.Plugins
                 );
             }
 
+            // Recursion guard for non-Stage3 paths only.
+            // Stage 3 is a status-driven worker chain and must be able to re-enter on depth > 1.
+            if (context.Depth > 1 && !IsStage3WorkerStatus(newStatus))
+            {
+                localContext.Trace($"Exiting due to recursion guard for non-Stage3 status. Depth={context.Depth}, Status={newStatus}");
+                return;
+            }
+
             // Trigger on transition TO Ready For Server (741130002)
             if (newStatus == STATUS_READY_FOR_SERVER && oldStatus != STATUS_READY_FOR_SERVER)
             {
@@ -109,17 +116,18 @@ namespace TSIS2.Plugins
                 return;
             }
 
-            // Trigger on transition TO Ready For Merge (741130005)
-            if (newStatus == STATUS_READY_FOR_MERGE && oldStatus != STATUS_READY_FOR_MERGE)
+            if (IsStage3WorkerStatus(newStatus) && oldStatus != newStatus)
             {
-                ProcessReadyForMerge(service, tracingService, context, postImage);
+                ProcessStage3Worker(service, tracingService, context, postImage, newStatus);
             }
         }
 
         private void ProcessReadyForServer(IOrganizationService service, ITracingService tracingService, IPluginExecutionContext context, Entity postImage)
         {
             Guid jobId = context.PrimaryEntityId;
-            tracingService.Trace($"Starting Ready For Server Processing for Job: {jobId}");
+            string jobName = postImage.GetAttributeValue<string>("ts_name");
+            string jobContext = BuildJobContext(jobId, jobName);
+            tracingService.Trace($"Starting Ready For Server Processing. {jobContext}");
 
             try
             {
@@ -169,52 +177,180 @@ namespace TSIS2.Plugins
             }
             catch (Exception ex)
             {
-                tracingService.Trace($"ERROR in Ready For Server: {ex.Message}");
+                tracingService.Trace($"ERROR in Ready For Server. {jobContext}. Message={ex.Message}");
                 Entity errorJob = new Entity("ts_workorderexportjob", jobId);
                 errorJob["statuscode"] = new OptionSetValue(STATUS_ERROR);
-                errorJob["ts_errormessage"] = $"Server Processing Failed: {ex.Message}\nStack: {ex.StackTrace}";
+                errorJob["ts_lastheartbeat"] = DateTime.UtcNow;
+                errorJob["ts_errormessage"] = TruncateForErrorField(
+                    tracingService,
+                    $"Server Processing Failed: {ex.Message}\nStack: {ex.StackTrace}");
                 service.Update(errorJob);
             }
         }
 
-        private void ProcessReadyForMerge(IOrganizationService service, ITracingService tracingService, IPluginExecutionContext context, Entity postImage)
+        private void ProcessStage3Worker(IOrganizationService service, ITracingService tracingService, IPluginExecutionContext context, Entity postImage, int currentStatus)
         {
             Guid jobId = context.PrimaryEntityId;
             string jobName = postImage.GetAttributeValue<string>("ts_name");
-
-            tracingService.Trace($"Starting Export Job Processing (Merge) for Job: {jobId} ({jobName})");
+            string jobContext = BuildJobContext(jobId, jobName);
+            tracingService.Trace($"Starting Stage 3 worker. Status={currentStatus}. {jobContext}");
 
             try
             {
-                // 1. Retrieve ts_surveypayloadjson (contains Work Order IDs)
-                var jobEntity = service.Retrieve("ts_workorderexportjob", jobId, new ColumnSet("ts_surveypayloadjson"));
-                string surveyPayload = jobEntity.GetAttributeValue<string>("ts_surveypayloadjson");
+                var jobEntity = service.Retrieve(
+                    "ts_workorderexportjob",
+                    jobId,
+                    new ColumnSet("ts_surveypayloadjson", "ts_nextmergeindex", "ts_doneunits", "ts_totalunits"));
 
-                // 2. Parse IDs from ts_surveypayloadjson
+                string surveyPayload = jobEntity.GetAttributeValue<string>("ts_surveypayloadjson");
                 List<Guid> workOrderIds = ParsePayload(surveyPayload, tracingService);
                 if (workOrderIds == null || !workOrderIds.Any())
                 {
                     throw new InvalidPluginExecutionException("No Work Order IDs found in ts_surveypayloadjson.");
                 }
 
-                // 3. Delegate to Service
                 var exportService = new WorkOrderExportService(service, tracingService);
-                
-                // Orchestrate the Merge and Zip process
-                exportService.ProcessMergeAndZip(jobId, workOrderIds, USE_FILE_STORAGE);
+                int currentDoneUnits = jobEntity.GetAttributeValue<int?>("ts_doneunits") ?? 0;
+                int totalUnits = jobEntity.GetAttributeValue<int?>("ts_totalunits") ?? 0;
+                int doneUnitsUpperBound = totalUnits > 0 ? totalUnits : int.MaxValue;
+
+                if (currentStatus == STATUS_READY_FOR_MERGE || currentStatus == STATUS_MERGE_IN_PROGRESS)
+                {
+                    int nextMergeIndex = jobEntity.GetAttributeValue<int?>("ts_nextmergeindex") ?? 0;
+                    exportService.UpdateHeartbeat(jobId, $"Merge worker: processing {nextMergeIndex + 1}/{workOrderIds.Count}.");
+
+                    int nextIndex = exportService.ProcessMergeBatch(jobId, workOrderIds, nextMergeIndex, MERGE_BATCH_SIZE);
+                    bool mergeDone = nextIndex >= workOrderIds.Count;
+                    int mergeUnitsProcessed = Math.Max(0, nextIndex - nextMergeIndex);
+                    int updatedDoneUnits = Math.Min(doneUnitsUpperBound, currentDoneUnits + mergeUnitsProcessed);
+
+                    var update = new Entity("ts_workorderexportjob", jobId);
+                    update["ts_nextmergeindex"] = nextIndex;
+                    update["ts_doneunits"] = updatedDoneUnits;
+                    update["ts_lastheartbeat"] = DateTime.UtcNow;
+                    update["ts_progressmessage"] = mergeDone
+                        ? "Merge worker completed all work orders. Ready for ZIP."
+                        : $"Merge worker progressed to {nextIndex}/{workOrderIds.Count}.";
+                    update["statuscode"] = new OptionSetValue(mergeDone ? STATUS_READY_FOR_ZIP : STATUS_MERGE_IN_PROGRESS);
+                    update["ts_errormessage"] = string.Empty;
+                    service.Update(update);
+                    return;
+                }
+
+                if (currentStatus == STATUS_READY_FOR_ZIP || currentStatus == STATUS_ZIP_IN_PROGRESS)
+                {
+                    var inProgress = new Entity("ts_workorderexportjob", jobId);
+                    inProgress["statuscode"] = new OptionSetValue(STATUS_ZIP_IN_PROGRESS);
+                    inProgress["ts_lastheartbeat"] = DateTime.UtcNow;
+                    inProgress["ts_progressmessage"] = "ZIP worker: preparing final ZIP.";
+                    service.Update(inProgress);
+
+                    // Always recreate final ZIP for this run so restart semantics are overwrite/replace.
+                    exportService.CreateAndPersistFinalZip(jobId, workOrderIds, USE_FILE_STORAGE);
+
+                    // Strict gate: do not leave ZIP stage until final ZIP presence is confirmed.
+                    if (!exportService.IsFinalZipPresent(jobId, USE_FILE_STORAGE))
+                    {
+                        var waitForZip = new Entity("ts_workorderexportjob", jobId);
+                        waitForZip["statuscode"] = new OptionSetValue(STATUS_ZIP_IN_PROGRESS);
+                        waitForZip["ts_lastheartbeat"] = DateTime.UtcNow;
+                        waitForZip["ts_progressmessage"] = "ZIP worker: waiting for ZIP confirmation.";
+                        waitForZip["ts_errormessage"] = string.Empty;
+                        service.Update(waitForZip);
+                        return;
+                    }
+
+                    var readyForCleanup = new Entity("ts_workorderexportjob", jobId);
+                    readyForCleanup["statuscode"] = new OptionSetValue(STATUS_READY_FOR_CLEANUP);
+                    readyForCleanup["ts_doneunits"] = Math.Min(doneUnitsUpperBound, currentDoneUnits + 1);
+                    readyForCleanup["ts_lastheartbeat"] = DateTime.UtcNow;
+                    readyForCleanup["ts_progressmessage"] = "ZIP worker completed. Ready for cleanup.";
+                    readyForCleanup["ts_errormessage"] = string.Empty;
+                    service.Update(readyForCleanup);
+                    return;
+                }
+
+                if (currentStatus == STATUS_READY_FOR_CLEANUP || currentStatus == STATUS_CLEANUP_IN_PROGRESS)
+                {
+                    var inProgress = new Entity("ts_workorderexportjob", jobId);
+                    inProgress["statuscode"] = new OptionSetValue(STATUS_CLEANUP_IN_PROGRESS);
+                    inProgress["ts_lastheartbeat"] = DateTime.UtcNow;
+                    inProgress["ts_progressmessage"] = "Cleanup worker: removing intermediate files.";
+                    service.Update(inProgress);
+
+                    exportService.CleanupIntermediateArtifacts(jobId, USE_FILE_STORAGE);
+
+                    // Final safety gate: don't mark completed unless ZIP is still confirmed present.
+                    if (!exportService.IsFinalZipPresent(jobId, USE_FILE_STORAGE))
+                    {
+                        var backToZip = new Entity("ts_workorderexportjob", jobId);
+                        backToZip["statuscode"] = new OptionSetValue(STATUS_READY_FOR_ZIP);
+                        backToZip["ts_lastheartbeat"] = DateTime.UtcNow;
+                        backToZip["ts_progressmessage"] = "ZIP not confirmed after cleanup. Retrying ZIP stage.";
+                        backToZip["ts_errormessage"] = string.Empty;
+                        service.Update(backToZip);
+                        return;
+                    }
+
+                    var completed = new Entity("ts_workorderexportjob", jobId);
+                    completed["statuscode"] = new OptionSetValue(STATUS_COMPLETED);
+                    completed["ts_lastheartbeat"] = DateTime.UtcNow;
+                    completed["ts_progressmessage"] = "Cleanup worker completed.";
+                    completed["ts_errormessage"] = string.Empty;
+                    service.Update(completed);
+                    return;
+                }
             }
             catch (Exception ex)
             {
-                tracingService.Trace($"ERROR in ProcessReadyForMerge: {ex.Message}");
-                
-                // Update job status to ERROR
-                Entity errorJob = new Entity("ts_workorderexportjob", jobId);
-                errorJob["statuscode"] = new OptionSetValue(STATUS_ERROR);
-                errorJob["ts_errormessage"] = $"Merge Processing Failed: {ex.Message}\nStack: {ex.StackTrace}";
-                service.Update(errorJob);
-                
-                throw; // Re-throw to ensure plugin execution is marked as failed
+                tracingService.Trace($"ERROR in Stage 3 worker. {jobContext}. Message={ex.Message}");
+                PersistWorkerError(service, tracingService, jobId, $"Stage 3 worker failed: {ex.Message}\nStack: {ex.StackTrace}");
+                return;
             }
+        }
+
+        private bool IsStage3WorkerStatus(int status)
+        {
+            return status == STATUS_READY_FOR_MERGE
+                || status == STATUS_MERGE_IN_PROGRESS
+                || status == STATUS_READY_FOR_ZIP
+                || status == STATUS_ZIP_IN_PROGRESS
+                || status == STATUS_READY_FOR_CLEANUP
+                || status == STATUS_CLEANUP_IN_PROGRESS;
+        }
+
+        private void PersistWorkerError(IOrganizationService service, ITracingService tracingService, Guid jobId, string message)
+        {
+            Entity errorJob = new Entity("ts_workorderexportjob", jobId);
+            errorJob["statuscode"] = new OptionSetValue(STATUS_ERROR);
+            errorJob["ts_lastheartbeat"] = DateTime.UtcNow;
+            errorJob["ts_errormessage"] = TruncateForErrorField(tracingService, message);
+            service.Update(errorJob);
+        }
+
+        private static string BuildJobContext(Guid jobId, string jobName)
+        {
+            return string.IsNullOrWhiteSpace(jobName)
+                ? $"jobId={jobId}, jobName=<not available>"
+                : $"jobId={jobId}, jobName='{jobName}'";
+        }
+
+        private static string TruncateForErrorField(ITracingService tracingService, string message)
+        {
+            string safeMessage = message ?? string.Empty;
+            int maxLength = ERROR_MESSAGE_MAX_LENGTH;
+
+            if (safeMessage.Length <= maxLength)
+            {
+                return safeMessage;
+            }
+
+            const string suffix = " ...[truncated]";
+            int keepLength = Math.Max(0, maxLength - suffix.Length);
+            string truncated = safeMessage.Substring(0, keepLength) + suffix;
+
+            tracingService.Trace($"ts_errormessage exceeded max length {maxLength}. Message was truncated.");
+            return truncated;
         }
 
         private List<Guid> ParsePayload(string json, ITracingService trace)
@@ -234,7 +370,6 @@ namespace TSIS2.Plugins
                         string idStr = token?.ToString()?.Trim();
                         if (string.IsNullOrEmpty(idStr)) continue;
                         
-                        // Trim braces if present
                         if (idStr.StartsWith("{") && idStr.EndsWith("}"))
                         {
                             idStr = idStr.Substring(1, idStr.Length - 2).Trim();

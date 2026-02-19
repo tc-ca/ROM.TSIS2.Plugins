@@ -71,12 +71,12 @@ namespace TSIS2.Plugins.WorkOrderExport
                 data.SupportingRegions = RetrieveSupportingRegions(workOrderId);
 
                 _tracingService.Trace("");
-                _tracingService.Trace($"? COMPLETED DATA RETRIEVAL FOR WORK ORDER: {workOrderId}");
+                _tracingService.Trace($"[INFO] COMPLETED DATA RETRIEVAL FOR WORK ORDER: {workOrderId}");
                 _tracingService.Trace("");
             }
             catch (Exception ex)
             {
-                _tracingService.Trace($"? Error retrieving work order data: {ex.Message}");
+                _tracingService.Trace($"[INFO] Error retrieving work order data: {ex.Message}");
                 _tracingService.Trace(ex.Message, ex.ToString());
                 throw;
             }
@@ -88,7 +88,7 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private WorkOrderSummary RetrieveWorkOrderSummary(Guid workOrderId)
         {
-            _tracingService.Trace("?? [1/10] Retrieving Work Order Summary...");
+            _tracingService.Trace("[STEP 1/10] Retrieving Work Order Summary...");
 
             var columns = new ColumnSet(
                 // General
@@ -162,21 +162,21 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private void LogWorkOrderSummary(WorkOrderSummary summary)
         {
-            _tracingService.Trace("   ? Work Order Summary Retrieved");
-            _tracingService.Trace($"   ?? Name: {summary.Name}");
-            _tracingService.Trace($"   ?? WO ID: {summary.WorkOrderId}");
-            _tracingService.Trace($"   ?? Created: {summary.CreatedOn:yyyy-MM-dd HH:mm}");
-            _tracingService.Trace($"   ?? Owner: {summary.Owner?.Name ?? "N/A"} ({summary.Owner?.LogicalName})");
-            _tracingService.Trace($"   ?? Stakeholder: {summary.Stakeholder?.Name ?? "N/A"}");
-            _tracingService.Trace($"   ?? Stakeholder TCSCP: {summary.StakeholderTCSCP ?? "N/A"}");
-            _tracingService.Trace($"   ?? Region: {summary.Region?.Name ?? "N/A"}");
-            _tracingService.Trace($"   ??? Operation Type: {summary.OperationType?.Name ?? "N/A"}");
-            _tracingService.Trace($"   ??? Site: {summary.Site?.Name ?? "N/A"}");
-            _tracingService.Trace($"   ?? Findings Count: {summary.NumberOfFindings ?? 0}");
+            _tracingService.Trace("   [INFO] Work Order Summary Retrieved");
+            _tracingService.Trace($"   [DETAIL] Name: {summary.Name}");
+            _tracingService.Trace($"   [DETAIL] WO ID: {summary.WorkOrderId}");
+            _tracingService.Trace($"   [DETAIL] Created: {summary.CreatedOn:yyyy-MM-dd HH:mm}");
+            _tracingService.Trace($"   [DETAIL] Owner: {summary.Owner?.Name ?? "N/A"} ({summary.Owner?.LogicalName})");
+            _tracingService.Trace($"   [DETAIL] Stakeholder: {summary.Stakeholder?.Name ?? "N/A"}");
+            _tracingService.Trace($"   [DETAIL] Stakeholder TCSCP: {summary.StakeholderTCSCP ?? "N/A"}");
+            _tracingService.Trace($"   [DETAIL] Region: {summary.Region?.Name ?? "N/A"}");
+            _tracingService.Trace($"   [DETAIL] Operation Type: {summary.OperationType?.Name ?? "N/A"}");
+            _tracingService.Trace($"   [DETAIL] Site: {summary.Site?.Name ?? "N/A"}");
+            _tracingService.Trace($"   [DETAIL] Findings Count: {summary.NumberOfFindings ?? 0}");
 
             if (summary.ServiceRequest != null)
             {
-                _tracingService.Trace($"   ?? Linked Case: {summary.ServiceRequest.Name} ({summary.ServiceRequest.Id})");
+                _tracingService.Trace($"   [DETAIL] Linked Case: {summary.ServiceRequest.Name} ({summary.ServiceRequest.Id})");
             }
 
             _tracingService.Trace("");
@@ -188,7 +188,7 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private List<ServiceTaskData> RetrieveServiceTasks(Guid workOrderId)
         {
-            _tracingService.Trace("?? [2/10] Retrieving Service Tasks...");
+            _tracingService.Trace("[STEP 2/10] Retrieving Service Tasks...");
 
             // Using FetchXML as per requirement to include ts_fromoffline and match subgrid behaviour
             var fetchXml = $@"
@@ -218,7 +218,7 @@ namespace TSIS2.Plugins.WorkOrderExport
             var results = _service.RetrieveMultiple(new FetchExpression(fetchXml));
             var tasks = new List<ServiceTaskData>();
 
-            _tracingService.Trace($"   ? Found {results.Entities.Count} Service Task(s)");
+            _tracingService.Trace($"   [INFO] Found {results.Entities.Count} Service Task(s)");
 
             foreach (var entity in results.Entities)
             {
@@ -237,23 +237,23 @@ namespace TSIS2.Plugins.WorkOrderExport
 
                 tasks.Add(task);
 
-                _tracingService.Trace($"   ?? Task: {task.Name} (ID: {task.Id})");
+                _tracingService.Trace($"   [DETAIL] Task: {task.Name} (ID: {task.Id})");
                 _tracingService.Trace($"      Status: {task.StatusCode?.Value}");
                 _tracingService.Trace($"      Inspection Result: {task.InspectionResult?.Value}");
 
                 if (task.Questionnaire != null)
                 {
-                    _tracingService.Trace($"      ?? Questionnaire: {task.Questionnaire.Name}");
+                    _tracingService.Trace($"      [DETAIL] Questionnaire: {task.Questionnaire.Name}");
                 }
 
                 if (!string.IsNullOrEmpty(task.QuestionnaireDefinition))
                 {
-                    _tracingService.Trace($"      ?? Questionnaire Definition Length: {task.QuestionnaireDefinition.Length} chars");
+                    _tracingService.Trace($"      [DETAIL] Questionnaire Definition Length: {task.QuestionnaireDefinition.Length} chars");
                 }
 
                 if (!string.IsNullOrEmpty(task.QuestionnaireResponse))
                 {
-                    _tracingService.Trace($"      ?? Response JSON Length: {task.QuestionnaireResponse.Length} chars");
+                    _tracingService.Trace($"      [DETAIL] Response JSON Length: {task.QuestionnaireResponse.Length} chars");
                 }
             }
 
@@ -267,11 +267,11 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private CaseData RetrieveCaseData(WorkOrderSummary woSummary)
         {
-            _tracingService.Trace("?? [3/10] Retrieving Case Data...");
+            _tracingService.Trace("[STEP 3/10] Retrieving Case Data...");
 
             if (woSummary.ServiceRequest == null)
             {
-                _tracingService.Trace("   ?? No Case linked to this Work Order");
+                _tracingService.Trace("   [DETAIL] No Case linked to this Work Order");
                 _tracingService.Trace("");
                 return null;
             }
@@ -296,17 +296,17 @@ namespace TSIS2.Plugins.WorkOrderExport
                     RawEntity = caseEntity
                 };
 
-                _tracingService.Trace($"   ? Case Retrieved: {caseData.CaseNumber}");
-                _tracingService.Trace($"   ?? Title: {caseData.Title}");
-                _tracingService.Trace($"   ?? Status: {caseData.StatusCode?.Value}");
-                _tracingService.Trace($"   ?? Description: {(string.IsNullOrEmpty(caseData.Description) ? "N/A" : caseData.Description.Substring(0, Math.Min(100, caseData.Description.Length)))}...");
+                _tracingService.Trace($"   [INFO] Case Retrieved: {caseData.CaseNumber}");
+                _tracingService.Trace($"   [DETAIL] Title: {caseData.Title}");
+                _tracingService.Trace($"   [DETAIL] Status: {caseData.StatusCode?.Value}");
+                _tracingService.Trace($"   [DETAIL] Description: {(string.IsNullOrEmpty(caseData.Description) ? "N/A" : caseData.Description.Substring(0, Math.Min(100, caseData.Description.Length)))}...");
                 _tracingService.Trace("");
 
                 return caseData;
             }
             catch (Exception ex)
             {
-                _tracingService.Trace($"   ?? Could not retrieve Case: {ex.Message}");
+                _tracingService.Trace($"   [DETAIL] Could not retrieve Case: {ex.Message}");
                 _tracingService.Trace("");
                 return null;
             }
@@ -318,11 +318,11 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private List<FindingData> RetrieveFindings(CaseData caseData)
         {
-            _tracingService.Trace("?? [4/10] Retrieving Findings...");
+            _tracingService.Trace("[STEP 4/10] Retrieving Findings...");
 
             if (caseData == null)
             {
-                _tracingService.Trace("   ?? No Case available for finding retrieval");
+                _tracingService.Trace("   [DETAIL] No Case available for finding retrieval");
                 _tracingService.Trace("");
                 return new List<FindingData>();
             }
@@ -348,7 +348,7 @@ namespace TSIS2.Plugins.WorkOrderExport
             var results = _service.RetrieveMultiple(query);
             var allFindings = new List<FindingData>();
 
-            _tracingService.Trace($"   ? Found {results.Entities.Count} Finding(s) linked to Case");
+            _tracingService.Trace($"   [INFO] Found {results.Entities.Count} Finding(s) linked to Case");
 
             foreach (var entity in results.Entities)
             {
@@ -367,7 +367,7 @@ namespace TSIS2.Plugins.WorkOrderExport
 
                 allFindings.Add(finding);
 
-                _tracingService.Trace($"   ?? Finding: {finding.Finding}");
+                _tracingService.Trace($"   [DETAIL] Finding: {finding.Finding}");
                 _tracingService.Trace($"      Type: {finding.FindingType?.Value}");
                 _tracingService.Trace($"      Status: {finding.StatusCode?.Value}");
             }
@@ -382,11 +382,11 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private List<ActionData> RetrieveActions(CaseData caseData)
         {
-            _tracingService.Trace("? [5/10] Retrieving Actions...");
+            _tracingService.Trace("[STEP 5/10] Retrieving Actions...");
 
             if (caseData == null)
             {
-                _tracingService.Trace("   ?? No Case available for Action retrieval");
+                _tracingService.Trace("   [DETAIL] No Case available for Action retrieval");
                 _tracingService.Trace("");
                 return new List<ActionData>();
             }
@@ -424,7 +424,7 @@ namespace TSIS2.Plugins.WorkOrderExport
                 });
             }
 
-            _tracingService.Trace($"   ? Found {actions.Count} Action(s) linked to Case");
+            _tracingService.Trace($"   [INFO] Found {actions.Count} Action(s) linked to Case");
             _tracingService.Trace("");
 
             return actions;
@@ -436,7 +436,7 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private DocumentsData RetrieveDocuments(Guid workOrderId)
         {
-            _tracingService.Trace("?? [6/10] Retrieving Documents...");
+            _tracingService.Trace("[STEP 6/10] Retrieving Documents...");
 
             var documentsData = new DocumentsData
             {
@@ -444,9 +444,9 @@ namespace TSIS2.Plugins.WorkOrderExport
                 InspectionDocuments = RetrieveInspectionDocuments(workOrderId)
             };
 
-            _tracingService.Trace($"   ? Total Documents: {documentsData.GeneralDocuments.Count + documentsData.InspectionDocuments.Count}");
-            _tracingService.Trace($"      ?? General: {documentsData.GeneralDocuments.Count}");
-            _tracingService.Trace($"      ?? Inspection: {documentsData.InspectionDocuments.Count}");
+            _tracingService.Trace($"   [INFO] Total Documents: {documentsData.GeneralDocuments.Count + documentsData.InspectionDocuments.Count}");
+            _tracingService.Trace($"      [DETAIL] General: {documentsData.GeneralDocuments.Count}");
+            _tracingService.Trace($"      [DETAIL] Inspection: {documentsData.InspectionDocuments.Count}");
             _tracingService.Trace("");
 
             return documentsData;
@@ -540,7 +540,7 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private List<InteractionData> RetrieveInteractions(Guid workOrderId)
         {
-            _tracingService.Trace("?? [7/10] Retrieving Interactions (Timeline & Notes)...");
+            _tracingService.Trace("[STEP 7/10] Retrieving Interactions (Timeline & Notes)...");
 
             var interactions = new List<InteractionData>();
 
@@ -572,7 +572,7 @@ namespace TSIS2.Plugins.WorkOrderExport
                     </fetch>";
 
                 var results = _service.RetrieveMultiple(new FetchExpression(fetchXml));
-                _tracingService.Trace($"   ? Found {results.Entities.Count} Activity(ies)");
+                _tracingService.Trace($"   [INFO] Found {results.Entities.Count} Activity(ies)");
 
                 foreach (var entity in results.Entities)
                 {
@@ -593,7 +593,7 @@ namespace TSIS2.Plugins.WorkOrderExport
             }
             catch (Exception ex)
             {
-                _tracingService.Trace($"   ? Error retrieving activities: {ex.Message}");
+                _tracingService.Trace($"   [INFO] Error retrieving activities: {ex.Message}");
             }
 
             // 2. Notes (Annotations)
@@ -615,7 +615,7 @@ namespace TSIS2.Plugins.WorkOrderExport
                     </fetch>";
 
                 var results = _service.RetrieveMultiple(new FetchExpression(fetchXml));
-                _tracingService.Trace($"   ? Found {results.Entities.Count} Note(s)");
+                _tracingService.Trace($"   [INFO] Found {results.Entities.Count} Note(s)");
 
                 foreach (var entity in results.Entities)
                 {
@@ -638,13 +638,13 @@ namespace TSIS2.Plugins.WorkOrderExport
             }
             catch (Exception ex)
             {
-                _tracingService.Trace($"   ? Error retrieving notes: {ex.Message}");
+                _tracingService.Trace($"   [INFO] Error retrieving notes: {ex.Message}");
             }
 
             // Sort combined list by CreatedOn descending
             interactions = interactions.OrderByDescending(i => i.CreatedOn).ToList();
 
-            _tracingService.Trace($"   ? Total Interactions: {interactions.Count}");
+            _tracingService.Trace($"   [INFO] Total Interactions: {interactions.Count}");
             _tracingService.Trace("");
 
             return interactions;
@@ -656,7 +656,7 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private List<ContactData> RetrieveContacts(Guid workOrderId)
         {
-            _tracingService.Trace("?? [8/10] Retrieving Contacts...");
+            _tracingService.Trace("[STEP 8/10] Retrieving Contacts...");
 
             var fetchXml = $@"
                 <fetch version='1.0' output-format='xml-platform' mapping='logical'>
@@ -678,7 +678,7 @@ namespace TSIS2.Plugins.WorkOrderExport
             var results = _service.RetrieveMultiple(new FetchExpression(fetchXml));
             var contacts = new List<ContactData>();
 
-            _tracingService.Trace($"   ? Found {results.Entities.Count} Contact(s)");
+            _tracingService.Trace($"   [INFO] Found {results.Entities.Count} Contact(s)");
 
             foreach (var entity in results.Entities)
             {
@@ -694,9 +694,9 @@ namespace TSIS2.Plugins.WorkOrderExport
 
                 contacts.Add(contact);
 
-                _tracingService.Trace($"   ?? {contact.FullName}");
+                _tracingService.Trace($"   [DETAIL] {contact.FullName}");
                 if (!string.IsNullOrEmpty(contact.Email))
-                    _tracingService.Trace($"      ?? {contact.Email}");
+                    _tracingService.Trace($"      [DETAIL] {contact.Email}");
             }
 
             _tracingService.Trace("");
@@ -709,7 +709,7 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private List<InspectorData> RetrieveAdditionalInspectors(Guid workOrderId)
         {
-            _tracingService.Trace("?? [9/10] Retrieving Additional Inspectors...");
+            _tracingService.Trace("[STEP 9/10] Retrieving Additional Inspectors...");
 
             var fetchXml = $@"
                 <fetch version='1.0' output-format='xml-platform' mapping='logical'>
@@ -732,7 +732,7 @@ namespace TSIS2.Plugins.WorkOrderExport
             var results = _service.RetrieveMultiple(new FetchExpression(fetchXml));
             var inspectors = new List<InspectorData>();
 
-            _tracingService.Trace($"   ? Found {results.Entities.Count} Additional Inspector(s)");
+            _tracingService.Trace($"   [INFO] Found {results.Entities.Count} Additional Inspector(s)");
 
             foreach (var entity in results.Entities)
             {
@@ -747,9 +747,9 @@ namespace TSIS2.Plugins.WorkOrderExport
 
                 inspectors.Add(inspector);
 
-                _tracingService.Trace($"   ????? {inspector.FullName}");
+                _tracingService.Trace($"   [DETAIL] {inspector.FullName}");
                 if (!string.IsNullOrEmpty(inspector.Title))
-                    _tracingService.Trace($"      ?? {inspector.Title}");
+                    _tracingService.Trace($"      [DETAIL] {inspector.Title}");
             }
 
             _tracingService.Trace("");
@@ -762,7 +762,7 @@ namespace TSIS2.Plugins.WorkOrderExport
 
         private List<SupportingRegionData> RetrieveSupportingRegions(Guid workOrderId)
         {
-            _tracingService.Trace("?? [10/10] Retrieving Supporting Regions...");
+            _tracingService.Trace("[STEP 10/10] Retrieving Supporting Regions...");
 
             var fetchXml = $@"
                 <fetch version='1.0' mapping='logical'>
@@ -786,7 +786,7 @@ namespace TSIS2.Plugins.WorkOrderExport
             var results = _service.RetrieveMultiple(new FetchExpression(fetchXml));
             var regions = new List<SupportingRegionData>();
 
-            _tracingService.Trace($"   ? Found {results.Entities.Count} Supporting Region(s)");
+            _tracingService.Trace($"   [INFO] Found {results.Entities.Count} Supporting Region(s)");
 
             foreach (var entity in results.Entities)
             {
@@ -799,7 +799,7 @@ namespace TSIS2.Plugins.WorkOrderExport
 
                 regions.Add(region);
 
-                _tracingService.Trace($"   ?? {region.Region?.Name ?? "N/A"}");
+                _tracingService.Trace($"   [DETAIL] {region.Region?.Name ?? "N/A"}");
             }
 
             _tracingService.Trace("");
@@ -968,4 +968,5 @@ namespace TSIS2.Plugins.WorkOrderExport
 
     #endregion
 }
+
 

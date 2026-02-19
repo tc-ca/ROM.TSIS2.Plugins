@@ -1,4 +1,4 @@
-## XrmMockup and XrmContext Config Files
+﻿## XrmMockup and XrmContext Config Files
 *.exe.config
 
 ## Secrets configuration - contains credentials, never commit
@@ -39,6 +39,7 @@ bld/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+.vscode/
 # Uncomment if you have tasks that create the project's static files in wwwroot
 #wwwroot/
 
@@ -353,3 +354,8 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Local environment secrets
+.env
+.env.local
+
