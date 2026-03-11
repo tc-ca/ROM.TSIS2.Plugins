@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
+using Newtonsoft.Json.Linq;
 using TSIS2.Plugins.QuestionnaireProcessor;
 
 namespace TSIS2.QuestionnaireProcessorConsole
 {
     /// <summary>
-    /// One-off utility to backfill ts_workorder on existing ts_questionresponse records.
+    /// One-off utility to backfill ts_workorder and ts_exemptions on existing ts_questionresponse records.
     /// </summary>
     public class QuestionResponseBackfiller
     {
@@ -162,131 +163,99 @@ namespace TSIS2.QuestionnaireProcessorConsole
             }
         }
 
-        public BackfillResult BackfillExemptions(bool simulationMode)
+        /// <summary>
+        /// Backfills ts_exemptions from WOST ovs_questionnaireresponse (questionName-Exemptions).
+        /// Skips Update when the value to write is [] and the record already has null/empty/[] to avoid unnecessary writes.
+        /// </summary>
+        public ExemptionBackfillResult BackfillExemptions(bool simulationMode)
         {
-            var result = new BackfillResult();
-
+            var result = new ExemptionBackfillResult();
             _logger.Info("Starting backfill of ts_exemptions on ts_questionresponse records...");
             _logger.Info($"Simulation mode: {(simulationMode ? "ON (no updates will be committed)" : "OFF")}");
 
-            if (!_repository.HasQuestionResponseExemptionsColumn())
-            {
-                _logger.Warning("Column ts_questionresponse.ts_exemptions is not available. Create the exemption field before running this backfill.");
-                result.SkippedMissingField = 1;
-                return result;
-            }
-
             var query = new QueryExpression("ts_questionresponse")
             {
-                ColumnSet = new ColumnSet("ts_questionresponseid", "ts_name", "ts_questionname", "ts_msdyn_workorderservicetask"),
+                ColumnSet = new ColumnSet("ts_questionresponseid", "ts_msdyn_workorderservicetask", "ts_questionname", "ts_exemptions", "ts_name"),
                 Criteria = new FilterExpression
                 {
-                    Conditions =
-                    {
-                        new ConditionExpression("ts_msdyn_workorderservicetask", ConditionOperator.NotNull)
-                    },
-                    Filters =
-                    {
-                        new FilterExpression(LogicalOperator.Or)
-                        {
-                            Conditions =
-                            {
-                                new ConditionExpression("ts_exemptions", ConditionOperator.Null),
-                                new ConditionExpression("ts_exemptions", ConditionOperator.Equal, string.Empty)
-                            }
-                        }
-                    }
+                    Conditions = { new ConditionExpression("ts_msdyn_workorderservicetask", ConditionOperator.NotNull) }
                 },
-                PageInfo = new PagingInfo
-                {
-                    PageNumber = 1,
-                    Count = 5000,
-                    PagingCookie = null
-                }
+                PageInfo = new PagingInfo { PageNumber = 1, Count = 5000, PagingCookie = null }
             };
 
-            var wostResponseCache = new Dictionary<Guid, QuestionnaireResponse>();
+            var wostResponseCache = new Dictionary<Guid, JObject>();
+            var skippedCountByWost = new Dictionary<Guid, (string DisplayName, int Count)>();
 
             try
             {
                 while (true)
                 {
                     var collection = _service.RetrieveMultiple(query);
+                    if (collection.Entities.Count == 0) break;
+
                     result.TotalScanned += collection.Entities.Count;
-
-                    if (collection.Entities.Count == 0)
-                    {
-                        break;
-                    }
-
-                    _logger.Info($"Scanning page {query.PageInfo.PageNumber}: {collection.Entities.Count} ts_questionresponse records for exemption backfill.");
+                    _logger.Info($"Scanning page {query.PageInfo.PageNumber}: {collection.Entities.Count} ts_questionresponse records.");
 
                     foreach (var qr in collection.Entities)
                     {
                         var qrId = qr.Id;
                         var name = qr.GetAttributeValue<string>("ts_name");
                         var questionName = qr.GetAttributeValue<string>("ts_questionname");
+                        var existingExemptions = qr.GetAttributeValue<string>("ts_exemptions");
                         var wostRef = qr.GetAttributeValue<EntityReference>("ts_msdyn_workorderservicetask");
+                        if (wostRef == null) { result.SkippedNoWost++; continue; }
+                        if (string.IsNullOrEmpty(questionName)) { result.SkippedNoQuestionName++; continue; }
 
-                        if (wostRef == null)
-                        {
-                            _logger.Warning($"QuestionResponse {qrId} ({name}) has no ts_msdyn_workorderservicetask, skipping.");
-                            result.SkippedNoWost++;
-                            continue;
-                        }
-
-                        if (string.IsNullOrWhiteSpace(questionName))
-                        {
-                            _logger.Warning($"QuestionResponse {qrId} ({name}) has no ts_questionname, skipping.");
-                            result.SkippedNoQuestionName++;
-                            continue;
-                        }
-
-                        if (!wostResponseCache.TryGetValue(wostRef.Id, out var questionnaireResponse))
+                        if (!wostResponseCache.TryGetValue(wostRef.Id, out var responseObj))
                         {
                             var wost = _repository.GetWorkOrderServiceTask(wostRef.Id);
                             var responseJson = wost.GetAttributeValue<string>("ovs_questionnaireresponse");
-                            questionnaireResponse = string.IsNullOrWhiteSpace(responseJson)
-                                ? null
-                                : new QuestionnaireResponse(responseJson, _logger);
-                            wostResponseCache[wostRef.Id] = questionnaireResponse;
+                            responseObj = !string.IsNullOrWhiteSpace(responseJson) ? JObject.Parse(responseJson) : new JObject();
+                            wostResponseCache[wostRef.Id] = responseObj;
                         }
 
-                        var exemptionsJson = QuestionnaireExemptionSerializer.SerializeCompact(
-                            questionnaireResponse?.GetExemptionValues(questionName),
-                            _logger);
+                        var exemptionKey = questionName + "-Exemptions";
+                        var exemptionToken = responseObj[exemptionKey];
+                        var newValue = (exemptionToken != null && exemptionToken is JArray arr)
+                            ? arr.ToString()
+                            : "[]";
 
-                        if (exemptionsJson == null)
+                        bool isEmptyNew = string.IsNullOrWhiteSpace(newValue) || newValue.Trim() == "[]";
+                        bool existingIsEmpty = string.IsNullOrWhiteSpace(existingExemptions) || existingExemptions.Trim() == "[]";
+                        if (isEmptyNew && existingIsEmpty)
                         {
-                            exemptionsJson = "[]";
-                            result.DefaultedEmptyExemptions++;
+                            result.SkippedNoChange++;
+                            var bracketIdx = name != null ? name.IndexOf(" [", StringComparison.Ordinal) : -1;
+                            var wostDisplayName = (bracketIdx > 0) ? name.Substring(0, bracketIdx) : (name ?? wostRef.Id.ToString());
+                            if (!skippedCountByWost.TryGetValue(wostRef.Id, out var pair))
+                                skippedCountByWost[wostRef.Id] = (wostDisplayName, 1);
+                            else
+                                skippedCountByWost[wostRef.Id] = (pair.DisplayName, pair.Count + 1);
+                            continue;
                         }
 
-                        _logger.Debug($"Backfilling ts_exemptions on ts_questionresponse {qrId} ({name}) with {exemptionsJson}.");
+                        _logger.Verbose($"Backfilling ts_exemptions on ts_questionresponse {qrId} ({name}) with {newValue}.");
 
                         if (!simulationMode)
                         {
                             var update = new Entity("ts_questionresponse", qrId)
                             {
-                                ["ts_exemptions"] = exemptionsJson
+                                ["ts_exemptions"] = newValue.Trim() == "[]" ? "[]" : newValue
                             };
-
                             _service.Update(update);
                         }
-
                         result.Updated++;
                     }
 
-                    if (!collection.MoreRecords)
-                    {
-                        break;
-                    }
-
+                    if (!collection.MoreRecords) break;
                     query.PageInfo.PageNumber++;
                     query.PageInfo.PagingCookie = collection.PagingCookie;
                 }
 
-                _logger.Info($"Exemption backfill completed. Total scanned: {result.TotalScanned}, updated: {result.Updated}, defaulted to empty JSON: {result.DefaultedEmptyExemptions}, skipped (no WOST): {result.SkippedNoWost}, skipped (no question name): {result.SkippedNoQuestionName}.");
+                foreach (var kv in skippedCountByWost)
+                    _logger.Info($"Skipped {kv.Value.Count} ts_exemptions update(s) for WOST {kv.Value.DisplayName}: no exemptions and records already empty.");
+
+                _logger.Info($"Exemption backfill completed. Scanned: {result.TotalScanned}, updated: {result.Updated}, skipped (no change/empty): {result.SkippedNoChange}, skipped (no WOST): {result.SkippedNoWost}, skipped (no question name): {result.SkippedNoQuestionName}.");
                 return result;
             }
             catch (Exception ex)
@@ -302,10 +271,15 @@ namespace TSIS2.QuestionnaireProcessorConsole
         public int TotalScanned { get; set; }
         public int Updated { get; set; }
         public int SkippedNoWorkOrder { get; set; }
+    }
+
+    public class ExemptionBackfillResult
+    {
+        public int TotalScanned { get; set; }
+        public int Updated { get; set; }
+        public int SkippedNoChange { get; set; }
         public int SkippedNoWost { get; set; }
         public int SkippedNoQuestionName { get; set; }
-        public int DefaultedEmptyExemptions { get; set; }
-        public int SkippedMissingField { get; set; }
     }
 }
 

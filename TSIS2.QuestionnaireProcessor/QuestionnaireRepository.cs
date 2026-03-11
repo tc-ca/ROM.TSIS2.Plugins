@@ -32,7 +32,7 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
         {
             try
             {
-                _logger.Trace($"Retrieving WOST with ID: {wostId}");
+                _logger.Debug($"Retrieving WOST with ID: {wostId}");
 
                 var wost = _service.Retrieve(
                     "msdyn_workorderservicetask",
