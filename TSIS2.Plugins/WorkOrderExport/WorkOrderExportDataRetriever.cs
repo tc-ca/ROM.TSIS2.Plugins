@@ -46,6 +46,9 @@ namespace TSIS2.Plugins.WorkOrderExport
                 // 2. Service Tasks (with Questionnaires)
                 data.ServiceTasks = RetrieveServiceTasks(workOrderId);
 
+                // 2b. Per–service-task documents (1:N ts_workorderservicetask + N:N ts_files_msdyn_workorderservicetasks)
+                PopulateServiceTaskDocuments(data.ServiceTasks);
+
                 // 3. Case (if linked)
                 data.CaseData = RetrieveCaseData(data.WorkOrderSummary);
 
@@ -440,19 +443,112 @@ namespace TSIS2.Plugins.WorkOrderExport
 
             var documentsData = new DocumentsData
             {
-                GeneralDocuments = RetrieveGeneralDocuments(workOrderId),
+                WorkOrderDocuments = RetrieveWorkOrderDocuments(workOrderId),
                 InspectionDocuments = RetrieveInspectionDocuments(workOrderId)
             };
 
-            _tracingService.Trace($"   [INFO] Total Documents: {documentsData.GeneralDocuments.Count + documentsData.InspectionDocuments.Count}");
-            _tracingService.Trace($"      [DETAIL] General: {documentsData.GeneralDocuments.Count}");
+            _tracingService.Trace($"   [INFO] Total Documents: {documentsData.WorkOrderDocuments.Count + documentsData.InspectionDocuments.Count}");
+            _tracingService.Trace($"      [DETAIL] Work Order: {documentsData.WorkOrderDocuments.Count}");
             _tracingService.Trace($"      [DETAIL] Inspection: {documentsData.InspectionDocuments.Count}");
             _tracingService.Trace("");
 
             return documentsData;
         }
 
-        private List<DocumentData> RetrieveGeneralDocuments(Guid workOrderId)
+        /// <summary>
+        /// Populates each service task's Documents from 1:N (ts_file.ts_workorderservicetask) and N:N (ts_files_msdyn_workorderservicetasks).
+        /// </summary>
+        private void PopulateServiceTaskDocuments(List<ServiceTaskData> tasks)
+        {
+            if (tasks == null || tasks.Count == 0) return;
+
+            var taskIds = tasks.Select(t => t.Id).Distinct().ToList();
+            var taskDict = tasks.ToDictionary(t => t.Id, t => t);
+
+            _tracingService.Trace("[STEP 6b/10] Retrieving documents per service task (1:N + N:N)...");
+
+            // 1:N: ts_file where ts_workorderservicetask in taskIds
+            var fetch1N = $@"
+                <fetch version='1.0' output-format='xml-platform' mapping='logical'>
+                  <entity name='ts_file'>
+                    <attribute name='ts_fileid' />
+                    <attribute name='ts_file' />
+                    <attribute name='ts_filecategory' />
+                    <attribute name='ts_filesubcategory' />
+                    <attribute name='ts_filecontext' />
+                    <attribute name='ts_description' />
+                    <attribute name='createdon' />
+                    <attribute name='ts_sharepointlink' />
+                    <attribute name='ts_workorderservicetask' />
+                    <filter type='or'>
+                      {string.Join("", taskIds.Select(id => $"<condition attribute='ts_workorderservicetask' operator='eq' value='{id}' />"))}
+                    </filter>
+                  </entity>
+                </fetch>";
+            var results1N = _service.RetrieveMultiple(new FetchExpression(fetch1N));
+            foreach (var entity in results1N.Entities)
+            {
+                var taskRef = entity.GetAttributeValue<EntityReference>("ts_workorderservicetask");
+                if (taskRef?.Id != null && taskDict.TryGetValue(taskRef.Id, out var task))
+                {
+                    task.Documents.Add(MapDocumentEntity(entity));
+                }
+            }
+
+            // N:N: intersect ts_files_msdyn_workorderservicetasks for (ts_fileid, msdyn_workorderservicetaskid)
+            var nnQuery = new QueryExpression("ts_files_msdyn_workorderservicetasks")
+            {
+                ColumnSet = new ColumnSet("ts_fileid", "msdyn_workorderservicetaskid"),
+                Criteria = new FilterExpression(LogicalOperator.Or)
+            };
+            foreach (var id in taskIds)
+                nnQuery.Criteria.AddCondition("msdyn_workorderservicetaskid", ConditionOperator.Equal, id);
+            var nnRows = _service.RetrieveMultiple(nnQuery);
+            var fileIdsByTask = new Dictionary<Guid, List<Guid>>();
+            var allFileIds = new HashSet<Guid>();
+            foreach (var row in nnRows.Entities)
+            {
+                var taskId = row.GetAttributeValue<Guid>("msdyn_workorderservicetaskid");
+                var fileId = row.GetAttributeValue<Guid>("ts_fileid");
+                if (!fileIdsByTask.ContainsKey(taskId)) fileIdsByTask[taskId] = new List<Guid>();
+                fileIdsByTask[taskId].Add(fileId);
+                allFileIds.Add(fileId);
+            }
+            if (allFileIds.Count > 0)
+            {
+                var fileCols = new ColumnSet("ts_file", "ts_filecategory", "ts_filesubcategory", "ts_filecontext", "ts_description", "createdon", "ts_sharepointlink");
+                var fileCache = new Dictionary<Guid, DocumentData>();
+                foreach (var fileId in allFileIds)
+                {
+                    try
+                    {
+                        var fileEntity = _service.Retrieve("ts_file", fileId, fileCols);
+                        fileCache[fileId] = MapDocumentEntity(fileEntity);
+                    }
+                    catch (Exception ex)
+                    {
+                        _tracingService.Trace($"[WARN] Could not retrieve ts_file {fileId}: {ex.Message}");
+                    }
+                }
+                foreach (var kv in fileIdsByTask)
+                {
+                    if (taskDict.TryGetValue(kv.Key, out var task))
+                    {
+                        foreach (var fileId in kv.Value)
+                        {
+                            if (fileCache.TryGetValue(fileId, out var doc))
+                                task.Documents.Add(doc);
+                        }
+                    }
+                }
+            }
+
+            var totalTaskDocs = tasks.Sum(t => t.Documents.Count);
+            _tracingService.Trace($"   [INFO] Per-task documents total: {totalTaskDocs}");
+            _tracingService.Trace("");
+        }
+
+        private List<DocumentData> RetrieveWorkOrderDocuments(Guid workOrderId)
         {
             // N:N relationship: ts_files_msdyn_workorders
             var fetchXml = $@"
@@ -871,6 +967,8 @@ namespace TSIS2.Plugins.WorkOrderExport
         public EntityReference Questionnaire { get; set; }
         public OptionSetValue InspectionResult { get; set; }
         public Entity RawEntity { get; set; }
+        /// <summary>Documents linked to this service task (1:N ts_workorderservicetask + N:N ts_files_msdyn_workorderservicetasks).</summary>
+        public List<DocumentData> Documents { get; set; } = new List<DocumentData>();
     }
 
     public class CaseData
@@ -909,7 +1007,7 @@ namespace TSIS2.Plugins.WorkOrderExport
 
     public class DocumentsData
     {
-        public List<DocumentData> GeneralDocuments { get; set; }
+        public List<DocumentData> WorkOrderDocuments { get; set; }
         public List<DocumentData> InspectionDocuments { get; set; }
     }
 

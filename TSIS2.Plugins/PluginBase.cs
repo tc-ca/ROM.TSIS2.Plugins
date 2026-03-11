@@ -211,8 +211,6 @@ namespace TSIS2.Plugins
             // Construct the local plug-in context.
             LocalPluginContext localcontext = new LocalPluginContext(serviceProvider, RunAsSystem);
 
-            localcontext.TraceWithContext(string.Format(CultureInfo.InvariantCulture, "Entered {0}.Execute()", this.ChildClassName));
-
             try
             {
                 // Invoke the custom implementation
@@ -230,7 +228,7 @@ namespace TSIS2.Plugins
             }
             finally
             {
-                localcontext.TraceWithContext(string.Format(CultureInfo.InvariantCulture, "Exiting {0}.Execute()", this.ChildClassName));
+                // Intentionally no base Entered/Exiting traces to reduce log noise.
             }
         }
 
