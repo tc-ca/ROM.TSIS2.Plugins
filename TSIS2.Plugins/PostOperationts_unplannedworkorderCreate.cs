@@ -147,6 +147,7 @@ namespace TSIS2.Plugins
                         workOrder["ts_securityincident"] = target.GetAttributeValue<EntityReference>("ts_securityincident");
                         workOrder["ts_trip"] = target.GetAttributeValue<EntityReference>("ts_trip");
                         workOrder["msdyn_parentworkorder"] = target.GetAttributeValue<EntityReference>("ts_parentworkorder");
+                        workOrder["ts_finding"] = target.GetAttributeValue<EntityReference>("ts_finding");
                         workOrder["ovs_fiscalyear"] = target.GetAttributeValue<EntityReference>("ts_plannedfiscalyear");
                         workOrder["ovs_fiscalquarter"] = target.GetAttributeValue<EntityReference>("ts_plannedfiscalquarter");
                         workOrder["ovs_revisedquarterid"] = target.GetAttributeValue<EntityReference>("ts_revisedquarterid");
@@ -164,7 +165,6 @@ namespace TSIS2.Plugins
                         workOrder["ts_traveltime"] = target.GetAttributeValue<decimal>("ts_wotraveltime");
                         workOrder["msdyn_systemstatus"] = target.GetAttributeValue<OptionSetValue>("ts_recordstatus");
                         workOrder["ts_accountableteam"] = target.GetAttributeValue<EntityReference>("ts_accountableteam");
-
 
                         localContext.Trace($"Retrieved ts_businessowner: {workOrder.GetAttributeValue<string>("ts_businessowner")}");
 
