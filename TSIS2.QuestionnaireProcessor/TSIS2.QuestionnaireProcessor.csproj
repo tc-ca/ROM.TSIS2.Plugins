@@ -73,6 +73,7 @@
     <Compile Include="Logging\TracingServiceAdapter.cs" />
     <Compile Include="Models\QuestionnaireDefinition.cs" />
     <Compile Include="Models\QuestionnaireResponse.cs" />
+    <Compile Include="Services\QuestionnaireExemptionSerializer.cs" />
     <Compile Include="Services\QuestionnaireOrchestrator.cs" />
     <Compile Include="Services\QuestionnaireResponseFormatter.cs" />
   </ItemGroup>

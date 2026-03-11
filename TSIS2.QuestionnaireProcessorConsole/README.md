@@ -10,6 +10,8 @@ This console application connects to Dynamics 365 to process Work Order Service 
 3. Build the solution (Ctrl+Shift+B).
 4. The executable `QuestionnaireProcessorConsole.exe` will be located in the `bin\Debug` or `bin\Release` folder.
 
+**Where to run:** Run the app from that folder (`bin\Debug` or `bin\Release`). Place both `secrets.config` and `settings.config` in the same directory as the executable so the app finds them.
+
 ## Setup Instructions
 
 ### 1. Prerequisites
@@ -41,17 +43,21 @@ You can also define multiple environments and select one at runtime using the `-
 <appSettings>
   <environment name="Dev">
     <add key="Url" value="https://dev-instance.crm3.dynamics.com/" />
-    <!-- ... other keys ... -->
+    <add key="ClientId" value="your-dev-client-id" />
+    <add key="ClientSecret" value="your-dev-client-secret" />
+    <add key="Authority" value="https://login.microsoftonline.com/your-tenant-id" />
   </environment>
   <environment name="Prod">
     <add key="Url" value="https://prod-instance.crm3.dynamics.com/" />
-    <!-- ... other keys ... -->
+    <add key="ClientId" value="your-prod-client-id" />
+    <add key="ClientSecret" value="your-prod-client-secret" />
+    <add key="Authority" value="https://login.microsoftonline.com/your-tenant-id" />
   </environment>
 </appSettings>
 ```
 
 #### `settings.config`
-This file controls application behavior and FetchXML queries. It must be present in the application execution directory.
+This file controls application behavior and FetchXML queries. It must be present in the same directory as the executable (e.g. `bin\Debug` or `bin\Release`). A default/example file is in this project at `Configuration/settings.config`; copy or adapt it to your output directory.
 
 **Example:**
 ```xml
@@ -111,6 +117,12 @@ To process a specific list of Work Order Service Tasks via file:
 The application includes a utility to backfill the `ts_workorder` field on existing `ts_questionresponse` records.
 - Use the `--backfill-workorder` argument to run this process.
 
+The application also includes a utility to backfill the `ts_exemptions` field on existing `ts_questionresponse` records.
+- Use the `--backfill-exemptions` argument to run this process.
+- It reads the current `ovs_questionnaireresponse` JSON on the parent WOST and copies the `questionName-Exemptions` payload into compact JSON on `ts_questionresponse`.
+- If no exemption payload exists for a question, the backfiller stores `[]`.
+- Create `ts_questionresponse.ts_exemptions` first as a Memo field before running this backfill.
+
 **Why is this needed?**
 This operation is useful for correcting data where Question Responses exist but lack a link to the parent Work Order. This scenario might happen if:
 - The Questionnaire Processor encountered errors during previous runs.
@@ -124,7 +136,12 @@ This operation is useful for correcting data where Question Responses exist but 
 
 ## Examples
 
-**Run in simulation mode:**
+**Process all unprocessed questionnaires (default query from settings.config):**
+```bash
+QuestionnaireProcessorConsole.exe
+```
+
+**Run in simulation mode (no records created/updated):**
 ```bash
 QuestionnaireProcessorConsole.exe --simulate
 ```
@@ -157,3 +174,9 @@ QuestionnaireProcessorConsole.exe --from-file my_list.txt
 **Backfill Work Order references:**
 ```bash
 QuestionnaireProcessorConsole.exe --backfill-workorder
+```
+
+**Backfill exemption JSON:**
+```bash
+QuestionnaireProcessorConsole.exe --backfill-exemptions
+```

@@ -1,6 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.ServiceModel;
 using Microsoft.Xrm.Sdk;
+using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Query;
 
 namespace TSIS2.Plugins.QuestionnaireProcessor
@@ -13,6 +15,7 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
         private readonly IOrganizationService _service;
         private readonly ILoggingService _logger;
         private const int SingleLineTextMaxLength = 4000;
+        private bool? _hasExemptionsColumn;
 
         public QuestionnaireRepository(IOrganizationService service, ILoggingService logger)
         {
@@ -59,25 +62,33 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
             {
                 _logger.Trace($"Fetching existing question responses for WOST: {workOrderServiceTaskId}");
 
+                var columns = new List<string>
+                {
+                    "ts_name",
+                    "ts_questionnumber",
+                    "ts_msdyn_workorderservicetask",
+                    "ts_workorder",
+                    "ts_questionnaire",
+                    "ts_version",
+                    "ts_response",
+                    "statecode",
+                    "ts_questionname",
+                    "ts_questiontextenglish",
+                    "ts_questiontextfrench",
+                    "ts_provisionreference",
+                    "ts_provisiontextenglish",
+                    "ts_provisiontextfrench",
+                    "ts_details"
+                };
+
+                if (HasQuestionResponseExemptionsColumn())
+                {
+                    columns.Add("ts_exemptions");
+                }
+
                 var query = new QueryExpression("ts_questionresponse")
                 {
-                    ColumnSet = new ColumnSet(
-                        "ts_name",
-                        "ts_questionnumber",
-                        "ts_msdyn_workorderservicetask",
-                        "ts_workorder",
-                        "ts_questionnaire",
-                        "ts_version",
-                        "ts_response",
-                        "statecode",
-                        "ts_questionname",
-                        "ts_questiontextenglish",
-                        "ts_questiontextfrench",
-                        "ts_provisionreference",
-                        "ts_provisiontextenglish",
-                        "ts_provisiontextfrench",
-                        "ts_details"
-                    ),
+                    ColumnSet = new ColumnSet(columns.ToArray()),
                     Criteria = new FilterExpression
                     {
                         Conditions =
@@ -146,6 +157,48 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                 _logger.Error($"Error updating question response record {updatedRecord.Id}: {ex}");
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Returns true when ts_questionresponse has the ts_exemptions column available.
+        /// </summary>
+        public bool HasQuestionResponseExemptionsColumn()
+        {
+            if (_hasExemptionsColumn.HasValue)
+            {
+                return _hasExemptionsColumn.Value;
+            }
+
+            var serviceTypeName = _service.GetType().FullName ?? string.Empty;
+            if (serviceTypeName.IndexOf("Mockup", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                _hasExemptionsColumn = false;
+                return false;
+            }
+
+            try
+            {
+                _service.Execute(new RetrieveAttributeRequest
+                {
+                    EntityLogicalName = "ts_questionresponse",
+                    LogicalName = "ts_exemptions",
+                    RetrieveAsIfPublished = true
+                });
+
+                _hasExemptionsColumn = true;
+            }
+            catch (FaultException<OrganizationServiceFault>)
+            {
+                _hasExemptionsColumn = false;
+                _logger.Warning("Column ts_questionresponse.ts_exemptions was not found. Create it as a Memo field before storing exemptions.");
+            }
+            catch (Exception ex)
+            {
+                _hasExemptionsColumn = false;
+                _logger.Warning($"Unable to verify ts_questionresponse.ts_exemptions metadata. Exemption persistence will be skipped. {ex.Message}");
+            }
+
+            return _hasExemptionsColumn.Value;
         }
 
         /// <summary>

@@ -102,6 +102,14 @@ namespace TSIS2.QuestionnaireProcessorConsole
                         return;
                     }
 
+                    if (config.BackfillExemptions)
+                    {
+                        var backfiller = new QuestionResponseBackfiller(crmClient, logger);
+                        var result = backfiller.BackfillExemptions(config.SimulationMode);
+                        ui.ShowSuccess($"Exemption backfill complete. Scanned {result.TotalScanned}, updated {result.Updated}, defaulted to [] {result.DefaultedEmptyExemptions}, skipped (no WOST) {result.SkippedNoWost}, skipped (no question name) {result.SkippedNoQuestionName}, missing field checks {result.SkippedMissingField}.");
+                        return;
+                    }
+
                     var dataService = new CrmDataService(crmClient, logger, ui, config.PageSize);
                     var processor = new WostProcessor(crmClient, logger, ui);
 
@@ -121,16 +129,21 @@ namespace TSIS2.QuestionnaireProcessorConsole
 
                                 string wostName = wost.GetAttributeValue<string>("msdyn_name");
                                 var questionnaireRef = wost.GetAttributeValue<Microsoft.Xrm.Sdk.EntityReference>("ovs_questionnaire");
+                                string responseJson = wost.GetAttributeValue<string>("ovs_questionnaireresponse");
+                                string definitionJson = wost.GetAttributeValue<string>("ovs_questionnairedefinition");
+                                bool hasQuestionnaireData = !string.IsNullOrWhiteSpace(responseJson) && !string.IsNullOrWhiteSpace(definitionJson);
 
-                                if (questionnaireRef == null)
+                                if (questionnaireRef == null && !hasQuestionnaireData)
                                 {
-                                    ui.ShowWarning($"WOST {wostName} (ID: {wostId}) has no linked questionnaire reference - skipping.");
+                                    ui.ShowWarning($"WOST {wostName} (ID: {wostId}) has no questionnaire reference and no questionnaire data (response/definition) - skipping.");
                                     failedGuids.Add(wostId);
                                     continue;
                                 }
 
                                 wostList.Add(wost);
-                                ui.ShowInfo($"Found WOST: {wostName} (ID: {wostId})");
+                                ui.ShowInfo(questionnaireRef != null
+                                    ? $"Found WOST: {wostName} (ID: {wostId})"
+                                    : $"Found WOST: {wostName} (ID: {wostId}) [no questionnaire ref; has definition+response]");
                             }
                             catch (Exception ex)
                             {

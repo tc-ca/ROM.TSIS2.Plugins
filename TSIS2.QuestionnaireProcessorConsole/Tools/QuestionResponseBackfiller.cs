@@ -161,6 +161,140 @@ namespace TSIS2.QuestionnaireProcessorConsole
                 throw;
             }
         }
+
+        public BackfillResult BackfillExemptions(bool simulationMode)
+        {
+            var result = new BackfillResult();
+
+            _logger.Info("Starting backfill of ts_exemptions on ts_questionresponse records...");
+            _logger.Info($"Simulation mode: {(simulationMode ? "ON (no updates will be committed)" : "OFF")}");
+
+            if (!_repository.HasQuestionResponseExemptionsColumn())
+            {
+                _logger.Warning("Column ts_questionresponse.ts_exemptions is not available. Create the exemption field before running this backfill.");
+                result.SkippedMissingField = 1;
+                return result;
+            }
+
+            var query = new QueryExpression("ts_questionresponse")
+            {
+                ColumnSet = new ColumnSet("ts_questionresponseid", "ts_name", "ts_questionname", "ts_msdyn_workorderservicetask"),
+                Criteria = new FilterExpression
+                {
+                    Conditions =
+                    {
+                        new ConditionExpression("ts_msdyn_workorderservicetask", ConditionOperator.NotNull)
+                    },
+                    Filters =
+                    {
+                        new FilterExpression(LogicalOperator.Or)
+                        {
+                            Conditions =
+                            {
+                                new ConditionExpression("ts_exemptions", ConditionOperator.Null),
+                                new ConditionExpression("ts_exemptions", ConditionOperator.Equal, string.Empty)
+                            }
+                        }
+                    }
+                },
+                PageInfo = new PagingInfo
+                {
+                    PageNumber = 1,
+                    Count = 5000,
+                    PagingCookie = null
+                }
+            };
+
+            var wostResponseCache = new Dictionary<Guid, QuestionnaireResponse>();
+
+            try
+            {
+                while (true)
+                {
+                    var collection = _service.RetrieveMultiple(query);
+                    result.TotalScanned += collection.Entities.Count;
+
+                    if (collection.Entities.Count == 0)
+                    {
+                        break;
+                    }
+
+                    _logger.Info($"Scanning page {query.PageInfo.PageNumber}: {collection.Entities.Count} ts_questionresponse records for exemption backfill.");
+
+                    foreach (var qr in collection.Entities)
+                    {
+                        var qrId = qr.Id;
+                        var name = qr.GetAttributeValue<string>("ts_name");
+                        var questionName = qr.GetAttributeValue<string>("ts_questionname");
+                        var wostRef = qr.GetAttributeValue<EntityReference>("ts_msdyn_workorderservicetask");
+
+                        if (wostRef == null)
+                        {
+                            _logger.Warning($"QuestionResponse {qrId} ({name}) has no ts_msdyn_workorderservicetask, skipping.");
+                            result.SkippedNoWost++;
+                            continue;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(questionName))
+                        {
+                            _logger.Warning($"QuestionResponse {qrId} ({name}) has no ts_questionname, skipping.");
+                            result.SkippedNoQuestionName++;
+                            continue;
+                        }
+
+                        if (!wostResponseCache.TryGetValue(wostRef.Id, out var questionnaireResponse))
+                        {
+                            var wost = _repository.GetWorkOrderServiceTask(wostRef.Id);
+                            var responseJson = wost.GetAttributeValue<string>("ovs_questionnaireresponse");
+                            questionnaireResponse = string.IsNullOrWhiteSpace(responseJson)
+                                ? null
+                                : new QuestionnaireResponse(responseJson, _logger);
+                            wostResponseCache[wostRef.Id] = questionnaireResponse;
+                        }
+
+                        var exemptionsJson = QuestionnaireExemptionSerializer.SerializeCompact(
+                            questionnaireResponse?.GetExemptionValues(questionName),
+                            _logger);
+
+                        if (exemptionsJson == null)
+                        {
+                            exemptionsJson = "[]";
+                            result.DefaultedEmptyExemptions++;
+                        }
+
+                        _logger.Debug($"Backfilling ts_exemptions on ts_questionresponse {qrId} ({name}) with {exemptionsJson}.");
+
+                        if (!simulationMode)
+                        {
+                            var update = new Entity("ts_questionresponse", qrId)
+                            {
+                                ["ts_exemptions"] = exemptionsJson
+                            };
+
+                            _service.Update(update);
+                        }
+
+                        result.Updated++;
+                    }
+
+                    if (!collection.MoreRecords)
+                    {
+                        break;
+                    }
+
+                    query.PageInfo.PageNumber++;
+                    query.PageInfo.PagingCookie = collection.PagingCookie;
+                }
+
+                _logger.Info($"Exemption backfill completed. Total scanned: {result.TotalScanned}, updated: {result.Updated}, defaulted to empty JSON: {result.DefaultedEmptyExemptions}, skipped (no WOST): {result.SkippedNoWost}, skipped (no question name): {result.SkippedNoQuestionName}.");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error during backfill of ts_exemptions: {ex}");
+                throw;
+            }
+        }
     }
 
     public class BackfillResult
@@ -168,6 +302,10 @@ namespace TSIS2.QuestionnaireProcessorConsole
         public int TotalScanned { get; set; }
         public int Updated { get; set; }
         public int SkippedNoWorkOrder { get; set; }
+        public int SkippedNoWost { get; set; }
+        public int SkippedNoQuestionName { get; set; }
+        public int DefaultedEmptyExemptions { get; set; }
+        public int SkippedMissingField { get; set; }
     }
 }
 

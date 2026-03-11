@@ -259,16 +259,26 @@ namespace ROMTS_GSRST.Plugins.QuestionnaireProcessor
             Assert.True(hasDetail);
         }
 
+        [Fact]
+        public void GetExemptionValues_ExistingExemptions_ReturnsArray()
+        {
+            var questionnaireResp = new QuestionnaireResponse(@"{""question1-Exemptions"":[{""exemptionId"":""3f9c8d4a-3bde-4c7a-9c7a-1d5a6c8b2f10"",""exemptionInvoked"":true,""exemptionComment"":""comment1""}]}");
+
+            var exemptions = questionnaireResp.GetExemptionValues("question1");
+
+            Assert.NotNull(exemptions);
+            Assert.Equal(Newtonsoft.Json.Linq.JTokenType.Array, exemptions.Type);
+        }
+
         #endregion
 
         #region GetAllQuestionNames Tests
 
         [Fact]
-        public void GetAllQuestionNames_ExcludesDetailFields()
+        public void GetAllQuestionNames_ExcludesDetailAndExemptionFields()
         {
             // Arrange
-            var scenario = QuestionnaireSamples.SimpleBooleanScenario;
-            var questionnaireResp = new QuestionnaireResponse(scenario.Response);
+            var questionnaireResp = new QuestionnaireResponse(@"{""question1"":true,""question2"":false,""question1-Detail"":""All areas inspected"",""question1-Exemptions"":[{""id"":""1"",""value"":false,""comment"":""""}]}");
 
             // Act
             var names = questionnaireResp.GetAllQuestionNames();
@@ -278,14 +288,14 @@ namespace ROMTS_GSRST.Plugins.QuestionnaireProcessor
             Assert.Contains("question1", names);
             Assert.Contains("question2", names);
             Assert.DoesNotContain("question1-Detail", names);
+            Assert.DoesNotContain("question1-Exemptions", names);
         }
 
         [Fact]
-        public void GetResponseCount_ExcludesDetailFields()
+        public void GetResponseCount_ExcludesDetailAndExemptionFields()
         {
             // Arrange
-            var scenario = QuestionnaireSamples.SimpleBooleanScenario;
-            var questionnaireResp = new QuestionnaireResponse(scenario.Response);
+            var questionnaireResp = new QuestionnaireResponse(@"{""question1"":true,""question2"":false,""question1-Detail"":""All areas inspected"",""question1-Exemptions"":[{""id"":""1"",""value"":false,""comment"":""""}]}");
 
             // Act
             var count = questionnaireResp.GetResponseCount();
