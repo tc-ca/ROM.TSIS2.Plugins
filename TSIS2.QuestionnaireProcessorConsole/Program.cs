@@ -109,7 +109,7 @@ namespace TSIS2.QuestionnaireProcessorConsole
                     {
                         var backfiller = new QuestionResponseBackfiller(crmClient, logger);
                         var result = backfiller.BackfillExemptions(config.SimulationMode);
-                        ui.ShowSuccess($"Exemption backfill complete. Scanned {result.TotalScanned}, updated {result.Updated}, skipped (no change/empty) {result.SkippedNoChange}, skipped (no WOST) {result.SkippedNoWost}, skipped (no question name) {result.SkippedNoQuestionName}.");
+                        ui.ShowSuccess($"Exemption backfill complete. Scanned {result.TotalScanned}, keys with exemptions in WOST JSON: {result.KeysWithExemptionsInJson}, matched non-empty: {result.SourceHadNonEmptyExemptions}, updated {result.Updated}, skipped (no change/empty) {result.SkippedNoChange}, skipped (no WOST) {result.SkippedNoWost}, skipped (no question name) {result.SkippedNoQuestionName}.");
                         ui.ShowInfo($"Total run time: {runStopwatch.Elapsed:hh\\:mm\\:ss\\.fff}");
                         return;
                     }
