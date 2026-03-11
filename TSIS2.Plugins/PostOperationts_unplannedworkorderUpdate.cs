@@ -409,14 +409,20 @@ namespace TSIS2.Plugins
                         localContext.Trace("msdyn_parentworkorder changed. New value: {0}", parentWorkorder != null ? parentWorkorder.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
-                                        if (target.Attributes.Contains("ts_tradename"))
+                    if (target.Attributes.Contains("ts_finding"))
+                    {
+                        var finding = target.GetAttributeValue<EntityReference>("ts_finding");
+                        updateWorkOrder["ts_finding"] = finding;
+                        localContext.Trace("ts_finding changed. New value: {0}", finding != null ? finding.Id.ToString() : "null");
+                        anyFieldChanged = true;
+                    }
+                    if (target.Attributes.Contains("ts_tradename"))
                     {
                         var tradename = target.GetAttributeValue<EntityReference>("ts_tradename");
                         updateWorkOrder["ts_tradenameid"] = tradename;
                         localContext.Trace("ts_tradenameid changed. New value: {0}", tradename != null ? tradename.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
-
                     if (target.Attributes.Contains("ts_functionallocation"))
                     {
                         var funcLoc = target.GetAttributeValue<EntityReference>("ts_functionallocation");
@@ -424,7 +430,6 @@ namespace TSIS2.Plugins
                         localContext.Trace("msdyn_functionallocation changed. New value: {0}", funcLoc != null ? funcLoc.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
-
                     if (target.Attributes.Contains("ts_subsubsite"))
                     {
                         var subSubSite = target.GetAttributeValue<EntityReference>("ts_subsubsite");
@@ -432,7 +437,6 @@ namespace TSIS2.Plugins
                         localContext.Trace("ts_subsubsite changed. New value: {0}", subSubSite != null ? subSubSite.Id.ToString() : "null");
                         anyFieldChanged = true;
                     }
-
                     if (target.Attributes.Contains("ts_contact"))
                     {
                         var contact = target.GetAttributeValue<EntityReference>("ts_contact");
