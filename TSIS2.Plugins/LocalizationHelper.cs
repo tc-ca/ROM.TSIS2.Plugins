@@ -11,9 +11,9 @@ namespace TSIS2.Plugins
 {
     public class LocalizationHelper
     {
-        public static string GetMessage(ITracingService tracingService, IOrganizationService service, string ResourceFile, string ResourceId)
+        public static string GetMessage(ITracingService tracingService, IOrganizationService service, string ResourceFile, string ResourceId, bool enableTrace = true)
         {
-            XmlDocument messages = RetrieveXmlWebResourceByName(service, tracingService, ResourceFile);
+            XmlDocument messages = RetrieveXmlWebResourceByName(service, tracingService, ResourceFile, enableTrace);
             return RetrieveLocalizedStringFromWebResource(tracingService, messages, ResourceId);
         }
 
@@ -30,14 +30,20 @@ namespace TSIS2.Plugins
             return 0;
         }
 
-        public static XmlDocument RetrieveXmlWebResourceByName(IOrganizationService service, ITracingService tracingService, string webresourceSchemaName)
+        public static XmlDocument RetrieveXmlWebResourceByName(IOrganizationService service, ITracingService tracingService, string webresourceSchemaName, bool enableTrace = true)
         {
-            tracingService.Trace("Begin:RetrieveXmlWebResourceByName, webresourceSchemaName={0}", webresourceSchemaName);
+            if (enableTrace)
+            {
+                tracingService.Trace("Begin:RetrieveXmlWebResourceByName, webresourceSchemaName={0}", webresourceSchemaName);
+            }
             QueryExpression webresourceQuery = new QueryExpression("webresource");
             webresourceQuery.ColumnSet.AddColumn("content");
             webresourceQuery.Criteria.AddCondition("name", ConditionOperator.Equal, webresourceSchemaName);
             EntityCollection webresources = service.RetrieveMultiple(webresourceQuery);
-            tracingService.Trace("Webresources Returned from server. Count={0}", webresources.Entities.Count);
+            if (enableTrace)
+            {
+                tracingService.Trace("Webresources Returned from server. Count={0}", webresources.Entities.Count);
+            }
             if (webresources.Entities.Count > 0)
             {
                 byte[] bytes = Convert.FromBase64String((string)webresources.Entities[0]["content"]);
@@ -52,7 +58,10 @@ namespace TSIS2.Plugins
                         document.Load(sr);
                     }
                 }
-                tracingService.Trace("End:RetrieveXmlWebResourceByName , webresourceSchemaName={0}", webresourceSchemaName);
+                if (enableTrace)
+                {
+                    tracingService.Trace("End:RetrieveXmlWebResourceByName , webresourceSchemaName={0}", webresourceSchemaName);
+                }
                 return document;
             }
             else

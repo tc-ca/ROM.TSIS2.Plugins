@@ -28,13 +28,33 @@ namespace TSIS2.Plugins.WorkOrderExport
         public string PrimaryIncidentDescription { get; set; }
         public string BusinessOwner { get; set; }
 
+        // --- Section State ---
+        public bool HasFindings { get; set; }
+        public string NoFindingsMessage { get; set; }
+        public bool HasActions { get; set; }
+        public string NoActionsMessage { get; set; }
+        public bool HasInteractions { get; set; }
+        public string NoInteractionsMessage { get; set; }
+        public bool HasServiceTasks { get; set; }
+        public string NoServiceTasksMessage { get; set; }
+        public bool HasServiceTaskDocuments { get; set; }
+        public string NoServiceTaskDocumentsMessage { get; set; }
+        public bool HasContacts { get; set; }
+        public string NoContactsMessage { get; set; }
+        public bool HasWorkOrderDocuments { get; set; }
+        public string NoWorkOrderDocumentsMessage { get; set; }
+        public bool HasInspectionDocuments { get; set; }
+        public string NoInspectionDocumentsMessage { get; set; }
+
         // --- Repeating Sections ---
         public List<FindingModel> Findings { get; set; } = new List<FindingModel>();
         public List<ActionModel> Actions { get; set; } = new List<ActionModel>();
         public List<InteractionModel> Interactions { get; set; } = new List<InteractionModel>();
         public List<ServiceTaskModel> ServiceTasks { get; set; } = new List<ServiceTaskModel>();
-        public List<DocumentModel> Documents { get; set; } = new List<DocumentModel>();
+        public List<ServiceTaskDocumentModel> ServiceTaskDocuments { get; set; } = new List<ServiceTaskDocumentModel>();
         public List<ContactModel> Contacts { get; set; } = new List<ContactModel>();
+        public List<WorkOrderDocumentModel> WorkOrderDocuments { get; set; } = new List<WorkOrderDocumentModel>();
+        public List<InspectionDocumentModel> InspectionDocuments { get; set; } = new List<InspectionDocumentModel>();
     }
 
     public class FindingModel
@@ -63,17 +83,35 @@ namespace TSIS2.Plugins.WorkOrderExport
 
     public class ServiceTaskModel
     {
+        public string Task_Id { get; set; }
         public string Task_Name { get; set; }
         public string Task_Status { get; set; }
         public string Task_InspectionResult { get; set; }
     }
 
-    public class DocumentModel
+    public class WorkOrderDocumentModel
     {
-        public string Doc_Name { get; set; }
-        public string Doc_Category { get; set; }
-        public string Doc_Context { get; set; }
-        public string Doc_Link { get; set; }
+        public string WorkOrderDocument_Name { get; set; }
+        public string WorkOrderDocument_Category { get; set; }
+        public string WorkOrderDocument_Context { get; set; }
+        public string WorkOrderDocument_Link { get; set; }
+    }
+
+    public class InspectionDocumentModel
+    {
+        public string InspectionDocument_Name { get; set; }
+        public string InspectionDocument_Category { get; set; }
+        public string InspectionDocument_Context { get; set; }
+        public string InspectionDocument_Link { get; set; }
+    }
+
+    public class ServiceTaskDocumentModel
+    {
+        public string Task_Name { get; set; }
+        public string ServiceTaskDocument_Name { get; set; }
+        public string ServiceTaskDocument_Category { get; set; }
+        public string ServiceTaskDocument_Context { get; set; }
+        public string ServiceTaskDocument_Link { get; set; }
     }
 
     public class ContactModel
