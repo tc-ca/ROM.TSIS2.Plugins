@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -92,6 +93,7 @@ namespace TSIS2.QuestionnaireProcessorConsole
                         return;
                     }
                     logger.Info("Connected successfully!");
+                    var runStopwatch = Stopwatch.StartNew();
 
                     // If we're running the one-off backfill, do that and exit.
                     if (config.BackfillWorkOrderRefs)
@@ -99,6 +101,24 @@ namespace TSIS2.QuestionnaireProcessorConsole
                         var backfiller = new QuestionResponseBackfiller(crmClient, logger);
                         var result = backfiller.BackfillWorkOrderReference(config.SimulationMode);
                         ui.ShowSuccess($"Backfill complete. Scanned {result.TotalScanned}, updated {result.Updated}, skipped (no work order) {result.SkippedNoWorkOrder}.");
+                        ui.ShowInfo($"Total run time: {runStopwatch.Elapsed:hh\\:mm\\:ss\\.fff}");
+                        return;
+                    }
+
+                    if (config.BackfillExemptions)
+                    {
+                        var backfiller = new QuestionResponseBackfiller(crmClient, logger);
+                        var result = backfiller.BackfillExemptions(config.SimulationMode);
+                        ui.ShowSuccess($"Exemption backfill complete. Scanned {result.TotalScanned}, keys with exemptions in WOST JSON: {result.KeysWithExemptionsInJson}, matched non-empty: {result.SourceHadNonEmptyExemptions}, updated {result.Updated}, skipped (no change/empty) {result.SkippedNoChange}, skipped (no WOST) {result.SkippedNoWost}, skipped (no question name) {result.SkippedNoQuestionName}.");
+                        ui.ShowInfo($"Total run time: {runStopwatch.Elapsed:hh\\:mm\\:ss\\.fff}");
+                        return;
+                    }
+
+                    if (config.BackfillExemptions)
+                    {
+                        var backfiller = new QuestionResponseBackfiller(crmClient, logger);
+                        var result = backfiller.BackfillExemptions(config.SimulationMode);
+                        ui.ShowSuccess($"Exemption backfill complete. Scanned {result.TotalScanned}, updated {result.Updated}, defaulted to [] {result.DefaultedEmptyExemptions}, skipped (no WOST) {result.SkippedNoWost}, skipped (no question name) {result.SkippedNoQuestionName}, missing field checks {result.SkippedMissingField}.");
                         return;
                     }
 
@@ -121,16 +141,21 @@ namespace TSIS2.QuestionnaireProcessorConsole
 
                                 string wostName = wost.GetAttributeValue<string>("msdyn_name");
                                 var questionnaireRef = wost.GetAttributeValue<Microsoft.Xrm.Sdk.EntityReference>("ovs_questionnaire");
+                                string responseJson = wost.GetAttributeValue<string>("ovs_questionnaireresponse");
+                                string definitionJson = wost.GetAttributeValue<string>("ovs_questionnairedefinition");
+                                bool hasQuestionnaireData = !string.IsNullOrWhiteSpace(responseJson) && !string.IsNullOrWhiteSpace(definitionJson);
 
-                                if (questionnaireRef == null)
+                                if (questionnaireRef == null && !hasQuestionnaireData)
                                 {
-                                    ui.ShowWarning($"WOST {wostName} (ID: {wostId}) has no linked questionnaire reference - skipping.");
+                                    ui.ShowWarning($"WOST {wostName} (ID: {wostId}) has no questionnaire reference and no questionnaire data (response/definition) - skipping.");
                                     failedGuids.Add(wostId);
                                     continue;
                                 }
 
                                 wostList.Add(wost);
-                                ui.ShowInfo($"Found WOST: {wostName} (ID: {wostId})");
+                                ui.ShowInfo(questionnaireRef != null
+                                    ? $"Found WOST: {wostName} (ID: {wostId})"
+                                    : $"Found WOST: {wostName} (ID: {wostId}) [no questionnaire ref; has definition+response]");
                             }
                             catch (Exception ex)
                             {
@@ -162,6 +187,7 @@ namespace TSIS2.QuestionnaireProcessorConsole
 
                         var summary = processor.Process(wostList);
                         ui.DisplayFinalSummary(summary);
+                        ui.ShowInfo($"Total run time: {runStopwatch.Elapsed:hh\\:mm\\:ss\\.fff}");
                         return;
                     }
 
@@ -184,6 +210,7 @@ namespace TSIS2.QuestionnaireProcessorConsole
 
                             var fileSummary = processor.ProcessFromFile(wostIds);
                             ui.ShowSuccess($"[OK] Finished processing {fileSummary.Processed} WOST(s) from file");
+                            ui.ShowInfo($"Total run time: {runStopwatch.Elapsed:hh\\:mm\\:ss\\.fff}");
                         }
                         else
                         {
@@ -234,6 +261,8 @@ namespace TSIS2.QuestionnaireProcessorConsole
                     {
                         ui.ShowInfo("No records found to process");
                     }
+
+                    ui.ShowInfo($"Total run time: {runStopwatch.Elapsed:hh\\:mm\\:ss\\.fff}");
                 }
             }
             catch (Exception ex)

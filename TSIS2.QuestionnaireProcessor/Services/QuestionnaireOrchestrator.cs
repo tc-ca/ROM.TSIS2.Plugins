@@ -45,6 +45,7 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
     {
         private const int CrmTextMaxLength = 4000;
         private const int CrmNameMaxLength = 100;
+        private const int QuestionResponseExemptionsMaxLength = 10000;
 
         /// <summary>
         /// Processes a single questionnaire for a Work Order Service Task.
@@ -102,6 +103,8 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                 var questionnaireDefinition = new QuestionnaireDefinition(definitionJson, formatter.Logger);
                 var questionnaireResponse = new QuestionnaireResponse(responseJson, formatter.Logger);
 
+                var supportsExemptions = repository.HasQuestionResponseExemptionsColumn();
+
                 // Step 3: Get existing responses using the repository
                 var existingByName = repository.GetExistingResponses(workOrderServiceTaskId);
 
@@ -127,6 +130,7 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                     simulationMode,
                     existingByName,
                     mergedDetailsMap,
+                    supportsExemptions,
                     result.Inventory,
                     includeQuestionInventory);
 
@@ -172,6 +176,7 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
             bool simulationMode,
             Dictionary<string, Entity> existingByName,
             Dictionary<string, string> mergedDetailsMap,
+            bool supportsExemptions,
             List<QuestionLogEntry> inventory,
             bool includeQuestionInventory)
         {
@@ -213,7 +218,8 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                             createdIds,
                             processedIds,
                             existingByName,
-                            mergedDetailsMap);
+                            mergedDetailsMap,
+                            supportsExemptions);
 
                         updatedCount += uCount;
                         if (includeQuestionInventory)
@@ -257,6 +263,9 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
 
                 // Details are now pre-calculated (includes comments and merged hidden questions)
                 mergedDetailsMap.TryGetValue(questionName, out string currentDetailsToSet);
+                string currentExemptionsToSet = supportsExemptions
+                    ? QuestionnaireExemptionSerializer.SerializeCompact(response.GetExemptionValues(questionName), formatter.Logger)
+                    : null;
 
                 var titleEn = formatter.RemoveHtmlTags(QuestionnaireDefinition.GetTextFieldValue(questionDefinition["title"], "default"));
                 var titleFr = formatter.RemoveHtmlTags(QuestionnaireDefinition.GetTextFieldValue(questionDefinition["title"], "fr"));
@@ -277,6 +286,8 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                         // Comparison Logic - use StringsAreEqual to handle null vs empty string
                         bool answerChanged = !StringsAreEqual(existingResponse.GetAttributeValue<string>("ts_response"), responseText);
                         bool detailsChanged = !StringsAreEqual(existingResponse.GetAttributeValue<string>("ts_details"), currentDetailsToSet);
+                        bool exemptionsChanged = supportsExemptions &&
+                            !StringsAreEqual(existingResponse.GetAttributeValue<string>("ts_exemptions"), currentExemptionsToSet);
                         bool numberChanged = existingResponse.GetAttributeValue<int?>("ts_questionnumber") != currentNumber;
 
                         // Metadata changes (Title, Description, Provision)
@@ -284,16 +295,17 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                                             || !StringsAreEqual(existingResponse.GetAttributeValue<string>("ts_questiontextfrench"), titleFr)
                                             || !StringsAreEqual(existingResponse.GetAttributeValue<string>("ts_provisionreference"), provisionRef);
 
-                        if (answerChanged || detailsChanged || numberChanged || metadataChanged)
+                        if (answerChanged || detailsChanged || exemptionsChanged || numberChanged || metadataChanged)
                         {
                             updatedCount++;
                             int currentVersion = existingResponse.GetAttributeValue<int?>("ts_version") ?? 1;
-                            bool bumpVersion = answerChanged || detailsChanged;
+                            bool bumpVersion = answerChanged || detailsChanged || exemptionsChanged;
 
                             // Build a concise change summary
                             var changes = new List<string>();
                             if (answerChanged) changes.Add("Answer");
                             if (detailsChanged) changes.Add("Details");
+                            if (exemptionsChanged) changes.Add("Exemptions");
                             if (numberChanged) changes.Add("Number");
                             if (metadataChanged) changes.Add("Metadata");
 
@@ -315,6 +327,8 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                                 descriptionEn,
                                 descriptionFr,
                                 currentDetailsToSet,
+                                currentExemptionsToSet,
+                                supportsExemptions,
                                 wostName,
                                 workOrderServiceTaskId,
                                 workOrderRef,
@@ -364,6 +378,8 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                         descriptionEn,
                         descriptionFr,
                         currentDetailsToSet,
+                        currentExemptionsToSet,
+                        supportsExemptions,
                         wostName,
                         workOrderServiceTaskId,
                         workOrderRef,
@@ -412,10 +428,14 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
             List<Guid> createdIds,
             HashSet<Guid> processedIds,
             Dictionary<string, Entity> existingByName,
-            Dictionary<string, string> mergedDetailsMap)
+            Dictionary<string, string> mergedDetailsMap,
+            bool supportsExemptions)
         {
             var questionName = questionDefinition["name"]?.ToString();
             mergedDetailsMap.TryGetValue(questionName, out string currentDetailsToSet);
+            string currentExemptionsToSet = supportsExemptions
+                ? QuestionnaireExemptionSerializer.SerializeCompact(response.GetExemptionValues(questionName), formatter.Logger)
+                : null;
 
             if (existingByName.TryGetValue(questionName, out var existingRecord))
             {
@@ -441,18 +461,21 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                     // Use StringsAreEqual to handle null vs empty string
                     bool answerChanged = !StringsAreEqual(existingRecord.GetAttributeValue<string>("ts_response"), respText);
                     bool detailsChanged = !StringsAreEqual(existingRecord.GetAttributeValue<string>("ts_details"), currentDetailsToSet);
+                    bool exemptionsChanged = supportsExemptions &&
+                        !StringsAreEqual(existingRecord.GetAttributeValue<string>("ts_exemptions"), currentExemptionsToSet);
                     bool metadataChanged = !StringsAreEqual(existingRecord.GetAttributeValue<string>("ts_questiontextenglish"), tEn)
                                         || !StringsAreEqual(existingRecord.GetAttributeValue<string>("ts_questiontextfrench"), tFr);
 
-                    if (answerChanged || detailsChanged || metadataChanged)
+                    if (answerChanged || detailsChanged || exemptionsChanged || metadataChanged)
                     {
                         int currentVersion = existingRecord.GetAttributeValue<int>("ts_version");
-                        bool bumpVersion = answerChanged || detailsChanged;
+                        bool bumpVersion = answerChanged || detailsChanged || exemptionsChanged;
 
                         // Build a concise change summary
                         var changes = new List<string>();
                         if (answerChanged) changes.Add("Answer");
                         if (detailsChanged) changes.Add("Details");
+                        if (exemptionsChanged) changes.Add("Exemptions");
                         if (metadataChanged) changes.Add("Metadata");
 
                         formatter.Logger.Verbose($"Updating hidden '{questionName}': {string.Join(", ", changes)} changed{(bumpVersion ? " (version bump)" : "")}");
@@ -468,6 +491,8 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                             null,
                             null,
                             currentDetailsToSet,
+                            currentExemptionsToSet,
+                            supportsExemptions,
                             wostName,
                             workOrderServiceTaskId,
                             workOrderRef,
@@ -516,6 +541,8 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
                     null,
                     null,
                     currentDetailsToSet,
+                    currentExemptionsToSet,
+                    supportsExemptions,
                     wostName,
                     workOrderServiceTaskId,
                     workOrderRef,
@@ -707,6 +734,8 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
             string provisionTextEn,
             string provisionTextFr,
             string details,
+            string exemptionsJson,
+            bool supportsExemptions,
             string wostName,
             Guid workOrderServiceTaskId,
             EntityReference workOrderRef,
@@ -772,6 +801,13 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
             {
                 questionResponse["ts_details"] =
                     TruncateToCrmTextLimit(details, $"ts_details ({questionName})", formatter.Logger);
+            }
+
+            if (supportsExemptions)
+            {
+                questionResponse["ts_exemptions"] = string.IsNullOrWhiteSpace(exemptionsJson)
+                    ? null
+                    : Truncate(exemptionsJson, QuestionResponseExemptionsMaxLength, $"ts_exemptions ({questionName})", formatter.Logger);
             }
 
             if (!string.IsNullOrEmpty(responseText) &&

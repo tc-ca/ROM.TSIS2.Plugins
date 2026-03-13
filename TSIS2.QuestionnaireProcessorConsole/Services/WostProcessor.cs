@@ -55,16 +55,20 @@ public class WostProcessor
 
             try
             {
-                var wostDetail = _service.Retrieve("msdyn_workorderservicetask", wostId, new ColumnSet("ovs_questionnaire"));
+                var wostDetail = _service.Retrieve("msdyn_workorderservicetask", wostId,
+                    new ColumnSet("ovs_questionnaire", "ovs_questionnaireresponse", "ovs_questionnairedefinition"));
                 var questionnaireRef = wostDetail.GetAttributeValue<EntityReference>("ovs_questionnaire");
+                string responseJson = wostDetail.GetAttributeValue<string>("ovs_questionnaireresponse");
+                string definitionJson = wostDetail.GetAttributeValue<string>("ovs_questionnairedefinition");
+                bool hasQuestionnaireData = !string.IsNullOrWhiteSpace(responseJson) && !string.IsNullOrWhiteSpace(definitionJson);
 
-                if (questionnaireRef == null)
+                if (questionnaireRef == null && !hasQuestionnaireData)
                 {
-                    _logger.Warning($"Skipping WOST {wostName} because it has no linked questionnaire reference.");
+                    _logger.Warning($"Skipping WOST {wostName} because it has no questionnaire reference and no questionnaire data (response/definition).");
                     continue;
                 }
 
-                _logger.Processing($"Starting questionnaire processing for WOST: {wostName} (ID: {wostId})");
+                _logger.Processing($"Starting questionnaire processing for WOST: {wostName} (ID: {wostId}) (questionnaire ref: {(questionnaireRef != null ? "set" : "null")})");
 
                 var result = QuestionnaireOrchestrator.ProcessQuestionnaire(
                     _service,
@@ -86,7 +90,7 @@ public class WostProcessor
                     _ui.ShowInfo($">>> Completed questionnaire processing for WOST: {wostName}. Records Up-to-date: {result.UpToDateRecordsCount}/{result.TotalCrmRecords}");
                 }
 
-                _ui.ShowInfo($"    Note: {result.VisibleQuestionCount} visible questions were processed, but {result.HiddenMergedCount} were merged into parents.");
+                _ui.ShowInfo($"    Note: {result.VisibleQuestionCount} questions → {result.TotalCrmRecords} CRM records. ({result.HiddenMergedCount} hidden/child questions stored in parent's record, not as separate records.)");
 
                 if (_logger.VerboseMode)
                 {
@@ -142,14 +146,17 @@ public class WostProcessor
 
                 string wostName = wost.GetAttributeValue<string>("msdyn_name");
                 var questionnaireRef = wost.GetAttributeValue<EntityReference>("ovs_questionnaire");
+                string responseJson = wost.GetAttributeValue<string>("ovs_questionnaireresponse");
+                string definitionJson = wost.GetAttributeValue<string>("ovs_questionnairedefinition");
+                bool hasQuestionnaireData = !string.IsNullOrWhiteSpace(responseJson) && !string.IsNullOrWhiteSpace(definitionJson);
 
-                if (questionnaireRef == null)
+                if (questionnaireRef == null && !hasQuestionnaireData)
                 {
-                    _logger.Warning($"Skipping WOST {wostName} (ID: {wostId}) - no questionnaire reference");
+                    _logger.Warning($"Skipping WOST {wostName} (ID: {wostId}) - no questionnaire reference and no questionnaire data (response/definition).");
                     continue;
                 }
 
-                _logger.Processing($"Starting questionnaire processing for WOST: {wostName} (ID: {wostId})");
+                _logger.Processing($"Starting questionnaire processing for WOST: {wostName} (ID: {wostId}) (questionnaire ref: {(questionnaireRef != null ? "set" : "null")})");
 
                 var result = QuestionnaireOrchestrator.ProcessQuestionnaire(
                     _service,
@@ -170,7 +177,7 @@ public class WostProcessor
                     _ui.ShowInfo($">>> Completed WOST from file: {wostName}. Records Up-to-date: {result.UpToDateRecordsCount}/{result.TotalCrmRecords}");
                 }
 
-                _ui.ShowInfo($"    Note: {result.VisibleQuestionCount} visible questions were processed, but {result.HiddenMergedCount} were merged into parents.");
+                _ui.ShowInfo($"    Note: {result.VisibleQuestionCount} questions → {result.TotalCrmRecords} CRM records. ({result.HiddenMergedCount} hidden/child questions stored in parent's record, not as separate records.)");
 
                 if (_logger.VerboseMode)
                 {
