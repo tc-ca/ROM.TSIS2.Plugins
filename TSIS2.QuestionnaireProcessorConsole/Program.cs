@@ -114,14 +114,6 @@ namespace TSIS2.QuestionnaireProcessorConsole
                         return;
                     }
 
-                    if (config.BackfillExemptions)
-                    {
-                        var backfiller = new QuestionResponseBackfiller(crmClient, logger);
-                        var result = backfiller.BackfillExemptions(config.SimulationMode);
-                        ui.ShowSuccess($"Exemption backfill complete. Scanned {result.TotalScanned}, updated {result.Updated}, defaulted to [] {result.DefaultedEmptyExemptions}, skipped (no WOST) {result.SkippedNoWost}, skipped (no question name) {result.SkippedNoQuestionName}, missing field checks {result.SkippedMissingField}.");
-                        return;
-                    }
-
                     var dataService = new CrmDataService(crmClient, logger, ui, config.PageSize);
                     var processor = new WostProcessor(crmClient, logger, ui);
 
