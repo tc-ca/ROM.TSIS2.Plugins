@@ -24,6 +24,7 @@ public class ConfigurationService
     public string WostIdsFileName { get; private set; } = "wost_ids.txt";
     public List<string> WostIdsFromFile { get; private set; } = new List<string>();
     public bool BackfillWorkOrderRefs { get; private set; } = false;
+    public bool BackfillExemptions { get; private set; } = false;
     public List<Guid> SpecificWostIds { get; private set; } = new List<Guid>();
     public bool LogToFile { get; private set; } = false;
     /// <summary>
@@ -156,43 +157,55 @@ public class ConfigurationService
                     })
                     .ToList();
 
-                Console.WriteLine("Multiple environments defined in secrets.config.");
-                Console.WriteLine("Select environment to use:");
-                for (int i = 0; i < envNames.Count; i++)
+                // Default to Dev when not specified
+                var devMatch = envNames.FirstOrDefault(e =>
+                    string.Equals(e.Name, "Dev", StringComparison.OrdinalIgnoreCase));
+                if (devMatch != null)
                 {
-                    Console.WriteLine($"  {i + 1}. {envNames[i].Name} ({envNames[i].Url})");
-                }
-                Console.Write("Enter number or name (default = 1): ");
-                string input = Console.ReadLine();
-
-                if (string.IsNullOrWhiteSpace(input))
-                {
-                    selectedEnvironmentElement = envNames[0].Element;
-                    EnvironmentName = envNames[0].Name;
-                }
-                else if (int.TryParse(input, out int indexChoice) &&
-                         indexChoice >= 1 &&
-                         indexChoice <= envNames.Count)
-                {
-                    selectedEnvironmentElement = envNames[indexChoice - 1].Element;
-                    EnvironmentName = envNames[indexChoice - 1].Name;
+                    selectedEnvironmentElement = devMatch.Element;
+                    EnvironmentName = devMatch.Name;
+                    Console.WriteLine($"Using environment (default): {EnvironmentName}");
                 }
                 else
                 {
-                    var match = envNames.FirstOrDefault(e =>
-                        string.Equals(e.Name, input, StringComparison.OrdinalIgnoreCase));
-                    if (match == null)
+                    Console.WriteLine("Multiple environments defined in secrets.config.");
+                    Console.WriteLine("Select environment to use:");
+                    for (int i = 0; i < envNames.Count; i++)
                     {
-                        throw new InvalidOperationException(
-                            $"Unknown environment selection '{input}'. " +
-                            $"Available environments: {string.Join(", ", envNames.Select(e => e.Name))}");
+                        Console.WriteLine($"  {i + 1}. {envNames[i].Name} ({envNames[i].Url})");
+                    }
+                    Console.Write("Enter number or name (default = 1): ");
+                    string input = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(input))
+                    {
+                        selectedEnvironmentElement = envNames[0].Element;
+                        EnvironmentName = envNames[0].Name;
+                    }
+                    else if (int.TryParse(input, out int indexChoice) &&
+                             indexChoice >= 1 &&
+                             indexChoice <= envNames.Count)
+                    {
+                        selectedEnvironmentElement = envNames[indexChoice - 1].Element;
+                        EnvironmentName = envNames[indexChoice - 1].Name;
+                    }
+                    else
+                    {
+                        var match = envNames.FirstOrDefault(e =>
+                            string.Equals(e.Name, input, StringComparison.OrdinalIgnoreCase));
+                        if (match == null)
+                        {
+                            throw new InvalidOperationException(
+                                $"Unknown environment selection '{input}'. " +
+                                $"Available environments: {string.Join(", ", envNames.Select(e => e.Name))}");
+                        }
+
+                        selectedEnvironmentElement = match.Element;
+                        EnvironmentName = match.Name;
                     }
 
-                    selectedEnvironmentElement = match.Element;
-                    EnvironmentName = match.Name;
+                    Console.WriteLine($"Using environment: {EnvironmentName}");
                 }
-
-                Console.WriteLine($"Using environment: {EnvironmentName}");
             }
 
             LoadSecretsFromAddElements(selectedEnvironmentElement.Elements("add"));
@@ -292,6 +305,8 @@ public class ConfigurationService
                 SimulationMode = true;
             else if (arg.Equals("--backfill-workorder", StringComparison.OrdinalIgnoreCase))
                 BackfillWorkOrderRefs = true;
+            else if (arg.Equals("--backfill-exemptions", StringComparison.OrdinalIgnoreCase))
+                BackfillExemptions = true;
             else if (arg.Equals("--from-file", StringComparison.OrdinalIgnoreCase))
                 ProcessWostsFromFile = true;
             else if (arg.Equals("--logtofile", StringComparison.OrdinalIgnoreCase))

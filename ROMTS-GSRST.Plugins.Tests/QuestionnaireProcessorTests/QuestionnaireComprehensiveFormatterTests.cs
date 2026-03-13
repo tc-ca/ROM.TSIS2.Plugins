@@ -116,6 +116,34 @@ namespace ROMTS_GSRST.Plugins.QuestionnaireProcessor
         }
 
         [Fact]
+        public void RemoveHtmlTags_AdjacentParagraphs_InsertsSpaceBetweenContent()
+        {
+            var result = _formatter.RemoveHtmlTags("<p>Identité</p><p>SATR 3</p>");
+            Assert.Equal("Identité SATR 3", result);
+        }
+
+        [Fact]
+        public void RemoveHtmlTags_AdjacentDivs_InsertsSpaceBetweenContent()
+        {
+            var result = _formatter.RemoveHtmlTags("<div>Identité</div><div>SATR 3</div>");
+            Assert.Equal("Identité SATR 3", result);
+        }
+
+        [Fact]
+        public void RemoveHtmlTags_BlockAndBrMixed_NormalizesToSingleSpaces()
+        {
+            var result = _formatter.RemoveHtmlTags("<p>First</p><br/><p>Second</p>");
+            Assert.Equal("First Second", result);
+        }
+
+        [Fact]
+        public void RemoveHtmlTags_IdentiteSatrNoSpace_InsertsSpaceBeforeSatr()
+        {
+            var result = _formatter.RemoveHtmlTags("Vérification de l'identitéSATR 3: SATR 3 (1):");
+            Assert.Equal("Vérification de l'identité SATR 3: SATR 3 (1):", result);
+        }
+
+        [Fact]
         public void RemoveHtmlTags_QuotesWithNewlines_PreservesQuotes()
         {
             // Smart quotes are preserved (not converted to regular quotes) to avoid JSON escaping issues

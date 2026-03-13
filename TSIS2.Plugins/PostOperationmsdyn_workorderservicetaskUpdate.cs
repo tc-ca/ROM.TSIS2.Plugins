@@ -169,12 +169,16 @@ namespace TSIS2.Plugins
                                 }
 
                                 var questionnaireRef = wost.GetAttributeValue<EntityReference>("ovs_questionnaire");
+                                string responseJson = wost.GetAttributeValue<string>("ovs_questionnaireresponse");
+                                string definitionJson = wost.GetAttributeValue<string>("ovs_questionnairedefinition");
+                                bool hasQuestionnaireData = !string.IsNullOrWhiteSpace(responseJson) && !string.IsNullOrWhiteSpace(definitionJson);
 
-                                if (questionnaireRef != null)
+                                if (questionnaireRef != null || hasQuestionnaireData)
                                 {
-                                    localContext.Trace($"Starting questionnaire processing for WOST: {target.Id}");
+                                    localContext.Trace($"Starting questionnaire processing for WOST: {target.Id} (questionnaire ref: {(questionnaireRef != null ? "set" : "null")})");
 
                                     // It handles creating, updating, and linking the response records in one go.
+                                    // When ovs_questionnaire is null (e.g. exemption-only completion), pass null; ts_questionresponse.ts_questionnaire will be null.
                                     var result = QuestionnaireOrchestrator.ProcessQuestionnaire(
                                         service,
                                         target.Id,
@@ -188,7 +192,7 @@ namespace TSIS2.Plugins
                                 }
                                 else
                                 {
-                                    localContext.Trace("No questionnaire reference found on WOST. Skipping processing.");
+                                    localContext.Trace("No questionnaire reference and no questionnaire data (response/definition) on WOST. Skipping processing.");
                                 }
                             }
                         }

@@ -417,6 +417,14 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
             // 5) Convert <br> to space (keep single-line output)
             input = Regex.Replace(input, "<br\\s*/?>", " ", RegexOptions.IgnoreCase);
 
+            // 5b) Convert block-level HTML boundaries to space so adjacent content does not collapse (e.g. identitéSATR 3 -> identité SATR 3)
+            input = Regex.Replace(
+                input,
+                @"</?\s*(p|div|li|ul|ol|h[1-6]|tr|td|th)(\s+[^<>]*?)?\s*/?>",
+                " ",
+                RegexOptions.IgnoreCase | RegexOptions.Singleline
+            );
+
             // 6) Strip ONLY real HTML tags.
             // IMPORTANT: Avoid killing operator text like "x < y > z" by only matching typical tag names.
             // This removes things like <p>...</p>, <span ...>, </div>, etc.
@@ -448,6 +456,9 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
             // 10) Normalize NBSP and collapse whitespace
             input = input.Replace("\u00A0", " ");
             input = Regex.Replace(input, @"\s{2,}", " ").Trim();
+
+            // 11) Ensure space before "SATR" when missing (e.g. identitéSATR 3 from single-line or stripped source)
+            input = Regex.Replace(input, @"(\p{L})SATR\b", "$1 SATR");
 
             return input;
         }

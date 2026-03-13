@@ -213,6 +213,8 @@ namespace TSIS2.QuestionnaireProcessorConsole
             Console.WriteLine("  --simulate      Run in simulation mode (no database changes will be made)");
             Console.WriteLine("  --backfill-workorder");
             Console.WriteLine("                  Backfill ts_workorder field on existing ts_questionresponse records");
+            Console.WriteLine("  --backfill-exemptions");
+            Console.WriteLine("                  Backfill ts_exemptions field on existing ts_questionresponse records");
             Console.WriteLine("  --guids <guids> Process only the specified WOST GUIDs (comma-separated)");
             Console.WriteLine("                  Supports GUIDs with or without braces: guid1,{guid2},guid3");
             Console.WriteLine("  --wost-ids <guids>");
@@ -241,6 +243,7 @@ namespace TSIS2.QuestionnaireProcessorConsole
             Console.WriteLine("  TSIS2.QuestionnaireProcessorConsole.exe --env dev");
             Console.WriteLine("  TSIS2.QuestionnaireProcessorConsole.exe --env prod --debug");
             Console.WriteLine("  TSIS2.QuestionnaireProcessorConsole.exe --env dev --backfill-workorder");
+            Console.WriteLine("  TSIS2.QuestionnaireProcessorConsole.exe --env dev --backfill-exemptions");
             Console.WriteLine("  TSIS2.QuestionnaireProcessorConsole.exe --simulate --verbose");
             Console.WriteLine("  TSIS2.QuestionnaireProcessorConsole.exe --env dev --guids f478ef1a-04f5-ed11-8848-000d3af4fb40");
             Console.WriteLine("  TSIS2.QuestionnaireProcessorConsole.exe --env prod --guids=f478ef1a-04f5-ed11-8848-000d3af4fb40,{b56cfc0f-b761-f011-bec1-002248b09c68} --simulate");

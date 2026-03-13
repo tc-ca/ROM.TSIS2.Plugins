@@ -74,6 +74,18 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
             return GetStringValue(detailKey);
         }
 
+        public JToken GetExemptionValues(string questionName)
+        {
+            var exemptionsKey = $"{questionName}-Exemptions";
+            return GetValue(exemptionsKey);
+        }
+
+        public bool HasExemptionValue(string questionName)
+        {
+            var exemptionsKey = $"{questionName}-Exemptions";
+            return HasValue(exemptionsKey);
+        }
+
         /// <summary>
         /// Checks if a question has a detail value.
         /// </summary>
@@ -93,7 +105,9 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
         {
             return _response.Properties()
                 .Select(p => p.Name)
-                .Where(name => !name.EndsWith("-Detail")) // Exclude detail fields
+                .Where(name =>
+                    !name.EndsWith("-Detail", StringComparison.OrdinalIgnoreCase) &&
+                    !name.EndsWith("-Exemptions", StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
@@ -120,7 +134,9 @@ namespace TSIS2.Plugins.QuestionnaireProcessor
         public int GetResponseCount()
         {
             return _response.Properties()
-                .Count(p => !p.Name.EndsWith("-Detail")); // Exclude detail fields
+                .Count(p =>
+                    !p.Name.EndsWith("-Detail", StringComparison.OrdinalIgnoreCase) &&
+                    !p.Name.EndsWith("-Exemptions", StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
