@@ -34,6 +34,7 @@ namespace TSIS2.Plugins
             public const string AVIATION_SECURITY_PPP = "ts_AviationSecurityPPPBusinessUnitGUID";
             public const string ISSO = "ts_IntermodalSurfaceSecurityOversightISSOBusinessUnitGUID";
             public const string TRANSPORT_CANADA = "ts_TransportCanadaBusinessUnitGUID";
+            public const string RAIL_SAFETY = "ts_RailSafetyBusinessUnitGUID";
         }
 
         private static Dictionary<string, string> _configValues;
@@ -58,7 +59,8 @@ namespace TSIS2.Plugins
             BusinessUnitEnvVarKeys.AVIATION_SECURITY_DIRECTORATE,
             BusinessUnitEnvVarKeys.AVIATION_SECURITY_PPP,
             BusinessUnitEnvVarKeys.ISSO,
-            BusinessUnitEnvVarKeys.TRANSPORT_CANADA
+            BusinessUnitEnvVarKeys.TRANSPORT_CANADA,
+            BusinessUnitEnvVarKeys.RAIL_SAFETY
         };
 
         private static readonly string[] AvSecBuEnvVarKeys = new[]
@@ -82,6 +84,11 @@ namespace TSIS2.Plugins
         private static readonly string[] TCBUEnvVarKeys = new[]
         {
             BusinessUnitEnvVarKeys.TRANSPORT_CANADA
+        };
+
+        private static readonly string[] RailSafetyBUKeys = new[]
+        {
+            BusinessUnitEnvVarKeys.RAIL_SAFETY
         };
 
         private static readonly string[] AvSecTeamEnvVarKeys = new[]
@@ -277,6 +284,12 @@ namespace TSIS2.Plugins
         {
             EnsureConfigLoaded(service);
             return MatchesAnyEnvVarGuid(buId, TCBUEnvVarKeys, tracer);
+        }
+
+        public static bool IsRailSafetyBU(IOrganizationService service, Guid buId, ITracingService tracer = null)
+        {
+            EnsureConfigLoaded(service);
+            return MatchesAnyEnvVarGuid(buId, RailSafetyBUKeys, tracer);
         }
 
         public static bool IsAvSecTeam(IOrganizationService service, Guid teamId, ITracingService tracer = null)

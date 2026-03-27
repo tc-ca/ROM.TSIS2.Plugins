@@ -10,6 +10,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ActivityFeeds = new Guid("cb269f84-e19d-e011-b66c-00155db528b6");
 		public static Guid ActivityViewer = new Guid("2a444b11-ab50-42f3-9896-c4cd99cb705f");
 		public static Guid Agent365ToolsRole = new Guid("500073fc-54f7-429b-822e-f28b01fa5148");
+		public static Guid AgentViewer = new Guid("e389a4a6-b53b-4828-bca9-4b5d25f1763b");
 		public static Guid AIBRoles = new Guid("e57bff35-58b4-4725-aee2-40fb18f4c8bd");
 		public static Guid AIBSMLRoles = new Guid("3f199ebd-977e-43e5-abe5-fe865a1f2904");
 		public static Guid AISalesperson = new Guid("12abf4cd-20a9-477c-955d-0c940b3884b9");
@@ -79,6 +80,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid DesktopFlowsMachineUserCanShare = new Guid("ee18dcf2-6f83-4cd7-aa5c-1d8a88947d51");
 		public static Guid DesktopFlowsModuleDeveloper = new Guid("ee7bc749-3dd6-45ac-b95d-a3031463380b");
 		public static Guid DesktopFlowsRuntimeApplicationUser = new Guid("ee2c8e11-6d57-4c5d-9f84-659c0db132bb");
+		public static Guid DVMetadataServiceRole = new Guid("95aa4c68-04e0-4982-b994-7b5ed6c0771d");
 		public static Guid Dynamics365AppforOutlookUser = new Guid("2407db5e-edae-4e36-9be1-fd61d4d15809");
 		public static Guid EACAppAccess = new Guid("2c321cf0-f096-ea11-a81a-000d3a6ecd99");
 		public static Guid EACReaderAppAccess = new Guid("7be5a395-6b58-4f8c-908f-97dc8810fc50");
@@ -105,6 +107,9 @@ namespace DG.Tools.XrmMockup {
 		public static Guid HelpPageConsumer = new Guid("f3d2098f-9eb0-45b3-9c7d-96526af614c4");
 		public static Guid InsightsAppsPlatformRole = new Guid("b8299fc3-f7a2-4655-a2d9-48ca2dec0346");
 		public static Guid IntegratedSearchApp = new Guid("bd33526c-3668-4f81-9045-cb70c6156dc6");
+		public static Guid IntentAdministrator = new Guid("f24d8a69-e3dd-4093-906e-d6769262f3bf");
+		public static Guid IntentDiscoverySetupAdministrator = new Guid("3336bc5c-4c5a-4b3b-a75b-9d2bc612e968");
+		public static Guid IntentManageIntentsAdministrator = new Guid("a9af7d1e-bf0e-4f6c-bf02-6b71e31ebffd");
 		public static Guid IoTAdministrator = new Guid("5e4a9faa-b260-e611-8106-00155db8820b");
 		public static Guid IoTEndpointUser = new Guid("05f9a03f-5534-4b26-9bba-0726d33c6351");
 		public static Guid KnowledgeManager = new Guid("58306a42-48ec-4293-83be-a0b68ff87f5f");
@@ -122,7 +127,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid MicrosoftCopilotUser = new Guid("3d110294-4481-42bc-9882-ec2d526aa369");
 		public static Guid NonRelationalDataAppAccess = new Guid("6543ef96-37ab-4add-8c31-6dcd7cfa12ab");
 		public static Guid OfficeCollaborator = new Guid("e8fb3146-7717-ec11-b1b7-000d3af68e17");
-		public static Guid Omnichanneladministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
+		public static Guid OmnichannelAdministrator = new Guid("f7f90019-dc14-e911-816a-000d3a069ebd");
 		public static Guid Omnichannelagent = new Guid("c30bdbfe-7553-e811-8147-000d3aa39708");
 		public static Guid OmnichannelAPIaccess = new Guid("08593e02-ca6e-ec11-8943-000d3a9d73b9");
 		public static Guid OmnichannelAssignmentAPIaccess = new Guid("dad4c8cd-aab9-ee11-a568-6045bd07894c");
@@ -155,6 +160,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid Productivitytoolsuser = new Guid("c49aae0a-0fda-e911-a81c-000d3af75d63");
 		public static Guid ProjectBackgroundServicesAppRole = new Guid("209a44f9-636e-40bb-8cb0-67a34459f39a");
 		public static Guid ProjectOwner = new Guid("f9a5a958-d07f-44cd-886d-eb6343309c2a");
+		public static Guid PromptColumnRole = new Guid("e7f8a9b0-c1d2-4e3f-b4a5-c6d7e8f90123");
 		public static Guid PurviewLabelRole = new Guid("df3185a3-3141-4361-fb29-6eaa33dd0169");
 		public static Guid QualityAdmin = new Guid("a50fc16a-6ae9-ef11-be20-000d3a5c2fe2");
 		public static Guid QualityAutonomousAgent = new Guid("14ecce6a-6be9-ef11-be20-000d3a5c2fe2");
@@ -177,10 +183,8 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ROMQuestionnaireAdmin = new Guid("e4c394e4-a048-ec11-8c62-000d3ae89a77");
 		public static Guid ROMRailSafetyRailSecurityAccess = new Guid("7f982063-6cbe-f011-bbd2-7c1e5253644d");
 		public static Guid ROMRailSafetyAdministrator = new Guid("5ccc89d2-67be-f011-bbd3-7c1e52549bb6");
-		public static Guid ROMRailSafetyAuditor = new Guid("b0012549-5200-f111-8407-7c1e5254cc04");
-		public static Guid ROMRailSafetyAuditorOriginal = new Guid("16533975-67be-f011-bbd3-7c1e52549bb6");
+		public static Guid ROMRailSafetyAuditor = new Guid("16533975-67be-f011-bbd3-7c1e52549bb6");
 		public static Guid ROMRailSafetyBase = new Guid("ef56a65a-65be-f011-bbd2-6045bd5d2567");
-		public static Guid ROMRailSafetyBaseOriginal = new Guid("5c75840b-8100-f111-8407-7c1e5254cc04");
 		public static Guid RPERole = new Guid("6e33f75d-802e-4d79-b9e7-1fcdd2b3122e");
 		public static Guid SalesConversationIntelligenceDataOwner = new Guid("4a40ec4b-0fdb-4caa-bb9d-925ca43c0fa4");
 		public static Guid SalesCopilotAdministrator = new Guid("ebbb3fcb-fcd7-4bf8-9a48-7b5a9878e79e");
@@ -208,6 +212,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ServiceWriter = new Guid("68f2d372-e1a5-4298-9a93-4b39757caf93");
 		public static Guid SharedSmsChannelsRole = new Guid("ff99ba3d-063d-428e-bc39-aa63a13b96e7");
 		public static Guid SolutionChecker = new Guid("e05075eb-9d74-e811-a95c-000d3a1c53e4");
+		public static Guid SourceControlAppUserRole = new Guid("a44935d5-6401-47d8-99d2-d6cdf0eca704");
 		public static Guid SuggestedActionRole = new Guid("a1b2c3d4-e5f6-7890-1234-56789abcdef0");
 		public static Guid SuggestedActionS2SRole = new Guid("a543aafd-bd67-463d-9ef6-721bb8e471b1");
 		public static Guid SupportUser = new Guid("54472c33-29a1-eb11-b1ac-000d3ae8bbe0");
