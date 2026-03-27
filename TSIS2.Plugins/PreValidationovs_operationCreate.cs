@@ -55,10 +55,11 @@ namespace TSIS2.Plugins
                         var siteRef = target.GetAttributeValue<EntityReference>("ts_site");
                         var operationTypeRef = target.GetAttributeValue<EntityReference>("ovs_operationtypeid");
                         var name = target.GetAttributeValue<string>("ovs_name");
+                        localContext.Trace($"[OperationCreate] owner={owner?.LogicalName}:{owner?.Id} stakeholder={stakeholderRef?.Id} site={siteRef?.Id} operationType={operationTypeRef?.Id}");
 
                         if (owner == null || stakeholderRef == null || siteRef == null || operationTypeRef == null || string.IsNullOrEmpty(name))
                         {
-                            localContext.Trace("Missing required attributes; skipping processing");
+                            localContext.Trace($"[OperationCreate] Skipping: one or more required lookup attributes are null — owner={owner == null} stakeholder={stakeholderRef == null} site={siteRef == null} operationType={operationTypeRef == null}");
                             return;
                         }
 
@@ -69,9 +70,17 @@ namespace TSIS2.Plugins
                         bool isUserInISSOBU = OrganizationConfig.IsISSOBU(service, userBUId, tracingService);
                         bool shouldRenameForISSO = isISSOOwner || isUserInISSOBU;
 
+                        bool isRailSafetyOwner = owner.LogicalName == "team" && OrganizationConfig.IsOwnedByRailSafety(service, owner, tracingService);
+                        bool isUserInRailSafetyBU = OrganizationConfig.IsRailSafetyBU(service, userBUId, tracingService);
+                        bool shouldRenameForRailSafety = isRailSafetyOwner || isUserInRailSafetyBU;
+
+                        bool shouldRename = shouldRenameForISSO || shouldRenameForRailSafety;
+
                         string ownerDisplay = $"{owner.LogicalName}:{owner.Id}" + (!string.IsNullOrEmpty(owner.Name) ? $" ; {owner.Name}" : "");
 
-                        if (shouldRenameForISSO)
+                        localContext.Trace($"[OperationCreate] owner={ownerDisplay} shouldRename={shouldRename} (ISSO={shouldRenameForISSO}, RailSafety={shouldRenameForRailSafety}) userLang={userLang}");
+
+                        if (shouldRename)
                         {
                             string stakeholderAltLangValue = RetrieveAltLangName(service, stakeholderRef, userLang == 1033 ? "ovs_accountnamefrench" : "ovs_accountnameenglish", "name", tracingService);
                             string operationTypeAltLangValue = RetrieveAltLangName(service, operationTypeRef, userLang == 1033 ? "ovs_operationtypenamefrench" : "ovs_operationtypenameenglish", "ovs_name", tracingService);
@@ -85,6 +94,10 @@ namespace TSIS2.Plugins
                             target.Attributes["ovs_name"] = newName;
                             target.Attributes[userLang == 1033 ? "ts_operationnamefrench" : "ts_operationnameenglish"] = $"{stakeholderAltLangValue} | {operationTypeAltLangValue} | {siteAltLangValue}";
                             target.Attributes[userLang == 1033 ? "ts_operationnameenglish" : "ts_operationnamefrench"] = newName;
+                        }
+                        else
+                        {
+                            localContext.Trace($"[OperationCreate] shouldRenameForISSO=false — skipping name assignment, Dataverse auto-number will apply");
                         }
 
                         ChangeOwnerToOperationTypeBusinessUnit(localContext, operationTypeRef);
