@@ -17,7 +17,7 @@ namespace TSIS2.Plugins
         "PostOperationts_unplannedworkorderUpdate",
         1,
         IsolationModeEnum.Sandbox,
-        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "ts_workorder,ts_workordertype,ts_region,ts_operation,ts_operationtype,ts_stakeholder,ts_site,ts_state,ts_worklocation,ts_rational,ts_businessowner,ts_primaryincidenttype,ts_primaryincidentdescription,ts_primaryincidentestimatedduration,ts_overtimerequired,ownerid,ts_country, ts_plannedfiscalyear, ts_plannedfiscalquarter",
+        Image1Name = "PreImage", Image1Type = ImageTypeEnum.PreImage, Image1Attributes = "ts_workorder,ts_workordertype,ts_region,ts_operation,ts_operationtype,ts_stakeholder,ts_site,ts_state,ts_worklocation,ts_rational,ts_businessowner,ts_primaryincidenttype,ts_primaryincidentdescription,ts_primaryincidentestimatedduration,ts_overtimerequired,ownerid,ts_country,ts_plannedfiscalyear,ts_plannedfiscalquarter",
         Description = "Copies changed fields to the related msdyn_workorder record on update.")]
     public class PostOperationts_unplannedworkorderUpdate : PluginBase
     {
