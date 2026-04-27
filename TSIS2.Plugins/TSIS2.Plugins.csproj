@@ -82,33 +82,6 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PdfSharp, Version=6.2.4.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.6.2.4\lib\netstandard2.0\PdfSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp.BarCodes, Version=6.2.4.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.6.2.4\lib\netstandard2.0\PdfSharp.BarCodes.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp.Charting, Version=6.2.4.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.6.2.4\lib\netstandard2.0\PdfSharp.Charting.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp.Cryptography, Version=6.2.4.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.6.2.4\lib\netstandard2.0\PdfSharp.Cryptography.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp.Quality, Version=6.2.4.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.6.2.4\lib\netstandard2.0\PdfSharp.Quality.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp.Shared, Version=6.2.4.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.6.2.4\lib\netstandard2.0\PdfSharp.Shared.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp.Snippets, Version=6.2.4.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.6.2.4\lib\netstandard2.0\PdfSharp.Snippets.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp.System, Version=6.2.4.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.6.2.4\lib\netstandard2.0\PdfSharp.System.dll</HintPath>
-    </Reference>
-    <Reference Include="PdfSharp.WPFonts, Version=6.2.4.0, Culture=neutral, PublicKeyToken=f94615aa0424f9eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\PDFsharp.6.2.4\lib\netstandard2.0\PdfSharp.WPFonts.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Activities" />
@@ -175,7 +148,6 @@
     <Compile Include="PostOperationts_operationriskassessmentCreate.cs" />
     <Compile Include="PostOperationts_sharepointfileCreate.cs" />
     <Compile Include="PostOperationts_unplannedworkorderCreate.cs" />
-    <Compile Include="PostOperationts_workorderexportjobUpdate.cs" />
     <Compile Include="PostOperation_AccessControlOnWorkspaceUpdate.cs" />
     <Compile Include="PostOperation_AccessTeamSync.cs" />
     <Compile Include="PostOperation_AccountUpdate.cs" />
@@ -215,10 +187,6 @@
     <Compile Include="PreOperationts_questionnaireversionUpdate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TSGlobalAction.cs" />
-    <Compile Include="WorkOrderExport\WorkOrderExportDataRetriever.cs" />
-    <Compile Include="WorkOrderExport\WorkOrderExportModels.cs" />
-    <Compile Include="WorkOrderExport\WorkOrderExportService.cs" />
-    <Compile Include="WorkOrderExport\WorkOrderExportMapper.cs" />
     <Compile Include="XrmContext\XrmContext.cs" />
     <Compile Include="XrmContext\XrmExtensions.cs" />
   </ItemGroup>
@@ -303,13 +271,6 @@
       <InputAssemblies Include="$(TargetDir)System.Json.dll" />
       <InputAssemblies Include="$(TargetDir)TSIS2.Plugins.dll" />
       <InputAssemblies Include="$(TargetDir)TSIS2.QuestionnaireProcessor.dll" />
-      <!-- PdfSharp for PDF merging -->
-      <InputAssemblies Include="$(TargetDir)PdfSharp.dll" />
-      <InputAssemblies Include="$(TargetDir)PdfSharp.Charting.dll" />
-      <InputAssemblies Include="$(TargetDir)PdfSharp.Quality.dll" />
-      <InputAssemblies Include="$(TargetDir)PdfSharp.Shared.dll" />
-      <InputAssemblies Include="$(TargetDir)PdfSharp.System.dll" />
-      <!-- PdfSharp dependencies -->
       <InputAssemblies Include="$(TargetDir)Microsoft.Extensions.Logging.Abstractions.dll" />
     </ItemGroup>
     <ItemGroup>
