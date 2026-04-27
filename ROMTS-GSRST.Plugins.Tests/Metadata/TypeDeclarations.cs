@@ -16,10 +16,13 @@ namespace DG.Tools.XrmMockup {
 		public static Guid AISalesperson = new Guid("12abf4cd-20a9-477c-955d-0c940b3884b9");
 		public static Guid AnalyticsReportAuthor = new Guid("5d654478-ef8d-ec11-b3fe-000d3a5cee94");
 		public static Guid ApolloServiceRole = new Guid("99b7f9c4-5c1e-4b9a-b756-fdfa137b6f85");
+		public static Guid AppAgentsMaker = new Guid("ff7eedc4-3e13-f111-8406-7c1e528d190c");
+		public static Guid AppAgentsUser = new Guid("a7a0f1b6-3f13-f111-8406-7c1e528d190c");
 		public static Guid AppDeploymentOrchestrationRole = new Guid("1bb44f6d-15a5-48aa-a2f2-8d2cb0095d2d");
 		public static Guid AppOpener = new Guid("979144c2-989b-41a5-a146-6b3ea4130e8c");
 		public static Guid AppProfileManagerAdministrator = new Guid("4758a2be-ccd8-ea11-a813-000d3a579805");
 		public static Guid AppProfileUser = new Guid("61649654-ced8-ea11-a813-000d3a579805");
+		public static Guid AppAgentsS2SRole = new Guid("44911113-edd5-4182-a0a1-8a9e890e09c4");
 		public static Guid ApprovalsAdministrator = new Guid("854af338-f3c5-e711-8122-000d3aa01c52");
 		public static Guid ApprovalsUser = new Guid("b9b08637-acf6-e711-a95a-000d3a11f5ee");
 		public static Guid Asyncingestion = new Guid("ab8b8c58-1f50-4037-8b26-7523d6145cc3");
@@ -43,6 +46,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ChannelAccess = new Guid("a2cccf01-f964-449c-a827-9b66e03f7fc8");
 		public static Guid Click2CloneAdministrator = new Guid("9bd753ee-41a9-e511-9414-00155d068906");
 		public static Guid Click2CloneUser = new Guid("c65a1216-42a9-e511-9414-00155d068906");
+		public static Guid ContactCenterRTAReportingServiceRole = new Guid("de11bea2-51de-4d2a-8d44-166ed1962f0b");
 		public static Guid ContextualAIS2SRole = new Guid("4f9dbfce-f797-40d8-a8ac-902e441e371b");
 		public static Guid CopilotGovernanceRole = new Guid("987674dd-f4a4-45a8-a1f7-f2cce1cf87f8");
 		public static Guid CSRManager = new Guid("a0c28c41-5e86-4d45-a0d1-70a9cde49e33");
@@ -86,6 +90,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid EACReaderAppAccess = new Guid("7be5a395-6b58-4f8c-908f-97dc8810fc50");
 		public static Guid Emailengagementappuserrole = new Guid("9b18e47d-a666-ef11-a670-0022480b93b6");
 		public static Guid EnvironmentMaker = new Guid("d58407f2-48d5-e711-a82c-000d3a37c848");
+		public static Guid EventStreamsServiceRole = new Guid("c8d9e0f1-2a3b-4c5d-6e7f-8a9b0c1d2e3f");
 		public static Guid ExportCustomizationsSolutionChecker = new Guid("4931681d-8163-e811-a965-000d3a11fe32");
 		public static Guid FabricAISkillRole = new Guid("d6e926ad-4afc-42fb-97f1-6e50c2ef174e");
 		public static Guid FederatedKnowledgeRole = new Guid("ffadce64-3542-4bf1-a83a-ac9941104680");
@@ -195,6 +200,7 @@ namespace DG.Tools.XrmMockup {
 		public static Guid SalesResearchAgentReader = new Guid("4ca70f2e-5f10-4ed1-bbbc-90f9bbe29b6b");
 		public static Guid SalesSequenceStatsReportingServiceUser = new Guid("9094f3e2-40e1-491f-b8d9-b621a38f60ef");
 		public static Guid SalesSequenceStatsServiceUser = new Guid("afd66a78-57d5-4bad-a60d-b226b1a8b5d3");
+		public static Guid SalesSupervisor = new Guid("f8c2d5a7-3b91-4e82-a5d3-9c7f8a2b6e1d");
 		public static Guid Salessystemaccess = new Guid("b5b6cb27-47e9-49f7-84bb-f6823fc8461c");
 		public static Guid Salessystemaccessextension = new Guid("f6f7455f-bcea-44dc-abbd-7fd51b1cc880");
 		public static Guid SalesTeamMember = new Guid("7e13fe7f-ea02-4a4e-a523-89ed9361961d");
@@ -206,6 +212,9 @@ namespace DG.Tools.XrmMockup {
 		public static Guid ScheduleManager = new Guid("9d264e42-8b56-44bc-9950-9011ecefafb4");
 		public static Guid Scheduler = new Guid("2a657885-7129-4dec-9350-1b612ab3171f");
 		public static Guid SchedulingOperationsAgent = new Guid("761bd7ae-2b37-f011-877b-6045bd08c686");
+		public static Guid ScreenRecorder = new Guid("5104cbde-110b-f111-8343-00224805ea1f");
+		public static Guid ScreenRecordingAdmin = new Guid("385edb01-120b-f111-8342-6045bd094b1d");
+		public static Guid ScreenRecordingSupervisor = new Guid("e0c1091a-120b-f111-8343-00224805ea1f");
 		public static Guid SequenceManager = new Guid("9f447a9a-4e2d-ea11-a81c-000d3afd580d");
 		public static Guid ServiceDeleter = new Guid("3b305bc7-5cf5-464b-985e-d6237f6496f1");
 		public static Guid ServiceReader = new Guid("494d392f-d3f4-42ba-af49-30c6f41e6093");
